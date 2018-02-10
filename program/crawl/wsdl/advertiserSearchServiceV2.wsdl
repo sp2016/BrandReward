@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://api.cj.com" xmlns:ns2="http://advertiser.service.cj.com" xmlns:ns1="http://vo.domain.cj.com" xmlns:soapenc12="http://www.w3.org/2003/05/soap-encoding" xmlns:tns="http://api.cj.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap11="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc11="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+  <wsdl:types>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://api.cj.com">
+<xsd:element name="search">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="developerKey" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="token" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="keywords" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="category" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="linkType" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="linkSize" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="language" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="servicaeableArea" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="sortBy" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="sortOrder" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="startAt" type="xsd:int"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="maxResults" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:complexType name="ArrayOfString">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="string" nillable="true" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="searchResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="ns2:AdvertiserSearchResponse"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:schema>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://advertiser.service.cj.com">
+<xsd:complexType name="AdvertiserSearchResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="advertisers" nillable="true" type="ns1:ArrayOfAdvertiserData"/>
+<xsd:element minOccurs="0" name="currentPage" type="xsd:int"/>
+<xsd:element minOccurs="0" name="resultsPerpage" type="xsd:int"/>
+<xsd:element minOccurs="0" name="totalResults" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:schema>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://vo.domain.cj.com">
+<xsd:complexType name="ArrayOfAdvertiserData">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="AdvertiserData" nillable="true" type="ns1:AdvertiserData"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="AdvertiserData">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="cid" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="clickCommission" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="leadCommission" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="linkTypes" nillable="true" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="name" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="networkRank" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="performanceIncentives" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="primaryCategoryId" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="primaryCategoryName" nillable="true" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="relationshipStatus" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="saleCommission" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="sevenDayEPC" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="threeMonthEPC" nillable="true" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="searchRequest">
+    <wsdl:part name="parameters" element="tns:search"/>
+  </wsdl:message>
+  <wsdl:message name="searchResponse">
+    <wsdl:part name="parameters" element="tns:searchResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="advertiserSearchServiceV2PortType">
+    <wsdl:operation name="search">
+      <wsdl:input name="searchRequest" message="tns:searchRequest"/>
+      <wsdl:output name="searchResponse" message="tns:searchResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="advertiserSearchServiceV2HttpBinding" type="tns:advertiserSearchServiceV2PortType">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="search">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="searchRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="searchResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="advertiserSearchServiceV2">
+    <wsdl:port name="advertiserSearchServiceV2HttpPort" binding="tns:advertiserSearchServiceV2HttpBinding">
+      <wsdlsoap:address location="https://linksearch.api.cj.com/services/advertiserSearchServiceV2"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

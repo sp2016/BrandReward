@@ -1,0 +1,741 @@
+<?xml version="1.0"?>
+<wsdl:definitions targetNamespace="urn:http://ws.webgains.com/aws.php"
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+xmlns:tns="urn:http://ws.webgains.com/aws.php"
+xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+>
+<wsdl:types>
+<xsd:schema targetNamespace="urn:http://ws.webgains.com/aws.php">
+<xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+<xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+<xsd:complexType name="linesArray">
+<xsd:all>
+<xsd:element name="campaignName" type="xsd:string" />
+<xsd:element name="campaignID" type="xsd:int" />
+<xsd:element name="date" type="xsd:dateTime" />
+<xsd:element name="programName" type="xsd:string" />
+<xsd:element name="programID" type="xsd:int" />
+<xsd:element name="commission" type="xsd:float" />
+<xsd:element name="saleValue" type="xsd:float" />
+<xsd:element name="clickRef" type="xsd:string" />
+<xsd:element name="clickthroughTime" type="xsd:dateTime" />
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="detailedLinesArray">
+<xsd:all>
+<xsd:element name="affiliateID" type="xsd:int" />
+<xsd:element name="campaignName" type="xsd:string" />
+<xsd:element name="campaignID" type="xsd:int" />
+<xsd:element name="date" type="xsd:dateTime" />
+<xsd:element name="validationDate" type="xsd:dateTime" />
+<xsd:element name="delayedUntilDate" type="xsd:string" />
+<xsd:element name="programName" type="xsd:string" />
+<xsd:element name="programID" type="xsd:int" />
+<xsd:element name="linkID" type="xsd:string" />
+<xsd:element name="eventID" type="xsd:int" />
+<xsd:element name="commission" type="xsd:float" />
+<xsd:element name="saleValue" type="xsd:float" />
+<xsd:element name="status" type="xsd:string" />
+<xsd:element name="paymentStatus" type="xsd:string" />
+<xsd:element name="changeReason" type="xsd:string" />
+<xsd:element name="clickRef" type="xsd:string" />
+<xsd:element name="clickthroughTime" type="xsd:dateTime" />
+<xsd:element name="landingPage" type="xsd:string" />
+<xsd:element name="country" type="xsd:string" />
+<xsd:element name="referrer" type="xsd:string" />
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="fullEarningsWithCurrencyArray">
+<xsd:all>
+<xsd:element name="transactionID" type="xsd:int" />
+<xsd:element name="affiliateID" type="xsd:int" />
+<xsd:element name="campaignName" type="xsd:string" />
+<xsd:element name="campaignID" type="xsd:int" />
+<xsd:element name="date" type="xsd:dateTime" />
+<xsd:element name="validationDate" type="xsd:dateTime" />
+<xsd:element name="delayedUntilDate" type="xsd:string" />
+<xsd:element name="programName" type="xsd:string" />
+<xsd:element name="programID" type="xsd:int" />
+<xsd:element name="linkID" type="xsd:string" />
+<xsd:element name="eventID" type="xsd:int" />
+<xsd:element name="commission" type="xsd:float" />
+<xsd:element name="saleValue" type="xsd:float" />
+<xsd:element name="status" type="xsd:string" />
+<xsd:element name="paymentStatus" type="xsd:string" />
+<xsd:element name="changeReason" type="xsd:string" />
+<xsd:element name="clickRef" type="xsd:string" />
+<xsd:element name="clickthroughTime" type="xsd:dateTime" />
+<xsd:element name="landingPage" type="xsd:string" />
+<xsd:element name="country" type="xsd:string" />
+<xsd:element name="referrer" type="xsd:string" />
+<xsd:element name="currency" type="xsd:string" />
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="fullEarningsWithPaymentDateArray">
+<xsd:all>
+<xsd:element name="transactionID" type="xsd:int" />
+<xsd:element name="affiliateID" type="xsd:int" />
+<xsd:element name="campaignName" type="xsd:string" />
+<xsd:element name="campaignID" type="xsd:int" />
+<xsd:element name="date" type="xsd:dateTime" />
+<xsd:element name="validationDate" type="xsd:dateTime" />
+<xsd:element name="delayedUntilDate" type="xsd:string" />
+<xsd:element name="programName" type="xsd:string" />
+<xsd:element name="programID" type="xsd:int" />
+<xsd:element name="linkID" type="xsd:string" />
+<xsd:element name="eventID" type="xsd:int" />
+<xsd:element name="commission" type="xsd:float" />
+<xsd:element name="saleValue" type="xsd:float" />
+<xsd:element name="status" type="xsd:string" />
+<xsd:element name="paymentStatus" type="xsd:string" />
+<xsd:element name="changeReason" type="xsd:string" />
+<xsd:element name="clickRef" type="xsd:string" />
+<xsd:element name="clickthroughTime" type="xsd:dateTime" />
+<xsd:element name="landingPage" type="xsd:string" />
+<xsd:element name="country" type="xsd:string" />
+<xsd:element name="referrer" type="xsd:string" />
+<xsd:element name="currency" type="xsd:string" />
+<xsd:element name="paymentDate" type="xsd:dateTime" />
+<xsd:element name="voucherCode" type="xsd:string" />
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="fullEarningsWithViewReferenceArray">
+<xsd:all>
+<xsd:element name="transactionID" type="xsd:int" />
+<xsd:element name="affiliateID" type="xsd:int" />
+<xsd:element name="campaignName" type="xsd:string" />
+<xsd:element name="campaignID" type="xsd:int" />
+<xsd:element name="date" type="xsd:dateTime" />
+<xsd:element name="validationDate" type="xsd:dateTime" />
+<xsd:element name="delayedUntilDate" type="xsd:string" />
+<xsd:element name="programName" type="xsd:string" />
+<xsd:element name="programID" type="xsd:int" />
+<xsd:element name="linkID" type="xsd:string" />
+<xsd:element name="eventID" type="xsd:int" />
+<xsd:element name="commission" type="xsd:float" />
+<xsd:element name="saleValue" type="xsd:float" />
+<xsd:element name="status" type="xsd:string" />
+<xsd:element name="paymentStatus" type="xsd:string" />
+<xsd:element name="changeReason" type="xsd:string" />
+<xsd:element name="clickRef" type="xsd:string" />
+<xsd:element name="clickthroughTime" type="xsd:dateTime" />
+<xsd:element name="viewReference" type="xsd:string" />
+<xsd:element name="landingPage" type="xsd:string" />
+<xsd:element name="country" type="xsd:string" />
+<xsd:element name="referrer" type="xsd:string" />
+<xsd:element name="currency" type="xsd:string" />
+<xsd:element name="paymentDate" type="xsd:dateTime" />
+<xsd:element name="voucherCode" type="xsd:string" />
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="fullLinesArray">
+<xsd:all>
+<xsd:element name="transactionID" type="xsd:int" />
+<xsd:element name="affiliateID" type="xsd:int" />
+<xsd:element name="campaignName" type="xsd:string" />
+<xsd:element name="campaignID" type="xsd:int" />
+<xsd:element name="date" type="xsd:dateTime" />
+<xsd:element name="validationDate" type="xsd:dateTime" />
+<xsd:element name="delayedUntilDate" type="xsd:string" />
+<xsd:element name="programName" type="xsd:string" />
+<xsd:element name="programID" type="xsd:int" />
+<xsd:element name="linkID" type="xsd:string" />
+<xsd:element name="eventID" type="xsd:int" />
+<xsd:element name="commission" type="xsd:float" />
+<xsd:element name="saleValue" type="xsd:float" />
+<xsd:element name="status" type="xsd:string" />
+<xsd:element name="paymentStatus" type="xsd:string" />
+<xsd:element name="changeReason" type="xsd:string" />
+<xsd:element name="clickRef" type="xsd:string" />
+<xsd:element name="clickthroughTime" type="xsd:dateTime" />
+<xsd:element name="landingPage" type="xsd:string" />
+<xsd:element name="country" type="xsd:string" />
+<xsd:element name="referrer" type="xsd:string" />
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="fullEarningsLinesArray">
+<xsd:all>
+<xsd:element name="transactionID" type="xsd:int" />
+<xsd:element name="affiliateID" type="xsd:int" />
+<xsd:element name="campaignName" type="xsd:string" />
+<xsd:element name="campaignID" type="xsd:int" />
+<xsd:element name="date" type="xsd:dateTime" />
+<xsd:element name="validationDate" type="xsd:dateTime" />
+<xsd:element name="delayedUntilDate" type="xsd:string" />
+<xsd:element name="programName" type="xsd:string" />
+<xsd:element name="programID" type="xsd:int" />
+<xsd:element name="linkID" type="xsd:string" />
+<xsd:element name="eventID" type="xsd:int" />
+<xsd:element name="eventName" type="xsd:string" />
+<xsd:element name="commission" type="xsd:float" />
+<xsd:element name="saleValue" type="xsd:float" />
+<xsd:element name="status" type="xsd:string" />
+<xsd:element name="paymentStatus" type="xsd:string" />
+<xsd:element name="changeReason" type="xsd:string" />
+<xsd:element name="clickRef" type="xsd:string" />
+<xsd:element name="clickthroughTime" type="xsd:dateTime" />
+<xsd:element name="landingPage" type="xsd:string" />
+<xsd:element name="country" type="xsd:string" />
+<xsd:element name="referrer" type="xsd:string" />
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="programLineArray">
+<xsd:all>
+<xsd:element name="programName" type="xsd:string" />
+<xsd:element name="programID" type="xsd:int" />
+<xsd:element name="commissionTotals" type="xsd:float" />
+<xsd:element name="transactionTotals" type="xsd:float" />
+<xsd:element name="transactionNumber" type="xsd:int" />
+<xsd:element name="clickTotals" type="xsd:int" />
+<xsd:element name="viewTotals" type="xsd:int" />
+<xsd:element name="convRate" type="xsd:float" />
+<xsd:element name="ephc" type="xsd:float" />
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="programContainerArray">
+<xsd:complexContent>
+<xsd:restriction base="SOAP-ENC:Array">
+<xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:programArray[]" />
+</xsd:restriction>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="programArray">
+<xsd:all>
+<xsd:element name="programID" type="xsd:int" />
+<xsd:element name="programURL" type="xsd:string" />
+<xsd:element name="programName" type="xsd:string" />
+<xsd:element name="programDescription" type="xsd:string" />
+<xsd:element name="programShortDescription" type="xsd:string" />
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="programNetworkContainerArray">
+<xsd:complexContent>
+<xsd:restriction base="SOAP-ENC:Array">
+<xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:programNetworkArray[]" />
+</xsd:restriction>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="programMembershipStatusContainerArray">
+<xsd:complexContent>
+<xsd:restriction base="SOAP-ENC:Array">
+<xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:programMembershipStatusArray[]" />
+</xsd:restriction>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="programMembershipStatusArray">
+<xsd:all>
+<xsd:element name="programID" type="xsd:int" />
+<xsd:element name="programURL" type="xsd:string" />
+<xsd:element name="programName" type="xsd:string" />
+<xsd:element name="programDescription" type="xsd:string" />
+<xsd:element name="programShortDescription" type="xsd:string" />
+<xsd:element name="programNetworkID" type="xsd:int" />
+<xsd:element name="programNetworkName" type="xsd:string" />
+<xsd:element name="programMembershipStatusCode" type="xsd:int" />
+<xsd:element name="programMembershipStatusName" type="xsd:string" />
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="programNetworkArray">
+<xsd:all>
+<xsd:element name="programID" type="xsd:int" />
+<xsd:element name="programURL" type="xsd:string" />
+<xsd:element name="programName" type="xsd:string" />
+<xsd:element name="programDescription" type="xsd:string" />
+<xsd:element name="programShortDescription" type="xsd:string" />
+<xsd:element name="programNetworkID" type="xsd:int" />
+<xsd:element name="programNetworkName" type="xsd:string" />
+</xsd:all>
+</xsd:complexType>
+<xsd:complexType name="reportArray">
+<xsd:complexContent>
+<xsd:restriction base="SOAP-ENC:Array">
+<xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:linesArray[]" />
+</xsd:restriction>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="programReportArray">
+<xsd:complexContent>
+<xsd:restriction base="SOAP-ENC:Array">
+<xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:programLineArray[]" />
+</xsd:restriction>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="detailedReportArray">
+<xsd:complexContent>
+<xsd:restriction base="SOAP-ENC:Array">
+<xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:detailedLinesArray[]" />
+</xsd:restriction>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="fullReportArray">
+<xsd:complexContent>
+<xsd:restriction base="SOAP-ENC:Array">
+<xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:fullLinesArray[]" />
+</xsd:restriction>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="fullEarningsWithCurrencyReportArray">
+<xsd:complexContent>
+<xsd:restriction base="SOAP-ENC:Array">
+<xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:fullEarningsWithCurrencyArray[]" />
+</xsd:restriction>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="fullEarningsWithPaymentDateReportArray">
+<xsd:complexContent>
+<xsd:restriction base="SOAP-ENC:Array">
+<xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:fullEarningsWithPaymentDateArray[]" />
+</xsd:restriction>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="fullEarningsWithViewReferenceReportArray">
+<xsd:complexContent>
+<xsd:restriction base="SOAP-ENC:Array">
+<xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:fullEarningsWithViewReferenceArray[]" />
+</xsd:restriction>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="fullEarningsReportArray">
+<xsd:complexContent>
+<xsd:restriction base="SOAP-ENC:Array">
+<xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:fullEarningsLinesArray[]" />
+</xsd:restriction>
+</xsd:complexContent>
+</xsd:complexType>
+</xsd:schema>
+</wsdl:types>
+<message name="getEarningsRequest">
+<wsdl:part name="startdate" type="xsd:dateTime" />
+<wsdl:part name="enddate" type="xsd:dateTime" />
+<wsdl:part name="campaignid" type="xsd:int" />
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+</message>
+<message name="getEarningsResponse">
+<wsdl:part name="return" type="tns:reportArray" />
+</message>
+<message name="getDetailedEarningsRequest">
+<wsdl:part name="startdate" type="xsd:dateTime" />
+<wsdl:part name="enddate" type="xsd:dateTime" />
+<wsdl:part name="campaignid" type="xsd:int" />
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+</message>
+<message name="getDetailedEarningsResponse">
+<wsdl:part name="return" type="tns:detailedReportArray" />
+</message>
+<message name="getFullEarningsRequest">
+<wsdl:part name="startdate" type="xsd:dateTime" />
+<wsdl:part name="enddate" type="xsd:dateTime" />
+<wsdl:part name="campaignid" type="xsd:int" />
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+</message>
+<message name="getFullEarningsResponse">
+<wsdl:part name="return" type="tns:fullReportArray" />
+</message>
+<message name="getFullEarningsWithEventNameRequest">
+<wsdl:part name="startdate" type="xsd:dateTime" />
+<wsdl:part name="enddate" type="xsd:dateTime" />
+<wsdl:part name="campaignid" type="xsd:int" />
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+</message>
+<message name="getFullEarningsWithEventNameResponse">
+<wsdl:part name="return" type="tns:fullEarningsReportArray" />
+</message>
+<message name="getFullUpdatedEarningsRequest">
+<wsdl:part name="startdate" type="xsd:dateTime" />
+<wsdl:part name="enddate" type="xsd:dateTime" />
+<wsdl:part name="campaignid" type="xsd:int" />
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+</message>
+<message name="getFullEarningsWithPaymentDateRequest">
+<wsdl:part name="startdate" type="xsd:dateTime" />
+<wsdl:part name="enddate" type="xsd:dateTime" />
+<wsdl:part name="campaignid" type="xsd:int" />
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+</message>
+<message name="getFullEarningsWithPaymentDateResponse">
+<wsdl:part name="return" type="tns:fullEarningsWithPaymentDateReportArray" />
+</message>
+<message name="getFullEarningsWithViewReferenceRequest">
+<wsdl:part name="startdate" type="xsd:dateTime" />
+<wsdl:part name="enddate" type="xsd:dateTime" />
+<wsdl:part name="campaignid" type="xsd:int" />
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+</message>
+<message name="getFullEarningsWithViewReferenceResponse">
+<wsdl:part name="return" type="tns:fullEarningsWithViewReferenceReportArray" />
+</message>
+<message name="getFullEarningsWithCurrencyRequest">
+<wsdl:part name="startdate" type="xsd:dateTime" />
+<wsdl:part name="enddate" type="xsd:dateTime" />
+<wsdl:part name="campaignid" type="xsd:int" />
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+</message>
+<message name="getFullEarningsWithCurrencyResponse">
+<wsdl:part name="return" type="tns:fullEarningsWithCurrencyReportArray" />
+</message>
+<message name="getFullUpdatedEarningsResponse">
+<wsdl:part name="return" type="tns:fullReportArray" />
+</message>
+<message name="getProgramReportRequest">
+<wsdl:part name="startdate" type="xsd:dateTime" />
+<wsdl:part name="enddate" type="xsd:dateTime" />
+<wsdl:part name="campaignid" type="xsd:int" />
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+</message>
+<message name="getProgramReportResponse">
+<wsdl:part name="return" type="tns:programReportArray" />
+</message>
+<message name="getProgramsRequest">
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+<wsdl:part name="campaignid" type="xsd:int" />
+</message>
+<message name="getProgramsResponse">
+<wsdl:part name="return" type="tns:programContainerArray" />
+</message>
+<message name="getProgramsWithCountryRequest">
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+<wsdl:part name="campaignid" type="xsd:int" />
+</message>
+<message name="getProgramsWithCountryResponse">
+<wsdl:part name="return" type="tns:programNetworkContainerArray" />
+</message>
+<message name="getProgramsWithMembershipStatusRequest">
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+<wsdl:part name="campaignid" type="xsd:int" />
+</message>
+<message name="getProgramsWithMembershipStatusResponse">
+<wsdl:part name="return" type="tns:programMembershipStatusContainerArray" />
+</message>
+<message name="getEarningsAsStringRequest">
+<wsdl:part name="startdate" type="xsd:dateTime" />
+<wsdl:part name="enddate" type="xsd:dateTime" />
+<wsdl:part name="campaignid" type="xsd:int" />
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+</message>
+<message name="getEarningsAsStringResponse">
+<wsdl:part name="return" type="xsd:string" />
+</message>
+<message name="getEarningsAsStringWithIDRequest">
+<wsdl:part name="startdate" type="xsd:dateTime" />
+<wsdl:part name="enddate" type="xsd:dateTime" />
+<wsdl:part name="campaignid" type="xsd:int" />
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+</message>
+<message name="getEarningsAsStringWithIDResponse">
+<wsdl:part name="return" type="xsd:string" />
+</message>
+<message name="getProgramReportAsStringRequest">
+<wsdl:part name="startdate" type="xsd:dateTime" />
+<wsdl:part name="enddate" type="xsd:dateTime" />
+<wsdl:part name="campaignid" type="xsd:int" />
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+</message>
+<message name="getProgramReportAsStringResponse">
+<wsdl:part name="return" type="xsd:string" />
+</message>
+<message name="getProgramsAsStringRequest">
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+<wsdl:part name="campaignid" type="xsd:int" />
+</message>
+<message name="getProgramsAsStringResponse">
+<wsdl:part name="return" type="xsd:string" />
+</message>
+<message name="getBriefProgramsAsStringRequest">
+<wsdl:part name="username" type="xsd:string" />
+<wsdl:part name="password" type="xsd:string" />
+<wsdl:part name="campaignid" type="xsd:int" />
+</message>
+<message name="getBriefProgramsAsStringResponse">
+<wsdl:part name="return" type="xsd:string" />
+</message>
+<message name="getAccountBalanceRequest">
+<wsdl:part name="username" type="xsd:string"></wsdl:part>
+<wsdl:part name="password" type="xsd:string"></wsdl:part>
+<wsdl:part name="campaignid" type="xsd:int"></wsdl:part>
+</message>
+<message name="getAccountBalanceResponse">
+<wsdl:part name="return" type="xsd:string"></wsdl:part>
+</message>
+<wsdl:portType name="WebgainsPortType">
+<wsdl:operation name="getEarnings">
+<documentation>Get details of commissions; returns array containing: Web site/keyword campaign name, Web site/keyword campaign ID, date, Program name, Program ID, commission, Value of Sale, Click Reference, Clickthrough Time</documentation>
+<wsdl:input message="tns:getEarningsRequest" />
+<wsdl:output message="tns:getEarningsResponse" />
+</wsdl:operation>
+<wsdl:operation name="getDetailedEarnings">
+<documentation>Get details of commissions; returns array containing: Affiliate ID, Web site/keyword campaign name, Web site/keyword campaign ID, date, validation date, Delayed Until Date, Program name, Program ID, link ID, Event ID, commission, Value of Sale, Payment Status, Status, Change Reason, Click Reference, Clickthrough Time, Landing Page, Country, Referrer</documentation>
+<wsdl:input message="tns:getDetailedEarningsRequest" />
+<wsdl:output message="tns:getDetailedEarningsResponse" />
+</wsdl:operation>
+<wsdl:operation name="getFullEarnings">
+<documentation>Get full details of commissions; returns array containing: Network transaction ID, Affiliate ID, Web site/keyword campaign name, Web site/keyword campaign ID, date, validation date, Delayed Until Date, Program name, Program ID, link ID, Event ID, commission, Value of Sale, Status, Payment Status, Change Reason, Click Reference, Clickthrough Time, Landing Page, Country, Referrer</documentation>
+<wsdl:input message="tns:getFullEarningsRequest" />
+<wsdl:output message="tns:getFullEarningsResponse" />
+</wsdl:operation>
+<wsdl:operation name="getFullEarningsWithEventName">
+<documentation>Get full details of commissions; returns array containing: Network transaction ID, Affiliate ID, Web site/keyword campaign name, Web site/keyword campaign ID, date, validation date, Delayed Until Date, Program name, Program ID, link ID, Event ID, Event name, commission, Value of Sale, Status, Payment Status, Change Reason, Click Reference, Clickthrough Time, Landing Page, Country, Referrer</documentation>
+<wsdl:input message="tns:getFullEarningsWithEventNameRequest" />
+<wsdl:output message="tns:getFullEarningsWithEventNameResponse" />
+</wsdl:operation>
+<wsdl:operation name="getFullUpdatedEarnings">
+<documentation>Get full details of commissions last updated between the two dates; returns array containing: Network transaction ID, Affiliate ID, Web site/keyword campaign name, Web site/keyword campaign ID, date, validation date, Delayed Until Date, Program name, Program ID, link ID, Event ID, commission, Value of Sale, Status, Payment Status, Change Reason, Click Reference, Clickthrough Time, Landing Page, Country, Referrer</documentation>
+<wsdl:input message="tns:getFullUpdatedEarningsRequest" />
+<wsdl:output message="tns:getFullUpdatedEarningsResponse" />
+</wsdl:operation>
+<wsdl:operation name="getFullEarningsWithCurrency">
+<documentation>Get full details of commissions; returns array containing: Network transaction ID, Affiliate ID, Web site/keyword campaign name, Web site/keyword campaign ID, date, validation date, Delayed Until Date, Program name, Program ID, link ID, Event ID, Event name, commission, Value of Sale, Status, Payment Status, Change Reason, Click Reference, Clickthrough Time, Landing Page, Country, Referrer, Currency</documentation>
+<wsdl:input message="tns:getFullEarningsWithCurrencyRequest" />
+<wsdl:output message="tns:getFullEarningsWithCurrencyResponse" />
+</wsdl:operation>
+<wsdl:operation name="getFullEarningsWithPaymentDate">
+<documentation>Get full details of commissions; returns array containing: Network transaction ID, Affiliate ID, Web site/keyword campaign name, Web site/keyword campaign ID, date, validation date, Delayed Until Date, Program name, Program ID, link ID, Event ID, Event name, commission, Value of Sale, Status, Payment Status, Change Reason, Click Reference, Clickthrough Time, Landing Page, Country, Referrer, Currency, Payment Date, Voucher Code</documentation>
+<wsdl:input message="tns:getFullEarningsWithPaymentDateRequest" />
+<wsdl:output message="tns:getFullEarningsWithPaymentDateResponse" />
+</wsdl:operation>
+<wsdl:operation name="getFullEarningsWithViewReference">
+<documentation>Get full details of commissions; returns array containing: Network transaction ID, Affiliate ID, Web site/keyword campaign name, Web site/keyword campaign ID, date, validation date, Delayed Until Date, Program name, Program ID, link ID, Event ID, Event name, commission, Value of Sale, Status, Payment Status, Change Reason, Click Reference, Clickthrough Time, View Reference, Landing Page, Country, Referrer, Currency, Payment Date, Voucher Code</documentation>
+<wsdl:input message="tns:getFullEarningsWithViewReferenceRequest" />
+<wsdl:output message="tns:getFullEarningsWithViewReferenceResponse" />
+</wsdl:operation>
+<wsdl:operation name="getProgramReport">
+<documentation>Get performance by program; returns array containing: Program Name, programID, Amount of commission, Amount of sale, Number of sales, Clicks, impressions, Conversion rate, Earnings per hundred clicks</documentation>
+<wsdl:input message="tns:getProgramReportRequest" />
+<wsdl:output message="tns:getProgramReportResponse" />
+</wsdl:operation>
+<wsdl:operation name="getPrograms">
+<wsdl:documentation>Get details of current programs/advertisers.</wsdl:documentation>
+<wsdl:input message="tns:getProgramsRequest" />
+<wsdl:output message="tns:getProgramsResponse" />
+</wsdl:operation>
+<wsdl:operation name="getProgramsWithCountry">
+<documentation>Get details of current programs/advertisers: id, name, homepage URL, full description, short description, ID of webgains country, name of webgains country</documentation>
+<wsdl:input message="tns:getProgramsWithCountryRequest" />
+<wsdl:output message="tns:getProgramsWithCountryResponse" />
+</wsdl:operation>
+<wsdl:operation name="getProgramsWithMembershipStatus">
+<documentation>Get details of current programs/advertisers: id, name, homepage URL, full description, short description, ID of webgains country, name of webgains country, membership status</documentation>
+<wsdl:input message="tns:getProgramsWithMembershipStatusRequest" />
+<wsdl:output message="tns:getProgramsWithMembershipStatusResponse" />
+</wsdl:operation>
+<wsdl:operation name="getEarningsAsString">
+<documentation>Get details of commissions; returns string containing: Web site/keyword campaign name, Web site/keyword campaign ID, date, Program name, Program ID, commission, Value of Sale, Click Reference, Clickthrough Time</documentation>
+<wsdl:input message="tns:getEarningsAsStringRequest" />
+<wsdl:output message="tns:getEarningsAsStringResponse" />
+</wsdl:operation>
+<wsdl:operation name="getEarningsAsStringWithID">
+<documentation>Get details of commissions; returns string containing: Web site/keyword campaign name, Web site/keyword campaign ID, date, Program name, Program ID, commission, Value of Sale, Click Reference, Clickthrough Time, Transaction ID</documentation>
+<wsdl:input message="tns:getEarningsAsStringWithIDRequest" />
+<wsdl:output message="tns:getEarningsAsStringWithIDResponse" />
+</wsdl:operation>
+<wsdl:operation name="getProgramReportAsString">
+<documentation>Get performance by program; returns string containing: Program Name, programID, Amount of commission, Amount of sale, Number of sales, Clicks, impressions, Conversion rate, Earnings per hundred clicks</documentation>
+<wsdl:input message="tns:getProgramReportAsStringRequest" />
+<wsdl:output message="tns:getProgramReportAsStringResponse" />
+</wsdl:operation>
+<wsdl:operation name="getProgramsAsString">
+<documentation>Get details of current programs/advertisers.</documentation>
+<wsdl:input message="tns:getProgramsAsStringRequest" />
+<wsdl:output message="tns:getProgramsAsStringResponse" />
+</wsdl:operation>
+<wsdl:operation name="getBriefProgramsAsString">
+<documentation>Get brief details of current programs/advertisers (Program ID and Program Name)</documentation>
+<wsdl:input message="tns:getBriefProgramsAsStringRequest" />
+<wsdl:output message="tns:getBriefProgramsAsStringResponse" />
+</wsdl:operation>
+<wsdl:operation name="getAccountBalance">
+<documentation>Get account balance</documentation>
+<wsdl:input message="tns:getAccountBalanceRequest"></wsdl:input>
+<wsdl:output message="tns:getAccountBalanceResponse"></wsdl:output>
+</wsdl:operation>
+</wsdl:portType>
+<binding name="WebgainsBinding" type="tns:WebgainsPortType">
+<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+<wsdl:operation name="getEarnings">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getEarnings" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getDetailedEarnings">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getDetailedEarnings" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getFullEarnings">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getFullEarnings" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getFullEarningsWithEventName">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getFullEarningsWithEventName" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getFullUpdatedEarnings">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getFullUpdatedEarnings" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getFullEarningsWithCurrency">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getFullEarningsWithCurrency" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getFullEarningsWithPaymentDate">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getFullEarningsWithPaymentDate" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getFullEarningsWithViewReference">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getFullEarningsWithViewReference" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getProgramReport">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getProgramReport" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getPrograms">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getPrograms" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getProgramsWithCountry">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getProgramsWithCountry" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getEarningsAsString">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getEarningsAsString" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getEarningsAsStringWithID">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getEarningsAsStringWithID" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getProgramReportAsString">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getProgramReportAsString" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getProgramsAsString">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getProgramsAsString" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getBriefProgramsAsString">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getBriefProgramsAsString" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getProgramsWithMembershipStatus">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getProgramsWithMembershipStatus" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+<wsdl:operation name="getAccountBalance">
+<soap:operation soapAction="urn:http://ws.webgains.com/aws.php#getAccountBalance" style="rpc" />
+<input>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</input>
+<output>
+<soap:body use="encoded" namespace="urn:http://ws.webgains.com/aws.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+</output>
+</wsdl:operation>
+</binding>
+<service name="Webgains">
+<port name="WebgainsPort" binding="tns:WebgainsBinding">
+<soap:address location="http://ws.webgains.com/aws.php" />
+</port>
+</service>
+</wsdl:definitions>

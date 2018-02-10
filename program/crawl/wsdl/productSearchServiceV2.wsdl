@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://api.cj.com" xmlns:tns="http://api.cj.com" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope" xmlns:ns1="http://product.domain.cj.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenc11="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soapenc12="http://www.w3.org/2003/05/soap-encoding" xmlns:ns2="http://product.service.cj.com" xmlns:soap11="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://api.cj.com">
+<xsd:element name="search">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="developerKey" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="websiteId" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="advertiserIds" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="keywords" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="serviceableArea" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="upc" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="manufacturerName" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="manufacturerSku" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="advertiserSku" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="lowPrice" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="highPrice" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="lowSalePrice" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="highSalePrice" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="currency" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="isbn" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="sortBy" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="sortOrder" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="startAt" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="maxResults" nillable="true" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="searchResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="ns2:ProductResponse"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:schema>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://product.service.cj.com">
+<xsd:complexType name="ProductResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="count" type="xsd:int"/>
+<xsd:element minOccurs="0" name="offset" type="xsd:int"/>
+<xsd:element minOccurs="0" name="products" nillable="true" type="ns1:ArrayOfProduct"/>
+<xsd:element minOccurs="0" name="totalResults" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:schema>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://product.domain.cj.com">
+<xsd:complexType name="ArrayOfProduct">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="Product" nillable="true" type="ns1:Product"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="Product">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="adId" type="xsd:long"/>
+<xsd:element minOccurs="0" name="advertiserId" type="xsd:long"/>
+<xsd:element minOccurs="0" name="advertiserName" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="buyUrl" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="catalogId" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="currency" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="description" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="imageUrl" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="inStock" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="isbn" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="manufacturerName" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="manufacturerSku" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="name" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="price" type="xsd:double"/>
+<xsd:element minOccurs="0" name="retailPrice" type="xsd:double"/>
+<xsd:element minOccurs="0" name="salePrice" type="xsd:double"/>
+<xsd:element minOccurs="0" name="sku" nillable="true" type="xsd:string"/>
+<xsd:element minOccurs="0" name="upc" nillable="true" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="searchRequest">
+    <wsdl:part name="parameters" element="tns:search"/>
+  </wsdl:message>
+  <wsdl:message name="searchResponse">
+    <wsdl:part name="parameters" element="tns:searchResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="productSearchServiceV2PortType">
+    <wsdl:operation name="search">
+      <wsdl:input name="searchRequest" message="tns:searchRequest"/>
+      <wsdl:output name="searchResponse" message="tns:searchResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="productSearchServiceV2HttpBinding" type="tns:productSearchServiceV2PortType">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="search">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="searchRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="searchResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="productSearchServiceV2">
+    <wsdl:port name="productSearchServiceV2HttpPort" binding="tns:productSearchServiceV2HttpBinding">
+      <wsdlsoap:address location="https://product.api.cj.com/services/productSearchServiceV2"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

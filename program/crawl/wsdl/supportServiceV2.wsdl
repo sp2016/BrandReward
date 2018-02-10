@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://api.cj.com" xmlns:soapenc12="http://www.w3.org/2003/05/soap-encoding" xmlns:tns="http://api.cj.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap11="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc11="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+  <wsdl:types>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://api.cj.com">
+<xsd:element name="getLinkSizes">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="developerKey" nillable="true" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:complexType name="ArrayOfString">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="string" nillable="true" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getLinkSizesResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="getCountries">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="developerKey" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="locale" nillable="true" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="getCountriesResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="getCategories">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="developerKey" nillable="true" type="xsd:string"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="locale" nillable="true" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="getCategoriesResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="getLinkTypes">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="developerKey" nillable="true" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="getLinkTypesResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="getLanguages">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="developerKey" nillable="true" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="getLanguagesResponse">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getLanguagesResponse">
+    <wsdl:part name="parameters" element="tns:getLanguagesResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getLanguagesRequest">
+    <wsdl:part name="parameters" element="tns:getLanguages"/>
+  </wsdl:message>
+  <wsdl:message name="getLinkTypesResponse">
+    <wsdl:part name="parameters" element="tns:getLinkTypesResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getCategoriesResponse">
+    <wsdl:part name="parameters" element="tns:getCategoriesResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getLinkSizesResponse">
+    <wsdl:part name="parameters" element="tns:getLinkSizesResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getLinkTypesRequest">
+    <wsdl:part name="parameters" element="tns:getLinkTypes"/>
+  </wsdl:message>
+  <wsdl:message name="getCategoriesRequest">
+    <wsdl:part name="parameters" element="tns:getCategories"/>
+  </wsdl:message>
+  <wsdl:message name="getCountriesRequest">
+    <wsdl:part name="parameters" element="tns:getCountries"/>
+  </wsdl:message>
+  <wsdl:message name="getLinkSizesRequest">
+    <wsdl:part name="parameters" element="tns:getLinkSizes"/>
+  </wsdl:message>
+  <wsdl:message name="getCountriesResponse">
+    <wsdl:part name="parameters" element="tns:getCountriesResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="supportServiceV2PortType">
+    <wsdl:operation name="getLinkSizes">
+      <wsdl:input name="getLinkSizesRequest" message="tns:getLinkSizesRequest"/>
+      <wsdl:output name="getLinkSizesResponse" message="tns:getLinkSizesResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getCountries">
+      <wsdl:input name="getCountriesRequest" message="tns:getCountriesRequest"/>
+      <wsdl:output name="getCountriesResponse" message="tns:getCountriesResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getCategories">
+      <wsdl:input name="getCategoriesRequest" message="tns:getCategoriesRequest"/>
+      <wsdl:output name="getCategoriesResponse" message="tns:getCategoriesResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getLinkTypes">
+      <wsdl:input name="getLinkTypesRequest" message="tns:getLinkTypesRequest"/>
+      <wsdl:output name="getLinkTypesResponse" message="tns:getLinkTypesResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getLanguages">
+      <wsdl:input name="getLanguagesRequest" message="tns:getLanguagesRequest"/>
+      <wsdl:output name="getLanguagesResponse" message="tns:getLanguagesResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="supportServiceV2HttpBinding" type="tns:supportServiceV2PortType">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getLinkSizes">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getLinkSizesRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getLinkSizesResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCountries">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getCountriesRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getCountriesResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCategories">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getCategoriesRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getCategoriesResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLinkTypes">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getLinkTypesRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getLinkTypesResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLanguages">
+      <wsdlsoap:operation soapAction=""/>
+      <wsdl:input name="getLanguagesRequest">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getLanguagesResponse">
+        <wsdlsoap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="supportServiceV2">
+    <wsdl:port name="supportServiceV2HttpPort" binding="tns:supportServiceV2HttpBinding">
+      <wsdlsoap:address location="https://linksearch.api.cj.com/services/supportServiceV2"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
