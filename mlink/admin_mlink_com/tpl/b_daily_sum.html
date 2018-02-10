@@ -1,0 +1,98 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;">
+            <h1>Daily - Transaction</h1>
+
+        </div>
+        <div class="row" style="padding:20px 0;">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    <div class="panel-body" >
+                        <form id="form_content_search">
+                            <!--<input type="hidden" name="p" value="1" />-->
+                            <div class="row">
+                                <div class=" form-inline">
+                                    <div class="col-lg-12 ">
+                                        <input type="text" name="start" class="form-control datepicker" placeholder="Start Time" value="<{$search.start}>">
+                                        <input type="text" name="end" class="form-control datepicker" placeholder="End Time" value="<{$search.end}>">
+                                        <div class="form-group" style="margin-left: 10px;">
+                                            <input type="submit" class="btn b-primary" value="Search">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Commission
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped" id="table_aff">
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                               <th>Commission</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$info item=publisher}>
+                            <tr>
+                                <td><{$publisher.Date}></td>
+                                <td>$<{$publisher.Commission}></td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="ava-program-modal" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title" id="exampleModalLabel">Available Program List</h2>
+                </div>
+                <div class="modal-body">
+                    <table  class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>program</th>
+                            <th>option</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('#table_aff td').mouseenter(function(){
+            $(this).css('background-color','#E8FF8C');
+            if($(this).next().next().next().next().next().next().next()){
+                $(this).next().next().next().next().next().next().next().css('background-color','#E8FF8C');
+            }
+        });
+
+        $('#table_aff td').mouseleave(function(){
+            $(this).css('background-color','');
+            if($(this).next().next().next().next().next().next().next()){
+                $(this).next().next().next().next().next().next().next().css('background-color','');
+            }
+
+        });
+    </script>
+    <{include file="b_block_footer.html"}>

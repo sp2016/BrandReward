@@ -1,0 +1,128 @@
+<div id="bac" class="remodal-overlay" style="display: none"></div>
+<div id='login' class="layer remodal-wrapper" style="display:none" >
+    <div class="login">
+        <div class="x" id="x" onclick="hideModal()">X</div>
+        <h2><{$LANG.front.login.a1}></h2>
+        <ul>
+            <form id="modal" method="post" action="<{$smarty.const.BASE_URL}>/process.php">
+                <input type="hidden" name="act" value='publish_login' />
+
+                <li><input type="text" class="form-control" id="login-account" value="" name="pub_account" placeholder="<{$LANG.front.login.a2}>"></li>
+                <li><input type="password" class="form-control" id="login-password" value="" name="pub_pwd" placeholder="<{$LANG.front.login.a3}>"></li>
+
+                <li><button id="submitModal"><{$LANG.front.login.a10}></button></li>
+            </form>
+            <li>
+                <p><span><a href="#" onclick="forgotPwd()"><{$LANG.front.login.a9}></a></span><span>|</span><span><a href="<{$smarty.const.BASE_URL}>/signup.php"><{$LANG.front.login.a4}></a></span></p>
+            </li>
+
+        </ul>
+    </div>
+</div>
+
+
+<div id='forgotPwd' class="layer remodal-wrapper" style="display:none" >
+    <div class="login">
+        <div class="x" id="f_x" onclick="hideModal()">X</div>
+        <p style="color: #333" id="tip"><{$LANG.front.login.a5}></p>
+        <p style="color: #333;position:relative;display: none" id="wait"><{$LANG.front.login.a6}><i style="position: absolute;bottom:0" class="icon-spinner icon-spin icon-2x pull-left"></i></p>
+        <ul>
+            <form id="f_modal" method="post" action="<{$smarty.const.BASE_URL}>/process.php">
+                <input type="hidden" name="act" value='publish_forgotPwd' />
+                <li><input type="text" id="register-email" name="register-email" placeholder="<{$LANG.front.login.a8}>"></li>
+                <li><button id="f_submit"><{$LANG.front.login.a7}></button></li>
+            </form>
+
+        </ul>
+    </div>
+</div>
+
+<script>
+    $('#login form').submit(function(){
+        var flag = 0;
+        $.ajax({
+            type:"post",
+            url:"<{$smarty.const.BASE_URL}>/process.php",
+            data:$('#login form').serialize(),
+            async:false,
+            success: function(data){
+                if(data == '0'){
+                    window.location.href = "<{$smarty.const.BASE_URL}>/b_merchants.php";
+                }else if(data == '4'){
+                    set_msg('login-account',0,'<{$LANG.front.login.a11}>');
+                }else if(data == 'network'){
+                    window.location.href = "<{$smarty.const.BASE_URL}>/b_aff_traffic.php";
+                }else if(data == 'advertiser'){
+                    window.location.href = "<{$smarty.const.BASE_URL}>/b_ad_traffic.php";
+				}else if(data == 'advertiser_white'){
+                    window.location.href = "<{$smarty.const.BASE_URL}>/b_ad_traffic.php";
+                }else{
+                    set_msg('login-account',0,'<{$LANG.front.login.a12}>');
+                }
+            }
+        });
+
+        if(flag){
+            window.location.href = '<{$smarty.const.BASE_URL}>';
+            return false;
+        }else{
+            return false;
+        }
+    });
+
+    $('#forgotPwd form').submit(function(){
+        $('#tip').css("display","none");
+        $('#wait').css("display","block");
+        $.ajax({
+            type:"post",
+            url:"<{$smarty.const.BASE_URL}>/process.php",
+            data:$('#forgotPwd form').serialize(),
+            async:false,
+            success: function(data){
+                $('#tip').css('display','block');
+                $('#wait').css('display','none');
+                if(data == '0'){
+                    set_msg('register-email',0,'<{$LANG.front.forgot_pwd.a1}>');
+                }
+                else if(data == '1')
+                {
+                    set_msg('register-email',0,'<{$LANG.front.forgot_pwd.a2}>');
+                }else if(data == '2')
+                {
+                    set_msg('register-email',0,'<{$LANG.front.forgot_pwd.a3}>');
+                }else if(data == '3')
+                {
+                    alert('<{$LANG.front.forgot_pwd.a4}>');
+                }else
+                {
+                    set_msg('register-email',0,'<{$LANG.front.forgot_pwd.a5}>');
+                }
+            }
+        });
+        return false;
+    });
+    
+</script>
+
+<footer>
+    <div class="footer">
+        <div class="main">
+            <div class="link">
+                <a href="<{$smarty.const.BASE_URL}>/contactUs.php">Contact Us</a> |
+                <a href="javascript: void(0);">T&amp;Cs</a> |
+                <a href="<{$smarty.const.BASE_URL}>/privacypolicy.php">Privacy Policy</a> |
+                <a href="<{$smarty.const.BASE_URL}>/referral.php">Referral Program</a> |
+                <a href="<{$smarty.const.BASE_URL}>/imprint.php">Imprint</a> |
+                <a href="<{$smarty.const.BASE_URL}>/help.php">Help</a>
+            </div>
+            <div class="icon_link">
+                <a href="https://twitter.com/Brand_Reward" target="_blank" class="t"></a>
+                <a href="https://www.facebook.com/Brand-Reward-1085710124813271/?view_public_for=1085710124813271" target="_blank" class="f"></a>
+                <a href="https://www.pinterest.com/brandreward/" target="_blank" class="p"></a>
+                <a href="https://www.linkedin.com/company/brand-reward-hong-kong-limited" target="_blank" class="i"></a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

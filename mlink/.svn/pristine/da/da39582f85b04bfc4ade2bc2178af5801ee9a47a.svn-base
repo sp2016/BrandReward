@@ -1,0 +1,393 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style type="text/css">
+    .multiselect {
+        text-align: left;
+    }
+    .multiselect b.caret {
+        position: absolute;
+        top: 14px;
+        right: 8px;
+    }
+    .drop{
+        padding: 3px 20px;
+        clear: both;
+        font-weight: normal;
+        line-height: 1.42857143;
+        color: #333;
+        white-space: nowrap;
+    }
+    .multiselect-group {
+        font-weight: bold;
+        text-decoration: underline;
+    }
+</style>
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1>Promotions</h1></div>
+
+<{if $level=='TIER11'}>
+        <h3 style="text-align: center;color: grey;">TOP Promotions</h3>
+        <div class="m">
+            <ul class="bxslider">
+                <{foreach from=$topCilckPromotions item=store}>
+                <li class="als-item">
+                    <table width="100%" style="table-layout: fixed;" >
+                        <tr>
+                            <td rowspan="2" style="width: 160px">
+                                <img src="img/advertiser/41731.png" />
+                            </td>
+                            <td colspan="2" style="text-align: left;width: 300px;">
+                                <{$store.StoreName}>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align: left">
+                                <div style="position: relative;">
+                                    <input type="button" class="btn b-primary copydata" value="Copy Link" data-val="<{$store.AffUrl}>"/>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr style="display:block; margin:3px 0;">
+                            <td colspan="2" style="text-align: left">
+                                Expire Time:<{$store.EndDate}>
+                            </td>
+                        </tr>
+                        <{if $store.type=='Coupon'}>
+                        <tr>
+                            <td style="text-align: left">
+                                <div style="position: relative;">
+                                    <input type="button" class="copydata" value="Click To Copy Coupon Code" data-val="<{$store.CouponCode}>" style="border: none;background-color: white;padding-left: 0;"/>
+                                </div>
+                            </td>
+                        </tr>
+                        <{/if}>
+                        <tr>
+                            <td colspan="3" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
+                                Title:<{$store.Title}>
+                            </td>
+                        </tr>
+                        <{if $store.Desc != ''}>
+                        <tr>
+                            <td colspan="3" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
+                                Description:<{$store.Desc}>
+                            </td>
+                        </tr>
+                        <{/if}>
+                    </table>
+                </li>
+                <{/foreach}>
+            </ul>
+        </div>
+<{/if}>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    <div class="panel-body">
+                        <form id="form_content_search">
+                            <!--<input type="hidden" name="p" value="1" />-->
+                            <div class="row">
+                                <div class=" form-inline">
+                                    <div class="col-lg-12 ">
+                                        <div class="form-group dpm" style="position:relative;">
+                                            Advertiser:
+                                            <input type="text" style="width: 270px;" name="keyword" data-type="advertiser" class="form-control advertiser" placeholder="e.g Ebay, Amazon, etc." value="<{$search.keyword}>">
+                                        </div>
+                                        <div class="form-group opm" style="position:relative;">
+                                            &nbsp;Domain:
+                                            <input type="text" style="width: 330px;" name="domain" class="form-control domain"  data-type="domain" value="<{$search.domain}>">
+                                        </div>
+                                        <div class="form-group" <{if $level=='TIER2' }>style="display: none;<{/if}>>
+                                             &nbsp;Choose Country:
+                                            <select name="country" class="form-control" style="width:120px">
+                                                <option value="">All</option>
+                                                <{foreach from=$countryArr key=k item=c}>
+                                                <option value="<{$c}>" <{if isset($search.country) and $search.country eq $c}>selected="selected"<{/if}>><{$k}></option>
+                                                <{/foreach}>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            &nbsp;Type:
+                                            <select name="type" class="form-control" style="width:120px">
+                                                <option value="">All</option>
+                                                <option value="Coupon"  <{if isset($search.type) and $search.type eq Coupon}>selected="selected"<{/if}>>Coupon</option>
+                                                <option value="Promotion" <{if isset($search.type) and $search.type eq Promotion}>selected="selected"<{/if}>>Deal</option>
+                                            </select>
+                                        </div>
+                                    <div class="form-group">
+                                        &nbsp;
+                                        <input type="hidden" value="<{$categories}>" name="categories" class="categories">
+                                        <div class="btn-group">
+                                            <button type="button"  class="multiselect dropdown-toggle btn btn-default" data-toggle="dropdown" title="Category" >Category&nbsp;<b class="caret"></b></button>
+                                            <ul class="multiselect-container dropdown-menu" onclick="event.stopPropagation();" style="overflow:scroll;min-height:150px;min-width: 260px;">
+                                                <li style="margin-bottom: 5px;margin-top: 1px;margin-left: 3px;">
+                                                    <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-info" onclick="select_opt('all')">Select All</span></a>
+                                                    <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-warning" onclick="select_opt('none')">Deselect All</span></a>
+                                                    <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-info" onclick="select_opt('confirm')">Confirm</span></a>
+                                                </li>
+                                                <{foreach item=cate key=id from=$category}>
+                                                <li><a href="javascript:void(0);"><label class="checkbox"><input type="checkbox"
+                                                    <{if $sel_cate }>
+                                                    <{foreach from=$sel_cate item=sc}>
+                                                    <{if $sc == $id}> checked <{/if}>
+                                                    <{/foreach}>
+                                                    <{/if}>
+                                                    class="category" id="<{$id}>" value="<{$id}>"> <{$cate}></label></a></li>
+                                                <{/foreach}>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                        <input type="text" name="start" class="form-control datepicker" placeholder="Start Time" value="<{$search.start}>">
+                                        <input type="text" name="end" class="form-control datepicker" placeholder="End Time" value="<{$search.end}>">
+                                        <div class="form-group" style="margin-left: 10px;">
+                                            <input type="submit" class="btn b-primary" value="Search">
+                                            <input type="button" class="btn b-primary" id="download" value="Download">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12" style="margin-top: 10px;">
+                                        <div class="form-group dpm">
+                                            <font color="white">Advertiser</font>
+                                            <select  class="form-control sval" style="width:270px;text-align: center;margin-left: 3px;">
+                                                <option value="0" style="color:#CCCCCC">Advertiser Search History</option>
+                                                <{foreach from=$adv item=k}>
+                                                <option value="<{$k.svalue}>"><{$k.svalue}></option>
+                                                <{/foreach}>
+                                            </select>
+                                        </div>
+                                        <div class="form-group opm" style="position:relative;">
+                                            <font color="white">Domain</font>
+                                            <select class="form-control dval" style="width:330px;text-align: center;margin-left: 9px;">
+                                                <option value="0" style="color:#CCCCCC">Domain Search History</option>
+                                                <{foreach from=$dom item=k}>
+                                                <option value="<{$k.svalue}>"><{$k.svalue}></option>
+                                                <{/foreach}>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            &nbsp;Language:
+                                            <select name="language" class="form-control" style="width:120px">
+                                                <option value="">All</option>
+                                                <option value="en"  <{if isset($search.language) and $search.language eq en}>selected="selected"<{/if}>>EN</option>
+                                                <option value="fr" <{if isset($search.language) and $search.language eq fr}>selected="selected"<{/if}>>FR</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">&nbsp;
+                                            My Favorite Advertiser:
+                                            <input style="margin-top: 2px;" type="checkbox" name="chk" value="1" <{if isset($search.chk) and $search.chk eq 1}>checked="checked"<{/if}>>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Content Feed</div>
+                    <div class="panel-body">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <input type="hidden" value="<{$group}>" class="gp">
+                                <th style="padding-bottom: 13px;">Advertiser</th>
+                                <th style="padding-bottom: 13px;width: 450px;"> Title </th>
+                                <th style="padding-bottom: 13px;width: 200px;">Coupon Code</th>
+                                <th style="padding-bottom: 13px;width: 500px;">Description</th>
+                                <th class="StartDate" width=200px>Start Date<a class="pa" data-type="desc" data-name="StartDate" href="javascript:void(0)"><img src="img/desc.png" style="margin-bottom: 10px;"></a></th>
+                                <th class="EndDate" width=200px>End Date <a class="pa" data-type="desc" data-name="EndDate" href="javascript:void(0)"><img src="img/desc.png" style="margin-bottom: 10px;"></a></th>
+                                <{*<th class="LastUpdateTime" width=300px>Last Update Time <a class="pa" data-type="desc" data-name="LastUpdateTime" href="javascript:void(0)"><img src="img/desc.png" style="margin-bottom: 10px;"></a></th>*}>
+                            </tr>
+                            </thead>
+                            <{foreach item=feed from=$content}>
+                            <tr>
+                                <td rowspan=2>
+                                    <input type="hidden" ID="<{$feed.ID}>"><{$feed.Advertiser_Name}>
+                                </td>
+                                <td><{$feed.Title}></td>
+                                <td><{$feed.CouponCode}></td>
+                                <td><{$feed.Desc}></td>
+                                <td><{$feed.StartTime}></td>
+                                <td><{$feed.ExpireTime}></td>
+                                <{*<td><{$feed.LastUpdateTime}></td>*}>
+                            </tr>
+                            <tr>
+                                <td colspan=20>
+                                    <div style="position: relative;">
+                                        <input type="button" style="color: white;" class="btn b-primary copydata" value="Copy Link" data-val='<{$feed.LinkUrl}>'&nbsp;&nbsp;
+                                        <span style="color: #7A80DD"><{$feed.LinkUrl}></span>
+                                    </font>
+                                    </div></td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                        <{$pageHtml}>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        //复制到剪切板
+        $('.copydata').zclip({
+            path: "js/ZeroClipboard.swf",
+            copy:function(){
+                return $(this).data('val');
+            }
+        });
+
+        //搜索记录
+        $('.sval').bind('change',function(){
+          if($(this).val() !=0 ){
+              $('.advertiser').val($(this).val());
+              $('.sval option').eq(0).prop('selected',true);
+          }
+        })
+        $('.dval').bind('click',function(){
+            if($(this).val() !=0 ){
+                $('.domain').val($(this).val());
+                $('.dval option').eq(0).prop('selected',true);
+            }
+        })
+        $('.addfav').bind('click',function(){
+            var fid = $(this).data('id');
+            var type = $(this).attr('data-type');
+            var aname = $(this).data('name');
+            $.ajax({
+                type:"post",
+                url:"b_content.php",
+                data:{'fid':fid,'aname':aname,'type':type},
+                async:false,
+                success: function(res){
+                    if(res == 1){
+                        var cls = ".fav"+fid;
+                        $(cls).find('span').removeClass('glyphicon-plus-sign');
+                        $(cls).find('span').addClass('glyphicon-ok-sign');
+                        $(cls).find('span').removeAttr('style');
+                        $(cls).find('span').css('font-size','24px');
+                        $(cls).find('span').css('color','#7A80DD');
+                        $(cls).attr('data-type','1');
+                    }else{
+                        var cls = ".fav"+fid;
+                        $(cls).find('span').removeClass('glyphicon-ok-sign');
+                        $(cls).find('span').addClass('glyphicon-plus-sign');
+                        $(cls).find('span').removeAttr('style');
+                        $(cls).find('span').css('font-size','24px');
+                        $(cls).find('span').css('color','#627491');
+                        $(cls).attr('data-type','0');
+                    }
+                }
+            });
+        });
+        //排序图标变换
+        var gp = $('.gp').val();
+        if(gp != ''){
+            var val = gp.split('-');
+            if(val[0] == 'StartDate'){
+                var text = '<font color="#7A80DD">Start Date</font>';
+            }else if(val[0] == 'EndDate'){
+                var text = '<font color="#7A80DD">End Date</font>';
+            }else {
+                var text = '<font color="#7A80DD">Last Change Time</font>';
+            }
+            if(val[1] == 'desc'){
+                var html = text+'<a class="pa '+val[0]+'" data-type="asc" data-name="'+val[0]+'" href="javascript:void(0)" ><img src="img/asc.png"></a>';
+                $('.'+val[0]+'').css('padding-bottom','13px');
+            }else {
+                var html = text+'<a class="pa '+val[0]+'" data-type="desc" data-name="'+val[0]+'" href="javascript:void(0)" ><img src="img/desc.png" style="margin-bottom: 10px;"></a>';
+            }
+            $('.'+val[0]+'').html(html);
+        }
+
+        function get_category(){
+            var cate='';
+            var cc =$("input[class='category']:checked");
+            for(var i=0;i<cc.length;i++){
+                if(cc[i].checked){
+                    cate += cc[i].value+',';
+                }
+            }
+            cate=cate.substring(0,cate.length-1);
+            $('.categories').val(cate);
+        }
+
+        var category = $(".categories").val().split(',');
+        for(var i=0;i<category.length;i++){
+            $('.category_'+category[i]).attr('checked','checked');
+        }
+
+        $(".category").change(function () {
+            get_category();
+        });
+
+        $('#download').click(function(){
+            var value = $('#form_content_search').serialize();
+            window.open('<{$smarty.const.BASE_URL}>/process.php'+'?act=downloadcontent&'+value);
+        });
+
+        $('.multiselect-group').click(function(){
+            var pid = $(this).attr('id');
+            if($(this).attr('status')=='no'){
+                $('.category_'+pid).prop('checked','true');
+                $(this).attr('status','yes');
+            }else{
+                $('.category_'+pid).removeAttr('checked');
+                $(this).attr('status','no');
+            }
+            get_category();
+        });
+
+        function select_opt(val)
+        {
+            switch (val)
+            {
+                case 'all':
+                    $('.category').prop('checked',true);
+                    break;
+                case 'none':
+                    $('.category').prop('checked',false);
+                    break;
+                case 'confirm':
+                    $('.btn-group').removeClass('open');
+                    break;
+                default:
+                    break;
+            }
+            get_category();
+        }
+
+        $('.pa').click(function(){
+
+            var name = $(this).data('name');
+            var type = $(this).data('type');
+            var text = 'group'+'='+name+'&sc'+'='+type;
+            var url = window.location.search;
+            if( url != ''){
+                if(url.indexOf('group') > 1){
+                    var news = url.substr(0,url.indexOf('group'));
+                    var text1 = news+'&'+text;
+                    location.href = 'b_content.php'+text1;
+                }else{
+                    location.href = 'b_content.php'+url+'&'+text;
+                }
+            }else{
+                var url = 'b_content.php?&'+text;
+                location.href = url;
+            }
+        });
+
+        $('.bxslider').bxSlider({
+            minSlides: 1,
+            maxSlides: 3,
+            slideWidth: 460,
+            auto: true,
+            pause:3000,
+            autoHover:true,
+            pager:true,
+        });
+    </script>
+    <{include file="b_block_footer.html"}>

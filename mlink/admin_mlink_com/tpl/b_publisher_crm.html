@@ -1,0 +1,310 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    <div class="panel-heading">
+                    <b>Total:</b> <i><{$pageInfo.num_st}></i> of <i><{$pageInfo.num_all}></i> items ||  
+                    <b>Status:</b> <{foreach from=$map_status item=map}>@<b><{$map}></b>(<i style="color:green;"><{$group_status.$map|default:0}></i>) <{/foreach}>
+                    </div>
+                    <div class="panel-body" >
+                        <form id="form_search">
+                            <input type="hidden" value="search" name="action" />
+                            <input type="hidden" value="" name="mail_type" />
+                            <input type="hidden" value="0" name="checkboxall" />
+                            <input type="hidden" value="<{$search.orderby}>" name="orderby"/>
+                            <!--<input type="hidden" name="p" value="1" />-->
+                            <div class="col-lg-12 form-inline">
+                                <div class="form-group">
+                                    <div class="form-group" style="position:relative;">
+                                    Country:<input type="text" Name="country" class="form-control tip_program" value="<{$search.country}>" placeholder="Country">
+                                    </div>
+                                    <div class="form-group" style="position:relative;">
+                                    Category:<input type="text" Name="category" class="form-control tip_program" value="<{$search.category}>" placeholder="Category">
+                                    </div>
+                                    <div class="form-group" style="position:relative;">
+                                    URL:<input type="text" Name="url" class="form-control tip_program" value="<{$search.url}>" placeholder="URL">
+                                    </div>
+                                    <div class="form-group" style="position:relative;">
+                                    Email:<input type="text" Name="email" class="form-control tip_program" value="<{$search.email}>" placeholder="email">
+                                    </div>
+                                    Status:<select class="form-control" name="Status">
+                                    <option value="All" <{if $search.Status eq 'All'}>selected="selected"<{/if}> >All</option>
+                                    <option value="new" <{if $search.Status eq 'new'}>selected="selected"<{/if}> >NEW</option>
+                                    <option value="coldcall_1" <{if $search.Status eq 'coldcall_1'}>selected="selected"<{/if}> >ColdCall 1</option>
+                                    <option value="coldcall_2" <{if $search.Status eq 'coldcall_2'}>selected="selected"<{/if}> >ColdCall 2</option>
+                                    <option value="coldcall_3" <{if $search.Status eq 'coldcall_3'}>selected="selected"<{/if}> >ColdCall 3</option>
+                                    <option value="welcome_1" <{if $search.Status eq 'welcome_1'}>selected="selected"<{/if}> >Welcome 1</option>
+                                    <option value="welcome_2" <{if $search.Status eq 'welcome_2'}>selected="selected"<{/if}> >Welcome 2</option>
+                                    <option value="welcome_3" <{if $search.Status eq 'welcome_3'}>selected="selected"<{/if}> >Welcome 3</option>
+                                    <option value="active" <{if $search.Status eq 'active'}>selected="selected"<{/if}> >Active</option>
+                                </select>
+                                   
+                                    PageSize:<select class="form-control" name="pagesize">
+                                    <option value="10" <{if $search.pagesize == '10'}>selected<{/if}>>10</option>
+                                    <option value="20" <{if $search.pagesize == '20'}>selected<{/if}>>20</option>
+                                    <option value="50" <{if $search.pagesize == '50'}>selected<{/if}>>50</option>
+                                    <option value="100" <{if $search.pagesize == '100'}>selected<{/if}>>100</option>
+                                </select>
+                                    
+                                    AM:<select class="form-control" name="am">
+                                        <option value="">All</option>
+                                    <{foreach from=$sys_am item=am}>
+                                        <option value="<{$am}>" <{if $search.am == $am}>selected<{/if}> ><{$am}></option>
+                                    <{/foreach}>
+                                </select>
+
+                                    <div class="form-group" style="margin-left:20px">
+                                        <a href="javascript:void(0);" onclick="submit_form()" class="btn btn-primary" role="button">Search</a>
+                                    </div>
+                                    <a href="b_publisher_crm_upload.php" class="btn btn-primary" role="button">Upload</a>
+                                    <a href="javascript:void(0);" onclick="del_pp()" class="btn btn-danger" role="button">Delete</a>
+                                    
+                                    <div class="btn-group" id="mailed_btn">
+                                      <button type="button" class="btn btn-success">Mailed</button>
+                                      <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                      </button>
+                                      <ul class="dropdown-menu">
+                                        <li><a href="javascritp:void(0);" data-action="coldcall_1">ColdCall 1</a></li>
+                                        <li><a href="javascritp:void(0);" data-action="coldcall_2">ColdCall 2</a></li>
+                                        <li><a href="javascritp:void(0);" data-action="coldcall_3">ColdCall 3</a></li>
+                                        <li role="separator" class="divider"></li>
+                                        <li><a href="javascritp:void(0);" data-action="welcome_1">Welcome 1</a></li>
+                                        <li><a href="javascritp:void(0);" data-action="welcome_2">Welcome 2</a></li>
+                                        <li><a href="javascritp:void(0);" data-action="welcome_3">Welcome 3</a></li>
+                                        <li role="separator" class="divider"></li>
+                                        <li><a href="javascritp:void(0);" data-action="active">Active</a></li>
+                                      </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-12" style="text-align: center;display: none;" id="checkboxall_process"><a href="javascript:void(0);" onclick="choose_all(this)"><span class="label label-primary">Page</span> click here to choose all recode</a></div>
+
+            <div class="col-lg-12">
+                <table class="table table-striped" id="tbl_pp">
+                            <thead>
+                            <tr>
+                                <th>#<input type="checkbox" data-type="all"/></th>
+                                <th>Country</th>
+                                <th>Category</th>
+                                <th>URL</th>
+                                <th>BlogName</th>
+                                <th>Email</th>
+                                <th><a href="javascript:void(0);" data-orderby="alexarank">Alexa</a></th>
+                                <th>AM</th>
+                                <th style="width:20px">Comment</th>
+                                <th>Status</th>
+                                <th>Op</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=publisher}>
+                            <tr data-id="<{$publisher.id}>">
+                                <td><input type="checkbox" name="ppid[]" value="<{$publisher.id}>"/><{$publisher.id}></td>
+                                <td><{$publisher.country}></td>
+                                <td><{$publisher.category}></td>
+                                <td><{$publisher.url}></td>
+                                <td><{$publisher.blogname}></td>
+                                <td><{$publisher.email}></td>
+                                <td><{$publisher.alexarank|number_format:0:'.':','}></td>
+                                <td><{$publisher.am}></td>
+                                <td style="width:20px"><{$publisher.comment}></td>
+                                <td><{$publisher.status}></td>
+                                <td><a href="javascript:void(0)" onclick=showModal(this)>detail</a></td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                        <{$pageHtml}>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width: 70%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="clearAjaxHtml()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Publisher Potential</h4>
+            </div>
+            <div class="modal-body" id="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clearAjaxHtml()">close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+$('#tbl_pp thead th a').each(function(){
+    if(window.location.href.indexOf($(this).attr('data-orderby')+'-asc') > 0){
+        $(this).after('[<span class="glyphicon glyphicon glyphicon-chevron-up"></span>]')
+    }else if(window.location.href.indexOf($(this).attr('data-orderby')+'-desc') > 0){
+        $(this).after('[<span class="glyphicon glyphicon glyphicon-chevron-down"></span>]')    
+    }else{
+        $(this).after('[<span class="glyphicon glyphicon glyphicon-minus"></span>]')
+    }
+});
+
+$('#tbl_pp thead th a').click(function(){
+    var a_orderby = $(this).attr('data-orderby');
+    var ipt_orderby = $('#form_search input[name=orderby]').val();
+
+    // $(this).next().removeClass('glyphicon-chevron-up');
+    // $(this).next().removeClass('glyphicon-chevron-down');
+    // $(this).next().removeClass('glyphicon-minus');
+
+    if(ipt_orderby == a_orderby+'-asc'){
+        $('#form_search input[name=orderby]').val(a_orderby+'-desc');
+        // $(this).next().addClass('glyphicon-chevron-down');
+    }else{
+        $('#form_search input[name=orderby]').val(a_orderby+'-asc');
+        // $(this).next().addClass('glyphicon-chevron-up');
+    }
+    $('#form_search').submit();
+});  
+</script>
+
+
+<script>
+$('#mailed_btn a').click(function(event){
+    event.preventDefault();
+    $('#form_search input[name=action]').val('mailed');
+    $('#form_search input[name=mail_type]').val($(this).attr('data-action'));
+    if($('#tbl_pp input:checkbox:checked').length > 0){
+        if(confirm('Are you sure?')){
+            $('#form_search').submit();
+        }
+    }else{
+        alert('You should choose at least one row');
+    }
+});
+</script>
+
+<script>
+    function showModal(obj){
+        var ppid = $(obj).parent().parent().attr('data-id');
+        $('#myModalLabel').html('Publisher Potential ');
+            $.ajax({
+                type: "post",
+                url: "b_publisher_potential.php",
+                data: "id=" + ppid,
+                async: false,
+                success: function (html) {
+                    $('#modal-body').append(html);
+                }
+            });
+       $('#myModal').modal({backdrop: 'static', keyboard: false});
+    }
+
+    function clearAjaxHtml(){
+        $('#modal-body').html('');
+    }
+</script>
+
+    
+    <script>
+        $('.tip_program').keyup(function(){
+            var ipt = this;
+            var keywords = $(this).val();
+            var keyname = $(this).attr('name');
+
+            var url = '<{$smarty.const.BASE_URL}>/process.php';
+            var ajaxdata = 'act=tip_publisher_potential&keywords='+keywords+'&keyname='+keyname;
+            if(!keywords.match(/[^\s]{3,}/)){
+              return;
+            }
+
+            $.ajax({
+              type:"post",
+              url:url,
+              data:ajaxdata,
+              success: function(req){
+                var html_tip = '<ul class="dropdown-menu" >';
+                var arr = req.split('|');
+                for(var i in arr){
+                  html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+                }
+                var html_tip = html_tip+'</ul>';
+
+
+                if($(ipt).parent().find('ul')){
+                  $(ipt).parent().find('ul').remove();
+                }
+
+                $(ipt).parent().append(html_tip);
+
+                load_tip($(ipt).parent().find('ul'));
+              }
+            });
+          });
+
+
+        function load_tip(obj){
+          $(obj).css('display','block');
+          $(obj).find('a').click(function(){
+            $(obj).prev().val($(this).text());
+            $(obj).remove();
+          });
+        }
+
+        $('table input:checkbox[data-type=all]').click(function(){
+            if($(this).is(':checked')){
+                $('table input:checkbox').prop('checked',true);
+                $('#checkboxall_process').css('display','');
+            }else{
+                $('table input:checkbox').prop('checked',false);
+                $('#checkboxall_process').css('display','none');
+                $('#form_search input[name=checkboxall]').val('0');
+                $('#checkboxall_process a').html('<span class="label label-primary">Page</span> click here to choose all recode');
+            }
+        });
+
+        function choose_all(obj){
+
+            var checkboxallval = $('#form_search input[name=checkboxall]').val();
+
+            if(checkboxallval > 0){
+                $(obj).html('<span class="label label-primary">Page</span> click here to choose all recode');
+                $('#form_search input[name=checkboxall]').val('0');
+            }else{
+                $('#form_search input[name=checkboxall]').val('1');
+                $(obj).html('<span class="label label-warning">All</span> click here to choose recode in this page');
+            }
+        }
+
+        function del_pp(){
+            $('#form_search input[name=action]').val('delete');
+            if($('#tbl_pp input:checkbox:checked').length > 0){
+                if(confirm('Are you sure?')){
+                    $('#form_search').submit();
+                }
+            }else{
+                alert('You should choose at least one row');
+            }
+        }
+
+        function submit_form(){
+            $('#form_search input[name=action]').val('search');
+            $('#form_search').submit();
+        }
+    </script>
+
+    <{include file="b_block_footer.html"}>

@@ -1,0 +1,75 @@
+<?php
+include_once('conf_ini.php');
+include_once(INCLUDE_ROOT.'init.php');
+mysql_query("SET NAMES 'latin1'");
+$objProgram = new Program;
+
+if(!empty($_POST) && isset($_POST['act']) && $_POST['act'] == 'save_program'){
+// 	echo "<pre>";
+// 	print_r($_POST);
+	$objProgram->save_program($_POST);
+}
+$d = new DateTime();
+$_GET['p'] =  isset($_GET['p'])?$_GET['p']:1;
+
+$title = 'Program-List';
+$ProgramTotal = array();
+$page_size = isset($_GET['page_size'])?$_GET['page_size']:50;
+$ProgramTotal = $objProgram->get_program_list($_GET,$page_size);
+$programList = isset($ProgramTotal['data'])?$ProgramTotal['data']:array();
+//过滤标签
+foreach($programList as &$value){
+    $value['CommissionExt'] = htmlspecialchars_decode($value['CommissionExt']);
+    $value['CommissionExt']= preg_replace("/<(.*?)>/","",$value['CommissionExt']);
+}
+// echo "<pre>";
+// print_r($programList);
+//exit;
+$affList = $ProgramTotal['aff'];
+$pmList = $ProgramTotal['pm'];
+
+if(isset($ProgramTotal['data']))
+	unset($ProgramTotal['data']);
+
+if(isset($ProgramTotal['aff']))
+	unset($ProgramTotal['aff']);
+
+if(isset($ProgramTotal['pm']))
+	unset($ProgramTotal['pm']);
+
+$pageHtml = '';
+if(!empty($ProgramTotal))
+// 	echo "<pre>";
+// 	print_r($ProgramTotal);
+	$pageHtml = get_page_html($ProgramTotal);
+
+
+$statis = new Statis();
+$category = $statis->getCategory();
+$sel_cate = array();
+if(isset($_GET['categories'])){
+	$sel_cate = explode(',',$_GET['categories']);
+}
+$sql = 'SELECT CountryName,CountryCode FROM country_codes';
+$arr = $db->getRows($sql);
+foreach($arr as $v){
+	$countryArr[$v['CountryName']] = $v['CountryCode'];
+}
+$objTpl->assign('sel_cate', $sel_cate);
+$objTpl->assign('category', $category);
+$objTpl->assign('countryArr', $countryArr);
+$objTpl->assign('programList', $programList);
+$objTpl->assign('affList', $affList);
+$objTpl->assign('pmList', $pmList);
+$objTpl->assign('pageHtml', $pageHtml);
+$objTpl->assign('search', $_GET);
+$objTpl->assign('title', 'Program List');
+$sys_header['css'][] = BASE_URL.'/css/front.css';
+
+$sys_footer['js'][] = BASE_URL.'/js/back.js';
+$sys_footer['js'][] = BASE_URL.'/js/b_tran.js';
+
+$objTpl->assign('sys_header', $sys_header);
+$objTpl->assign('sys_footer', $sys_footer);
+$objTpl->display('b_program.html');
+?>

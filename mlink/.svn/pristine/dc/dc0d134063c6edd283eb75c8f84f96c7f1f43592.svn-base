@@ -1,0 +1,68 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+</head>
+<body>
+<div style="width: 100%;height: 100%;text-align: left;">
+    <{if $lang == '1'}>
+    <!--法语-->
+    Bonjour <{$name}>,
+    <br><br>
+    Bienvenue chez Brandreward! Ce mail confirme que nous avons bien reçu votre demande pour rejoindre notre communauté, un endroit où l'on vous offre accès à des spécialistes de la monétisation du contenu. Collaborez avec certaines des meilleures marques du monde et commencez à accroître vos revenus grâce à votre incroyable contenu !
+    <br><br>
+    L'un de nos gestionnaires de comptes rentrera en contact dans les prochaines 48 heures. Notre objectif est de vous aider, incluant la création d’une solution personnalisée pour répondre à vos besoins de monétisation de contenu, vous guider sur l’usage de nos services et répondre à toutes vos questions.
+    <br><br>
+    Si, pour une raison ou une autre, vous n'avez pas reçu un courriel de votre gestionnaire de compte dédié dans les 48 heures (sauf le week-end), assurez-vous de nous contacter à l'adresse <font color="blue"><a href="mailto:support@brandreward.com" style="text-decoration:underline;">support@brandreward.com</a></font>
+    <br><br>
+    Bienvenue dans notre communauté!
+    <br><br>
+    L'équipe Brandreward
+    <{elseif $lang == '2'}>
+    <!--德语-->
+    Hallo <{$name}>,
+    <br><br>
+    willkommen bei Brandreward! Mit dieser E-Mail bestätigen wir den Erhalt deiner Anmeldung auf unserer Plattform. Unsere Community gewährt dir Zugriff zu vielen internationalen Top Marken und vernetzt dich mit unseren Monetarisierungsexperten, welche dir helfen mit deinem einzigartigen Webinhalt Geld zu verdienen.
+    <br><br>
+    Einer unserer Account Manager wird dich binnen maximal 48 Stunden kontaktieren. Unser Team wird dir in Zukunft dabei helfen die passendste Lösung für die Monetisierung deiner Inhalte zu finden und steht dir für allerlei Fragen zu Verfügung.  Solltest du innerhalb 48 Stunden (ausser am Wochenende) noch keine E-Mail erhalten haben, melde dich bitte bei <font color="blue"><a href="mailto:support@brandreward.com" style="text-decoration:underline;">support@brandreward.com</a></font>
+    <br><br>
+    Liebe Grüsse
+    <br><br>
+    Dein Brandreward Team
+    <{else}>
+    <!--英语-->
+    Hello <{$name}>,
+    <br><br>
+    Welcome to Brandreward! This email confirms that we have received your application to join our community, a place where you get access to expert content monetization specialists, work with some of the world's best brands and start to grow your revenue from your amazing content!
+    <br><br>
+    One of our global account managers will be in touch within the next 48 hours. We are here to help you, including the creation of a more customized solution to fit your content business needs, walk you through your personal dashboard and help answer any other questions you may have.
+    <br><br>
+    If for some reason you have not received an email from your dedicated account manager within 48 hours (excluding weekends), please make sure to contact us back at <font color="blue"><a href="mailto:support@brandreward.com" style="text-decoration:underline;">support@brandreward.com</a></font>.
+    <br><br>
+    Welcome to our community!
+    <br>
+    <b>The Brandreward Team</b>
+    <{/if}>
+    <br> <br>
+    <div style="width: 400px;">
+        <div style="float: left;width: 30%;"><img src="<{$smarty.const.BASE_URL}>/img/blogo.jpg"></div>
+        <div style="float: right;width: 70%;">
+            <font style="font-weight:bold;font-style:italic;">Email</font> : <font color="blue"><a href="mailto:support@brandreward.com" style="text-decoration:underline;">support@brandreward.com</a></font>
+            <br>
+            <font style="font-weight:bold;font-style:italic;">Skype</font> : brandreward
+            <br>
+            <font style="font-weight:bold;font-style:italic;">Web</font> :<font color="blue"> <a href="<{$smarty.const.BASE_URL}>/" style="text-decoration:underline;" target="_blank"><{$smarty.const.BASE_URL}></a></font>
+            <div style="clear: both;margin-top: 5px;"></div>
+            <a href="https://www.facebook.com/Brand-Reward-1085710124813271/?view_public_for=1085710124813271" target="_blank"><img src="<{$smarty.const.BASE_URL}>/img/t1.png"></a>
+            <a href="https://twitter.com/Brand_Reward" target="_blank"><img src="<{$smarty.const.BASE_URL}>/img/t2.jpg" style="margin-left: 8px;"></a>
+            <a href="https://www.pinterest.com/brandreward/" target="_blank"><img src="<{$smarty.const.BASE_URL}>/img/t3.png" style="margin-left: 8px;"></a>
+            <a href="https://www.linkedin.com/company/brand-reward-hong-kong-limited" target="_blank"><img src="<{$smarty.const.BASE_URL}>/img/t4.png" style="margin-left: 8px;"></a>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<?php
+class core{
+	function __construct(){
+		$this->_load();
+	}
+
+	function run(){
+		$objAppRoute = new appRoute();
+		$objAppRoute->doProgram();
+	}
+
+	function _load(){
+		define('API_ROOT',APP_ROOT.'api/');
+		include_once(API_ROOT.'const.php');
+		include_once(API_ROOT.'appRoute.php');
+		date_default_timezone_set("America/Los_Angeles");
+		ini_set('memory_limit', '1024M');
+	}
+}
+?>

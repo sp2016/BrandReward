@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Brandreward | PPC Violation Warning</title>
+</head>
+<body>
+<div style="width: 100%;height: 100%;text-align: left;">
+    PPC VIOLATION STRIKE 1: <{$templateTime}> <br/><br/>
+    Hello,  <br/><br/>
+    We have been notified by our advertiser partner, <{$advertiserName}>, that you have been illegally bidding on their trademark keywords while using our Brandreward system and links.
+    <br><br>
+    This is a courtesy email to remind you that use of Brandreward system and links for bidding on restricted advertisers is not allowed and we request that you immediately stop bidding on the keywords for this advertiser and remove all related ads. We highly suggest that you remove the ads immediately as you will no longer eligible for commissions from this advertiser.
+    <br><br>
+	Please note that we reserve the right to suspend clients that violate our advertiser's policies. There is a useful PPC restrictions list of advertisers that we do not allow bidding on, this list is downloadable and is always available on your Dashboard. We offer all publishers a 1 strike policy before we suspend. Therefore, a secondary strike will cause your account to be permanently suspended from Brandreward. 
+    <br><br>
+     &nbsp;&nbsp;&nbsp;&nbsp;•	REVERSALS: Based on the nature of the violations, PPC (TM+ Bidding), the advertiser also has the right to reverse commissions gained while PPC was live. <br>
+     &nbsp;&nbsp;&nbsp;&nbsp;•	PAYMENT: All residual commissions will be paid out based on our current NET payment policies. <br>
+    <br>
+    Please feel free to contact your account manager for more details or if you believe this suspension was in error.<br>
+    Regards,<br>
+    Brandreward Compliance Team<br>
+
+    <div style="width: 400px;">
+        <div style="float: left;width: 30%;"><img src="<{$smarty.const.BR_BASE_URL}>/img/blogo.jpg"></div>
+        <div style="float: right;width: 70%;">
+            <font style="font-weight:bold;font-style:italic;">Email</font> : <font color="blue"><a href="mailto:support@brandreward.com" style="text-decoration:underline;">support@brandreward.com</a></font>
+            <br>
+            <font style="font-weight:bold;font-style:italic;">Skype</font> : brandreward
+            <br>
+            <font style="font-weight:bold;font-style:italic;">Web</font> :<font color="blue"> <a href="<{$smarty.const.BR_BASE_URL}>/" style="text-decoration:underline;" target="_blank"><{$smarty.const.BR_BASE_URL}></a></font>
+            <div style="clear: both;margin-top: 5px;"></div>
+            <a href="https://www.facebook.com/Brand-Reward-1085710124813271/?view_public_for=1085710124813271" target="_blank"><img src="<{$smarty.const.BR_BASE_URL}>/img/t1.png"></a>
+            <a href="https://twitter.com/Brand_Reward" target="_blank"><img src="<{$smarty.const.BR_BASE_URL}>/img/t2.jpg" style="margin-left: 8px;"></a>
+            <a href="https://www.pinterest.com/brandreward/" target="_blank"><img src="<{$smarty.const.BR_BASE_URL}>/img/t3.png" style="margin-left: 8px;"></a>
+            <a href="https://www.linkedin.com/company/brand-reward-hong-kong-limited" target="_blank"><img src="<{$smarty.const.BR_BASE_URL}>/img/t4.png" style="margin-left: 8px;"></a>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<style>
+.payment-data .dropdown:hover > ul{display:block;}
+.payment-data .dropdown:hover li > a{cursor: text;}
+.payment-data .dropdown-menu li:hover > a{color:#333;}
+</style>
+<!-- head-top start -->
+<div class="navbar head-top" style="background:#627491">
+    <div class="container">
+    	<nav class="navbar navbar-default" role="navigation">
+    		<div class="container-fluid">
+    			<a class="search-button" href="#"></a>
+		        <div class="navbar-header">
+		        	<button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target="#example-navbar-collapse">
+                        <span class="sr-only">�л�����</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+		            <a class="navbar-brand hidden-sm" href="<{$smarty.const.BASE_URL}>/b_home.php"><{$smarty.const.Brand}></a>
+		        </div>
+		
+		        
+				<div class="collapse navbar-collapse" id="example-navbar-collapse">
+		            <ul class="nav navbar-nav">
+		                <{foreach from=$menu key=k item=v}>
+		                <{if $v.abb|@in_array:$authArr}>
+		                <{if $v.sub eq 'yes'}>
+		                <li class="dropdown">
+		                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:void(0)">
+		                        <{$k}><span class="caret"></span>
+		                    </a>
+		                    <ul class="dropdown-menu">
+		                        <{foreach from=$subMenu.$k key=key item=value}>
+		                            <{if $value.abb|@in_array:$authArr}>
+		                                <li>
+		                                    <a href="<{$smarty.const.BASE_URL}>/<{$value.file}>" target="_blank"><{$key}></a>
+		                                </li>
+		                            <{/if}>
+		                        <{/foreach}>
+		                    </ul>
+		                </li>
+		                <{else}>
+		                <li>
+		                    <a href="<{$smarty.const.BASE_URL}>/<{$v.file}>"><{$k}></a>
+		                </li>
+		                <{/if}>
+		                <{/if}>
+		                <{/foreach}>
+		            </ul>
+		            
+		            <{if (isset($pendingMonthList) and !empty($pendingMonthList)) or (isset($paidMonthList) and !empty($paidMonthList))}>
+		            <!--���Ҷ���-->
+		            <ul class="nav navbar-nav payment-data" style="padding-left:0px">
+		                <li class="dropdown">
+						<a href="<{$smarty.const.BASE_URL}>/b_payment.php" target="_blank" class="dropdown-toggle" data-toggle="">
+							Payment
+							<b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu">
+							<{if isset($pendingMonthList) and !empty($pendingMonthList)}>
+								<li class="dropdown-header" style="padding: 0;font-size: 18px;"><a style="padding: 3px 10px;" href="javascript:void(0)">Next Payment</a></li>
+								<li><a href="javascript:void(0)"><{$pendingMonthList.payDay}>&nbsp;&nbsp;&nbsp;$<{$pendingMonthList.commissions}></a></li>
+							<{/if}>
+							<{if isset($paidMonthList) and !empty($paidMonthList)}>
+								<li class="dropdown-header" style="padding: 0;font-size: 18px;"><a style="padding: 3px 10px;" href="javascript:void(0)">Paid</a></li>
+								<{foreach from=$paidMonthList item=val}>
+									<li><a href="javascript:void(0)"><{$val.paidTime}>&nbsp;&nbsp;&nbsp;$<{$val.commissions}></a></li>
+								<{/foreach}>
+							<{/if}>
+						</ul>
+						</li>
+		            </ul>
+		            <{/if}>
+		            
+		            <ul class="nav navbar-nav navbar-right">
+		                <{if $UserCareer !==  'advertiser' && $UserCareer !==  'advertiser_2' && $UserCareer  != 'network' }><li><a href="<{$smarty.const.BASE_URL}>/b_account.php"><{$LANG.backend.public.account}></a></li><{/if}>
+		                <li><a href="javascript:void(0)" id="head-top-logout"><{$LANG.backend.public.logout}></a></li>
+		            </ul>
+		            
+		            <{if (isset($pubAccList) and !empty($pubAccList)) and (isset($pubAccActiveList) and !empty($pubAccActiveList))}>
+		            <ul class="nav navbar-nav navbar-right">
+				        <div class="">
+				          <select id="changeGlobalSite" class="form-control" style="width:108px;margin-top: 7px;">
+				          	  <option value="all">All</option>
+				          	  <{foreach from=$pubAccList item=val}>
+								  <option value="<{$val.ID}>" <{if $val.ID == $pubAccActiveList.active}>selected<{/if}> ><{$val.Domain}></option>
+							  <{/foreach}>
+				          </select>
+				        </div>
+				    </ul>
+				    <{/if}>
+	            </div>
+	        </div>
+        </nav>
+    </div>
+</div>
+<!-- head-top end  -->
+
+
+
+<!-- bread start -->
+
+<div style="margin-top:30px;min-width: 800px;display:none" class="container" id="informationdel">
+
+    <div  id="dialog-password" class="modal fade in" aria-hidden="false" role="dialog" tabindex="-1" style="display: block; margin-top: 300px; padding-right: 17px;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button"  class="close removeinfo" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title" id="dialog-site-title">Notice</h2>
+                </div>
+                <div class="modal-body">
+                    <div style="text-align: center;margin-top: 15px;"><h4>Please Complete The Sections Marked In <span style="color: red;">Red</span></h4></div>
+                    <div style="text-align: center;margin-top: 15px;"><button class="btn removeinfo">Close</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- bread end  -->
+<script>
+
+	$(function(){
+		$(document).delegate("#changeGlobalSite","change",function(){
+			$.ajax({
+				type:"post",
+				url:CON_BASE_URL+"/process.php",
+				data:"act=changeGlobalSite&publisherAccountId="+$(this).val(),
+				dataType:"json",
+				async:false,
+				success: function(res){
+					if(res.code != 1){
+						alert(res.msg);
+					}
+					window.location.reload();
+				}
+			});
+		})
+	})
+
+</script>

@@ -1,0 +1,76 @@
+
+<div class="row" >
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Advertiser: <{$search.name}></div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Domasssin</th>
+                                <th>Region</th>
+                                <th>Network</th>
+                                <th>Name In Network</th>
+                                <th>Commission Value</th>
+
+                            </tr>
+                            </thead>
+                            <{foreach from=$domains item=domain}>
+                            <tr class="store">
+                                <input type="hidden" value="<{$domain.StoreId}>">
+                                <td did="<{$domain.DID}>" pid="<{$domain.PID}>"><{$domain.Key}></td>
+                                <td><{$domain.CountryName}></td>
+                                <td><{$domain.AffName}></td>
+                                <td><{$domain.Name}></td>
+                                <td><{if $domain.CommissionType == 'Value'}><{$domain.CommissionUsed}>$<{else}><{$domain.CommissionUsed}>%<{/if}></td>
+
+                            </tr>
+                            <tr>
+                                <{if $domain.TermAndCondition|strlen > 300}>
+                                <textarea style="display: none;"><{$domain.TermAndCondition}></textarea>
+                                <textarea style="display: none;"><{$domain.TermAndCondition|truncate:300}></textarea>
+                                <{else}>
+                                <input type="hidden" value="0">
+                                <{/if}>
+                            	<td width="150px;">
+                                    <button class="show" onclick="show($(this))">Show Terms</button>
+                                    <{if $domain.TermAndCondition|strlen > 300}>
+                                    <textarea style="display: none;"><{$domain.TermAndCondition}></textarea>
+                                    <textarea style="display: none;"><{$domain.TermAndCondition|truncate:300}></textarea>
+                                    <{else}>
+                                    <input type="hidden" value="0">
+                                    <{/if}>
+                                </td>
+                            	<td colspan='20'>
+                                    <{if $domain.TermAndCondition|strlen > 300}>
+                                    <{$domain.TermAndCondition|truncate:300}>
+                                    </br>
+                                    <{else}>
+                                    <{$domain.TermAndCondition}>
+                                    <{/if}>
+                                </td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                        <{$pageHtml}>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    <script>
+        function show(ts){
+            var val = $(ts).next().val();
+            var sm = $(ts).next().next().val();
+            var html = "<button onclick='pshow($(this))'>Pick Up</button>"+"<textarea style='display: none'>"+val+"</textarea><textarea style='display: none'>"+sm+"</textarea>";
+            $(ts).parent().next('td').html(val);
+            $(ts).parent('td').html(html);
+        }
+         function pshow(ts){
+             var val = $(ts).next().val();
+             var sm = $(ts).next().next().val();
+             var html = "<button onclick='show($(this))'>Show Terms</button>"+"<textarea style='display: none;'>"+val+"</textarea><textarea style='display: none;'>"+sm+"</textarea>";
+             $(ts).parent().next('td').html(sm);
+             $(ts).parent('td').html(html);
+         }
+    </script>

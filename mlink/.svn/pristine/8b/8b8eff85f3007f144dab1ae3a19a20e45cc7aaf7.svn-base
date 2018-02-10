@@ -1,0 +1,129 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-3">
+                <p style="background-color: black; color: white; padding: 10px;">
+                <span><b>Count: </b></span><br>
+                <span style="font-size: xx-large;"><b><{$pending_statis.count|number_format:0:'.':','}></b></span>
+                </p>
+            </div>
+            <div class="col-lg-3">
+                <p style="background-color: black; color: white; padding: 10px;">
+                <span><b>Sum: </b></span><br>
+                <span style="font-size: xx-large;"><b>USD <{$pending_statis.sum|number_format:2:'.':','}></b></span>
+                </p>
+            </div>
+            <div class="col-lg-3"></div>
+            <div class="col-lg-3"></div>
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    
+                    <div class="panel-body" >
+                        <form id="form_search">
+                            <div class="row">
+                                    <div class="form-group col-lg-3">
+                                    <b>Pending Month</b><select class="form-control" name="pendingmonth">
+                                    <option value="">All</option>
+                                    <{foreach from=$pending_month_list item=m}>
+                                        <option value="<{$m}>" <{if $m==$search.pendingmonth}>selected<{/if}>><{$m}></option>
+                                    <{/foreach}>
+                                    </select>
+                                    </div>
+
+                                    <div class="form-group col-lg-3">
+                                    <b>Payment Status</b><select class="form-control" name="haspaid">
+                                    <option value="">ALL</option>
+                                    <option value="yes" <{if $search.haspaid=='yes'}>selected<{/if}>>YES</option>
+                                    <option value="no" <{if $search.haspaid=='no'}>selected<{/if}>>NO</option>
+                                    </select>
+                                    </div>
+
+                                    <div class="form-group col-lg-3">
+                                    <b>OrderBy</b><select class="form-control" name="orderby">
+                                    <option value=""> Date ↓</option>
+                                        <option value="Amount-DESC" <{if $search.orderby=='Amount-DESC'}>selected<{/if}>>Amount ↓</option>
+                                        <option value="Amount-ASC" <{if $search.orderby=='Amount-ASC'}>selected<{/if}>>Amount ↑</option>
+                                    </select>
+                                    </div>
+
+                                    <div class="form-group col-lg-3">
+                                        <br>
+                                        <a href="javascript:void(0);" onclick="submit_form()" class="btn btn-primary" role="button">Search</a>
+                                    </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-12" style="text-align: center;display: none;" id="checkboxall_process"><a href="javascript:void(0);" onclick="choose_all(this)"><span class="label label-primary">Page</span> click here to choose all recode</a></div>
+
+            <div class="col-lg-12">
+                <table class="table table-hover" id="tbl_pp">
+                            <thead>
+                            <tr>
+                                <th class="col-lg-1">Publisher ID</th>
+                                <th class="col-lg-1">Publisher Account</th>
+                                <th class="col-lg-2">Publisher Site</th>
+                                <th class="col-lg-1">Manger</th>
+                                <th class="col-lg-1">Amount</th>
+                                <th class="col-lg-1">Pending Date</th>
+                                <th class="col-lg-1">Payment</th>
+                                <th class="col-lg-1">Transaction ID</th>
+                                <th class="col-lg-1">Download</th>
+                                <th class="col-lg-2">Detail</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$pending_data item=list}>
+                            <tr>
+                                <td><{$list.publisher.ID}> </td>
+                                <td><{$list.publisher.UserName}> </td>
+                                <td><{$list.account.Domain}> </td>
+                                <td><{$list.publisher.Manager}> </td>
+                                <td><b>USD <{$list.Amount|number_format:2:'.':','}></b></td>
+                                <td><{$list.PendingDate | substr:0:7}> </td>
+                                <td><{$list.payment.PaidDate|default:'NULL'}> </td>
+                                <td><{$list.payment.TransactionId|default:'NULL'}> </td>
+                                <td>[ <a href="<{$smarty.const.BASE_URL}>/b_payments_publisher_pending.php?act=downloadpendinginvoice&site=<{$list.Site}>&haspaid=<{$smarty.get.haspaid}>&pendingmonth=<{$smarty.get.pendingmonth}>" target="_blank">DOWNLOAD</a> ]</td>
+                                <td><{if count($list.detail) > 1 }><a href="javascript:void(0);" onclick="triggerAfter(this)">Detail</a>
+                                    <div style="display:none;">
+                                        <table class="table table-bordered">
+                                            <{foreach from=$list.detail item=h }>
+                                            <tr><td><{$h.OriginDate}></td><td>USD <{$h.Amount|number_format:2:'.':','}></td></tr>
+                                            <{/foreach}>
+                                        </table>
+                                    </div>
+                                    <{/if}>
+                                </td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                <{$page_html}>
+            </div>
+        </div>
+    </div>
+
+<script>
+function triggerAfter(obj){
+    if($(obj).next().css('display') == 'none'){
+        $(obj).html('Close');
+        $(obj).next().css('display','');
+    }else{
+        $(obj).html('Detail');
+        $(obj).next().css('display','none');
+    }
+}
+function submit_form(){
+    $('#form_search input[name=action]').val('search');
+    $('#form_search').submit();
+}
+</script>
+
+    <{include file="b_block_footer.html"}>

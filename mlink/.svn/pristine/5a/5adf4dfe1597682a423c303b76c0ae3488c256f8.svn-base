@@ -1,0 +1,82 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style>
+.panel-default{
+    border-color: #5090C1;
+}
+.panel-default>.panel-heading{
+    border-color:#5090C1;
+    background-color:#5090C1;
+    color:#FFF;
+}
+</style>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+            <div class="row">
+                <div class="col-xs-9">
+                    <form method="post" action="<{$smarty.const.BASE_URL}>/b_feedback_setting.php" id="table_form">
+                    <{foreach from=$setting_list item=list key=k}>
+                    <div class="col-xs-12" id="setting_<{$k}>">
+                        <h1 class="page-header"><{$k}></h2>
+                        <div class="panel panel-default">
+                            
+                            <table class="table table-bordered">
+                                <{foreach from=$list item=set}>
+                                <tr>
+                                    <td class="col-xs-7">
+                                        <input type="text" class="form-control" name="setting[<{$k}>][]" value="<{$set.Name}>">
+                                        <input type="hidden" name="id[<{$k}>][]" value="<{$set.ID}>">
+                                    </td>
+                                    <td class="col-xs-5">
+                                        <button type="button" class="btn btn-info" onclick="add(this)"><span class="glyphicon glyphicon-plus"></span></button>
+                                        <button type="button" class="btn btn-info" onclick="del(this)"><span class="glyphicon glyphicon-minus"></span></button>
+                                        <button type="button" class="btn btn-info" onclick="up(this)"><span class="glyphicon glyphicon-arrow-up"></span></button>
+                                        <button type="button" class="btn btn-info" onclick="down(this)"><span class="glyphicon glyphicon-arrow-down"></span></button>
+                                    </td>
+                                </tr>
+                                <{/foreach}>
+                            </table>
+                            
+                        </div>
+                    </div>
+                    <{/foreach}>
+                    </form>
+                </div>
+                <div class="col-xs-3">
+                    <div class="list-group" style="position:fixed;">
+                        <{foreach from=$setting_list item=list key=k}>
+                            <a href="#setting_<{$k}>" class="list-group-item"><span class="glyphicon glyphicon-link"></span> <{$k}></a>
+                        <{/foreach}>
+                            <a href="javascript:void(0);" class="list-group-item active" onclick="save()"><span class="glyphicon glyphicon-floppy-save"></span> Save</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<{include file="b_block_footer.html"}>
+<script>
+function add(obj){
+    $(obj).parent().parent().after($(obj).parent().parent().clone());
+    $(obj).parent().parent().next().find('input').val('');
+};
+function del(obj){
+    $(obj).parent().parent().remove();
+};
+function up(obj){
+    if($(obj).parent().parent().prev().length > 0){
+        $(obj).parent().parent().prev().before($(obj).parent().parent());
+    }
+};
+function down(obj){
+    if($(obj).parent().parent().next().length > 0){
+        $(obj).parent().parent().next().after($(obj).parent().parent());
+    }
+};
+function save(){
+    $('#table_form').submit();
+}
+</script>

@@ -1,0 +1,324 @@
+<{assign var="ppc" value=$store.PPC}>
+<div class="row" >
+
+    <div class="col-lg-12">
+        <div class="panel panel-default" id="store_info">
+            <form  id="form_store"  enctype="multipart/form-data">
+            <input type="hidden" name="storeid" id="sid" value="<{$sid}>">
+            <input type="hidden" name="act" value="save">
+            <div class="panel-heading"><h4>Advertiser Info</h4></div>
+            <div class="panel-body">
+                <table class="table table-bordered" style="text-align: center;">
+                    <tr>
+                        <th>Logo</th>
+                        <th>Network</th>
+                        <th>Category</th>
+                        <th>Name</th>
+                        <th>Support Site</th>
+                        <th>PPC Status</th>
+                    </tr>
+                    <tr>
+                        <td rowspan="3">
+                        <img src="http://www.brandreward.com/img/adv_logo/<{$store.LogoName}>" style="height: 110px; width: 240px;"><br />
+                        <div data-type="edit" style="display:none;"><input type="file" name="logo" id="f_user_certificate" value="上传图片"/></div>
+                        </td>
+                        <td rowspan="3">
+                            <{$affname}>
+                        </td>
+                        <td rowspan="3">
+                        <p style="margin-bottom: 0px;" id="store_category"><{foreach from=$store.category_id_list item=cid}><{$category.$cid}><br /><{/foreach}></p>
+                        <div data-type="edit" style="display:none;overflow: scroll; height: 250px;">
+                            <{foreach from=$category item=cname key=cid}>
+                                <input id="cate_<{$cid}>" name="categoryid[]" value="<{$cid}>" type="checkbox" style="margin: 0;" <{if $cid|in_array:$store.category_id_list}>checked<{/if}>>
+                                <label for="cate_<{$cid}>" style="margin-left:3px;font-weight: 100;font-size: 14px;"><{$cname}></label><br />
+                            <{/foreach}>
+                        </div>
+                        </td>
+                        <td>
+                        <p style="margin-bottom: 0px;" id="store_name"><{$store.NameOptimized|default:$store.storeName}></p>
+                        <div data-type="edit" style="display:none;"><input class="form-control" type="text" value="<{$store.NameOptimized|default:$store.storeName}>" name="NameOptimized"></div>
+                        </td>
+                        <td><{$store.SupportType}></td>
+                        <td><p style="margin-bottom: 0px;" id="store_ppc"><{$ppc_option.$ppc}></p>
+                        <div data-type="edit" style="display:none;">
+                            <select class="form-control" name="ppc">
+                                <{foreach from=$ppc_option item=op key=vl}>
+                                    <option value="<{$vl}>" <{if $vl==$ppc_option.$ppc}>selected<{/if}> ><{$op}></option>
+                                <{/foreach}>
+                            </select>
+                        </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Clicks</th>
+                        <th>Sales</th>
+                        <th>Commission</th>
+                    </tr>
+                    <tr>
+                        <td><{$store.clicks|number_format:'0':'.':','}></td>
+                        <td>$<{$store.sales|number_format:'2':'.':','}></td>
+                        <td>$<{$store.commission|number_format:'2':'.':','}></td>
+                    </tr>
+                </table>
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td><p id="store_desc"><{$store.Description}></p><div style="display: none;" data-type="edit"><textarea name="desc" cols="150" rows="5"><{$store.Description}></textarea></div></td>
+                    </tr>
+                </table>
+                <a class="btn btn-info" onclick="update(this)">Update</a>
+                <a class="btn btn-info" onclick="save(this)" style="display: none;">Save</a>
+            </div>
+            </form>
+        </div>
+    </div>
+
+    <{if $store.SupportType != 'Mixed'}>
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>Advertiser: <{$search.name}></h4></div>
+            <div class="panel-body" style="text-align: center;">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>Region</th>
+                        <th>Network</th>
+                        <th>Name In Network</th>
+                        <th>Commission Value</th>
+                        <th>PPC Term</th>
+                    </tr>
+                    </thead>
+                    <{foreach from=$domains item=domain}>
+                    <{foreach from=$domain.Outbound item=out}>
+                    <tr class="store">
+                        <td><{$out.1}></td>
+                        <td><{$out.0}></td>
+                        <td><{$domain.AffName}></td>
+                        <td><{$domain.Name}></td>
+                        <td>
+                            <{if $domain.commission == '0'}>Other
+                            <{else}>
+                            <{$domain.commission}>
+                            <{/if}>
+                        </td>
+                        <td>
+                            <{if $domain.TermAndCondition !=''}>
+                                <button onclick='show(this)' id=".showtab<{$domain.ProgramId}>">Show Terms</button>
+                            <{elseif $domain.ntext !=''}>
+                                <button onclick='show(this)' id=".showtab<{$domain.ProgramId}>">Show Terms</button>
+                            <{/if}>
+                        </td>
+                    </tr>
+                    <tr class="showtab1<{$domain.ProgramId}>" style="display: none;">
+                        <td colspan="6">
+                            <textarea class="text<{$domain.ProgramId}>" style="width: 90%;height:300px;margin-top:10px;">
+                                <{$domain.TermAndCondition}>
+                            </textarea>
+                            <button style="float:left;margin-top: 10px;margin-left: 47%;margin-bottom: 10px;" sid="<{$sid}>"  id="<{$domain.ProgramId}>" class="btn subtc  btn-primary">Submit</button>
+                        </td>
+                    </tr>
+                    <tr class="showtab<{$domain.ProgramId}> " style="display: none;">
+                        <td colspan="6">
+                            <{if $domain.ntext !=''}>
+                                <{$domain.ntext}>
+                            <{else}>
+                                <{$domain.TermAndCondition}>
+                            <{/if}>
+                        </td>
+                    </tr>
+                    <{/foreach}>
+                    <{/foreach}>
+                </table>
+            </div>
+        </div>
+    </div>
+    <{else}>
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>Advertiser: <{$search.name}>(Promotion  Publisher Visible)</h4></div>
+            <div class="panel-body" style="text-align: center;">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>Region</th>
+                        <th>Network</th>
+                        <th>Name In Network</th>
+                        <th>Commission Value</th>
+                        <th>PPC Term</th>
+                    </tr>
+                    </thead>
+                    <{foreach from=$domains item=domain}>
+                    <{if $domain.SupportType == 'All'}>
+                    <{foreach from=$domain.Outbound item=out}>
+                    <tr class="store">
+                        <td><{$out.1}></td>
+                        <td><{$out.0}></td>
+                        <td><{$domain.AffName}></td>
+                        <td><{$domain.Name}></td>
+                        <td>
+                            <{if $domain.commission == '0'}>Other
+                            <{else}>
+                            <{$domain.commission}>
+                            <{/if}>
+                        </td>
+                        <td>
+                            <{if $domain.TermAndCondition !=''}>
+                            <button onclick='show(this)' id=".showtab<{$domain.ProgramId}>">Show Terms</button>
+                            <{elseif $domain.ntext !=''}>
+                            <button onclick='show(this)' id=".showtab<{$domain.ProgramId}>">Show Terms</button>
+                            <{/if}>
+                        </td>
+                    </tr>
+                    <tr class="showtab1<{$domain.ProgramId}>" style="display: none;">
+                        <td colspan="6">
+                            <textarea class="text<{$domain.ProgramId}>" style="width: 90%;height:300px;margin-top:10px;">
+                                <{$domain.TermAndCondition}>
+                            </textarea>
+                            <button style="float:left;margin-top: 10px;margin-left: 47%;margin-bottom: 10px;" sid="<{$sid}>"  id="<{$domain.ProgramId}>" class="btn subtc  btn-primary">Submit</button>
+                        </td>
+                    </tr>
+                    <tr class="showtab<{$domain.ProgramId}> " style="display: none;">
+                        <td colspan="6">
+                            <{if $domain.ntext !=''}>
+                            <{$domain.ntext}>
+                            <{else}>
+                            <{$domain.TermAndCondition}>
+                            <{/if}>
+                        </td>
+                    </tr>
+                    <{/foreach}>
+                    <{/if}>
+                    <{/foreach}>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>Advertiser: <{$search.name}>(Content Publisher Visible)</h4></div>
+            <div class="panel-body" style="text-align: center;">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>Region</th>
+                        <th>Network</th>
+                        <th>Name In Network</th>
+                        <th>Commission Value</th>
+                        <th>PPC Term</th>
+                    </tr>
+                    </thead>
+                    <{foreach from=$programs item=program}>
+                    <tr class="store">
+                        <td><{$program.ccode}></td>
+                        <td><{$program.region}></td>
+                        <td><{$program.domain.AffName}></td>
+                        <td><{$program.domain.Name}></td>
+                        <td>
+                            <{if $program.domain.commission == '0'}>Other
+                            <{else}>
+                            <{$program.domain.commission}>
+                            <{/if}>
+                        </td>
+                        <td>
+                            <{if $program.domain.TermAndCondition !=''}>
+                            <button onclick='show(this)' id=".showtab<{$program.domain.ProgramId}>">Show Terms</button>
+                            <{elseif $program.domain.ntext !=''}>
+                            <button onclick='show(this)' id=".showtab<{$program.domain.ProgramId}>">Show Terms</button>
+                            <{/if}>
+                        </td>
+                    </tr>
+                    <tr class="showtab1<{$program.domain.ProgramId}>" style="display: none;">
+                        <td colspan="6">
+                            <textarea class="text<{$program.domain.ProgramId}>" style="width: 90%;height:300px;margin-top:10px;">
+                                <{$program.domain.TermAndCondition}>
+                            </textarea>
+                            <button style="float:left;margin-top: 10px;margin-left: 47%;margin-bottom: 10px;" sid="<{$sid}>"  id="<{$program.domain.ProgramId}>" class="btn subtc  btn-primary">Submit</button>
+                        </td>
+                    </tr>
+                    <tr class="showtab<{$program.domain.ProgramId}> " style="display: none;">
+                        <td colspan="6">
+                            <{if $program.domain.ntext !=''}>
+                            <{$program.domain.ntext}>
+                            <{else}>
+                            <{$program.domain.TermAndCondition}>
+                            <{/if}>
+                        </td>
+                    </tr>
+
+                    <{/foreach}>
+                </table>
+            </div>
+        </div>
+    </div>
+    <{/if}>
+</div>
+<script>
+    function show(obj){
+        var id = $(obj).attr('id');
+        if($(obj).html() == 'Show Terms'){
+            $(obj).html('Pick Up');
+            $(id).css('display','');
+        }else{
+            $(obj).html('Show Terms');
+            $(id).css('display','none');
+        }
+    }
+    function update(obj){
+        $(obj).next().css('display','');
+        $(obj).css('display','none');
+        $('div[data-type="edit"]').css('display','');
+        if($('div[data-type="edit"]').prev().is('p')){
+            $('div[data-type="edit"]').prev().css('display','none');
+        }
+    }
+
+    $('input:file').change(function(){
+      var iptfile = this;
+      oFReader = new FileReader()
+      oFReader.readAsDataURL(iptfile.files[0]);
+
+      oFReader.onload = function (oFREvent) {
+        $(iptfile).parent().prev().prev().attr('src',oFREvent.target.result);
+      };
+
+    });
+
+    function save(obj){
+        $(obj).prev().css('display','');
+        $(obj).css('display','none');
+        var formData = new FormData($( "#form_store" )[0]);  
+        $.ajax({
+            url: '<{$smarty.const.BASE_URL}>/b_merchants_domains.php',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            processData: false,
+            contentType: false
+        }).done(function(res) {
+            var cat_str = '';
+            $('input[name="categoryid[]"]:checked').each(function(el,obj){
+                cat_str+=$(obj).next().html();
+                cat_str+="<br />";
+            });
+            var name = $('input[name="NameOptimized"]').val();
+            var ppc = $('select[name="ppc"] option:selected').html();
+            var desc = $('textarea[name="desc"]').val();
+
+            $('#store_category').html(cat_str);
+            $('#store_name').html(name);
+            $('#store_ppc').html(ppc);
+            $('#store_desc').html(desc);
+            
+            $('div[data-type="edit"]').css('display','none');
+            if($('div[data-type="edit"]').prev().is('p')){
+                $('div[data-type="edit"]').prev().css('display','');
+            }
+        }).fail(function(res) {}); 
+    }
+</script>

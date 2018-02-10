@@ -1,0 +1,20 @@
+<{include file="front_block_header.html"}>
+<{include file="front_block_banner.html"}>
+<div class="container">
+  <div class="contact">
+    <h2><a herf="#"><{$title}></a></h2>
+    <div class="send" style="padding: 40px;margin-left: 15%;">
+      <form id="re_form">
+        <input type="hidden" name="act" value="<{$LANG.front.retrievePwd.a1}>">
+        <input type="hidden"  id="re_email" name="re_email" value="<{$email}>">
+        <input type="hidden"  id="token" name="token" value="<{$creat_token}>">
+        <div><input type="password" class="email" id="re_pwd" name="re_pwd" placeholder="<{$LANG.front.retrievePwd.a3}>"></div>
+        <div><input type="password" class="email" id="re_pwd_again" name="re_pwd_again" placeholder="<{$LANG.front.retrievePwd.a4}>"></div>
+        <div id="reset_msg"></div>
+        <div><input type="button" class="btn-email" id="re_submit" onclick="retrieve_password()" value="Submit" style="cursor: pointer"></div>
+      </form>
+    </div>
+
+  </div>
+</div>
+<{include file="front_block_footer.html"}>

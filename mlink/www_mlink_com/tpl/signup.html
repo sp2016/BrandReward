@@ -1,0 +1,662 @@
+<{include file="front_block_header.html"}>
+<{include file="front_block_banner.html"}>
+
+<div class="layer container sign" style="background-color: #F0F6FE; ">
+    <div class="content">
+        <div id="top"></div>
+        <h2 id="h2" style="margin-top: 100px;"><{if $type != 2}>Sign Up for Brandreward Account<{else}>Ready to connect with more than 25,000 brands!<{/if}></h2>
+        <div class="imfor_con basic"  id="sign1" <{if $type eq 2}>style='display:none'<{/if}>>
+        <input type="hidden" id="emailval">
+        <h2><{$LANG.front.signup.step1}></h2>
+            <ul>
+                <form id="form1">
+                    <input type="hidden" name="act" value="signPage1">
+                    <li><span><{$LANG.front.signup.ce}>:</span>
+                        <div class="sign_con"><input type="text" class="form-control" name="pub_email" id="pub_email"></div>
+                    </li>
+                    <li><span><{$LANG.front.signup.cp}>:</span>
+                        <div class="sign_con"><input type="password" class="form-control" name="pub_pwd" id="pub_pwd" placeholder="<{$LANG.front.signup.a1}>"></div>
+                    </li>
+                    <li><span><{$LANG.front.signup.rp}>:</span>
+                        <div class="sign_con"><input type="password" class="form-control" name="pub_pwd_ag" id="pub_pwd_ag"></div>
+                    </li>
+                    <!--<li><span>Your application:</span>-->
+                        <!--<div class=" sign_con">-->
+                            <!--<select name="pub_country" id="f" class="form-control">-->
+                                <!--<option value="">How did you hear about us?</option>-->
+                                <!--<option value="Email">Email</option>-->
+                                <!--<option value="Friend">Friend</option>-->
+                                <!--<option value="Google">Google</option>-->
+                                <!--<option value="Affiliate Network">Affiliate Network</option>-->
+                                <!--<option value="Social Media">Social Media</option>-->
+                                <!--<option value="Online AD">Online AD</option>-->
+                                <!--<option value="Others">Others</option>-->
+                            <!--</select>-->
+                        <!--</div>-->
+                    <!--</li>-->
+                </form>
+            </ul>
+            <p class="btn">
+                <button id="submit1" style="color: white;" onclick="submit1()">Submit</button>
+            </p>
+        </div>
+        <!-- 2 -->
+        <div class="imfor_con" id="sign2"  <{if $type != 2}>style='display:none'<{/if}>><!-- style=" display:none" -->
+            <h2><{$LANG.front.signup.step2}></h2>
+            <ul>
+                <form id="form2">
+                    <input type="hidden" name="act" value="signPage2">
+                    <input type="hidden" name="signkey" value="<{$signkey}>">
+                    <li><span><{$LANG.front.signup.sitename}>:</span>
+                        <div class="sign_con"><input type="text" class="form-control" name="pub_siteName" id="pub_siteName"></div>
+                    </li>
+                    <li><span>Website:</span>
+                        <div class=" sign_con"><input type="text" class="form-control" name="pub_site" id="pub_site" placeholder="<{$LANG.front.signup.a2}>"></div>
+                    </li>
+                    <li><span><{$LANG.front.signup.cmp}>:</span>
+                        <div class="sign_con"><input type="text" class="form-control" name="pub_company" id="pub_company"></div>
+                    </li>
+                    <li><span>First Name:</span>
+                        <div class="sign_con"><input type="text" class="form-control" name="pub_firstName" id="pub_firstName"></div>
+                    </li>
+                    <li><span><{$LANG.front.signup.lastname}>:</span>
+                        <div class="sign_con"><input type="text" class="form-control" name="pub_lastName" id="pub_lastName"></div>
+                    </li>
+                    <li><span><{$LANG.front.signup.addr1}>:</span>
+                        <div class=""><textarea id="pub_address1" name="pub_address1" style="border: 1px solid #60738d;color: black;width: 100%;"></textarea></div>
+                    </li>
+                    <li><span><{$LANG.front.signup.zipcode}>:</span>
+                        <div class="sign_con"><input type="text" class="form-control" name="pub_zipCode" id="pub_zipCode"></div>
+                    </li>
+                    <li><span><{$LANG.front.signup.c}>:</span>
+                        <div class=" sign_con"><select name="pub_country" id="pub_country" class="form-control">
+                            <option value="">--Select--</option>
+                            <{foreach from=$countryOption item=c key=k}>
+                            <option value="<{$k}>"><{$c}></option>
+                            <{/foreach}>
+                        </select></div>
+                    </li>
+                    <li><span>Phone Number:</span>
+                        <div class="sign_con"><input type="text" class="form-control" name="pub_phone" id="pub_phone" placeholder="<{$LANG.front.signup.a3}>"></div>
+                    </li>
+                    <li class="pre"><span><{$LANG.front.signup.pe}>:</span>
+                        <div class="sign_con"><input type="text" class="form-control" name="pub_paypal" id="pub_paypal" placeholder="<{$LANG.front.signup.a4}>"></div>
+                    </li>
+                </form>
+                <li class="btn">
+                    <button id="submit2" style="color: white;" onclick="submit2()"><{$LANG.front.signup.next}></button>
+                </li>
+            </ul>
+        </div>        <!-- 3 -->
+        <div class="imfor_con earn" id="sign3" style="display: none;"><!--style="display:none"-->
+        <dl>
+            <input type="hidden" name="act" value="signPage3">
+            <div class="earn_choose" id="StaffNumber">
+                <dt>
+                <p ><{$LANG.front.signup.l1}></p>
+                <dd><input class="p1" type="radio" name="pub_staffNumber" id="pub_staffNumber" value="1"><a data-type="radio" data-class="p1" class="clickparent " data-type="r" data-id="pub_staffNumber1" data-type="r" href="javascript:void(0);" style="color: black"><{$LANG.front.signup.l1a}></a></dd>
+                <dd><input class="p1" type="radio" name="pub_staffNumber" value="2-10"><a data-type="radio" data-class="p1" class="clickparent " data-type="r"  href="javascript:void(0);" style="color: black">2-10</a></dd>
+                <dd><input class="p1" type="radio" name="pub_staffNumber" value="11-25"><a data-type="radio" data-class="p1" class="clickparent " data-type="r"  href="javascript:void(0);" style="color: black">11-25</a></dd>
+                <dd><input class="p1" type="radio" name="pub_staffNumber" value="26+"><a data-type="radio" data-class="p1" class="clickparent " data-type="r"  href="javascript:void(0);" style="color: black">26+</a></dd>
+                </dt>
+            </div>
+            <div class="earn_choose" id='GeoBreakdown'>
+                <dt id="f_phone">
+                    <p><{$LANG.front.signup.r1}> (*required)</p>
+                    <select name="pub_traffic1" style="margin-bottom: 10px">
+                        <option value="">--Select--</option>
+                        <{foreach from=$countryOption item=c key=k}>
+                        <option value="<{$k}>"><{$c}></option>
+                        <{/foreach}>
+                    </select>
+                    <select name="pub_traffic2" style="margin-bottom: 10px">
+                        <option value="">--Select--</option>
+                        <{foreach from=$countryOption item=c key=k}>
+                        <option value="<{$k}>"><{$c}></option>
+                        <{/foreach}>
+                    </select>
+                </dt>
+            </div>
+            <div class="earn_choose" id="SiteType">
+                <dt id="siteop">
+                <p>What type of content provider are you?</p>
+                <select name="pub_contentCategory1" style="margin-bottom: 10px;display: block">
+                    <option value="">--Select--</option>
+                    <{foreach from=$categoryiesOfContent key=k item=c}>
+                    <{assign var='num' value=$k|substr:0:1}>
+                    <optgroup label="<{$k}>">
+                        <{foreach from=$c key=subk item=subc}>
+                        <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+                        <{/foreach}>
+                        <{/foreach}>
+                </select>
+                <select name="pub_contentCategor2" style="margin-bottom: 10px;display: block">
+                    <option value="">--Select--</option>
+                    <{foreach from=$categoryiesOfContent key=k item=c}>
+                    <{assign var='num' value=$k|substr:0:1}>
+                    <optgroup label="<{$k}>">
+                        <{foreach from=$c key=subk item=subc}>
+                        <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+                        <{/foreach}>
+                        <{/foreach}>
+                </select>
+                <select name="pub_contentCategory3" style="margin-bottom: 10px;display: block">
+                    <option value="">--Select--</option>
+                    <{foreach from=$categoryiesOfContent key=k item=c}>
+                    <{assign var='num' value=$k|substr:0:1}>
+                    <optgroup label="<{$k}>">
+                        <{foreach from=$c key=subk item=subc}>
+                        <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+                        <{/foreach}>
+                        <{/foreach}>
+                </select>
+                <dd><input type="text" class="form-control" placeholder="other" name="pub_contentCategory4" id="pub_contentCategory4"></dd>
+                </dt>
+            </div>
+
+            <div class="earn_choose dt_ProfitModel" id="ProfitModel">
+                <dt>
+                <p><{$LANG.front.signup.l3}> (*required)</p>
+                <dd><input type="checkbox" name="pub_profitModel1" value="CPA/CPS" id="pub_profitModel"><a class="clickparent" style="color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)"><{$LANG.front.signup.a11}></a></dd>
+                <dd><input type="checkbox" name="pub_profitModel2" value="CPI" id="pub_profitMode2"><a class="clickparent" style="color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)"><{$LANG.front.signup.a12}></a></dd>
+                <dd><input type="checkbox" name="pub_profitModel3" value="CPM" id="pub_profitMode3"><a class="clickparent" style="color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)"><{$LANG.front.signup.a13}></a></dd>
+                <dd><input type="checkbox" name="pub_profitModel4" value="CPC" id="pub_profitMode4"><a class="clickparent" style="color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)"><{$LANG.front.signup.a14}></a></dd>
+                </dt>
+            </div>
+            <div class="earn_choose dt_WaysOfTraffic" id="WaysOfTraffic">
+                <dt>
+                <p><{$LANG.front.signup.r3}></p>
+                <dd><input class="p2" type="checkbox" name="pub_waysOfTraffic1"  id="pub_waysOfTraffic" value="SEO"><a class="clickparent" style="color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)"><{$LANG.front.signup.a15}></a></dd>
+                <dd><input class="p2" type="checkbox" name="pub_waysOfTraffic2" value="SEM"><a class="clickparent" style="color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)"><{$LANG.front.signup.a16}></a></dd>
+                <dd><input class="p2" type="checkbox" name="pub_waysOfTraffic3" value="Social Media"><a class="clickparent" style="color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)"><{$LANG.front.signup.a17}></a></dd>
+                <dd><input class="p2" type="checkbox" name="pub_waysOfTraffic4" value="EDM"><a class="clickparent" style="color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)"><{$LANG.front.signup.a18}></a></dd>
+                <dd><input class="p2" type="text" class="form-control" placeholder="<{$LANG.front.signup.a8}>" name="pub_otherWaysOfTraffic" id="pub_otherWaysOfTraffic"></dd>
+                </dt>
+            </div>
+
+            <div class="earn_choose" id="ContentProduction">
+                <dt>
+                <p><{$LANG.front.signup.r4}></p>
+                <dd><input type="radio" name="pub_contentProduction" value="in house" id="pub_contentProduction"><a class="clickparent" style="color: black" data-type="checkbox" data-class="p6" href="javascript:void(0)"><{$LANG.front.signup.r4a}></a></dd>
+                <dd><input type="radio" name="pub_contentProduction" value="user generated"><a class="clickparent" style="color: black" data-type="checkbox" data-class="p6" href="javascript:void(0)"><{$LANG.front.signup.r4b}></a></dd>
+                <dd><input type="radio" name="pub_contentProduction" value="both"><a class="clickparent" style="color: black" data-type="checkbox" data-class="p6" href="javascript:void(0)"><{$LANG.front.signup.r4c}></a></dd>
+                </dt>
+            </div>
+            <div class="earn_choose" style=" overflow-y:scroll; " id="CategoryId">
+                <dt>
+                <p style="margin-bottom: 0px;"><{$LANG.front.signup.l4}> (*required)</p>
+                <{foreach item=cate key=k from=$category}>
+                <div style="width: 100%;float: left;margin-top: 8px;">
+                    <input  class="cate_<{$k}> cate" data-val="<{$k}>" type="checkbox" class="search_cate" style="margin: 0;" />
+                    <label for="cate_<{$k}>" style="margin: 0;font-weight: 300;font-size: 15px;"><{$cate}></label>
+                </div>
+                <{/foreach}>
+                </dt>
+            </div>
+            <div class="earn_choose" id="CurrentNetwork">
+                <dt>
+                <p><{$LANG.front.signup.r5}></p>
+                <dd><input type="text" class="form-control" name="pub_currentNetwork" id="pub_currentNetwork" placeholder="<{$LANG.front.signup.a10}>"></dd>
+                </dt>
+            </div>
+            <dt class="btn" style="margin-top: 20px;">
+                <div style="width: 100%;">
+                    <p>
+                        <input name="pub_isc" id="pub_isc" type="checkbox" class="agree">
+                        <a  class="clickparent" style="color: black" data-type="checkbox" data-class="p10" href="javascript:void(0)" target="_blank">I agree to Brand Reward (Hong Kong) Limited <a style="color:#f09646" target="_blank" href="privacypolicy.php">Privacy Policy</a>, Terms of Use and Terms & Conditions.</a>
+                    </p>
+                </div>
+                <input type="hidden" id="upid">
+                <button style="width: 200px;color: white;margin-top:5px;"  id="submit3" onclick="submit3()"><{$LANG.front.signup.sa}></button>
+            </dt>
+        </dl>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(".cate").bind("click",function(){
+        var ck = 0;
+        $('.cate').each(function(i){
+            if($('.cate').eq(i).is(':checked')){
+                ck++;
+            }
+            if(ck>3){
+                alert('Only select 3');
+                $('.cate').eq(i).prop('checked',false);
+                return false;
+            }
+        });
+    });
+
+    function saveClickNum(obj){
+        var ddArr;
+        var name = obj.name;
+        if($("input[name='priCat']:checked").length > 3)
+        {
+            obj.checked=false;
+            alert("3 choices available");
+        }
+        if(obj.checked){
+            ddArr = $(obj).parent().nextAll("sub:first").find("dd");
+            $.each(ddArr,function(i,n){
+                $(n).find("input").prop('checked','true');
+            })
+        }else {
+            ddArr = $(obj).parent().nextAll("sub:first").find("dd");
+            $.each(ddArr,function(i,n){
+                $(n).find("input").removeProp('checked');
+            })
+        }
+    }
+    function submit1() {
+        // check email
+
+        var checkemail = 0;
+        var pub_email = $.trim($('#pub_email').val());
+        $('#emailval').val(pub_email);
+        if (pub_email == '') {
+            checkemail = 1;
+            set_msg('pub_email', 0, '<{$LANG.front.signup.a19}>');
+        }
+
+        if (checkemail == 0 && !pub_email.match(/[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/)) {
+            checkemail = 1;
+            set_msg('pub_email', 0, '<{$LANG.front.signup.a20}>');
+        }
+
+        if (checkemail == 0) {
+            set_msg('pub_email', 1, '');
+        }
+
+        // check password
+
+        var checkpwd = 0;
+        var pub_pwd = $.trim($('#pub_pwd').val());
+        if (pub_pwd == '') {
+            checkpwd = 1;
+            set_msg('pub_pwd', 0, '<{$LANG.front.signup.a21}>');
+        }
+
+        if (checkpwd == 0 && !pub_pwd.match(/^.{8,}$/)) {
+            checkpwd = 1;
+            set_msg('pub_pwd', 0, '<{$LANG.front.signup.a22}>');
+        }
+
+        if (checkpwd == 0) {
+            set_msg('pub_pwd', 1, '');
+        }
+
+        // check password again
+        var checkpwdag = 0;
+        var pub_pwd_ag = $.trim($('#pub_pwd_ag').val());
+        if (pub_pwd_ag != pub_pwd) {
+            checkpwdag = 1;
+            set_msg('pub_pwd_ag', 0, '<{$LANG.front.signup.a23}>');
+        }
+
+        if (checkpwdag == 0) {
+            set_msg('pub_pwd_ag', 1, '');
+        }
+        var res = checkpwd + checkpwdag + checkemail;
+        if (res > 0) {
+            return false;
+        } else {
+            $.ajax({
+                type: "post",
+                url: "<{$smarty.const.BASE_URL}>/process.php",
+                data: $("#form1").serialize(),
+                async: false,
+                success: function (data) {
+                    if (data == 0) {
+                        alert('<{$LANG.front.signup.a24}>')
+                    }
+                    if (data == 5) {
+                        alert('Email Server Error')
+                    }
+                    if (data == 2) {
+                        alert('<{$LANG.front.signup.a25}>');
+                    }
+                    if (data == 1) {
+                        var val = $("#emailval").val();
+                        var html = ' <p>An email has been sent to '+val+' Please verify your email by click the link in the message.</p><p>If you don’t receive an email, please check your spam box or email <a href="mailto:support@brandreward.com">support@brandreward.com</a> to get further help.</p>';
+                        $('#sign1').html(html);
+                        $('#h2').html('Email Verification Pending');
+                    }
+                }
+            });
+            return false;//one necessary step to prevent <form> from redirecting
+        }
+
+
+    }
+    function submit2() {
+
+//check site name
+        var checkSiteName = 0;
+        var pub_siteName = $.trim($('#pub_siteName').val());
+        if (pub_siteName == '') {
+            checkSiteName = 1;
+            set_msg('pub_siteName', 0, '<{$LANG.front.signup.a27}>');
+        }
+        if (checkSiteName == 0) {
+            set_msg('pub_siteName', 1, '');
+        }
+        //check your site
+
+        var checkSite = 0;
+        var pub_site = $.trim($('#pub_site').val());
+        if (pub_site == '') {
+            checkSite = 1;
+            set_msg('pub_site', 0, '<{$LANG.front.signup.a28}>');
+        }
+        if (checkSite == 0 && !pub_site.match(/^https?:\/\/[a-zA-Z0-9]+\.[a-zA-Z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/)) {
+            checkSite = 1;
+            set_msg('pub_site', 0, '<{$LANG.front.signup.a69}>');
+        }
+        if (checkSite == 0) {
+            set_msg('pub_site', 1, '');
+        }
+        //check first name
+        var checkFirstName = 0;
+        var pub_firstName = $.trim($('#pub_firstName').val());
+        if (pub_firstName == '') {
+            checkFirstName = 1;
+            set_msg('pub_firstName', 0, '<{$LANG.front.signup.a29}>');
+        }
+        if (checkFirstName == 0) {
+            set_msg('pub_firstName', 1, '');
+        }
+        //check  company
+        var checkCompany = 0;
+        var pub_company = $.trim($('#pub_company').val());
+        if (pub_company == '') {
+            checkCompany = 1;
+            set_msg('pub_company', 0, '<{$LANG.front.signup.a55}>');
+        }
+        if (checkCompany == 0) {
+            set_msg('pub_company', 1, '');
+        }
+        //check last name
+        var checkLastName = 0;
+        var pub_lastName = $.trim($('#pub_lastName').val());
+        if (pub_lastName == '') {
+            checkLastName = 1;
+            set_msg('pub_lastName', 0, '<{$LANG.front.signup.a30}>');
+        }
+        if (checkLastName == 0) {
+            set_msg('pub_lastName', 1, '');
+        }
+        //check addres1
+        var checkAddress1 = 0;
+        var pub_address1 = $.trim($('#pub_address1').val());
+        if (pub_address1 == '') {
+            checkAddress1 = 1;
+            set_msg('pub_address1', 0, '<{$LANG.front.signup.a31}>');
+        }
+        if (checkAddress1 == 0) {
+            set_msg('pub_address1', 1, '');
+        }
+        //check city
+//        var checkCity = 0;
+//        var pub_city = $.trim($('#pub_city').val());
+//        if (pub_city == '0') {
+//            checkCity = 1;
+//            set_msg('pub_city', 0, '<{$LANG.front.signup.a32}>');
+//        }
+//        if (checkCity == 0) {
+//            set_msg('pub_city', 1, '');
+//        }
+        //check zip code
+        var checkZipCode = 0;
+        var pub_zipCode = $.trim($('#pub_zipCode').val());
+        if (pub_zipCode == '') {
+            checkZipCode = 1;
+            set_msg('pub_zipCode', 0, '<{$LANG.front.signup.a33}>');
+        }
+        if (checkZipCode == 0) {
+            set_msg('pub_zipCode', 1, '');
+        }
+        //check country
+        var checkCountry = 0;
+        var pub_country = $('#pub_country').val();
+        if (pub_country == '') {
+            checkCountry = 1;
+            set_msg('pub_country', 0, '<{$LANG.front.signup.a34}>');
+        }
+        if (checkCountry == 0) {
+            set_msg('pub_country', 1, '');
+        }
+        //check phone number
+        var checkPhone = 0;
+        var pub_phone = $.trim($('#pub_phone').val());
+        if (pub_phone == '') {
+            checkPhone = 1;
+            set_msg('pub_phone', 0, '<{$LANG.front.signup.a35}>');
+        }
+        if (checkPhone == 0) {
+            set_msg('pub_phone', 1, '');
+        }
+        // check paypal email
+
+        var checkPaypal = 0;
+        var pub_paypal = $.trim($('#pub_paypal').val());
+
+        if (pub_paypal == '') {
+            checkPaypal = 1;
+            set_msg('pub_paypal', 0, '<{$LANG.front.signup.a36}>');
+        }
+
+        if (checkPaypal == 0 && !pub_paypal.match(/[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/)) {
+            checkPaypal = 1;
+            set_msg('pub_paypal', 0, '<{$LANG.front.signup.a37}>');
+        }
+
+        if (checkPaypal == 0) {
+            set_msg('pub_paypal', 1, '');
+        }
+        //check protocol
+        var checkpro = 0;
+        //console.log($("#form2").serialize());
+        var res = checkPaypal + checkCompany + checkPhone + checkCountry + checkZipCode  + checkAddress1 + checkLastName + checkFirstName + checkSite + checkSiteName + checkpro;
+        if (res > 0) {
+            return false;
+        } else {
+            $.ajax({
+                type: "post",
+                url: "<{$smarty.const.BASE_URL}>/process.php",
+                data: $("#form2").serialize(),
+//                data: $("#form2").serialize()+'&email=dylan@qq.com',
+                async: false,
+                success: function (data) {
+                    if (data == 0) {
+                        alert('<{$LANG.front.signup.a46}>')
+                    }else{
+                        $("#h2").remove();
+                        $("#top").css("margin-top", "100px");
+                        $("#sign2").css("display", "none");
+                        $("#sign3").show("slide");
+                        $('#upid').val(data);
+                    }
+
+                }
+            });
+            return false;//one necessary step to prevent <form> from redirecting
+
+        }
+
+
+    }
+
+    function submit3() {
+        if(!$('#pub_isc').is(':checked')){
+            alert('Pleace Checked Privacy Policy');
+            return false;
+        }
+        var gid = '';
+        $(".cate").each(function(){
+            if($(this).is(':checked')){
+                gid+=','+$(this).data('val');
+            }
+        });
+        var geoval = '';
+        $("#f_phone option").each(function(i){
+            if($(this).is(":selected")){
+                if($(this).val() != ''){
+                    geoval+= '+'+$(this).val();
+                }
+            }
+        });
+        var siteval= '';
+        $("#siteop option").each(function(i){
+            if($(this).is(":selected")){
+                if($(this).val() != ''){
+                    siteval+= '+'+$(this).val();
+                }
+            }
+        });
+        if($('#pub_contentCategory4').val() != ''){
+
+            siteval+='+'+$.trim($('#pub_contentCategory4').val());
+        }
+        var WaysOfTraffic = ''
+        $(".dt_WaysOfTraffic input").each(function(i){
+            if($(this).is(':checked')){
+                WaysOfTraffic+='+'+$(this).val();
+            }
+        });
+        if($('#pub_otherWaysOfTraffic').val() != ''){
+            WaysOfTraffic+='+'+$.trim($('#pub_otherWaysOfTraffic').val());
+        }
+        var ProfitModel = ''
+        $(".dt_ProfitModel input").each(function(i){
+            if($(this).is(':checked')){
+                ProfitModel+='+'+$(this).val();
+            }
+        });
+        var pub_staffNumber =  $('input:radio[name="pub_staffNumber"]:checked').val();
+        var pub_contentProduction =  $('input:radio[name="pub_contentProduction"]:checked').val();
+        var CurrentNetwork = $('#pub_currentNetwork').val();
+        var upid = $('#upid').val();
+        var data = {
+            'act':'signPage3',
+            'CategoryId':gid.substr(1,gid.length),
+            'upid':upid,
+            'SiteType':siteval.substr(1,siteval.length),
+            'GeoBreakdown':geoval.substr(1,geoval.length),
+            'StaffNumber':pub_staffNumber,
+            'ProfitModel':ProfitModel.substr(1,ProfitModel.length),
+            'WaysOfTraffic':WaysOfTraffic.substr(1,WaysOfTraffic.length),
+            'ContentProduction':pub_contentProduction,
+            'CurrentNetwork':CurrentNetwork
+        }
+        var error = 0;
+        $.each(data, function(i,val){
+            if(val == "" || typeof(val) == "undefined"){
+                error = 1;
+                if($('#'+i+' .error').length <= 0) {
+                    var html = '<label class="control-label error"><font color="red">* can not be empty</font></label>';
+                    $('#'+i).prepend(html);
+                }
+            }else{
+                if($('#'+i+' .error').length>=0)
+                {
+                    $('#'+i +' .error').remove();
+                }
+            }
+        });
+        if(error == 1){
+            return false;
+        }
+        $.ajax({
+            type:"post",
+            url: "<{$smarty.const.BASE_URL}>/process.php",
+            data:data,
+            async:false,
+            success: function(res){
+                if (res == 1) {
+                    layer.ready(function(){
+                        var info = "Thanks</br> Your application is now in the hands of the Brandreward Approvals Team.<br><br>We'll check over your site to decide whether it's suitable for our service. Once you're approved, one of our global account managers will be in touch within the next 48 hours.<br><br>Brandreward is a place where you can work with some of the world's best brands and start to grow your revenue from your amazing content . We are here to help you, including the creation of a more customized solution to fit your content business needs, walk you through your personal dashboard and help answer any other questions you may have !";
+                        layer.open({
+                            type: 1,
+                            title: '<h2>&nbsp;</h2><br>',
+                            area: ['1000px', '420px'],
+                            content: '<div style="font-weight:bold;padding-left:20px;padding-right:10px;margin:30px auto;color: #60738d;font-size:15px;font-weight: 700;">' +
+                            '<h2 style="font-weight:400">Application submitted</h2><br/>'+info+'<br/><br/>'+
+                            'Brandreward Team<br><br>'+
+                            '<div class="layui-layer-btn layui-layer-btn-" style="text-align: center;padding-top: 0px;"><a style="border-color: #60738d;background-color: #60738d;" class="layui-layer-btn0" href="<{$smarty.const.BASE_URL}>">Sucess</a></div>' +
+                            '</div>',
+                        });
+                        $('.layui-layer-content').css('overflow-x','hidden');
+                        $('.layui-layer-content').css('overflow-y','hidden');
+                    });
+                    /* layer.ready(function(){
+                        var info = "Thanks for chosing Brandreward. We've already sent you an email automatically. Please check it and follow the next step.";
+                        layer.open({
+                            type: 1,
+                            title: '<h2>&nbsp;</h2><br>',
+                            area: ['500px', '318px'],
+                            content: '<div style="font-weight:bold;padding-left:10px;padding-right:10px;margin:30px auto;text-align: center;color: #60738d;font-size: 14px;font-weight: 700;">' +
+                            '<h2>Congratulations!</h2><br/><br>You have successfully created your Brandreward account. Go ahead and login to begin your monetization journey with us!<br/><br/>'+
+                            'The Brandreward Team<br><br>'+
+                            '<div class="layui-layer-btn layui-layer-btn-" style="text-align: center;"><a style="border-color: #60738d;background-color: #60738d;" class="layui-layer-btn0" href="<{$smarty.const.BASE_URL}>">Close</a></div>' +
+                            '</div>',
+                        });
+                        $(".layui-layer-content").css("height","auto");
+                        $('.layui-layer-content').css('overflow-x','hidden');
+                        $('.layui-layer-content').css('overflow-y','hidden');
+                    }); */
+                }
+                if (res == 2){
+                    alert("<{$LANG.front.signup.a45}>");
+                }
+            }
+        });
+
+    }
+
+
+    function set_msg(id, res, msg) {
+        var fgroup = $('#' + id).parent().parent();
+
+        if (id == 'pub_traffic' || id == 'pub_contentCategory' || id == 'pub_categoryOfContent') {
+            fgroup = $('#' + id);
+        }
+        if (res == 0) {
+            fgroup.removeClass('has-error has-success');
+            fgroup.addClass('has-error');
+            if (fgroup.find('label')[0]) {
+                fgroup.find('label').html(msg);
+            } else {
+                if (id != 'login-account') {
+                    fgroup.prepend('<label class="control-label" style="padding-left:30%">' + msg + '</label>');
+                } else {
+                    fgroup.prepend('<label class="control-label" style="padding:0 1%">' + msg + '</label>');
+                }
+
+            }
+        }else if(res == 99){
+            fgroup.removeClass('has-error has-success');
+            fgroup.addClass('has-error');
+            if (fgroup.find('label')[0]) {
+                fgroup.find('label').html(msg);
+            } else {
+                if (id != 'login-account') {
+                    fgroup.prepend('<label class="control-label" style="padding-left:11%">' + msg + '</label>');
+                } else {
+                    fgroup.prepend('<label class="control-label" style="padding:0 1%">' + msg + '</label>');
+                }
+
+            }
+        }
+        else {
+            fgroup.removeClass('has-error has-success');
+            fgroup.addClass('has-success');
+            if (fgroup.find('label')[0]) {
+                fgroup.find('label').remove();
+            }
+        }
+    }
+</script>
+<{include file="front_block_footer.html"}>

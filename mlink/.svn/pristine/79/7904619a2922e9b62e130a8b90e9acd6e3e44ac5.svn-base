@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- <link rel="icon" href="../../favicon.ico"> -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <title><{if $title}><{$title}><{else}>BrandReward<{/if}></title>
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-reset.css" rel="stylesheet">
+    <!--external css-->
+    <link href="css/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="css/table-responsive.css" rel="stylesheet" />
+    <!--right slidebar-->
+    <link href="css/slidebars.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style-responsive.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/assets/bootstrap-datepicker/css/datepicker.css" />
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 tooltipss and media queries -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<section id="container" class="">
+    <!--sidebar end-->
+    <header class="header" style="padding:0 0px;">
+        <{include file="b_block_banner.html"}>
+    </header>
+    <section id="main-content">
+        <section class="wrapper">
+            <!-- page start-->
+            <div class="row">
+                <div id="content" class="col-lg-12">
+                    <div>
+                        <ul class="breadcrumb">
+                            <li>
+                                <a href="<{$smarty.const.BASE_URL}>/index.php">Home</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" style="text-decoration:none;">Publisher List</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            Search(
+                            <b style="color: forestgreen">Active:<{$a.c}></b>|
+                            <b style="color: #ff0000">Inactive:<{$i.c}></b>
+                            <b style="color: darkgray">Unaudited:<{$u.c}></b>|
+                            <b>Total:<{$count}></b>)
+                        </header>
+                        <div class="panel-body">
+                            <form class="form-horizontal" role="form">
+
+                                <div class="form-group">
+                                    <label class="col-lg-2 col-sm-2 control-label">Start Date</label>
+                                    <div class="col-lg-10 col-xs-11">
+
+                                        <div data-date-viewmode="years" data-date-format="yyyy-mm-dd" data-date="<{$stime}>" class="input-append date dpYears">
+                                            <input type="text" readonly=""  size="16" name="stime" value="<{$stime}>" class="form-control">
+                                              <span class="input-group-btn add-on">
+                                                <button class="btn btn-danger" type="button"><i class="fa fa-calendar"></i></button>
+                                              </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-2 col-sm-2 control-label">End Date</label>
+                                    <div class="col-lg-10 col-xs-11">
+
+                                        <div data-date-viewmode="years" data-date-format="yyyy-mm-dd" data-date="<{$etime}>" class="input-append date dpYears">
+                                            <input type="text" readonly=""  name="etime"  value="<{$etime}>" size="16" class="form-control">
+                                              <span class="input-group-btn add-on">
+                                                <button class="btn btn-danger" type="button"><i class="fa fa-calendar"></i></button>
+                                              </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="site" class="col-lg-2 col-sm-2 control-label">Site</label>
+                                    <div class="col-lg-10">
+                                        <input type="text" class="form-control" id="site" name="na" placeholder="Name/Alias/Domain" value="<{$na}>">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" value="<{$categories}>" name="categories" class="categories">
+                                    <label for="category" class="col-lg-2 col-sm-2 col-xs-12 control-label">Category</label>
+                                    <div class="col-lg-10 col-xs-12 btn-group">
+                                        <input type="text"  value="Choose Categories" class="multiselect dropdown-toggle btn btn-default col-xs-12" data-toggle="dropdown" title="Category" />
+                                        <ul id="category" class="multiselect-container dropdown-menu" onclick="event.stopPropagation();">
+                                            <{foreach item=cate key=id from=$category}>
+                                            <li>
+                                                <a href="javascript:void(0);">
+                                                <label class="checkbox">
+                                                <input type="checkbox"
+                                                <{if $sel_cate }>
+                                                <{foreach from=$sel_cate item=sc}>
+                                                <{if $sc == $id}> checked <{/if}>
+                                                <{/foreach}>
+                                                <{/if}>
+                                                class="category" id="<{$id}>" value="<{$id}>"><{$cate}></label></a></li>
+                                            <{/foreach}>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label col-lg-2" for="Status">Status</label>
+                                    <div class="col-lg-10">
+                                        <select class="form-control m-bot15" id="Status" name="Status">
+                                            <option value="" <{if $Status eq 'All'}>selected="selected"<{/if}> >All</option>
+                                            <option value="Active" <{if $Status eq 'Active'}>selected="selected"<{/if}> >Active</option>
+                                            <option value="Inactive" <{if $Status eq 'Inactive'}>selected="selected"<{/if}> >Inactive</option>
+                                            <option value="Unaudited" <{if $Status eq 'Unaudited'}>selected="selected"<{/if}> >Unaudited</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label col-lg-2" for="Manager">Manager</label>
+                                    <div class="col-lg-10">
+                                        <select class="form-control m-bot15" id="Manager" name="Manager">
+                                            <option value="" >All</option>
+                                            <{foreach from=$managers item=manager}>
+                                            <option value="<{$manager}>" <{if $Manager eq $manager}>selected="selected"<{/if}> > <{$manager}></option>
+                                            <{/foreach}>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label col-lg-2" for="stype">Site Type</label>
+                                    <div class="col-lg-10">
+                                        <select class="form-control m-bot15" id="stype" name="stype">
+                                            <option value="">All</option>
+                                            <option value="Content" <{if $stype == 'Content'}>selected<{/if}>>Content</option>
+                                            <option value="Promotion" <{if $stype == 'Promotion'}>selected<{/if}>>Promotion</option>
+                                            <option value="Mixed" <{if $stype == 'Mixed'}>selected<{/if}>>Mixed</option>
+                                            <option value="None" <{if $stype == 'None'}>selected<{/if}>>None</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label col-lg-2" for="GeoBreakdown">Traffic Demographics</label>
+                                    <div class="col-lg-10">
+                                        <select class="form-control m-bot15" id="GeoBreakdown" name="GeoBreakdown">
+                                            <option value="">All</option>
+                                            <{foreach from=$countryOption item=c key=k}>
+                                            <option value="<{$k}>" <{if $gbd == $k}>selected<{/if}>><{$c}></option>
+                                            <{/foreach}>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label col-lg-2" for="pagesize">PageSize</label>
+                                    <div class="col-lg-10">
+                                        <select class="form-control m-bot15" id="pagesize" name="pagesize">
+                                            <option value="10" <{if $pagesize == '10'}>selected<{/if}>>10</option>
+                                            <option value="20" <{if $pagesize == '20'}>selected<{/if}>>20</option>
+                                            <option value="50" <{if $pagesize == '50'}>selected<{/if}>>50</option>
+                                            <option value="100" <{if $pagesize == '100'}>selected<{/if}>>100</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label col-lg-2" for="sort">Sort By</label>
+                                    <div class="col-lg-10">
+                                        <select class="form-control m-bot15" id="sort" name="sort">
+                                            <option value="AddTime" <{if $sort == 'AddTime'}>selected<{/if}>>AddTime</option>
+                                            <option value="commission" <{if $sort == 'commission'}>selected<{/if}>>Commission</option>
+                                            <option value="click" <{if $sort == 'click'}>selected<{/if}>>Clicks</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-offset-2 col-lg-10">
+                                        <button type="submit" class="btn btn-danger">Search</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+            <!-- page start-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            Result
+                        </header>
+                        <div class="panel-body">
+                            <section id="no-more-tables">
+                                <table class="table table-bordered table-striped table-condensed cf">
+                                    <thead class="cf">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Status</th>
+                                        <th>Site Type</th>
+                                        <th>Domain</th>
+                                        <th>ApiKey</th>
+                                        <th>Click</th>
+                                        <th>Commission</th>
+                                        <th class="numeric">30Days Click</th>
+                                        <th class="numeric">30Days Commission</th>
+                                        <th class="numeric">JsCode Api User Log</th>
+                                        <th class="numeric">Violations Warning</th>
+                                        <th>Level</th>
+                                        <th>Manager</th>
+                                        <th class="hidden-xs">Detail</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <{foreach from=$list item=publisher}>
+                                    <tr data-id ='<{$publisher.ID}>'>
+                                        <td data-title="Name"><{if $publisher.Name != ''}><{$publisher.Name}><{else}>[NONE]<{/if}></td>
+                                        <td data-title="Email"><{if $publisher.Email != ''}><{$publisher.Email}><{else}>[NONE]<{/if}></td>
+                                        <td data-title="Status"><{if $publisher.Status != ''}><{$publisher.Status}><{else}>[NONE]<{/if}></td>
+                                        <td data-title="Site Type"><{if $publisher.SiteOption != ''}><{$publisher.SiteOption}><{else}>[NONE]<{/if}></td>
+                                        <td data-title="Domain"><{if $publisher.Domain != ''}><{$publisher.Domain}><{else}>[NONE]<{/if}></td>
+                                        <td data-title="ApiKey"><{if $publisher.ApiKey != ''}><{$publisher.ApiKey}><{else}>[NONE]<{/if}></td>
+                                        <td data-title="Click"><{if $publisher.Click != ''}><{$publisher.Click}><{else}>[NONE]<{/if}></td>
+                                        <td data-title="Commission"><{if $publisher.Revenue != ''}><{$publisher.Revenue}><{else}>[NONE]<{/if}></td>
+                                        <td data-title="30Days Click"><{if $publisher.Click30Days != ''}><{$publisher.Click30Days}><{else}>[NONE]<{/if}></td>
+                                        <td data-title="30Days Commission"><{if $publisher.Revenue30Days != ''}><{$publisher.Revenue30Days}><{else}>[NONE]<{/if}></td>
+                                        <td data-title="JsCode">
+                                            <{$publisher.JsLastTime}>
+                                            <div style="margin-top:5px;">
+                                                <a href="javascript:void(0);" style="text-decoration:none;" onclick="showModal('<{$publisher.ID}>')">
+                                                    <span style="font-size: 12px;" class="label label-primary">API Log</span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td data-title="Violations">
+                                            <{if $publisher.warning eq 1}>
+                                            <div>
+                                                <a href="javascript:void(0);" style="text-decoration:none;" class="winfo" data-name="<{$publisher.Name}>" data-id="<{$publisher.ID}>">
+                                                    <span style="font-size: 12px;background-color: red;" class="label label-primary wi<{$publisher.ID}>">Violation Warning</span></a>
+                                            </div>
+                                            <{elseif $publisher.warning eq 0}>
+                                            <div >
+                                                <a href="javascript:void(0);" style="text-decoration:none;" class="winfo" data-name="<{$publisher.Name}>" data-id="<{$publisher.ID}>">
+                                                    <span style="font-size: 12px;background-color: #ddd;" class="label label-primary wi<{$publisher.ID}>">Violations Warning</span>
+                                                </a>
+                                            </div>
+                                            <{else}>
+                                            [NONE]
+                                            <{/if}>
+                                        </td>
+                                        <td data-title="Level"><{$publisher.Career}></td>
+                                        <td data-title="Manager"><{$publisher.Manager}></td>
+                                        <td class="hidden-xs" data-title="Detail">
+                                            <a class="detail" href="javascript:void(0);"  data-name="<{$publisher.Name}>" data-id="<{$publisher.ID}>" style="cursor: pointer" target="dpl">Detail</a>
+                                        </td>
+                                    </tr>
+                                    <{/foreach}>
+                                    </tbody>
+                                </table>
+                            </section>
+                        </div>
+                        <div class="panel-footer">
+                            <{$pageHtml}>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- page end-->
+        </section>
+    </section>
+    <!--main content end-->
+    <!-- Right Slidebar start -->
+    <!-- Right Slidebar end -->
+    <!--footer start-->
+    <!--footer end-->
+</section>
+
+<!-- js placed at the end of the document so the pages load faster -->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script class="include" type="text/javascript" src="js/jquery.dcjqaccordion.2.7.js"></script>
+<script src="js/jquery.scrollTo.min.js"></script>
+<script src="js/respond.min.js" ></script>
+<script src="js/jquery.nicescroll.js" type="text/javascript"></script>
+<!--right slidebar-->
+<script src="js/slidebars.min.js"></script>
+<!--common script for all pages-->
+<script src="js/common-scripts.js"></script>
+<script type="text/javascript" src="css/assets/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="css/assets/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<!--this page  script only-->
+<script src="js/advanced-form-components.js"></script>
+</body>
+</html>
+<div class="modal fade" id="urldiv" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title" id="dlable"></h2>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row udet">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="winfo" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title" id="exampleModalLabel1"></h2>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="box col-md-12" style="padding-left: 0px;padding-right: 0px;">
+                            <div class="box-inner homepage-box">
+                                <div id="tbzone1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="logModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Log Info</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table  table-bordered" id="logbody">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery.zclip.min.js"></script>
+<script>
+    $('.detail').on('click',function(){
+        var id = $(this).data('id');
+        var name = $(this).data('name');
+        $('.udet').html('');
+        $('#dlable').html('Publisher Detail for '+name);
+        $.ajax({
+            type: "GET",
+            url: 'b_publisher_edit.php',
+            data: {'det':1,'id':id},
+            success: function(data){
+                $('.udet').html(data);
+            }
+        });
+        $('#urldiv').modal();
+    })
+    function urldiv(){
+        $('#addform')[0].reset();
+        $('#addBlockModal').modal();
+    }
+    $('.winfo').on('click',function(){
+        var id = $(this).data('id');
+        var name = $(this).data('name');
+        $('#exampleModalLabel1').html('Violations Warning Info For '+name);
+        $('#tbzone1').html('<table id="example1" class="ui celled table" cellspacing="0" width="100%"></table>');
+        $('#example1').DataTable({
+            "bServerSide": true,
+            "bProcessing": true,
+            "iDisplayLength": 20,
+            "bPaginage":true,
+            "aLengthMenu": [10, 20, 50, 100],
+            'bFilter': false,
+            'pagingType':'full_numbers',
+            "ajax": {
+                "url": "b_publisher.php",
+                "type":'POST',
+                "data": {
+                    "table1":1,
+                    "id":id
+                }
+            },
+            columns: [
+                { "data": "account","title":"Publisher Account","bSortable": false},
+                { "data": "aname","title":"Network","bSortable": false},
+                { "data": "objpname","title":"Program","bSortable": false},
+                { "data": "objsname","title":"Store","bSortable": false},
+                { "data": "Remark","title":"Remark","bSortable": false},
+                { "data": "AddUser","title":"AddUser","bSortable": false},
+                { "data": "Add_Violation_Warning","title":"Violation Warning","bSortable": false},
+                { "data": "AddTime","title":"AddTime","bSortable": false},
+                { "data": "ID","title":"Operation", "bSortable": false,"render":function(data,type,full,meta){
+                    var val = '<button class="btn btn-default w'+full.ID+'" onclick="delb('+full.ID+')" style="margin-left: 10px;background-color: red;color: white;">Delete</button>';
+                    return val;
+                }}
+            ]
+        })
+        $('#winfo').modal();
+    })
+    function delw(id){
+        var cls = '.w'+id;
+        var index = $(cls).parent().parent().index();
+        if(confirm("Whether you want to delete?"))
+        {
+            $.ajax({
+                type: "post",
+                url: "b_publisher.php",
+                data:{"wid":id},
+                async: false,
+                success: function (res) {
+                    if(res == 1){
+                        alert('Succee');
+                        $('#example tbody tr').eq(index).remove();
+                    }else{
+                        alert('Failed');
+                    }
+                },
+                error:function(){
+                    alert('Failed!');
+                }
+            });
+        }
+    }
+    function delb(id){
+        var cls = '.w'+id;
+        var index = $(cls).parent().parent().index();
+        if(confirm("Whether you want to delete?"))
+        {
+            $.ajax({
+                type: "post",
+                url: "b_publisher.php",
+                data:{"bid":id},
+                async: false,
+                success: function (res) {
+                    if(res == 1){
+                        alert('Succee');
+                        $('#example1 tbody tr').eq(index).remove();
+                    }else{
+                        alert('Failed');
+                    }
+                },
+                error:function(){
+                    alert('Failed!');
+                }
+            });
+        }
+    }
+    function showModal(id){
+        var data = {uid:id,log:1}
+        $.ajax({
+            type:"post",
+            url:"b_publisher.php",
+            data:data,
+            success: function(res){
+                if(res == 0){
+                    alert('No Data');
+                    return false;
+                }else{
+                    var json = $.parseJSON(res);
+                    var html = '-';
+                    $.each(json,function(i){
+                        html+='<tr><td align="center">'+json[i]['act']+'</td><td align="center">'+json[i]['updatetime']+'</td></tr>';
+                    })
+                    $('#logbody').html('');
+
+                    $('#logbody').append(html);
+
+                    $('#logModal').modal('show');
+                }
+            }
+        });
+    }
+    $('.open-logs').click(function(){
+        var id = $(this).attr('id');
+        var log = $(".log-"+id);
+        if(log.attr('status') == 'open'){
+            log.css('display','none');
+            log.attr('status','close');
+        }else{
+            log.css('display','');
+            log.attr('status','open');
+        }
+    });
+
+    function get_category(){
+        var cate='';
+        var cc =$("input[class='category']:checked");
+        for(var i=0;i<cc.length;i++){
+            if(cc[i].checked){
+                cate += cc[i].value+',';
+            }
+        }
+        cate=cate.substring(0,cate.length-1);
+        $('.categories').val(cate);
+    }
+
+    $(".category").change(function () {
+        get_category();
+    });
+
+    function select_opt(val)
+    {
+        switch (val)
+        {
+            case 'all':
+                $('.category').prop('checked',true);
+                break;
+            case 'none':
+                $('.category').prop('checked',false);
+                break;
+            case 'confirm':
+                $('.btn-group').removeClass('open');
+                break;
+            default:
+                break;
+        }
+        get_category();
+    }
+
+    $('.down').click(function(){
+        var value = $('#form_search').serialize();
+        window.open('<{$smarty.const.BASE_URL}>/b_publisher.php'+'?act=down&'+value);
+    });
+    $('#Publisher').on('change',function(){
+        var val = $(this).val();
+        $('#pid').val(val);
+    })
+</script>

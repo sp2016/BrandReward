@@ -1,0 +1,194 @@
+<div class="page">
+  <h2 class="clearup">Advertiser API</h2>
+  <h3><{$LANG.front.doc_transaction.a2}></h3>
+  <pre><{$smarty.const.API_URL}>?act=advertiser.advertiser_list&key=[Site ID]&user=[Login User Name]</pre>
+  <h3><{$LANG.front.doc_transaction.a3}></h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><{$LANG.front.doc_transaction.a4}></th>
+        <th><{$LANG.front.doc_transaction.a5}></th>
+        <th><{$LANG.front.doc_transaction.a6}></th>
+        <th><{$LANG.front.doc_transaction.a7}></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a8}></td>
+        <td><{$LANG.front.doc_transaction.a9}></td>
+        <td><{$LANG.front.doc_transaction.a10}></td>
+        <td><{$LANG.front.doc_transaction.a11}></td>
+      </tr>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a20}></td>
+        <td><{$LANG.front.doc_transaction.a21}></td>
+        <td><{$LANG.front.doc_transaction.a22}></td>
+        <td><{$LANG.front.doc_transaction.a23}></td>
+      </tr>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a24}></td>
+        <td><{$LANG.front.doc_transaction.a25}></td>
+        <td><{$LANG.front.doc_transaction.a26}></td>
+        <td><{$LANG.front.doc_transaction.a27}></td>
+      </tr>
+      <tr>
+        <td>page</td>
+        <td>N</td>
+        <td>Int</td>
+        <td>Specifies the page of the results set that is currently being viewed.(default:1)</td>
+      </tr>
+      <tr>
+        <td>pagesize</td>
+        <td>N</td>
+        <td>Int</td>
+        <td>Specifies the number of records to be viewed per page.(default:100)</td>
+      </tr>
+      <tr>
+        <td>outformat</td>
+        <td>N</td>
+        <td>String</td>
+        <td>Output content format (default:txt , option:'txt','json','xml','csv')</td>
+      </tr>
+      <tr>
+        <td>country</td>
+        <td>N</td>
+        <td>String</td>
+        <td>Only show the content feed can be used in the country,use country code include 'ISO 3166-1'</td>
+      </tr>
+      <tr>
+        <td>category</td>
+        <td>N</td>
+        <td>String</td>
+        <td>Category id (multi select: 1,2,3)</td>
+      </tr>
+      <tr>
+        <td>recommend</td>
+        <td>N</td>
+        <td>Int</td>
+        <td>Return recommend data by value: 1</td>
+      </tr>
+      <tr>
+        <td>favor</td>
+        <td>N</td>
+        <td>Int</td>
+        <td>Only show your favorite advertiser</td>
+      </tr>
+      <tr>
+        <td>domain</td>
+        <td>N</td>
+        <td>String</td>
+        <td>Exact matching domain</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3><{$LANG.front.doc_transaction.a29}></h3>
+  <pre><{$smarty.const.API_URL}>?act=advertiser.advertiser_list&key=eccbc87e4b5ce2fe28308fd9f2a7baf3&user=account1</pre>
+
+  <h3>Parameters Response</h3>
+  <h4>API info</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Parameters</th>
+        <th>Data Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>PageTotal</td>
+        <td>Int</td>
+        <td>Total number of pages</td>
+      </tr>
+      <tr>
+        <td>PageNow</td>
+        <td>Int</td>
+        <td>The current page</td>
+      </tr>
+      <tr>
+        <td>Num</td>
+        <td>Int</td>
+        <td>Total number of data</td>
+      </tr>
+      <tr>
+        <td>NumReturn</td>
+        <td>Int</td>
+        <td>Number of data on the current page</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>Data info</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Parameters</th>
+        <th>Data Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ID</td>
+        <td>Int</td>
+        <td>Unique Link ID per recorded advertiser</td>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td>String</td>
+        <td>Advertiser name</td>
+      </tr>
+      <tr>
+        <td>Image</td>
+        <td>String</td>
+        <td>advertiser logo url</td>
+      </tr>
+      <tr>
+        <td>Countries</td>
+        <td>String</td>
+        <td>advertiser marketing country list</td>
+      </tr>
+      <tr>
+        <td>Domains</td>
+        <td>String</td>
+        <td>Adveritser domain list</td>
+      </tr>
+      <tr>
+        <td>Category</td>
+        <td>String</td>
+        <td>Advertiser category list</td>
+      </tr>
+    </tbody>
+  </table>
+
+<h3><{$LANG.front.doc_transaction.a30}></h3>
+  <pre>
+@PageTotal:6  @PageNow:1  @Num:524  @NumReturn:100  
+ID  Name  Image Countries Domains Category
+88206 1-800-GET-LENS    "my","ch","ie","in","it","nl","tw","es","nz","ph","au","ca","th","id","cn","hk","se","sg","at","gb","us","pk","dk","jp","de"  "1800getlens.com" "Cell Phones & Mobile","Consumer Electronics","Health & Pharmacy","Beauty & Hair"
+91553 121carhire    "gb"  "121carhire.com"  "Automotive","Cell Phones & Mobile","Computer & Software","Consumer Electronics","Education","Family & Children","Women's Fashion","Men's Fashion","Women's Accessories","Men's Accessories","Banking & Financial Services","Loan & Other Financial Services","Insurance & Legal","Groceries & Flowers & Gifts","Food & Spirits & Tobacco","Betting & Gaming","Health & Pharmacy","Beauty & Hair","Home & Garden","Jewelry & Watches","Motorcycle","Music & TV","News, Books & Magazines","Online Services","Pets","Real Estate","Self-Help & Dating","Shopping Malls","Sports & Fitness","Toys & Hobbies","Air Travel","Accomodation & Rentals & Vacation","Outdoor Activities","Cameras & Photo","Career & Employment","Business Solutions","Green (All Verticals)","Arts & Entertainment","Military","Non-Profit","Other"
+13218 123 REFILLS http://www.brandreward.com/img/adv_logo/us-95413218135.jpg  "us","ca" "123refills.net"  "Computer & Software","Consumer Electronics"
+82790 13Deals http://www.brandreward.com/img/adv_logo/us-37182790731.jpg  "us","ca" "13deals.com" "Computer & Software","Consumer Electronics"
+90081 1ink  http://www.brandreward.com/img/adv_logo/us-46790081714.png  "us"  "1ink.com"  "Computer & Software","Consumer Electronics","Cameras & Photo","Business Solutions"
+167004  1pmobile    "gb"  "1pmobile.com"  "Automotive","Cell Phones & Mobile","Computer & Software","Consumer Electronics","Education","Family & Children","Women's Fashion","Men's Fashion","Women's Accessories","Men's Accessories","Banking & Financial Services","Loan & Other Financial Services","Insurance & Legal","Groceries & Flowers & Gifts","Food & Spirits & Tobacco","Betting & Gaming","Health & Pharmacy","Beauty & Hair","Home & Garden","Jewelry & Watches","Motorcycle","Music & TV","News, Books & Magazines","Online Services","Pets","Real Estate","Self-Help & Dating","Shopping Malls","Sports & Fitness","Toys & Hobbies","Air Travel","Accomodation & Rentals & Vacation","Outdoor Activities","Cameras & Photo","Career & Employment","Business Solutions","Green (All Verticals)","Arts & Entertainment","Military","Non-Profit","Other"
+151969  247homerescue   "gb"  "247homerescue.co.uk" "Cell Phones & Mobile","Consumer Electronics","Loan & Other Financial Services","Insurance & Legal","Home & Garden","Real Estate","Shopping Malls","Business Solutions","Green (All Verticals)"
+81733 2inks http://www.brandreward.com/img/adv_logo/us-57781733951.jpg  "us","ca" "2inks.com" "Computer & Software","Consumer Electronics"
+97327 365 Games http://www.brandreward.com/img/adv_logo/uk-67197327538.png  "gb"  "365games.co.uk"  "Computer & Software","Consumer Electronics","Family & Children","Women's Fashion","Groceries & Flowers & Gifts","Home & Garden","News, Books & Magazines","Pets","Shopping Malls","Toys & Hobbies","Business Solutions"
+96962 365ink    "gb"  "365ink.co.uk"  "Cell Phones & Mobile","Consumer Electronics","Business Solutions"
+145655  3fvape    "us","ca" "3fvape.com"  "Computer & Software","Consumer Electronics"
+88249 4 Wheel Parts http://www.brandreward.com/img/adv_logo/us-25388249976.png  "us","ca" "4wheelparts.com" "Automotive","Computer & Software","Consumer Electronics"
+96862 499Inks http://www.brandreward.com/img/adv_logo/us-20696862421.png  "ca","us" "499inks.com" "Computer & Software","Consumer Electronics"
+88610 4Wheel Drive  http://www.brandreward.com/img/adv_logo/us-81988610444.png  "au","jp","sg","ca","th","tw","us","nl","nz","pk","hk","ph" "4wd.com" "Automotive","Computer & Software","Consumer Electronics"
+2937  888Sport  http://www.brandreward.com/img/adv_logo/uk-6262937302.png "gb"  "888sport.com"  "Cell Phones & Mobile","Betting & Gaming","Online Services","Business Solutions","Arts & Entertainment"
+91156 a4c http://www.brandreward.com/img/adv_logo/us-94291156914.png  "pk","ph","au","at","hk","in","id","ie","it","jp","gb","sg","ca","es","cn","se","ch","my","tw","th","dk","us","nl","fr","nz","de" "a4c.com" "Automotive","Cell Phones & Mobile","Computer & Software","Consumer Electronics","Women's Accessories","Men's Accessories","Jewelry & Watches"
+177780  ablegrid    "us","ca" "ablegrid.com"  "Computer & Software","Consumer Electronics"
+95508 absolutetoner   "us","ca" "absolutetoner.com" "Computer & Software","Consumer Electronics"
+109314  adoramapix  http://www.brandreward.com/img/adv_logo/us-131109314230.jpg "ch","nz","ie","jp","ca","in","at","gb","th","it","fr","es","au","nl","se","sg","dk","ph","hk","de","tw","us" "adoramapix.com"  "Cameras & Photo","Computer & Software"
+89281 advanceautoparts  http://www.brandreward.com/img/adv_logo/us-48489281353.png  "us"  "shop.advanceautoparts.com" "Computer & Software","Automotive"
+10766 affiliatewindow   "us","ca","ie"  "affiliatewindow.com" "Automotive","Cell Phones & Mobile","Computer & Software","Consumer Electronics","Family & Children","Women's Fashion","Men's Fashion","Women's Accessories","Men's Accessories","Banking & Financial Services","Loan & Other Financial Services","Insurance & Legal","Groceries & Flowers & Gifts","Betting & Gaming","Health & Pharmacy","Beauty & Hair","Home & Garden","Music & TV","News, Books & Magazines","Online Services","Pets","Real Estate","Self-Help & Dating","Shopping Malls","Sports & Fitness","Toys & Hobbies","Accomodation & Rentals & Vacation","Cameras & Photo","Business Solutions","Green (All Verticals)","Arts & Entertainment","Non-Profit"
+22681 affordableandfast   "us","ca" "affordableandfast.com" "Computer & Software","Consumer Electronics"
+30077 aftershokz  http://www.brandreward.com/img/adv_logo/us-31630077221.png  "ca","us" "aftershokz.com"  "Computer & Software","Consumer Electronics"
+85849 ahalife http://www.brandreward.com/img/adv_logo/us-13985849491.png  "au","id","sg","ca","cn","es","se","tw","nl","nz","gb","de","hk","ph","in","ie","it","jp","ch","dk","th","fr","us","pk" "ahalife.com" "Cell Phones & Mobile","Consumer Electronics"
+  </pre>
+</div>

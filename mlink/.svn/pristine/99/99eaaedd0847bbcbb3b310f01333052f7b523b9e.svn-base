@@ -1,0 +1,172 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;">
+            <h1>Daily - Transaction</h1>
+        </div>
+        <div class="row" style="padding:20px 0;">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Chart</div>
+                    <div class="panel-body">
+                        <div id="chart" class="col-md-12 ">
+                            <canvas id="canvas" height="150" width="1000"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    <div class="panel-body">
+                        <form id="form_tran_search">
+                            <div class="col-lg-12 form-inline">
+                                <div class="form-group">
+                                    <input type="text" name="tran_from" class="form-control datepicker" id="tran_from" value="<{$smarty.get.tran_from}>" placeholder="Start date">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="tran_to" class="form-control datepicker" id="tran_to" value="<{$smarty.get.tran_to}>" placeholder="End date">&nbsp;
+                                    Type:
+                                    <select name="type"  class="form-control">
+                                        <option value="1" <{if $smarty.get.type == "1"}>selected<{/if}>>publisher</option>
+                                        <option value="2" <{if $smarty.get.type == "2"}>selected<{/if}>>all</option>
+                                    </select>&nbsp;
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="submit" class="btn b-primary" value="Search">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Commission
+                    <!--<span style="float: right"><a href="b_daily_sum.php" target="_blank">Commission by Day</a></span>-->
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped" id="table_aff">
+                            <thead>
+                            <tr>
+                                <th>Total</th>
+                                <th>Date</th>
+                                <{foreach from=$column item=title}>
+                                <th><{$title}></th>
+                                <{/foreach}>
+                            </tr>
+                            <tr>
+                                <th>$<{$all}></th>
+                                <th>Days Total</th>
+                                <{foreach from=$total item=t}>
+                                <th>$<{$t}></th>
+                                <{/foreach}>
+                            </tr>
+                            </thead>
+                            <{foreach from=$info item=data key=name}>
+                            <tr bgcolor="#87ceeb">
+                                <td>$<{$data.total}></td>
+                                <td><{$name}></td>
+                                <{foreach from=$column item=d}>
+                                <td><{if $warning.$name.$d && $warning.$name.$d > 1.25}><i style="color:#F44336"><{elseif $warning.$name.$d && $warning.$name.$d < 0.75}><i style="color:#9966CC"><{/if}>$<{$data.$d|default:"-"}><{if $warning.$name.$d > 1.25 || $warning.$name.$d < 0.75}></i><{/if}></td>
+                                <{/foreach}>
+                            </tr>
+                            <{/foreach}>
+
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="ava-program-modal" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title" id="exampleModalLabel">Available Program List</h2>
+                </div>
+                <div class="modal-body">
+                    <table  class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>program</th>
+                            <th>option</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<{assign var="data" value=$total|@json_encode}>
+<script>
+$('#table_aff td').mouseenter(function(){
+	$(this).css('background-color','#E8FF8C');
+	if($(this).next().next().next().next().next().next().next()){
+		$(this).next().next().next().next().next().next().next().css('background-color','#E8FF8C');
+	}
+});
+
+$('#table_aff td').mouseleave(function(){
+        $(this).css('background-color','');
+	if($(this).next().next().next().next().next().next().next()){
+                $(this).next().next().next().next().next().next().next().css('background-color','');
+        }
+
+});
+
+$('.datepicker').datetimepicker({
+    format:'yyyy-mm-dd',
+    todayBtn: true,
+    autoclose: 1,
+    viewSelect: 2
+});
+
+var data = <{$data}>;
+var createddate = [];
+var commission = [];
+// console.info(data);
+$.each(data,function(key,val){
+    createddate.push(key);
+    commission.push(Math.round(val*100)/100);
+});
+
+
+var lineChartData = {
+    labels : createddate,
+    datasets : [
+    {
+        label: "Line Chart",
+        fillColor : "rgba(151,187,205,0.2)",
+        strokeColor : "rgba(151,187,205,1)",
+        pointColor : "rgba(151,187,205,1)",
+        pointStrokeColor : "#fff",
+        pointHighlightFill : "#fff",
+        pointHighlightStroke : "rgba(151,187,205,1)",
+        data : commission
+    }
+    ]
+
+}
+
+window.onload = function(){
+                    var ctx = document.getElementById("canvas").getContext("2d");
+                    window.myLine = new Chart(ctx).Line(lineChartData, {
+                    responsive: true
+                });
+}
+</script>
+<{include file="b_block_footer.html"}>

@@ -1,0 +1,31 @@
+<?php
+
+class Payment extends LibFactory
+{
+    function getHistoryPayment(){
+        
+        $site = array();
+        $siteText = '';
+        if(isset($_SESSION['pubAccActiveList']['active'])){
+            foreach ($_SESSION['pubAccActiveList']['data'] as $temp){
+                $site[] = $temp['ApiKey'];
+            }
+        }
+        $siteText = implode('","', $site);
+        
+        $sql = 'SELECT p.`PaidDate`,DATE_FORMAT(p.`PaidDate`,"%Y-%m") AS PaidMonth,SUM(p.Amount) AS Commissions,p.Currency,p.Paymenttype,p.PaymentDetail,p.Status
+             FROM payments p where Site in ("'.$siteText.'") and status = "succ" GROUP BY PaidMonth ORDER BY PaidMonth desc';
+        $rs = $this->getRows($sql);
+        foreach ($rs as $key=>$value){
+            $rs[$key]['Commissions'] = number_format($value['Commissions'],2);
+            if($value['Paymenttype'] == 'bank'){
+                $rs[$key]['Paymenttype'] = 'wire transfer';
+            }
+            if($value['Status'] == 'succ'){
+                $rs[$key]['Status'] = 'success';
+            }
+        }
+        
+        return $rs;
+    }
+}

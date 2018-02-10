@@ -1,0 +1,117 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<style>
+.select2{width:100% !important}
+
+</style>
+
+<div class="container" style="margin-top:30px;width:98%">
+    <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+    <div class="row" style="padding:20px 0;">
+
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Search</div>
+                <div class="panel-body" >
+                    <form id="form_search">
+                        <div class="col-lg-12 form-inline" >
+                            <div class="form-group" style="min-width: 800px;">
+                                <!--Keyword:<input type="text" Name="Keyword" class="form-control" value="<{$search.Keyword}>" placeholder="Keyword">-->
+                                 
+                                <input type="text" Name="na" style="width: 300px;" class="form-control" value="<{$search.na}>" placeholder="Name/Alias/Domain">
+                                <label style="color: rgb(247,150,70);font-style:oblique">
+		                        &nbsp;&nbsp;&nbsp;<input style="margin-top: 2px;" type="checkbox" name="chk" value="1" <{if isset($search.chk) and $search.chk eq 1}>checked="checked"<{/if}>>
+		                        Only Check
+                                </label>
+                				<button type="submit" class="btn  btn-primary " style="float:right">Search</button>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <table id="example" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Publisher Info</th>
+                            <th>domainInformation</th>
+                            <th>registrantContact</th>
+                            <th>administrativeContact</th>
+                            <th>technicalContact</th>
+                            <{*<th>rawWhoisData</th>*}>
+                        </tr>
+                        </thead>
+                        <{foreach from=$list item=block}>
+                        <tr class="open-logs tr">
+                            <td>
+                                Name:<{$block.name}><br>
+                                Email:<{$block.Email}><br>
+                                Domain:<{$block.Domain}><br>
+                                Status:<{$block.Status}><br><br><br><br>
+                                <{if $block.alinkCount > 0}>
+                                <a  style="cursor:pointer" onclick="alike(this)" data-id='<{$block.ID}>'>Check(<{$block.alinkCount}>)</a>
+                                <{/if}>
+                            </td>
+                            <td><{$block.domainInformation}></td>
+                            <td><{$block.registrantContact}></td>
+                            <td><{$block.administrativeContact}></td>
+                            <td><{$block.technicalContact}></td>
+                            
+                           <{* <td><{$block.rawWhoisData}></td>*}>
+                        </tr>
+                        <{/foreach}>
+                    </table>
+                    <{$pageHtml}>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="urldiv" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1100px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title" id="dlable"></h2>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row udet">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+function alike(t){
+    
+	var id = $(t).data('id');
+	$('.udet').html('');
+    $('#dlable').html('Publisher Alike');
+    $.ajax({
+        type: "POST",
+        url: 'b_publisher_domain_whois.php',
+        data: {'alike':1,'id':id},
+        success: function(data){
+            $('.udet').html(data);
+        }
+    });
+    $('#urldiv').modal();
+}
+  
+</script>
+
+<{include file="b_block_footer.html"}>

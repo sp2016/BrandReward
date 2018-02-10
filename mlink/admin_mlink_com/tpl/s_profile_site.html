@@ -1,0 +1,42 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2" style="text-align:center;">
+	      <form method="post" action="<{$smarty.const.BASE_URL}>/process.php" id="form_edit_profile_site">
+	        <input type="hidden" name="act" value='edit_profile_site' />
+	        <input type="hidden" name="ID" value='<{$site_info.ID}>' />
+	          <div class="form-group">
+	            <label>Site Url</label>
+	            <input type="text" class="form-control" value="<{$site_info.Domain}>" id="site-domain" name="site_domain" placeholder="http://">
+	          </div>
+	          <div class="form-group">
+	            <label>Site Alias</label>
+	            <input type="text" class="form-control" value="<{$site_info.Alias}>" id="site-alias" name="site_alias" placeholder="Site alias">
+	          </div>
+	          <div class="form-group">
+	            <label>Type of Site</label>
+	            <select name="site_type" class="form-control">
+	              	<{foreach from=$sitetypeOption item=c key=k}>
+			  			<option value="<{$k}>" <{if $site_info.SiteTpye == $k}>selected<{/if}>><{$c}></option>
+			  		<{/foreach}>
+	            </select>
+	          </div>
+	          <div class="form-group">
+	            <label>Target audience</label>
+	            <select name="site_country" class="form-control">
+			  		<{foreach from=$countryOption item=c key=k}>
+			  			<option value="<{$k}>" <{if $site_info.TargetCountry == $k}>selected<{/if}>><{$c}></option>
+			  		<{/foreach}>
+	            </select>
+	          </div>
+	          <div class="form-group">
+	            <label>Description</label>
+	            <textarea name="site_desc" class="form-control" rows="3" placeholder="Tell us about your site"><{$site_info.Description}></textarea>
+	          </div>
+	          <div class="form-group">
+	          <button type="button" class="btn  btn-primary btn-lg btn-block" onclick="edit_profile_site()">Apply</button>
+	        </div>
+	      </form>
+	  	</div>
+	</div>
+</div>
+

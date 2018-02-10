@@ -1,0 +1,164 @@
+<div class="container" style="margin-top:30px;width:98%">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Edit Form
+                </h3>
+            </div>
+            <div class="panel-body">
+                <form id="emform" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="alias" class="col-sm-3 control-label">Merge To Store</label>
+                        <div class="col-sm-9">
+                            <input type="text" readonly="readonly" class="form-control" id="alias" name="alias" placeholder="Store Name" value="<{$info.alias}>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="merged" class="col-sm-3 control-label">Merged Stores</label>
+                        <div class="col-sm-9">
+                            <input type="text" readonly="readonly" data-id="<{$info.StoreId}>" class="form-control" id="merged" name="merged" placeholder="Store Name" value="<{$info.Stores}>">
+                        </div>
+                    </div>
+                    <div class="form-group" id='ddiv' style="display: none;">
+                        <label for="merged" class="col-sm-3 control-label">Store Domains</label>
+                        <div class="col-sm-9 ddct">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-3">
+                            <button type="button" class="btn btn-default merge">Merge</button>
+                        </div>
+                        <div class="col-sm-3">
+                            <{if $info.IsActive != 'Active' }>
+                            <button type="button" class="btn btn-default restore">Restore</button>
+                            <{else}>
+                            <button type="button" class="btn btn-default delete">Delete</button>
+                            <{/if}>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="application/javascript">
+    var merged = $('#merged').data('id');
+    initialDomains(merged);
+
+    function initialDomains(site) {
+        var ddata = {
+            act: 'searchDomain',
+            keywords: site
+        };
+        $.ajax({
+            type: "post",
+            url: "<{$smarty.const.BASE_URL}>/b_store_merge.php",
+            data: ddata,
+            success: function (response) {
+                if (response != '') {
+                    var html = '<a href="javascript:void(0);" style="text-decoration:none;" onclick="select_opt(1)"><span class="label label-primary sall" >select all</span></a>';
+                        html = html + '&nbsp;<a href="javascript:void(0);" style="text-decoration:none;" onclick="select_opt(0)"><span class="label label-success call" ">reset</span></a>';
+                    var array = response.split('|');
+                    for (var i in array) {
+                        if (i % 3 === 0) {
+                            html = html + '<div class="row">'
+                        }
+                        var domain = array[i];
+                        var domains = domain.split('$');
+                        html = html + ' <div class="col-sm-4"><div class="checkbox">';
+                        var checked = '';
+                        if (domains[2] !== '0' ) {
+                            checked = 'checked = "true"';
+                        }
+                        html = html + '<label><input name="domains[]" type="checkbox" ' + checked + ' value="' + domains[0] + '">' + domains[1] + '</label>';
+                        html = html + '</div></div>';
+                        if (i % 3 === 2) {
+                            html = html + ' </div>'
+                        }
+                    }
+                    $('div.ddct').empty();
+                    $('div.ddct').append(html);
+                    $('div#ddiv').show();
+                } else {
+                    $('div#ddiv').hide();
+                }
+            }
+        });
+    }
+
+
+    $('.merge').on('click', function () {
+        var data = new FormData($('#emform')[0]);
+        data.append('act','doEdit');
+        data.append('merged',$('#merged').data('id'));
+        $.ajax({
+            type: "post",
+            url: "b_store_merge.php",
+            data: data,
+            async: false,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response != 0) {
+                    alert('EDIT SUCCESS!')
+                    location = '/b_store_merge.php';
+                } else {
+                    alert('Edit Failed!')
+                }
+            }
+        });
+    });
+    $('.delete').on('click', function () {
+        var alias = $('#alias').val();
+        var merged = $('#merged').val();
+        var data = {act: 'doDelete', alias: alias, merged: merged}
+        $.ajax({
+            type: "post",
+            url: "b_store_merge.php",
+            data: data,
+            async: false,
+            success: function (response) {
+                if (response != 0) {
+                    alert('Delete Success!')
+                    location = '/b_store_merge.php';
+                } else {
+                    alert('Delete Failed!')
+                }
+            }
+        });
+    });
+
+    $('.restore').on('click', function () {
+        var alias = $('#alias').val();
+        var merged = $('#merged').val();
+        var data = {act: 'doRestore', alias: alias, merged: merged}
+        $.ajax({
+            type: "post",
+            url: "b_store_merge.php",
+            data: data,
+            async: false,
+            success: function (response) {
+                if (response != 0) {
+                    alert('Restore Success!')
+                    location = '/b_store_merge.php';
+                } else {
+                    alert('Restore Failed!')
+                }
+            }
+        });
+    });
+    function select_opt(val) {
+        switch (val) {
+            case 1:
+                $('.checkbox input').prop('checked',true);
+                break;
+            case 0:
+                $('.checkbox input').prop('checked',false);
+                break;
+        }
+    }
+</script>

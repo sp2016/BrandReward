@@ -1,0 +1,503 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style type="text/css">
+  .f{
+    max-width: 400px;
+    word-wrap:break-word;
+  }
+  .t1{
+    max-width: 130px;
+    word-break:break-all;
+  }
+</style>
+<div class="ch-container" style="margin-top: 20px;">
+  <div class="row">
+    <div class="col-sm-2 col-lg-2" style="width: 14%;">
+      <div class="sidebar-nav" style="background-color:#f6f6f6;">
+        <a href="javascript:void(0)" class="sh"><i style="margin-top: 10px;color:#627491;margin-left: 10px;font-size: 18px;" class="glyphicon glyphicon-search"></i></a>
+        <input id="stime" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control dtpicker" placeholder="From" value="<{$stime}>">
+        <input id="etime" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control dtpicker  " placeholder="To" value="<{$etime}>">
+        <input  type="button" class="btn d1" style="width: 95%;margin-left: 2.5%;margin-top:10px;color:#627491;" value="Last 7 Day">
+        <input  type="button" class="btn d2" style="width: 95%;margin-left:2.5%;margin-top:10px;color:#627491;" value="Last 30 Day">
+        <input id="site" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control Advertiser" placeholder="site name">
+        <input id="advertiser" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control Advertiser" placeholder="advertiser name">
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Choose a Country</label>
+          <select id="country" class="chosen chosen-select"  multiple="multiple"  data-rel="chosen" style="width: 96%;">
+            <option value="">All</option>
+            <{foreach from=$countryArr key=k item=c}>
+            <option value="<{$c}>"><{$k}></option>
+            <{/foreach}>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Affiliate Name</label>
+          <select id="affiliate" class="chosen chosen-select"  multiple="multiple"  data-rel="chosen" style="width: 96%;">
+            <option value="">ALL</option>
+            <{foreach from=$affname item=aff}>
+            <option value="<{$aff.ID}>" class="aff"><{$aff.Name}></option>
+            <{/foreach}>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Type</label>
+          <select id="logtype" data-rel="chosen" class="chosen" style="width: 96%;">
+            <option value="2">Publisher</option>
+            <option value="1">All</option>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Time Type</label>
+          <select id="timetype" data-rel="chosen" class="chosen" style="width: 96%;">
+            <option value="CreatedDate">Create Time</option>
+            <option value="VisitedDate">Click Time</option>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Site Type</label>
+          <select id="sitetype" data-rel="chosen" class="chosen" style="width: 96%;">
+            <option value="">All</option>
+            <option value="Content">Content</option>
+            <option value="Promotion">Promotion</option>
+            <option value="Mixed">Mixed</option>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Commission Status</label>
+          <select id="cstatus" data-rel="chosen" class="chosen" style="width: 96%;">
+            <option value="1">All</option>
+            <option value="2">Have Changes</option>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">State</label>
+          <select id="state" class="chosen chosen-select"  multiple="multiple"  data-rel="chosen" style="width: 96%;">
+            <option value="PENDING">PENDING</option>
+            <option value="PAID">PAID</option>
+            <option value="CONFIRMED">CONFIRMED</option>
+            <option value="FINE">FINE</option>
+            <option value="REMOVED">REMOVED</option>
+            <option value="CANCELLED">CANCELLED</option>
+          </select>
+        </div>
+        <input  type="button" class="btn search" style="width: 95%;margin-left:2.5%;margin-top:10px;background-color: #627491;color:white;" value="Search">
+        <input  type="button" class="btn  csv" style="width: 95%;margin-left:2.5%;margin-top:10px;margin-bottom:10px;background-color: #286090;color:white;" value="Export Csv">
+      </div>
+    </div>
+
+    <div id="content" class="col-lg-10 col-sm-10" style="width: 86%;">
+      <!-- content starts -->
+      <div>
+        <ul class="breadcrumb">
+          <li>
+            <a href="<{$smarty.const.BASE_URL}>/b_home.php">Home</a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" style="text-decoration:none;">Outlog</a>
+          </li>
+        </ul>
+      </div>
+      <div id="append">
+
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Orders</div>
+          <div id="orders"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Sales -- Commission</div>
+          <div id="sales"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Commission-P -- Commission-B</div>
+          <div id="total"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Commission-R</div>
+          <div id="rob"></div>
+        </a>
+      </div>
+      <div class="box col-md-12 showcountry" style="padding-left:0px;padding-right:0px;">
+        <input type="hidden" id="cid">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div id="sc" style="height:350px;padding-top: 20px;padding-bottom: 5px;padding-left: 10px;padding-right: 10px;"></div>
+        </a>
+      </div>
+      <div class="box col-md-12" style="padding-left:0px;padding-right:0px;" id="countryinfo">
+        <div class="box-inner">
+          <div class="box-header well" data-original-title="">
+          </div>
+          <div id="tbzone">
+            <table id="example" class="ui celled table" cellspacing="0" width="100%">
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+
+<div class="ui mod fullscreen modal" style="min-height: 90%;" id="urldiv">
+  <i class="close icon"></i>
+  <div class="header label">Commission History</div>
+  <div class="content modelval"  style="overflow:auto;height:100%;">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th style="text-align: center">Network</th>
+        <th style="text-align: center">Program</th>
+        <th style="text-align: center">CreateTime</th>
+        <th style="text-align: center">UpdatedTime</th>
+        <th style="text-align: center">Sales</th>
+        <th style="text-align: center">Commission</th>
+      </tr>
+      </thead>
+      <tbody class="ctable">
+      </tbody>
+    </table>
+  </div>
+</div>
+<script src="js/jquery.zclip.min.js"></script>
+<script src="js/dataTables.min.js"></script>
+<script src="js/dataTables.semanticui.min.js"></script>
+<script>
+  var myChart = echarts.init(document.getElementById('sc'));
+  var sc = echarts.init(document.getElementById('sc'));
+  option1 = {
+    title: {
+      text: 'Top 15 Country Sales&Commision',
+    },
+    tooltip : {
+      trigger: 'axis',
+      axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+      }
+    },
+    legend: {
+      data:['Jump'],
+      height:'320'
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    toolbox: {
+      show : true,
+      feature : {
+        mark : {show: true},
+        dataView : {show: true, readOnly: false},
+        magicType: {show: true, type: ['line', 'bar']},
+        restore : {show: true},
+        saveAsImage : {show: true}
+      }
+    }
+  };
+  sc.setOption(option1);
+  sc.on('click', function (params) {
+    $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+    $('#cid').val(params.name);
+    tab(params.name);
+  });
+  $('.chosen').chosen();
+  $(".chosen").chosen();
+  $('.d1').on('click',function(){
+    var mydate = new Date();
+    var y = mydate.getFullYear();
+    var m = parseInt(mydate.getMonth()) + 1;
+    var d = mydate.getDate();
+    if (m < 10)
+      m = '0' + m;
+    if (d < 10)
+      d = '0' + d;
+
+    var today = y + '-' + m + '-' + d;
+
+    var mydate = new Date();
+    mydate.setDate(mydate.getDate() - 7);
+    var y = mydate.getFullYear();
+    var m = parseInt(mydate.getMonth()) + 1;
+    var d = mydate.getDate();
+    if (m < 10)
+      m = '0' + m;
+    if (d < 10)
+      d = '0' + d;
+
+    var lastday = y + '-' + m + '-' + d;
+
+    $('#stime').val(lastday);
+    $('#etime').val(today);
+  })
+  $('.d2').on('click',function(){
+    var mydate = new Date();
+    var y = mydate.getFullYear();
+    var m = parseInt(mydate.getMonth()) + 1;
+    var d = mydate.getDate();
+    if (m < 10)
+      m = '0' + m;
+    if (d < 10)
+      d = '0' + d;
+
+    var today = y + '-' + m + '-' + d;
+
+    var mydate = new Date();
+    mydate.setDate(mydate.getDate() - 30);
+    var y = mydate.getFullYear();
+    var m = parseInt(mydate.getMonth()) + 1;
+    var d = mydate.getDate();
+    if (m < 10)
+      m = '0' + m;
+    if (d < 10)
+      d = '0' + d;
+
+    var lastday = y + '-' + m + '-' + d;
+
+    $('#stime').val(lastday);
+    $('#etime').val(today);
+  })
+  $(".dtpicker").datetimepicker({
+    minView: "month",//设置只显示到月份
+    format : "yyyy-mm-dd",//日期格式
+    autoclose:true,//选中关闭
+    todayBtn: true//今日按钮
+  });
+
+  function tab(cid){
+    var stime = $('#stime').val();
+    var etime = $('#etime').val();
+    var affiliate = $('#affiliate').val();
+    var country = $('#country').val();
+    var site = $('#site').val();
+    var advertiser = $('#advertiser').val();
+    var type = $('#logtype').val();
+    var cstatus = $('#cstatus').val();
+    var state = $('#state').val();
+    var timetype = $('#timetype').val();
+    var sitetype = $('#sitetype').val();
+    var tabs = $('#example').DataTable({
+      "fnDrawCallback":function(data){
+        if(country == null){
+          if(data.json.cinfo != ''){
+            sc.setOption({
+              legend: {
+                data:['Sales','Commission'],
+                selected: {
+                  'Sales': false,
+                  'Commission': true
+                }
+              },
+              grid:{ // 控制图的大小，调整下面这些值就可以，
+                y2: 60,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+              },
+              xAxis : [
+                {
+                  type : 'category',
+                  data:data.json.name,
+                  axisLabel:{
+                    interval:0,//横轴信息全部显示
+                    rotate:-30,//-30度角倾斜显示
+                  }
+                }
+              ],
+              yAxis : [
+                {
+                  type : 'value',
+                  axisLabel: {
+                    formatter: '${value}'
+                  }
+                }
+              ],
+              series:[
+                {
+                  name:'Sales',
+                  type:'bar',
+                  data:data.json.dsales,
+                  itemStyle:{
+                    normal:{
+                      color:'#6E8097'
+                    }
+                  }
+                },
+                {
+                  name:'Commission',
+                  type:'bar',
+                  areaStyle: {normal: {}},
+                  data:data.json.com,
+                  itemStyle:{
+                    normal:{
+                      color:'#C6CED2'
+                    }
+                  },
+                }
+              ]
+            });
+            $('.showcountry').css('display','');
+          }
+        }
+        $('.ch').on('click',function(){
+          $('.ctable').html('');
+          var key = $(this).data('id');
+          $.ajax({
+            type:"post",
+            url:"b_transaction.php",
+            data:{'check':1,'key':key},
+            async:false,
+            success: function(res){
+              if(res != 2){
+                var res = ($.parseJSON(res));
+                var html = '';
+                $.each(res,function(i,itme){
+                  var aff = itme['Name'];
+                  var pro = itme['ProgramName'];
+                  var create = itme['Created'];
+                  var update = itme['Updated'];
+                  var sale = itme['Sales'];
+                  var com = (itme['Commission']);
+                  html+='<tr><td>'+aff+'</td><td>'+pro+'</td><td>'+create+'</td><td>'+update+'</td><td>'+sale+'</td><td>'+com+'</td></tr>'
+                })
+                $(".ctable").append(html);
+              }else{
+                alert('Error');
+              }
+            }
+          });
+          $('#urldiv').modal('show');
+        })
+        $('#total').html(data.json.compb);
+        $('#rob').html(data.json.comf);
+        $('#orders').html(data.json.recordsFiltered);
+        $('#sales').html(data.json.sales+" -- "+data.json.commission);
+      },
+      "bServerSide": true,
+      "bProcessing": true,
+      "iDisplayLength": 20,
+      "bPaginage":true,
+      "bAutoWidth":true,
+      "aLengthMenu": [10, 20, 50, 100],
+      'bFilter': false,
+      'pagingType':'full_numbers',
+      "ajax": {
+        "url": "b_transaction.php",
+        "type":'POST',
+        "data": {
+          "table":1,
+          "affiliate":affiliate,
+          "country":country,
+          "stime":stime,
+          "etime":etime,
+          "advertiser":advertiser,
+          "site":site,
+          "type":type,
+          "cstatus":cstatus,
+          'state':state,
+          "timetype":timetype,
+          "sitetype":sitetype,
+          "cid":cid
+        }
+      },
+      "aaSorting": [
+        [1, "desc"],
+      ],
+      columns: [
+        { "data": "Visited","title":'ClickTime', "bSortable": false},
+        { "data": "Created","title":'Create Time',"bSortable": false},
+        { "data": "SID","title":'ID</br>SID',"bSortable": false,"render":function(data, type, full, meta){
+          var val = full.BRID+"</br>"+full.SID;
+          return val;
+        } },
+        { "data": "Sales","title":'Sales',"bSortable": false},
+        { "data": null,"title":'Commission',"bSortable": false,"render":function(data, type, full, meta){
+          if(full.CommissionStatus == 1){
+            var val = full.Commission+"<br>"+'<button class="btn ch" data-id="'+full.TradeKey+'">Commission History</button>';
+          }else{
+            var val = full.Commission;
+          }
+
+          return val;
+        }},
+        { "data": null,"title":"/","bSortable": false,"render":function(data, type, full, meta){
+          var val = 'Commission-P : $'+full.ShowCommission+"<br>"+'Commission-B : $'+full.TaxCommission+"<br>"+'Commission-R : $'+full.RefCommission;
+          return val;
+        }},
+        { "data": null,"title":'SiteAlias<br>Site Type',"bSortable": false,"render":function(data, type, full, meta){
+          if(full.SiteAlias != null){
+            var name = full.SiteAlias;
+          }else{
+            var name = '/N';
+          }
+          return '<a href="'+full.SiteUrl+'" target="blank">'+name+'</a><br>'+full.sitetype;
+        }},
+        { "data": "AffName","title":'Network', "bSortable": false},
+        { "data": null,"title":'State', "bSortable": false,"render":function(data, type, full, meta){
+          var val = full.State;
+          var cReason= full.TradeCancelReason!= '' ? full.TradeCancelReason: "NONE";
+          if (full.PaidDate != '0000-00-00') {
+            val += '(PAID)';
+          }
+          if (full.State == 'CANCELLED') {
+            val += '<br>Reason:' + cReason;
+          }
+          return val;
+        }},
+        { "data": "StoreName","title":'Advertiser',"bSortable": false},
+        { "data": "Country","title":'Country',"bSortable": false},
+        { "data": null,"title":'Click Page',"sClass":"t1","bSortable": false,"render":function(data, type, full, meta){
+          var url = full.pageUrl;
+          return url;
+        }},
+      ],
+    })}
+
+  tab();
+  $('.search').bind("click",function(){
+    if($('#country').val() !=''){
+      $('.showcountry').css('display','none');
+    }
+    $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+    tab();
+  })
+  $('.sh').bind("click",function(){
+    if($('#country').val() !=''){
+      $('.showcountry').css('display','none');
+    }
+    $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+    tab();
+
+  })
+  $('.csv').bind("click",function(){
+    var stime = $('#stime').val();
+    var etime = $('#etime').val();
+    var adv = $('#advertiser').val();
+    var aff = $('#affiliate').val();
+    var country = $('#country').val();
+    var type = $('#logtype').val();
+    var site = $('#site').val();
+    var cid = $('#cid').val();
+    var state = $('#state').val();
+    var timetype = $('#timetype').val();
+    var sitetype = $('#sitetype').val();
+    if(stime == '' || etime == ''){
+      alert('Time not null');
+      return false;
+    }
+    var field = '';
+    var t = "";
+    $('.ck').each(function(i){
+      if($('.ck').eq(i).is(':checked')){
+        field+= $('.ck').eq(i).data('val')+',';
+        t+= $('.ck').eq(i).data('t')+',';
+      }
+    })
+    window.location.href = 'process.php?act=transactionExport&sitetype='+sitetype+'&timetype='+timetype+'&cid='+cid+'&type='+type+'&stime='+stime+'&etime='+etime+'&state='+state+'&site='+site+'&adv='+adv+'&aff='+aff+'&country='+country+'&field='+field+'&t='+t;
+  })
+</script>
+<{include file="b_block_footer.html"}>

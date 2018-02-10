@@ -1,0 +1,128 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+  <div class="container" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1>Transaction</h1></div>
+    <div class="row" style="padding:20px 0;">
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Search</div>
+          <div class="panel-body" >
+            <form id="form_tran_search">
+              <input type="hidden" name="p" value="1" />
+            
+            
+            <div class="col-lg-8 form-inline">
+              <div class="form-group">
+                <input type="text" name="tran_from" class="form-control datepicker" id="tran_from" value="<{$search.tran_from}>">
+              </div>
+              <div class="form-group">
+                <input type="text" name="tran_to" class="form-control datepicker" id="tran_to" value="<{$search.tran_to}>">
+              </div>
+              <input class="btn btn-default" type="button" value="Last 7 Days">
+              <input class="btn btn-default" type="button" value="Last 30 Days">
+            </div>
+
+            <div class="col-lg-4">
+              <div class="form-group">
+                <input type="submit" class="btn  btn-primary " value="Search">
+              </div>
+            </div>
+
+
+          </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">List</div>
+          <div class="panel-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th></th>
+                  <{foreach from=$labels item=lab}>
+                    <th><{$lab}></th>
+                  <{/foreach}>
+                </tr>
+              </thead>
+              <{foreach from=$chartData item=cur key=cname}>
+                <tr>
+                  <td><{$cname}></td>
+                  <{foreach from=$cur item=ex}>
+                    <td><{$ex}></td>
+                  <{/foreach}>
+                </tr>
+              <{/foreach}>
+            </table>
+            <{$pageHtml}>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">example</div>
+          <div class="panel-body">
+            <ul class="list-inline">
+            <{foreach from=$chartInfo.cur item=cha key=cur}>
+              <li><{$cur}></li><li style="background-color:rgba(<{$cha.color}>,1); height:16px; width:16px;"></li>
+            <{/foreach}>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">chart</div>
+          <div class="panel-body">
+            <canvas id="canvas" height="750" ></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+
+
+<script>
+    var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+    var lineChartData = {
+      labels : <{$chartInfo.label}>,
+      datasets : [
+      <{foreach from=$chartInfo.cur item=cu}>
+        {
+          label: "My First dataset",
+          fillColor : "rgba(<{$cu.color}>,0.2)",
+          strokeColor : "rgba(<{$cu.color}>,1)",
+          pointColor : "rgba(<{$cu.color}>,1)",
+          pointStrokeColor : "#fff",
+          pointHighlightFill : "#fff",
+          pointHighlightStroke : "rgba(<{$cu.color}>,1)",
+          data : <{$cu.data}>
+        },
+      <{/foreach}>
+      ]
+    }
+
+  window.onload = function(){
+    var ctx = document.getElementById("canvas").getContext("2d");
+    window.myLine = new Chart(ctx).Line(lineChartData, {
+      responsive: true,
+      maintainAspectRatio:false
+    });
+  }
+</script>
+
+<{include file="b_block_footer.html"}>

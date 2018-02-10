@@ -1,0 +1,95 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+  <div class="container" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1>Affiliate-Overview</h1></div>
+    <div class="row" style="padding:20px 0;">
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Search</div>
+          <div class="panel-body" >
+            <form id="form_tran_search">
+            
+              <input type="hidden" name="p" value="1" />
+
+              <div class="col-lg-10 form-inline">
+                <div class="form-group">
+                  <input type="text" name="tran_from" class="form-control datepicker" id="tran_from" value="<{$search.tran_from}>" placeholder="date from">
+                </div>
+                <div class="form-group">
+                  <input type="text" name="tran_to" class="form-control datepicker" id="tran_to" value="<{$search.tran_to}>" placeholder="date to">
+                </div>
+                <input class="btn btn-default" type="button" value="Last 7 Days">
+                <input class="btn btn-default" type="button" value="Last 30 Days">
+              </div>
+
+              <div class="col-lg-2">
+                <div class="form-group">
+                  <input type="submit" class="btn  btn-primary " value="Search">
+                </div>
+              </div>
+            
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">List</div>
+          <div class="panel-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+
+                  <th>Affiliate</th>
+                  <th>Clicks</th>
+                  <th>Revenue</th>
+                  <th>Sales</th>
+                  <th>OrderNum</th>
+                  <th>Commission</th>
+                  <th>RPC</th>
+                </tr>
+
+                <tr>
+                  <{if $total.sales > 0 || $total.sales < 0}><{assign var='totalcm' value=$total.revenues/$total.sales*100|number_format:'2':'.':','}><{/if}>
+                  <{if $total.clicks > 0 || $total.clicks < 0}><{assign var='totalrpc' value=$total.revenues/$total.clicks*100|number_format:'2':'.':','}><{/if}>
+                  <th>Total</th>
+                  <th><{$total.clicks|number_format:'0':'.':','}></th>
+                  <th>$<{$total.revenues|number_format:'2':'.':','}></th>
+                  <th>$<{$total.sales|number_format:'2':'.':','}></th>
+                  <th><{$total.orders|number_format:'0':'.':','}></th>
+                  <th><{$totalcm|default:0.00}>%</th>
+                  <th><{$totalrpc|default:0.00}>%</th>
+                </tr>
+              </thead>
+              <{foreach from=$AffovTotal item=a}>
+                <{if $a.sales > 0 || $a.sales < 0}><{assign var='cm' value=$a.revenues/$a.sales*100|number_format:'2':'.':','}><{/if}>
+                <{if $a.clicks > 0 || $a.clicks < 0}><{assign var='rpc' value=$a.revenues/$a.clicks*100|number_format:'2':'.':','}><{/if}>
+                <tr>
+                  <td><{$a.affname}></td>
+                  <td><{$a.clicks|number_format:'0':'.':','}></td>
+                  <td>$<{$a.revenues|number_format:'2':'.':','}></td>
+                  <td>$<{$a.sales|number_format:'2':'.':','}></td>
+                  <td><{$a.orders|number_format:'0':'.':','}></td>
+                  <td><{$cm|default:0.00}>%</td>
+                  <td><{$rpc|default:0.00}>%</td>
+                </tr>
+              <{/foreach}>
+            </table>
+            <{$pageHtml}>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+</script>
+
+<{include file="b_block_footer.html"}>

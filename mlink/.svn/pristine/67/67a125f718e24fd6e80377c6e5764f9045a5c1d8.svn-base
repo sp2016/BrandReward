@@ -1,0 +1,89 @@
+<div class="page">
+  <h2 class="clearup"><{$LANG.front.doc_jscode.a1}></h2>
+  <p>
+    <{$LANG.front.doc_jscode.a2}>&lt;head&gt; &lt;/head&gt; <{$LANG.front.doc_jscode.a3}><br>
+    <{$LANG.front.doc_jscode.a4}>
+  </p>
+  <h3><{$LANG.front.doc_jscode.a5}></h3>
+  <pre>
+&lt;script type="text/javascript"&gt;
+  var _BRConf = { key: 'SITE ID' };
+
+  (function(d, t) {
+    var s = d.createElement(t); s.type = 'text/javascript'; s.async = true;
+    var scheme = (document.location.protocol == 'https:')?'https':'http';
+    s.src = scheme+'<{$smarty.const.CDN_URL_CF|substr:4}>/js/br.js';
+    var r = d.getElementsByTagName(t)[0]; r.parentNode.insertBefore(s, r);
+  }(document, 'script'));
+&lt;/script&gt;
+  </pre>
+  
+  
+    <div class="row" style="padding:20px 0;width: 800px;">
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Check your installation</div>
+          <div class="panel-body">
+              <div class="form-group">
+                <label><{$LANG.backend.createlink.a14}>:</label>
+                <div>
+	                <label class="radio-inline">
+						<input type="radio" name="radiosinline" data-type="option1" value="selectsite" checked>select site
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="radiosinline" data-type="option2"  value="inputsite">input site
+					</label>
+                </div>
+                <div id="selectsite" class="optionsRadio">
+	                <select class="form-control" id="option1">
+	                  <{foreach from=$sites item=site}>
+	                    <option value="<{$site.Domain}>"><{$site.Domain}></option>
+	                  <{/foreach}>
+	                </select>
+                </div>
+                <div id="inputsite" class="optionsRadio" style="display:none">
+	                <input id="option2" class="form-control" style="padding:6px 16px;" type="text">
+                </div>
+              </div>
+              <input id="checkJs" class="btn btn-primary" type="button" value="Check">
+              <div id="result-msg"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  
+</div>
+<script>
+$(function(){
+	
+	$("input:radio[name='radiosinline']").change(function(){
+		var radioVal = $(this).val();
+		$("#"+radioVal).siblings("div[class=optionsRadio]").css("display","none");
+		$("#"+radioVal).css("display","block");
+	})
+
+	$("#checkJs").click(function(){
+		var jscode_check_url = $("#"+$("input[name='radiosinline']:checked").data('type')).val();
+		$.ajax({
+			type:"post",
+			url:"b_tools_apidocs.php",
+			data:{jscode_check_url:jscode_check_url},
+			beforeSend: function(){
+				$("#result-msg").html('Loading......');
+			},
+			success: function(res){
+				if(res == 1){
+					$("#result-msg").html('<span style="color:green"><{$LANG.backend.createlink.a12}></span>');
+				}else{
+					$("#result-msg").html('<span style="color:red"><{$LANG.backend.createlink.a13}></span>');
+				}
+			}
+		});
+
+	});
+	
+	
+})
+
+</script>

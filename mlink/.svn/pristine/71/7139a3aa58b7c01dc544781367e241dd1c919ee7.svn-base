@@ -1,0 +1,795 @@
+<?php
+class Transaction extends LibFactory
+{
+	function getTransactionListPage($uid,$data,$page,$page_size=10,$export=false){
+		if(empty($uid)){
+			return array();
+		}
+		if(isset($_SESSION['pubAccActiveList']['active'])){
+		    $sites_rows = $_SESSION['pubAccActiveList']['data'];
+		}else {
+// 		    $sites_rows = $this->table('publisher_account')->where('PublisherId = '.intval($uid))->find();
+		    $sites_rows = array();
+		    $i = 0;
+		    foreach ($_SESSION['pubAccList'] as $temp){
+		        $sites_rows[$i]['ApiKey'] = $temp['ApiKey'];
+		        $i++;
+		    }
+		}
+
+		$sites = array();
+// 		$site_tmp = array();
+		foreach($sites_rows as $v){
+			$sites[] = addslashes($v['ApiKey']);
+// 			$site_tmp[$v['ApiKey']] = $v;
+		}
+
+		$return_d = array();
+		$where_str = '';
+		$where_arr = array();
+		/* if(isset($data['site']) && !empty($data['site'])){
+			$sites = array($data['site']);
+		} */
+		$where_arr[] = 'a.Site IN ("'.join('","',$sites).'")';
+		if (isset($data['advertiser']) && !empty($data['advertiser'])){
+		    $where_arr[] = '(s.`NameOptimized` LIKE "'.addslashes(trim($data['advertiser'])).'%" OR s.`Name` LIKE "'.addslashes(trim($data['advertiser'])).'%")';
+		}
+		//默认搜索clickdate
+		if(isset($data['datetype']) && $data['datetype'] == 'clickdate'){
+		    if($data['tran_from']){
+		        $where_arr[] = 'a.VisitedDate >= "'.$data['tran_from'].'"';
+		    }
+		    if($data['tran_to']){
+		        $where_arr[] = 'a.VisitedDate <= "'.$data['tran_to'].'"';
+		    }
+		}else if(isset($data['datetype']) && $data['datetype'] == 'updatedate'){
+		    if($data['tran_from']){
+		        $where_arr[] = 'a.UpdatedDate >= "'.$data['tran_from'].'"';
+		    }
+		    if($data['tran_to']){
+		        $where_arr[] = 'a.UpdatedDate <= "'.$data['tran_to'].'"';
+		    }
+		}else {
+		    if($data['tran_from']){
+		        $where_arr[] = 'a.CreatedDate >= "'.$data['tran_from'].'"';
+		    }
+		    if($data['tran_to']){
+		        $where_arr[] = 'a.CreatedDate <= "'.$data['tran_to'].'"';
+		    }
+		}
+		if (isset($data['state']) && !empty($data['state'])){
+		    if($data['state'] == 'PENDING'){
+		        $where_arr[] = 'a.PaidDate = "0000-00-00"';
+		    }else{
+		        $where_arr[] = 'a.PaidDate != "0000-00-00"';
+		    }
+// 		    $where_arr[] = 'a.State = "'.$data['state'].'"';
+		}
+
+		$where_arr[] = 'a.BRID != ""';
+
+		if(!empty($where_arr)){
+			$where_str = join(' AND ',$where_arr);
+		}
+		
+		if(!$export){
+		    $sql = 'SELECT COUNT(1),SUM(a.ShowCommission) as ShowCommissionTotal FROM `rpt_transaction_unique` AS a LEFT JOIN publisher_account AS b ON a.`Site` = b.`ApiKey`  left join r_store_domain as rsd on rsd.domainId = a.domainId left join store as s on s.ID = rsd.StoreId  WHERE '.$where_str;
+		    $count = $this->getRow($sql);
+		    $return_d['page_total'] = ceil($count['COUNT(1)']/$page_size);
+		    $return_d['page_now'] = $page;
+		    $return_d['total']['total_num'] = $count['COUNT(1)'];
+		    $return_d['total']['ShowCommissionTotal'] = "$".number_format($count['ShowCommissionTotal'],'4');
+		}
+
+		$sql = 'select a.ID,a.VisitedDate,a.CreatedDate,a.Updated,a.domainId,a.Sales,a.ShowCommission,a.SID,a.PublishTracking,a.State,a.BRID,b.Alias,s.`Name` as adv,a.PaidDate from rpt_transaction_unique as a left JOIN publisher_account as b on a.Site = b.ApiKey 
+             left join r_store_domain as rsd on rsd.domainId = a.domainId left join store as s on s.ID = rsd.StoreId 
+		     where '.$where_str." order by a.Visited desc,a.ID desc limit ".($page - 1) * $page_size.','.$page_size;
+		$row = $this->getRows($sql);
+		if(!empty($row)){
+			$sids = array();
+// 			$dm = array();
+			foreach($row as $k=>$v){
+				$sids[] = $v['SID'];
+// 				$dm[] = $v['domainId'];
+			}
+
+			$sql = 'SELECT sessionid,pageUrl,linkid FROM bd_out_tracking WHERE sessionid IN ("'.join('","',$sids).'")';
+			$row_click_page_tmp = $this->getRows($sql,'sessionid');
+			$row_click_page = array();
+			foreach($row_click_page_tmp as $k=>$v){
+				$row_click_page[$v['sessionid']] = $v;
+			}
+			
+			$apikeytxt = isset($_SESSION['pubAccActiveList']['active'])?current($_SESSION['pubAccActiveList']['data'])['ApiKey']:$_SESSION['u']['apikey'];
+			foreach($row as $k=>$v){
+				if(isset($row_click_page[$v['SID']])){
+				    if($row_click_page[$v['SID']]['linkid']!=0){
+				        $row[$k]['clickpage'] = 'http://r.brandreward.com/?key='.$apikeytxt.'&linkid='.urlencode($row_click_page[$v['SID']]['linkid']);
+				    }else {
+				        $row[$k]['clickpage'] = $row_click_page[$v['SID']]['pageUrl'];
+				    }
+				}
+				if($v['PaidDate'] == '0000-00-00'){
+				    $row[$k]['State'] = 'PENDING';
+				}else{
+				    $row[$k]['State'] = 'PAID';
+				}
+			}
+// 			$dm1 = array_unique($dm);
+// 			$sql = 'SELECT b.`Name`,a.domainId FROM r_store_domain AS a INNER JOIN store AS b ON a.StoreId=b.`ID`  WHERE a.domainId IN ("'.join('","',$dm1).'")';
+// 			$dr = $this->getRows($sql);
+// 			$ckarr = array();
+// 			foreach($dr as $k=>$v){
+// 				$ckarr[$v['domainId']] = $v;
+// 			}
+
+// 			foreach($row as $k=>$v){
+// 				if(isset($ckarr[$v['domainId']]))
+// 				{
+// 					$row[$k]['adv'] = $ckarr[$v['domainId']]['Name'];
+// 				}
+// 			}
+		}
+		$return_d['data'] = $row;
+		return $return_d;
+	}
+	function GetTranCsvFile($uid,$data){
+		error_reporting(E_ALL^E_NOTICE);
+		set_time_limit(600);
+		$info = $this->getTransactionListPage($uid,$data,1,1);
+		$count = $info['page_total'];
+		$page = 1;
+		$pagesize = 1000;
+		$page_total = ceil($count/$pagesize);
+		header("Content-type:  application/octet-stream;charset=utf-8 ");
+		header("Accept-Ranges:  bytes ");
+		header("Content-Disposition: attachment; filename=Transaction.csv");
+		echo "Click Date,Transaction Date,Advertiser,Transaction ID,Earnings,SID,Status,Site,ClickPage\n";
+		do{
+		    $rs = $this->getTransactionListPage($uid,$data,$page,1000,true);
+		    $transaction = $rs['data'];
+		    foreach($transaction as $v){
+		        $line_arr = array(
+		            'VisitedDate'=>$v['VisitedDate'],
+		            'CreatedDate'=>$v['CreatedDate'],
+		            'Advertiser'=>$v['adv'],
+		            'Transaction ID'=>$v['BRID'],
+		            'Earnings'=>'$'.round($v['ShowCommission'],2),
+		            'SID'=>$v['PublishTracking'],
+		            'Status'=>$v['State'],
+		            'Site' => $v['Alias'],
+		            'ClickPage'=>$v['clickpage']);
+		        echo '"'.join('","',$line_arr).'"'."\n";
+		    }
+		    $page++;
+		}while(($page-1) < $page_total);
+		exit();
+		
+// 		if(isset($_SESSION['pubAccActiveList']['active'])){
+// 		    $sites_rows = $_SESSION['pubAccActiveList']['data'];
+// 		}else {
+// 		    $sites_rows = $this->table('publisher_account')->where('PublisherId = '.intval($uid))->find();
+// 		}
+// 		$sites = array();
+// 		$site_tmp = array();
+// 		foreach($sites_rows as $v){
+// 			$sites[] = addslashes($v['ApiKey']);
+// 			$site_tmp[$v['ApiKey']] = $v;
+// 		}
+// 		/* if(isset($data['site']) && !empty($data['site'])){
+// 			$sites = array($data['site']);
+// 		} */
+// 		$page = 1;
+// 		$pagesize = 1000;
+// 		$where_str = '';
+// 		$where_arr = array();
+// 		$where_arr[] = 'Site IN ("'.join('","',$sites).'")';
+// 		if($data['tran_from']){
+// 			$where_arr[] = 'VisitedDate >= "'.$data['tran_from'].'"';
+// 		}
+// 		if($data['tran_to']){
+// 			$where_arr[] = 'VisitedDate <= "'.$data['tran_to'].'"';
+// 		}
+// 		$where_arr[] = 'BRID != ""';
+// 		if(!empty($where_arr)){
+// 			$where_str = join(' AND ',$where_arr);
+// 		}
+// 		$sql = 'SELECT COUNT(1) FROM `rpt_transaction_unique` AS a LEFT JOIN publisher_account AS b ON a.`Site` = b.`ApiKey` WHERE '.$where_str;
+// 		$count = $this->getRow($sql);
+		
+// 		header("Content-type:  application/octet-stream;charset=utf-8 ");
+// 		header("Accept-Ranges:  bytes ");
+// 		header("Content-Disposition: attachment; filename=Transaction.csv");
+// 		echo "Created,Advertiser,Transaction ID,Earnings,SID,Status,Site,ClickPage\n";
+// 		do{
+// 			$sql = 'select a.ID,a.Visited,a.Updated,a.domainId,a.Sales,a.ShowCommission,a.SID,a.PublishTracking,a.State,a.BRID,b.Alias from rpt_transaction_unique as a left JOIN publisher_account as b on a.Site = b.ApiKey where '.$where_str."  order by a.Visited desc,a.ID desc limit ".($page - 1) * $pagesize.','.$pagesize;
+// 			$row = $this->getRows($sql);
+// 			if(!empty($row)){
+// 				$sids = array();
+// 				$dm = array();
+// 				foreach($row as $k=>$v){
+// 					$sids[] = $v['SID'];
+// 					$dm[] = $v['domainId'];
+// 				}
+// 				$sql = 'SELECT sessionid,pageUrl FROM bd_out_tracking WHERE sessionid IN ("'.join('","',$sids).'")';
+// 				$row_click_page_tmp = $this->getRows($sql,'sessionid');
+// 				$row_click_page = array();
+// 				foreach($row_click_page_tmp as $k=>$v){
+// 					$row_click_page[$v['sessionid']] = $v;
+// 				}
+// 				foreach($row as $k=>$v){
+// 					if(isset($row_click_page[$v['SID']])){
+// 						$row[$k]['clickpage'] = $row_click_page[$v['SID']]['pageUrl'];
+// 					}
+// 				}
+// 				$dm1 = array_unique($dm);
+// 				$sql = 'SELECT b.`Name`,a.domainId FROM r_store_domain AS a INNER JOIN store AS b ON a.StoreId=b.`ID`  WHERE a.domainId IN ("'.join('","',$dm1).'")';
+// 				$dr = $this->getRows($sql);
+// 				$ckarr = array();
+// 				foreach($dr as $k=>$v){
+// 					$ckarr[$v['domainId']] = $v;
+// 				}
+// 				//var_dump($ckarr);
+// 				foreach($row as $k=>$v){
+// 					if(isset($ckarr[$v['domainId']]))
+// 					{
+// //					var_dump($ckarr);die;
+// 						$row[$k]['adv'] = $ckarr[$v['domainId']]['Name'];
+// 					}
+// 				}
+// 			}
+// 			foreach($row as $k){
+//                                 $line_arr = array(
+// 				    'Created'=>$k['Visited'],
+//                                     'Advertiser'=>$k['adv'],
+//                                     'Transaction ID'=>$k['BRID'],
+//                                     'Earnings'=>'$'.round($k['ShowCommission'],2),
+//                                     'SID'=>$k['PublishTracking'],
+//                                     'Status'=>$k['State'],
+// 									'Site' => $k['Alias'],
+//                                     'ClickPage'=>$k['clickpage']);
+// 				echo '"'.join('","',$line_arr).'"'."\n";
+// 			}
+// 			$page++;
+// 		}while(($page-1)*$pagesize < $count['COUNT(1)']);
+// 		exit;
+	}
+	function getTransactionRpt($data){
+		if(empty($data['uid'])){
+			return array();
+		}
+		$sites_rows = $this->table('publisher_account')->where('PublisherId = '.intval($data['uid']))->find();
+		$sites = array();
+		$site_tmp = array();
+		foreach($sites_rows as $v){
+			$sites[] = addslashes($v['ApiKey']);
+			$site_tmp[$v['ApiKey']] = $v;
+		}
+
+
+		$return_d = array();
+		$page_data = array();
+		$tran_row = array();
+		$out_data = array();
+
+		if(!isset($data['type']))
+			$data['type'] = 'daily';
+
+		if($data['type'] == 'daily'){
+			// get transaction data
+			$where_str = '';
+			$where_arr = array();
+
+			$where_arr[] = 'Site IN ("'.join('","',$sites).'")';
+			if($data['tran_from']){
+				$where_arr[] = 'VisitedDate >= "'.$data['tran_from'].'"';
+			}
+			if($data['tran_to']){
+				$where_arr[] = 'VisitedDate <= "'.$data['tran_to'].'"';
+			}
+			if(!empty($where_arr)){
+				$where_str = ' WHERE '.join(' AND ',$where_arr);
+			}
+
+			$groupby = 'VisitedDate';
+			$orderby = 'VisitedDate DESC';
+
+			$sql = 'SELECT '.$groupby.',SUM(Commission) as Commission,SUM(Sales) as Sales,count(*) as num 
+					FROM rpt_transaction_unique '.$where_str.' GROUP BY '.$groupby.' ORDER BY '.$orderby;
+			$tran_row = $this->getRows($sql);
+
+			// // get outgoing data
+			// $where_str = '';
+			// $where_arr = array();
+			// $where_arr[] = 'site IN ("'.join('","',$sites).'")';
+			// if($data['tran_from']){
+			// 	$where_arr[] = 'createddate >= "'.$data['tran_from'].'"';
+			// }
+			// if($data['tran_to']){
+			// 	$where_arr[] = 'createddate <= "'.$data['tran_to'].'"';
+			// }
+			// if(!empty($where_arr)){
+			// 	$where_str = ' WHERE '.join(' AND ',$where_arr);
+			// }
+			// $sql = 'SELECT createddate as cd,count(*) as c FROM bd_out_tracking '.$where_str.' GROUP BY cd';
+			// $out_row = $this->getRows($sql);
+
+			// $out_data = array();
+			// if($out_row){
+			// 	foreach($out_row as $k=>$v){
+			// 		$out_data[$v['cd']] = $v['c'];
+			// 	}
+			// }
+
+		}elseif($data['type'] == 'merchants'){
+			$page = isset($data['p'])&&$data['p']?$data['p']:1;
+			$page_size = 20;
+			// get transaction data
+			$where_str = '';
+			$where_arr = array();
+			$where_arr[] = 'Site IN ("'.join('","',$sites).'")';
+			if($data['tran_from']){
+				$where_arr[] = 'VisitedDate >= "'.$data['tran_from'].'"';
+			}
+			if($data['tran_to']){
+				$where_arr[] = 'VisitedDate <= "'.$data['tran_to'].'"';
+			}
+			if(!empty($where_arr)){
+				$where_str = ' WHERE '.join(' AND ',$where_arr);
+			}
+
+			$groupby = 'domainUsed';
+			$orderby = 'Commission DESC';
+
+			$sql = 'SELECT COUNT(*) AS c FROM (
+						SELECT '.$groupby.',SUM(Commission)  
+						FROM rpt_transaction_unique '.$where_str.' GROUP BY '.$groupby.'
+					) AS bb';
+			$c_row = $this->getRow($sql);
+			$total = $c_row['c'];
+			$page_data['total'] = $total;
+			$page_data['page_now'] = $page;
+			$page_data['page_total'] = ceil($total/$page_size);
+			$page_data['page_size'] = $page_size;
+
+
+			$sql = 'SELECT '.$groupby.',SUM(Commission) as Commission,SUM(Sales) as Sales,count(*) as num 
+					FROM rpt_transaction_unique '.$where_str.' GROUP BY '.$groupby.' ORDER BY '.$orderby.' LIMIT '.($page-1)*$page_size.','.$page_size;
+			$tran_row = $this->getRows($sql);
+
+			$domainlist = array();
+			if($tran_row){
+				foreach($tran_row as $k=>$v){
+					$domainlist[] = addslashes($v['domainUsed']);
+				}
+			}
+
+
+			// // get outgoing data
+			// $where_str = '';
+			// $where_arr = array();
+			// $where_arr[] = 'site IN ("'.join('","',$sites).'")';
+			// $where_arr[] = 'domainUsed IN ("'.join('","',$domainlist).'") ';
+			// if($data['tran_from']){
+			// 	$where_arr[] = 'createddate >= "'.$data['tran_from'].'"';
+			// }
+			// if($data['tran_to']){
+			// 	$where_arr[] = 'createddate <= "'.$data['tran_to'].'"';
+			// }
+			// if(!empty($where_arr)){
+			// 	$where_str = ' WHERE '.join(' AND ',$where_arr);
+			// }
+			// $sql = 'SELECT domainUsed,count(*) as c FROM bd_out_tracking '.$where_str.' GROUP BY domainUsed';
+			// $out_row = $this->getRows($sql);
+
+			// $out_data = array();
+			// foreach($out_row as $k=>$v){
+			// 	$out_data[$v['domainUsed']] = $v['c'];
+			// }
+		}elseif($data['type'] == 'sites'){
+			// get transaction data
+			$where_str = '';
+			$where_arr = array();
+			$where_arr[] = 'Site IN ("'.join('","',$sites).'")';
+			if($data['tran_from']){
+				$where_arr[] = 'VisitedDate >= "'.$data['tran_from'].'"';
+			}
+			if($data['tran_to']){
+				$where_arr[] = 'VisitedDate <= "'.$data['tran_to'].'"';
+			}
+			if(!empty($where_arr)){
+				$where_str = ' WHERE '.join(' AND ',$where_arr);
+			}
+
+			$groupby = 'Site';
+			$orderby = 'Commission DESC';
+
+			$sql = 'SELECT '.$groupby.',SUM(Commission) as Commission,SUM(Sales) as Sales,count(*) as num 
+					FROM rpt_transaction_unique '.$where_str.' GROUP BY '.$groupby.' ORDER BY '.$orderby;
+			$tran_row_tmp = $this->getRows($sql);
+			$tran_row = array();
+			foreach($tran_row_tmp as $v){
+				$tran_row[$v['Site']] = $v;
+			}
+
+			foreach($sites as $v){
+				if(!isset($tran_row[$v])){
+					$tran_row[$v] = array('Site'=>$v,'Commission'=>'0.00','Sales'=>'0.00','num'=>'0','Alias'=>$site_tmp[$v]['Alias'],'Domain'=>$site_tmp[$v]['Domain']);
+				}else{
+					$tran_row[$v]['Alias'] = $site_tmp[$v]['Alias'];
+					$tran_row[$v]['Domain'] = $site_tmp[$v]['Domain'];
+				}
+			}
+
+
+			// // get outgoing data
+			// $where_str = '';
+			// $where_arr = array();
+			// $where_arr[] = 'site IN ("'.join('","',$sites).'")';
+			// if($data['tran_from']){
+			// 	$where_arr[] = 'createddate >= "'.$data['tran_from'].'"';
+			// }
+			// if($data['tran_to']){
+			// 	$where_arr[] = 'createddate <= "'.$data['tran_to'].'"';
+			// }
+			// if(!empty($where_arr)){
+			// 	$where_str = ' WHERE '.join(' AND ',$where_arr);
+			// }
+			// $sql = 'SELECT site,count(*) as c FROM bd_out_tracking '.$where_str.' GROUP BY site';
+			// $out_row = $this->getRows($sql);
+
+			// $out_data = array();
+			// if($out_row){
+			// 	foreach($out_row as $k=>$v){
+			// 		$out_data[$v['site']] = $v['c'];
+			// 	}
+			// }
+		}
+
+
+
+		$return_d['tran'] = $tran_row;
+		// $return_d['click'] = $out_data;
+		$return_d['page'] = $page_data;
+
+		return $return_d;
+	}
+
+	function get_transaction_data($data){
+		$where = array();
+		$start = $data['sel_start'].'-01';
+		$where[] = 'UpdatedDate >= "'.addslashes($start).'"';
+
+		$end = $data['sel_end'].'-'.date('t',strtotime($data['sel_end']));
+		$where[] = 'UpdatedDate <= "'.addslashes($end).'"';
+
+		if(isset($data['sel_site']) && !empty($data['sel_site'])){
+			foreach($data['sel_site'] as $k=>$v){
+				$data['sel_site'][$k] = addslashes($v);
+			}
+			$where[] = 'Site IN ("'.join('","',$data['sel_site']).'") ';
+		}
+
+		if(isset($data['sel_aff']) && !empty($data['sel_aff'])){
+			foreach($data['sel_aff'] as $k=>$v){
+				$data['sel_aff'][$k] = addslashes($v);
+			}
+			$where[] = 'Af IN ("'.join('","',$data['sel_aff']).'") ';
+		}
+
+		$where_str = join(' AND ', $where);
+
+		$column = $data['sel_mode'];
+
+		$sql = 'SELECT DATE_FORMAT(UpdatedDate,"%Y-%m") AS cm,'.$column.',sum(commission) as commission FROM rpt_transaction_unique WHERE '.$where_str.'  GROUP BY   cm,'.$column.' order by cm';
+		$row = $this->getRows($sql);
+
+		$res = array();
+		foreach($row as $k=>$v){
+			$res[$v['cm']][$v[$column]] = $v;
+		}
+		return $res;
+	}
+
+	function get_transaction_data_daily($data){
+		$pz= isset($data['sel_pagesize'])?intval($data['sel_pagesize']):20;
+		$p = isset($data['p'])?intval($data['p']):1;
+		$order_str = '';
+		$order_str .= isset($data['sel_sort'])&&$data['sel_sort']?$data['sel_sort']:'Updated';
+		$order_str .= ' ';
+		$order_str .= isset($data['sel_orderby'])&&$data['sel_orderby']?$data['sel_orderby']:'DESC';
+		$where = array();
+
+		if(isset($data['sel_createddate_start']) && $data['sel_createddate_start']){
+			$where[] = 'Createddate >= "'.addslashes($data['sel_createddate_start']).'"';
+		}
+
+		if(isset($data['sel_createddate_end']) && $data['sel_createddate_end']){
+			$where[] = 'Createddate <= "'.addslashes($data['sel_createddate_end']).'"';
+		}
+
+		if(isset($data['sel_updateddate_end']) && $data['sel_updateddate_end']){
+			$where[] = 'Updateddate <= "'.addslashes($data['sel_updateddate_end']).'"';
+		}
+
+		if(isset($data['sel_updateddate_start']) && $data['sel_updateddate_start']){
+			$where[] = 'Updateddate >= "'.addslashes($data['sel_updateddate_start']).'"';
+		}
+
+		if(isset($data['sel_site']) && !empty($data['sel_site']) && !in_array('All',$data['sel_site'])){
+			foreach($data['sel_site'] as $k=>$v){
+				$data['sel_site'][$k] = addslashes($v);
+			}
+			$where[] = 'Site IN ("'.join('","',$data['sel_site']).'") ';
+		}
+
+		if(isset($data['sel_aff']) && !empty($data['sel_aff']) && !in_array('All',$data['sel_aff'])){
+			foreach($data['sel_aff'] as $k=>$v){
+				$data['sel_aff'][$k] = addslashes($v);
+			}
+			$where[] = 'Af IN ("'.join('","',$data['sel_aff']).'") ';
+		}
+
+		$where_str = join(' AND ', $where);
+
+		$column = 'Created,Updated,Sales,Commission,Site,Af,ProgramName,SID,PublishTracking';
+
+		$CRow = $this->table('rpt_transaction_unique')->where($where_str)->field('COUNT(*) AS c,SUM(Sales) AS Sales,SUM(Commission) AS Commission')->findone();
+		$c = $CRow['c'];
+
+		$dataRow = $this->table('rpt_transaction_unique')->where($where_str)->field($column)->limit($pz)->page($p)->order($order_str)->find();
+		$return = array();
+		$return['c'] = $c;
+		$return['d'] = $dataRow;
+		$return['t'] = ceil($c/$pz);
+		$return['p'] = $p;
+		$return['total_count'] = $CRow['c'];
+		$return['total_Sales'] = $CRow['Sales'];
+		$return['total_Commission'] = $CRow['Commission'];
+
+		return $return;
+	}
+
+	function get_aff_ov($data,$type='Af'){
+		$typeList = array('Af','Site');
+		if(!in_array($type,$typeList)){
+			$type = 'Af';
+		}
+
+		$where = array();
+
+		if(isset($data['sel_createddate_start']) && $data['sel_createddate_start']){
+			$where[] = 'Createddate >= "'.addslashes($data['sel_createddate_start']).'"';
+		}
+
+		if(isset($data['sel_createddate_end']) && $data['sel_createddate_end']){
+			$where[] = 'Createddate <= "'.addslashes($data['sel_createddate_end']).'"';
+		}
+
+		if(isset($data['sel_updateddate_end']) && $data['sel_updateddate_end']){
+			$where[] = 'Updateddate <= "'.addslashes($data['sel_updateddate_end']).'"';
+		}
+
+		if(isset($data['sel_updateddate_start']) && $data['sel_updateddate_start']){
+			$where[] = 'Updateddate >= "'.addslashes($data['sel_updateddate_start']).'"';
+		}
+
+		if($type == 'Af'){
+			if(isset($data['sel_site']) && !empty($data['sel_site']) && !in_array('All',$data['sel_site'])){
+				foreach($data['sel_site'] as $k=>$v){
+					$data['sel_site'][$k] = addslashes($v);
+				}
+				$where[] = 'Site IN ("'.join('","',$data['sel_site']).'") ';
+			}
+		}else{
+			if(isset($data['sel_aff']) && !empty($data['sel_aff']) && !in_array('All',$data['sel_aff'])){
+				foreach($data['sel_aff'] as $k=>$v){
+					$data['sel_aff'][$k] = addslashes($v);
+				}
+				$where[] = 'Af IN ("'.join('","',$data['sel_aff']).'") ';
+			}
+		}
+		
+
+		$where_str = '';
+		$where_str = join(' AND ', $where);
+		$where_str = $where_str?' WHERE '.$where_str:'';
+
+		$order_str = ' ORDER BY ';
+		$order_str .= isset($data['sel_sort'])&&$data['sel_sort']?$data['sel_sort']:'Commission';
+		$order_str .= ' ';
+		$order_str .= isset($data['sel_orderby'])&&$data['sel_orderby']?$data['sel_orderby']:'DESC';
+
+		$sql = 'SELECT '.$type.',COUNT(*) AS c,SUM(Sales) AS Sales ,SUM(Commission) AS Commission FROM rpt_transaction_unique '.$where_str.' GROUP BY '.$type.' 
+				 '.$order_str;
+		$rows = $this->getRows($sql);
+
+		$return = array();
+		$return['rows'] = $rows;
+		$total_sales = 0;
+		$total_commission = 0;
+		$total_ordernum = 0;
+		foreach($rows as $k=>$v){
+			$total_sales += $v['Sales'];
+			$total_commission += $v['Commission'];
+			$total_ordernum += $v['c'];
+		}
+		$return['total_sales'] = $total_sales;
+		$return['total_commission'] = $total_commission;
+		$return['total_ordernum'] = $total_ordernum;
+
+		return $return;
+	}
+
+	function get_aff_ov_daily($data,$type = 'Af'){
+		$typeList = array('Af','Site');
+		if(!in_array($type,$typeList)){
+			$type = 'Af';
+		}
+		$where = array();
+
+		if(isset($data['sel_createddate_start']) && $data['sel_createddate_start']){
+			$where[] = 'Createddate >= "'.addslashes($data['sel_createddate_start']).'"';
+		}
+
+		if(isset($data['sel_createddate_end']) && $data['sel_createddate_end']){
+			$where[] = 'Createddate <= "'.addslashes($data['sel_createddate_end']).'"';
+		}
+
+		if(isset($data['sel_updateddate_end']) && $data['sel_updateddate_end']){
+			$where[] = 'Updateddate <= "'.addslashes($data['sel_updateddate_end']).'"';
+		}
+
+		if(isset($data['sel_updateddate_start']) && $data['sel_updateddate_start']){
+			$where[] = 'Updateddate >= "'.addslashes($data['sel_updateddate_start']).'"';
+		}
+
+		if($type == 'Af'){
+			if(isset($data['sel_aff']) && $data['sel_aff']){
+				$where[] = 'Af = "'.addslashes($data['sel_aff']).'"';
+			}
+
+			if(isset($data['sel_site']) && !empty($data['sel_site']) && !in_array('All',$data['sel_site'])){
+				foreach($data['sel_site'] as $k=>$v){
+					$data['sel_site'][$k] = addslashes($v);
+				}
+				$where[] = 'Site IN ("'.join('","',$data['sel_site']).'") ';
+			}
+		}else{
+			if(isset($data['sel_site']) && $data['sel_site']){
+				$where[] = 'Site = "'.addslashes($data['sel_site']).'"';
+			}
+
+			if(isset($data['sel_aff']) && !empty($data['sel_aff']) && !in_array('All',$data['sel_aff'])){
+				foreach($data['sel_aff'] as $k=>$v){
+					$data['sel_aff'][$k] = addslashes($v);
+				}
+				$where[] = 'Af IN ("'.join('","',$data['sel_aff']).'") ';
+			}
+		}
+		
+
+		$where_str = '';
+		$where_str = join(' AND ', $where);
+		$where_str = $where_str?' WHERE '.$where_str:'';
+
+
+		$sql = 'SELECT Createddate,COUNT(*) AS c,SUM(Sales) AS Sales ,SUM(Commission) AS Commission FROM rpt_transaction_unique '.$where_str.' GROUP BY Createddate ORDER BY Createddate DESC';
+		$rows = $this->getRows($sql);
+
+		$return = array();
+		$return['rows'] = $rows;
+		$total_sales = 0;
+		$total_commission = 0;
+		$total_ordernum = 0;
+		foreach($rows as $k=>$v){
+			$total_sales += $v['Sales'];
+			$total_commission += $v['Commission'];
+			$total_ordernum += $v['c'];
+		}
+		$return['total_sales'] = $total_sales;
+		$return['total_commission'] = $total_commission;
+		$return['total_ordernum'] = $total_ordernum;
+
+		return $return;
+	}
+
+	function getCommission($data){
+		if(empty($data))
+			return 0;
+
+		$where_arr = array();
+		$where_str = '';
+
+		if($data['uid']){
+			$ApiKey = array();
+			$row = $this->table('publisher_account')->where('PublisherId = '.intval($data['uid']))->find();
+			foreach($row as $v){
+				$ApiKey[] = $v['ApiKey'];
+			}
+			$where_arr[] = 'Site IN ("'.join('","',$ApiKey).'")';
+		}
+
+		if($data['visitFrom']){
+			$where_arr[] = 'VisitedDate >= "'.addslashes($data['visitFrom']).'"';
+		}
+		if($data['visitTo']){
+			$where_arr[] = 'VisitedDate <= "'.addslashes($data['visitTo']).'"';
+		}
+
+		$where_str = empty($where_arr)?'':join(' AND ',$where_arr);
+		$row = $this->table('rpt_transaction_unique')->where($where_str)->field('SUM(Commission) as commission')->findone();
+		if($row && !empty($row['commission'])){
+			return $row['commission'];
+		}else{
+			return 0;
+		}
+	}
+
+	function getTopDomain($data){
+		if(empty($data))
+			return array();
+
+		$where_arr = array();
+		$where_str = '';
+
+		$where_arr[] = 'domainUsed != ""';
+		if($data['uid']){
+			$ApiKey = array();
+			$row = $this->table('publisher_account')->where('PublisherId = '.intval($data['uid']))->find();
+			foreach($row as $v){
+				$ApiKey[] = $v['ApiKey'];
+			}
+			$where_arr[] = 'Site IN ("'.join('","',$ApiKey).'")';
+		}
+
+		if($data['visitFrom']){
+			$where_arr[] = 'VisitedDate >= "'.addslashes($data['visitFrom']).'"';
+		}
+		if($data['visitTo']){
+			$where_arr[] = 'VisitedDate <= "'.addslashes($data['visitTo']).'"';
+		}
+
+		$limit = isset($data['limit'])?intval($data['limit']):10;
+
+		$where_str = empty($where_arr)?'':join(' AND ',$where_arr);
+		$row = $this->table('rpt_transaction_unique')->where($where_str)->field('domainUsed,SUM(ShowCommission) as commission')->group('domainUsed')->order('commission desc')->limit($limit)->find();
+		
+		if($row){
+			return $row;
+		}else{
+			return array();
+		}
+	}
+	
+	function getReferrerCommission($data,$type='sum'){
+		if(empty($data) || empty($data['uid']))
+                        return array();
+
+                $where_arr = array();
+                $where_str = '';
+
+                if($data['uid']){
+			$where_arr[] = 'RefPublisherId = '.intval($data['uid']);
+		}
+		
+                if($data['visitFrom']){
+                        $where_arr[] = 'VisitedDate >= "'.addslashes($data['visitFrom']).'"';
+                }
+                if($data['visitTo']){
+                        $where_arr[] = 'VisitedDate <= "'.addslashes($data['visitTo']).'"';
+                }
+	
+		$where_str = empty($where_arr)?'':' where '.join(' AND ',$where_arr);
+
+		if($type == 'sum'){
+			$sql = 'select sum(RefCommission) as RefCommission from rpt_transaction_unique '.$where_str;
+			$row = $this->getRow($sql);
+			return $row['RefCommission'];
+		}elseif($type == 'daily'){
+			$sql = 'select VisitedDate,sum(RefCommission) as RefCommission from rpt_transaction_unique '.$where_str.' group by VisitedDate order by VisitedDate';
+                        $rows = $this->getRows($sql);
+                        return $rows;
+		}
+	}
+}

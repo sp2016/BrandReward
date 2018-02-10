@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>BRANDREWARD ACCOUNT SUSPENSION NOTICE</title>
+</head>
+<body>
+<div style="width: 100%;height: 100%;text-align: left;">
+    BRANDREWARD ACCOUNT SUSPENSION NOTICE<br/><br/>
+    ACCOUNT SUSPENSION: <{$template_time}><br/><br/>
+    We regret to inform you that due to multiple major PPC bidding violations on our restricted advertiser partners, we officially suspended your account at Brandreward as of today.
+    <br><br>
+    We reserve the right to suspend clients that violate our advertiser's policies. There has always been a PPC restrictions list of advertisers that we do not allow bidding on, this list is downloadable and has been available on your Dashboard since your account has been activated. We offer all publishers a 2 strike policy before we suspend.
+    <br><br>
+     &nbsp;&nbsp;&nbsp;&nbsp;•	REVERSALS: Based on the nature of the violations, PPC (TM+ Bidding), the advertiser also has the right to reverse commissions gained while PPC was live.<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;•	PAYMENT: All residual commissions will be paid out based on our current NET payment policies.<br>
+    <br>
+    Please feel free to contact your account manager for more details or if you believe this suspension was in error.<br>
+    Regards,<br>
+    Brandreward Compliance Team<br>
+
+    <div style="width: 400px;">
+        <div style="float: left;width: 30%;"><img src="<{$smarty.const.BR_BASE_URL}>/img/blogo.jpg"></div>
+        <div style="float: right;width: 70%;">
+            <font style="font-weight:bold;font-style:italic;">Email</font> : <font color="blue"><a href="mailto:support@brandreward.com" style="text-decoration:underline;">support@brandreward.com</a></font>
+            <br>
+            <font style="font-weight:bold;font-style:italic;">Skype</font> : brandreward
+            <br>
+            <font style="font-weight:bold;font-style:italic;">Web</font> :<font color="blue"> <a href="<{$smarty.const.BR_BASE_URL}>/" style="text-decoration:underline;" target="_blank"><{$smarty.const.BR_BASE_URL}></a></font>
+            <div style="clear: both;margin-top: 5px;"></div>
+            <a href="https://www.facebook.com/Brand-Reward-1085710124813271/?view_public_for=1085710124813271" target="_blank"><img src="<{$smarty.const.BR_BASE_URL}>/img/t1.png"></a>
+            <a href="https://twitter.com/Brand_Reward" target="_blank"><img src="<{$smarty.const.BR_BASE_URL}>/img/t2.jpg" style="margin-left: 8px;"></a>
+            <a href="https://www.pinterest.com/brandreward/" target="_blank"><img src="<{$smarty.const.BR_BASE_URL}>/img/t3.png" style="margin-left: 8px;"></a>
+            <a href="https://www.linkedin.com/company/brand-reward-hong-kong-limited" target="_blank"><img src="<{$smarty.const.BR_BASE_URL}>/img/t4.png" style="margin-left: 8px;"></a>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

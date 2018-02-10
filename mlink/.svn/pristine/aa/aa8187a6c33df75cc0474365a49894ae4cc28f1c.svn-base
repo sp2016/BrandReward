@@ -1,0 +1,83 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<form name="form1" id="form1" method="post" action="">
+    <h1 style="text-align:center">Account - Info</h1>
+    <div class="container" style="margin-top:30px;">
+        <table class="table table-bordered">
+            <tr>
+                <td colspan="2" style="text-align:left;font-weight: bold;background-color:#1A3958"><font color="white">Basic</font></td>
+            </tr>
+            <tr>
+                <td style="text-align:right;background-color:#EEE;width: 20%">AffId</td>
+                <td>
+                    <input type="text" name="AffId" class="form-control tip_aff" value="<{$info.AffId}>" placeholder="AffId">
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right;background-color:#EEE">AffName</td>
+                <td >
+                    <input type="text" name="AffName" class="form-control tip_aff" value="<{$info.AffName}>" placeholder="AffName">
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right;background-color:#EEE">Username</td>
+                <td >
+                    <input type="text" name="Username" class="form-control tip_aff" value="<{$info.Username}>" placeholder="Username">
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right;background-color:#EEE">Password</td>
+                <td >
+                    <input type="text" name="Password" class="form-control tip_aff" value="<{$info.Password}>" placeholder="Password">
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right;background-color:#EEE">Status</td>
+                <td >
+                    <input type="text" name="AffStatus" class="form-control tip_aff" value="<{$info.AffStatus}>" placeholder="Status">
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right;background-color:#EEE">LoginPostString</td>
+                <td >
+                    <input type="text" name="AffLoginPostString" class="form-control tip_aff" value="<{$info.AffLoginPostString}>" placeholder="LoginPostString">
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right;background-color:#EEE">LoginVerifyString</td>
+                <td >
+                    <input type="text" name="AffLoginVerifyString" class="form-control tip_aff" value="<{$info.AffLoginVerifyString}>" placeholder="LoginVerifyString">
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right;background-color:#EEE">LoginMethod</td>
+                <td >
+                    <input type="text" name="AffLoginMethod" class="form-control tip_aff" value="<{$info.AffLoginMethod}>" placeholder="LoginMethod">
+                </td>
+            </tr>
+        </table>
+        <div style="text-align: center">
+            <input type="submit" value="Submit" class="Submit btn btn-primary">
+            <button id="cancel" class="btn  btn-primary">Cancel</button>
+        </div>
+    </div>
+</form>
+<script>
+    $('#cancel').click(function(){
+        window.close();
+    });
+
+    $('.Submit').submit(function(){
+        $.ajax({
+            type:"POST",
+            url:"<{$smarty.const.BASE_URL}>b_admin_edit.php",
+            processData:true,
+            data:$('#form1').serialize(),
+            success:function(data){
+                alert('1');
+            }
+        });
+    });
+</script>
+<{include file="b_block_footer.html"}>

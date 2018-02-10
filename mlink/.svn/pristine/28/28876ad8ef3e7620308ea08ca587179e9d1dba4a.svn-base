@@ -1,0 +1,20 @@
+﻿"Payment ID","Issue Date",Type,"Reference ID",Currency,"Payment Amount",Status
+1560781,09-23-2016,"Direct Deposit",N/A,USD,"103,054.26",Issued
+1559057,09-16-2016,"Direct Deposit",N/A,GBP,"109,227.80",Issued
+1557759,09-09-2016,"Direct Deposit",N/A,USD,"100,307.92",Issued
+1554077,08-12-2016,"Direct Deposit",N/A,AUD,"109,011.64",Issued
+1554055,08-12-2016,"Direct Deposit",N/A,USD,"134,229.56",Issued
+1548577,07-15-2016,"Direct Deposit",N/A,USD,"116,412.16",Issued
+1547511,07-11-2016,"Direct Deposit",N/A,AUD,"101,157.32",Issued
+1542660,06-17-2016,"Direct Deposit",N/A,USD,"116,251.30",Issued
+1542076,06-10-2016,"Direct Deposit",N/A,GBP,"102,312.22",Issued
+1539302,05-27-2016,"Direct Deposit",N/A,USD,"125,165.20",Issued
+1534461,05-03-2016,"Direct Deposit",N/A,USD,"119,924.45",Issued
+1532944,04-18-2016,"Direct Deposit",N/A,AUD,"128,997.22",Issued
+1530071,04-01-2016,"Direct Deposit",N/A,USD,"120,092.80",Issued
+1516499,03-18-2016,"Direct Deposit",N/A,USD,"105,675.55",Issued
+1514505,03-04-2016,"Direct Deposit",N/A,GBP,"109,149.44",Issued
+1512654,02-26-2016,"Direct Deposit",N/A,USD,"173,514.00",Issued
+1509586,02-16-2016,"Direct Deposit",N/A,USD,"104,036.85",Issued
+1506599,01-22-2016,"Direct Deposit",N/A,USD,"124,987.70",Issued
+1505643,01-15-2016,"Direct Deposit",N/A,AUD,"136,281.09",Issued

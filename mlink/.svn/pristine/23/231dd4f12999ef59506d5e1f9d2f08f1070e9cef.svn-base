@@ -1,0 +1,215 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;">
+            <h1>Store Performance</h1>
+            </select>
+        </div>
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Search</div>
+                <div class="panel-body">
+                    <form id="form_epc_search">
+                        <div class="col-lg-12 form-inline">
+                            <div class="form-group">
+                                <label for="start_date">Start Date:</label>
+                                <input type="text" name="start_date" class="form-control datepicker" id="start_date" value="<{$query.start_date}>" placeholder="Start date">
+                            </div>
+                            <div class="form-group">
+                                <label for="end_date">End Date:</label>
+                                <input type="text" name="end_date" class="form-control datepicker" id="end_date" value="<{$query.end_date}>" placeholder="End date">&nbsp;
+                            </div>
+                            <div class="form-group">
+                                <label for="type">Type:</label>
+                                <select id="type" name="type"  class="form-control">
+                                    <option value="1" <{if $query.type == "1"}>selected<{/if}>>Daily</option>
+                                    <option value="2" <{if $query.type == "2"}>selected<{/if}>>Weekly</option>
+                                    <option value="3" <{if $query.type == "3"}>selected<{/if}>>Monthly</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="data">Data Type:</label>
+                                <select id="data" name="data"  class="form-control">
+                                    <option value="1" <{if $dateType == "1"}>selected<{/if}>>EPC</option>
+                                    <option value="2" <{if $dateType == "2"}>selected<{/if}>>Revenues</option>
+                                    <option value="3" <{if $dateType == "3"}>selected<{/if}>>Clicks</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="store_name">Store Name:</label>
+                                <input type="text" name="store_name" class="form-control" id="store_name" value="<{$query.store_name}>" placeholder="Store Name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="networkid">Network:</label>
+                                <select id="networkid" name="networkid" class="form-control">
+                                    <option value="">ALL</option>
+                                    <{foreach from=$affname item=aff}>
+                                    <option <{if $aff.ID == $network }>selected<{/if}> value="<{$aff.ID}>" class="aff"><{$aff.Name}></option>
+                                    <{/foreach}>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="store_name">Pulisher:</label>
+                                <input type="text" name="pulisher" class="form-control" id="pulisher" value="<{$query.pulisher}>" placeholder="ApiKey">
+                            </div>
+                            <div class="form-group" style="margin-top: 10px;">
+                                <input type="submit" class="btn b-primary" value="Search">
+                            </div>
+                            <div class="form-group" style="margin-top: 10px;">
+                                <input type="button" class="btn csv"  value="Download">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Chart</div>
+                <div class="panel-body">
+                    <div id="chart" class="col-md-12 ">
+                        <canvas id="canvas" height="150" width="1000"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <{if $dateType == "1"}>
+                    EPC(Commission/Click)
+                    <{/if}>
+                    <{if $dateType == "2"}>
+                    Commission
+                    <{/if}>
+                    <{if $dateType == "3"}>
+                    Click
+                    <{/if}>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped" id="table_aff">
+                        <thead>
+                        <tr>
+                            <th>Total</th>
+                            <th>Date</th>
+                            <{foreach from=$dateTitle item=dt}>
+                            <th><{$dt}></th>
+                            <{/foreach}>
+                        </tr>
+                        <tr>
+                            <th><{if $dateType != "3"}>$<{/if}><{$tSum}></th>
+                            <th>-</th>
+                            <{foreach from=$dSum item=dv}>
+                            <th><{if $dateType != "3"}>$<{/if}><{$dv}></th>
+                            <{/foreach}>
+                        </tr>
+                        </thead>
+                        <{foreach from=$out item=data key=name}>
+                        <tr bgcolor="#87ceeb">
+                            <td><{if $dateType != "3"}>$<{/if}><{$sSum[$name]}></td>
+                            <td><{$name}></td>
+                            <{foreach from=$data item=d}>
+                            <td><{if $dateType != "3"}>$<{/if}><{$d}></td>
+                            <{/foreach}>
+                        </tr>
+                        <{/foreach}>
+                    </table>
+                </div>
+            </div>
+            <div class="form-inline">
+                <div class="form-group" style="position:relative;">
+                    <{$pageHtml}>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ava-program-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title" id="exampleModalLabel">Available Program List</h2>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>program</th>
+                        <th>option</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<{assign var="data" value=$dSum|@json_encode}>
+<script>
+    $('#table_aff td').mouseenter(function () {
+        $(this).css('background-color', '#E8FF8C');
+        if ($(this).next().next().next().next().next().next().next()) {
+            $(this).next().next().next().next().next().next().next().css('background-color', '#E8FF8C');
+        }
+    });
+    $('#table_aff td').mouseleave(function () {
+        $(this).css('background-color', '');
+        if ($(this).next().next().next().next().next().next().next()) {
+            $(this).next().next().next().next().next().next().next().css('background-color', '');
+        }
+    });
+    $(".pagination").on('click',function(){
+
+    })
+    $('.datepicker').datetimepicker({
+        format: 'yyyy-mm-dd',
+        todayBtn: true,
+        autoclose: 1,
+        viewSelect: 2
+    });
+    var data =<{$data}>;
+    var crd = [];
+    var epc = [];
+    $.each(data, function (key, val) {
+        crd.push(key);
+        epc.push(Math.round(val * 100) / 100);
+    });
+    var lineChartData = {
+        labels: crd,
+        datasets: [
+            {
+                label: "Line Chart",
+                fillColor: "rgba(151,187,205,0.2)",
+                strokeColor: "rgba(151,187,205,1)",
+                pointColor: "rgba(151,187,205,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(151,187,205,1)",
+                data: epc
+            }
+        ]
+    }
+    window.onload = function () {
+        var ctx = document.getElementById("canvas").getContext("2d");
+        window.myLine = new Chart(ctx).Line(lineChartData, {
+            responsive: true
+        });
+    }
+
+    $('.csv').bind("click",function(){
+        var st = $('#start_date').val();
+        var ed = $('#end_date').val();
+        var type = $('#type').val();
+        var data = $('#data').val();
+        var store = $('#store_name').val();
+        var publisher = $('#publisher').val();
+        var networkid = $('#networkid').val();
+        window.location.href = 'process.php?act=storePerformanceCsv&start_date='+st+'&end_date='+ed+'&type='+type+'&data='+data+'&store_name='+store+'&publisher='+publisher+'&networkid='+networkid;
+    })
+</script>
+<{include file="b_block_footer.html"}>

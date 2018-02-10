@@ -1,0 +1,78 @@
+<header>
+<div class="head">
+    <div class="main">
+        <a href="<{$smarty.const.BASE_URL}>/index.php" class="logo">
+            <img src="img/logo.png" />
+        </a>
+        <div class="min_menu">
+            <span class="show_menu"></span>
+        </div>
+        <ul class="menu">
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>"<{if $title eq 'Brandreward - Your Complete Monetization Solution'}>class="hover"<{/if}> >Homepage</a>
+            </li>
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>/features.php"<{if $title eq 'Features'}>class="hover"<{/if}> >Features</a>
+            </li>
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>/publisher.php"<{if $title eq 'Publisher'}>class="hover"<{/if}> ><{$LANG.front.public.publishers}></a>
+            </li>
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>/advertiser.php"<{if $title eq 'Advertiser'}>class="hover"<{/if}>><{$LANG.front.public.advertiser}></a>
+            </li>
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>/ourTeam.php"<{if $title eq 'Our Team'}>class="hover"<{/if}> ><{$LANG.front.public.ourteam}></a>
+            </li>
+        </ul>
+        <div class="btn_sl">
+            <a href="<{$smarty.const.BASE_URL}>/signup.php" class="su"><{$LANG.front.public.signup}></a>
+            <a href="javascript:void(0)" id="head-top-login" class="lg" onclick="remodal_login()"><{$LANG.front.public.login}></a>
+            <select class="form-control lang" name="Status" style="width:110px;margin-left: 10px;">
+                <option value="">Language</option>
+                <option value="English" <{if $language == 'English'}>selected='selected'<{/if}>>English</option>
+                <option value="German" <{if $language == 'German'}>selected='selected'<{/if}>>German</option>
+                <option value="French" <{if $language == 'French'}>selected='selected'<{/if}>>French</option>
+            </select>
+        </div>
+    </div>
+</div>
+</header>
+<script>
+    $('.lang').on('change',function(){
+        var val = $(this).val();
+        if(val == ''){
+            return false;
+        }
+        var url = "<{$smarty.const.BASE_URL}>/index.php"+'?language='+val;
+        window.location.href=url
+
+    })
+    if($(document).width() <= 1100){
+        $('.menu').css('display','none');
+        $('.menu').attr('data-show',0);
+    }
+        var _this = this;
+        var resizeTimer = null;
+        $(window).bind('resize', function () {
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function(){
+            if($(document).width() <= 1100){
+                    $('.menu').css('display','none');
+                    $('.menu').attr('data-show',0);
+            }else{
+                $('.menu').removeAttr('style');
+                $('.menu').removeAttr('data-show');
+            }
+            } , 500);
+        });
+        $('.show_menu').click(function(){
+            if($('.menu').attr('data-show') == 0){
+                $('.menu').css('display','block');
+                $('.menu').attr('data-show',1);
+            }else{
+                $('.menu').css('display','none');
+                $('.menu').attr('data-show',0);
+            }
+        })
+</script>
+</header>

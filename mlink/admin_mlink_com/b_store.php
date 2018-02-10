@@ -1,0 +1,179 @@
+<?php
+include_once('conf_ini.php');
+include_once(INCLUDE_ROOT.'init2.php');
+mysql_query("SET NAMES UTF8");
+$objDomain = new Domain;
+$statis = new Statis();
+$category = $statis->getCategory();
+$sql = 'SELECT CountryName,CountryCode FROM country_codes';
+$arr = $db->getRows($sql);
+foreach($arr as $v){
+	$countryArr[$v['CountryName']] = $v['CountryCode'];
+}
+$countryArr['global'] = 'Global';
+$countryArr['United Kingdom'] = 'UK';
+
+if(isset($_POST['UpdatePPC']) && !empty($_POST['UpdatePPC']))
+{
+	$currentTime = date("Y-m-d H:i:s");
+	$user = $_SERVER['PHP_AUTH_USER'];
+	$sql = "UPDATE store SET PPC='{$_POST['ppc']}' WHERE ID={$_POST['storeId']}";
+	$db->query($sql);
+	$sql = "insert into store_change_log (`StoreId`,`FieldName`,`FieldValueOld`,`FieldValueNew`,`LastUpdateTime`,`Operator`) VALUES('{$_POST['storeId']}','PPC Status','{$_POST['ppc']}','{$_POST['oldVal']}','$currentTime','$user')";
+	$db->query($sql);
+	echo true;
+	die;
+}
+if (isset($_POST['addp']) && !empty($_POST['addp'])) {
+	$sql = "SELECT a.ProgramId,a.StoreId,b.Name AS pname,c.Name AS aname FROM r_store_program a INNER JOIN program b ON a.ProgramId = b.ID INNER JOIN wf_aff c ON b.AffId = c.ID where a.StoreId =" . $_POST['sid'];
+	$res2 = $db->getRows($sql);
+	$html = "";
+	if (!empty($res2)) {
+		foreach ($res2 as $k) {
+			$html .= "<option value='{$k['StoreId']},{$k['ProgramId']}'>{$k['pname']} |--| {$k['aname']}</option>";
+		}
+	}
+	$objTpl->assign('countryArr', $countryArr);
+	$objTpl->assign('advertiser', $html);
+	$objTpl->display('b_store_add_coupon.html');
+	die;
+}
+if(isset($_POST['imgname']) && !empty($_POST['imgname']))
+{
+	$return = 1;
+	$time = date('Y-m-d H:i:s');
+	$user = 1;//$_SERVER['PHP_AUTH_USER'];
+	$sql = "select LogoName from store where `ID` = {$_POST['sid']}";
+	$res = $db->getRows($sql);
+	if(empty($res[0]['LogoName'])){
+		$return = 2;
+	}
+	$sql = "UPDATE store SET LogoName='{$_POST['imgname']}',LogoStatus= 1 WHERE ID={$_POST['sid']} ";
+	$db->query($sql);
+	$sql = "insert into store_change_log (`StoreId`,`FieldName`,`FieldValueOld`,`FieldValueNew`,`LastUpdateTime`,`Operator`) VALUES('{$_POST['sid']}','Logo','--','--,'$time','$user')";
+	$db->query($sql);
+	echo $return;
+	die;
+}
+if(isset($_POST['uplogo']) && !empty($_POST['uplogo']))
+{
+	$sql = "UPDATE store SET LogoName='{$_POST['val']}',LogoStatus= 1 WHERE ID={$_POST['id']}";
+	$db->query($sql);
+	echo true;
+	die;
+}
+if(isset($_POST['atype']) && !empty($_POST['atype']))
+{
+	$id = $_POST['id'];
+	$val = '"'.addslashes(trim($_POST['val'])).'"';
+	$old = '"'.addslashes($_POST['oldval']).'"';
+	$time = date('Y-m-d H:i:s');
+	$user = 1;//$_SERVER['PHP_AUTH_USER'];
+	$sql = "UPDATE store SET NameOptimized=$val,OptimizedType='1' WHERE ID=$id";
+	$db->query($sql);
+	$sql = "insert into store_change_log (`StoreId`,`FieldName`,`FieldValueOld`,`FieldValueNew`,`LastUpdateTime`,`Operator`) VALUES($id,'StoreName',$val,$old,'$time','$user')";
+	$db->query($sql);
+	echo true;
+	die;
+}
+if(isset($_POST['table']) && !empty($_POST['table'])){
+	$number = $_POST['order'][0]['column'];
+	$page = $_POST['start'];
+	$pagesize = $_POST['length'];
+	$search = $_POST['search'];
+	$search['order'] = $_POST['order'][0]['dir'];
+	$search['oname'] = $_POST['columns'][$number]['data'];
+	$search['number'] = $number;
+	$search['categories'] = is_array($_POST['category']) ? implode(',', $_POST['category']) : $_POST['category'];
+
+    $search['coupon_policy'] = is_array($_POST['coupon_policy']) ? implode(',', $_POST['coupon_policy']) : $_POST['coupon_policy'];
+
+	$search['country'] = $_POST['country'];
+	$search['status'] = $_POST['status'];
+	$search['ppc'] = $_POST['ppc'];
+	$search['pstatus'] = $_POST['pstatus'];
+	$search['logo'] = $_POST['logo'];
+	$search['catestu'] = $_POST['catestu'];
+	$search['stime'] = $_POST['stime'];
+	$search['etime'] = $_POST['etime'];
+	$search['store_keywords'] = $_POST['advertiser'];
+	$search['aname'] = $_POST['aname'];
+	$search['networkid'] = $_POST['networkid'];
+	$search['datatype'] = $_POST['datatype'];
+	$search['cooperation'] = $_POST['cooperation'];
+	$DomainTotal = $objDomain->getStoreListPage($search,$page,$pagesize);
+	$DomainList = $DomainTotal['data'];
+	if(!empty($DomainList) || !empty($DomainTotal['store'])){
+		foreach($DomainList as &$value)
+		{
+			if(($value['clicks']-$value['rob']) > 0){
+				$value['epc'] ='$'.number_format(($value['commission']/($value['clicks']-$value['rob'])),2,'.',',');
+			}else{
+				$value['epc'] = '$0.00';
+			}
+			$value['storeName'] = ucwords($value['storeName']);
+			$value['clicks'] = number_format($value['clicks']-$value['rob']);
+			$value['commission'] = "$".number_format($value['commission'],2);
+			$value['sales'] = "$".number_format($value['sales'],2);
+			unset($value);
+		}
+		if(isset($DomainTotal['store']) && !empty($DomainTotal['store'])){
+			$res['store'] = json_encode($DomainTotal['store']);
+		}else{
+			$res['store'] = 0;
+		}
+		$res['click'] = number_format($DomainTotal['clicks']-$DomainTotal['rob']);
+		$res['total'] = number_format($DomainTotal['clicks']);
+		$res['rob'] = number_format($DomainTotal['rob']);
+		$res['robp'] = number_format($DomainTotal['robp']);
+		$res['revenues'] =  "$".number_format($DomainTotal['revenues'],2);
+		$res['sales'] =  "$".number_format($DomainTotal['sales'],2);
+		$res['dcount'] =  empty($DomainTotal['dcount'])?'':$DomainTotal['dcount'];
+		$res['data'] = $DomainList;
+		$res['start'] = $page/$pagesize+1;
+		$res['recordsFiltered'] = $DomainTotal['count'];
+		echo json_encode($res);
+	}else{
+		$res['click'] = '';
+		$res['revenues'] =  '';
+		$res['data'] = '';
+		$res['dcount'] ='';
+		$res['store'] = 0;
+		$res['start'] = $page/$pagesize+1;
+		$res['recordsFiltered'] = $DomainTotal['count'];
+		echo json_encode($res);
+	}
+
+	die;
+}
+
+$coupon_policy_list = array('Exclusive Code','CPA Increase','Allow Inaccurate Promo','Allow to Change Promotion Title/Description');
+
+$objOutlog = new Outlog;
+$affname = $objOutlog->get_affname();
+
+$sys_header['js'][] = BASE_URL.'/js/dataTables.min.js';
+$sys_header['js'][] = BASE_URL.'/js/dataTables.semanticui.min.js';
+$sys_header['js'][] = BASE_URL.'/js/jquery.filer.min.js';
+$sys_header['css'][] = BASE_URL.'/css/front.css';
+$sys_header['css'][] = BASE_URL.'/css/jquery.filer.css';
+$sys_header['css'][] = BASE_URL.'/css/jquery.filer-dragdropbox-theme.css';
+$objTpl->assign('affname', $affname);
+$objTpl->assign('category',$category);
+
+$objTpl->assign('coupon_policy_list',$coupon_policy_list);
+
+$objTpl->assign('title','Advertisers');
+$objTpl->assign('search', $_GET);
+$objTpl->assign('countryArr', $countryArr);
+$objTpl->assign('sys_header', $sys_header);
+$detectOBJ = new MobileDetect();
+if ($detectOBJ->isMobile()) {
+	$objTpl->assign('data',$_GET);
+	$objTpl->display('b_mobile_store.html');
+} else {
+	$objTpl->display('b_store.html');
+}
+
+
+?>

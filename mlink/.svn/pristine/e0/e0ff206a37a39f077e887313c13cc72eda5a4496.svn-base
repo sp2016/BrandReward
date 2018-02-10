@@ -1,0 +1,162 @@
+<?php
+include_once('conf_ini.php');
+include_once(INCLUDE_ROOT.'init3.php');
+	$affiliateModel = new AffiliateBlock();
+    $statis = new Statis();
+	$Publisher = new Publisher();
+	if(isset($_GET['act']) && !empty($_GET['act'])){
+		$Publisher->publishercsv($_GET);
+		die;
+	}
+	if(isset($_POST['bid']) && !empty($_POST['bid'])){
+		$id = $_POST['bid'];
+		$time = date('Y-m-d H:i:s');
+		$sql = "update block_relationship set Status='Inactive',LastUpdateTime='$time' where ID=".$id;
+		if($db->query($sql)){
+			echo 1;
+		}else{
+			echo 2;
+		}
+		die;
+	}
+		//http://admin.brandreward.com/b_publisher.php 提供Domain Follow Info
+		$api = isset($_POST['api']) ? $_POST['api'] : 0;
+		$pid = isset($_POST['id']) ? $_POST['id'] : 0;
+		if (!empty($api) && !empty($pid)) {
+			$sql = "select a.* from crawl_publish_domain_follow_new as a WHERE a.publisherId = $pid";
+			$rows = $db->getRows($sql);
+			foreach ($rows as $key=>$value){
+				$rows[$key]['semKeywords'] = json_decode($value['semKeywords'],true);
+				$rows[$key]['semRTextAds'] = json_decode($value['semRTextAds'],true);
+				if(preg_match('/Error Occured/', $value['whois'])){
+					$rows[$key]['whois'] = array();
+				}else{
+					$rows[$key]['whois'] = json_decode($value['whois'],true);
+				}
+			}
+			$objTpl->assign('list',$rows);
+			if (empty($rows)) {
+				echo 0;
+				die();
+			}
+			$objTpl->display('a_publisher_domain_follow_info.html');
+			die();
+		}
+
+
+	if(isset($_POST['table1']) && !empty($_POST['table1'])){
+	$return = array();
+	$id = $_POST['id'];
+	$page = $_POST['start'];
+	$pagesize = $_POST['length'];
+	$sql = "select count(1) as count  from block_relationship where Status='Active' AND `Source`='NORMAL' AND PublisherId=".$id;
+	$count = $affiliateModel->getRow($sql);
+	$sql = "select * from block_relationship where Status='Active' AND `Source`='NORMAL' AND PublisherId=".$id." limit $page,$pagesize";
+	$data = $affiliateModel->getRows($sql);
+	foreach($data as &$k){
+		if($k['BlockBy'] == 'Internal'){
+			$k['objpname'] = "/";
+			$k['objsname'] = '/';
+			$k['aname'] = '/';
+			$k['account'] = 'Internal';
+			continue;
+		}
+		if($k['AccountType'] == 'AccountId'){
+			$sql = "select `domain` from publisher_account where ID=".$k['AccountId'];
+			$res = $affiliateModel->getRow($sql);
+			$k['account'] = $res['domain'];
+		}else{
+			$k['account'] = '/';
+		}
+		if($k['ObjType'] == 'Store'){
+			$sql = "select IF(NameOptimized='' OR NameOptimized IS NULL,`Name`,NameOptimized) AS `Name` from store WHERE ID=".$k['ObjId'];
+			$res = $affiliateModel->getRow($sql);
+			$k['objsname'] = $res['Name'];
+			$k['aname'] = '/';
+			$k['objpname'] = '/';
+		}elseif($k['ObjType'] == 'Affiliate'){
+			$sql = "select `Name` as aname from wf_aff where ID=".$k['ObjId'];
+			$res = $affiliateModel->getRow($sql);
+			$k['aname'] = $res['aname'];
+			$k['objpname'] = "/";
+			$k['objsname'] = '/';
+		}else{
+			$sql = "SELECT a.Name AS pname,b.Name AS aname FROM program AS a LEFT JOIN wf_aff  AS b ON a.`affId` = b.ID WHERE a.`id` =".$k['ObjId'];
+			$res = $affiliateModel->getRow($sql);
+			$k['aname'] = $res['aname'];
+			$k['objpname'] = $res['pname'];
+			$k['objsname'] = '/';
+		}
+		$k['Add_Violation_Warning'] = ($k['Add_Violation_Warning'] == 0)?'No':'Yes';
+	}
+	$res['data'] = $data;
+	$res['start'] = $page/$pagesize+1;
+	$res['recordsFiltered'] = $count['count'];
+	echo json_encode($res);
+	die;
+}
+	$affList = $affiliateModel->getAffiliateList();
+	$objTpl->assign("affList",$affList);
+	$d = new DateTime();
+    $category = $statis->getCategory();
+	isset($_GET['p']) ? $p = $_GET['p'] : $p = 1;
+	$pagesize = isset($_GET['pagesize']) ? $_GET['pagesize'] : 20;
+	$list = $Publisher->getList($_GET,$p,$pagesize);
+	$page_html = get_page_html($list);
+	foreach($_GET as $key => $data){
+		$objTpl->assign($key,$data);
+	}
+
+	if(isset($_POST['log']) && !empty($_POST['log'])){
+		$uid = $_POST['uid'];
+		$sql = "select updatetime,act from logapi_publisher where publisherid = $uid GROUP by act order by `act`";
+		$res = $db->getRows($sql);
+		if(!empty($res)){
+			foreach($res as &$k){
+				$act = explode('.',$k['act']);
+				$k['act'] = $act[1];
+				unset($k);
+			}
+			echo json_encode($res);
+		}else{
+			echo 0;
+		}
+		die;
+	}
+	$sel_cate = array();
+	if(isset($_GET['categories'])){
+		$sel_cate = explode(',',$_GET['categories']);
+	}
+	//展示信息入口
+	$countryOption = getDictionary('country');
+	//Traffic Demographics搜索条件
+	$gbd = isset($_GET['GeoBreakdown']) ? $_GET['GeoBreakdown'] : 0;
+	$managers = $sys_am;
+	$managers[] = 'public';
+	$objTpl->assign('managers',$managers);
+	$objTpl->assign('sel_cate', $sel_cate);
+	$sys_header['css'][] = BASE_URL.'/css/front.css';
+	$sys_header['css'][] = BASE_URL.'/css/bootstrap/bootstrap.min.css';
+	$sys_header['css'][] = BASE_URL.'/css/select2.min.css';
+	$sys_header['css'][] = BASE_URL.'/css/select2-bootstrap.min.css';
+	$sys_header['js'][] = BASE_URL.'/js/dataTables.min.js';
+	$sys_header['js'][] = BASE_URL.'/js/dataTables.semanticui.min.js';
+	$sys_header['js'][] = BASE_URL.'/js/select2.min.js';
+	$objTpl->assign('sys_header', $sys_header);
+	$objTpl->assign('category', $category);
+	$objTpl->assign('pagesize', $pagesize);
+	$objTpl->assign('count',$list['count']);
+	$objTpl->assign('list',$list['data']);
+	$objTpl->assign('gbd',$gbd);
+	$objTpl->assign('countryOption',$countryOption);
+	$objTpl->assign('a',$list['a']);
+	$objTpl->assign('i',$list['i']);
+	$objTpl->assign('u',$list['u']);
+	$objTpl->assign("title","Publisher List");
+	$objTpl->assign("pageHtml",$page_html);
+	$detectOBJ = new MobileDetect();
+	if ($detectOBJ->isMobile()) {
+		$objTpl->display('b_mobile_publisher.html');
+	} else {
+		$objTpl->display('b_publisher.html');
+	}

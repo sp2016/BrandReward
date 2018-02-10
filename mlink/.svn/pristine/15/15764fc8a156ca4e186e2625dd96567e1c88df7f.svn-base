@@ -1,0 +1,1083 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<{if $Career ne 'sub_account'}>
+<div>
+  <div class="container" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1><{$LANG.backend.public.account}></h1></div>
+
+    <!-- account info -->
+    <div class="panel panel-default" id="panel_account">
+      <div class="panel-heading" id="removehtml"><{$LANG.backend.account.a1}>
+        <{if $checktype eq '1'}>
+        <a style="float: right;margin-right: 5px;text-decoration: none" href="completioninfo.php?type=3"><{$LANG.front.signup.a67}></a>
+        <a style="float: right;margin-right: 5px;text-decoration: none" href="javascript:void(0);" id="revocation" ><{$LANG.front.signup.a68}> &nbsp;/&nbsp;</a>
+        <{else}>
+        <a style="float: right;margin-right: 5px;text-decoration: none" href="completioninfo.php?type=2" id="checkupdate"><{$LANG.front.signup.a66}></a>
+        <{/if}>
+      </div>
+      <div class="panel-body" >
+        <div class="row">
+            <{include file="s_profile_account.html"}>
+        </div>
+      </div>
+    </div>
+
+    <!-- site info -->
+    <div id="profile-site" class="panel panel-default">
+      <div class="panel-heading"><{$LANG.backend.account.a13}><span style="float:right"><a href="javascript:void(0)" id="a_new_site" ><{$LANG.backend.account.a14}></a></span></div>
+      <div class="panel-body" >
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th style="width:10%"><{$LANG.backend.account.a15}></th>
+              <th style="width:10%"><{$LANG.backend.account.a16}></th>
+              <th style="width:20%"><{$LANG.backend.account.a17}></th>
+              <th style="width:30%">Core business</th>
+              <th style="width:20%">Traffic Demographics</th>
+              <th style="width:10%">#</th>
+            </tr>
+          </thead>
+          <{if $user_profile.site eq ''}>
+          <{else}>
+          <{foreach from=$user_profile.site item=site}>
+          <tr>
+            <td><{$site.Domain}></td>
+            <td><{$site.Alias}></td>
+            <td><{$site.ApiKey}></td>
+            <td><{$site.SiteTypeNewText}></td>
+            <td><{$site.GeoBreakdownText}></td>
+            <td><a href="javascript:void(0)" id="a_site_<{$site.ID}>" onclick="show_profile_site(<{$site.ID}>);"><{$LANG.backend.account.a2}></a></td>
+          </tr>
+          <{/foreach}>
+          <{/if}>
+        </table>
+      </div>
+    </div>
+
+    <!-- Referral Program -->
+    <div class="panel panel-default">
+      <div class="panel-heading">Referral Program</div>
+      <div class="panel-body" >
+         <table class="table table-bordered">
+          <!-- <tr>
+            <th>Rule</th><td>If you refer a new user to Brandreward we'll pay you 1/3 of our commission!</td>
+          </tr> -->
+          <tr>
+            <th>Refer link</th><td><{$smarty.const.BASE_URL}>?brref=<{$user_profile.base.PublisherId}></td>
+          </tr>
+          <tr>
+            <th>Referred user</th><td><{$refer_info.pubnums|default:0}> user</td>
+          </tr>
+          <tr>
+            <th>Referred earns</th><td>$<{$refer_info.refcommission|default:0}> bonus</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    
+    <!-- site info -->
+    <div id="site-account" class="panel panel-default">
+      <div class="panel-heading">Payment Account</div>
+      <div class="panel-body" >
+      	<table class="table table-bordered">
+          <tr>
+            <th style="width:20%">Payment Threshold</th>
+            <td style="width:70%">$<{$paymentAccount.MinPaymentAmount}></td>
+            <td style="width:10%"><a href="javascript:void(0)" class="authPass" data-id="<{$site.ID}>" data-type="amount">Edit</a></td>
+          </tr>
+          <tr>
+            <th style="width:20%" class="paypalEmailClass">PayPal Email</th>
+            <td style="width:70%"><{$paymentAccount.PayPal}></td>
+            <td style="width:10%"><a href="javascript:void(0)" class="authPass" data-id="<{$site.ID}>" data-type="paypal">Edit</a></td>
+          </tr>
+          <tr>
+            <th style="width:20%">Billing Email</th>
+            <td style="width:70%;word-wrap: break-word;word-break: break-all;"><{$paymentAccount.NotificationEmail}></td>
+            <td style="width:10%"><a href="javascript:void(0)" class="authPass" data-id="<{$site.ID}>" data-type="notifyemail">Edit</a></td>
+          </tr>
+        </table>
+        <table class="table table-bordered">
+          *This method is only used when payment is over $1000.<a style="float:right" href="javascript:void(0)" class="authPass" data-id="<{$site.ID}>" data-type="account">Edit</a>
+          <tr>
+            <th style="width:20%">Account Name</th>
+            <td style="width:80%"><{$paymentAccount.AccountName}></td>
+          </tr>
+          <tr>
+            <th style="width:20%">Account Number</th>
+            <td style="width:80%"><{$paymentAccount.AccountNumber}></td>
+          </tr>
+          <tr>
+            <th style="width:20%">Account Country</th>
+            <td style="width:80%"><{$paymentAccount.AccountCountry}></td>
+          </tr>
+          <tr>
+            <th style="width:20%">Account City</th>
+            <td style="width:80%"><{$paymentAccount.AccountCity}></td>
+          </tr>
+          <tr>
+            <th style="width:20%">Account Address</th>
+            <td style="width:80%"><{$paymentAccount.AccountAddress}></td>
+          </tr>
+          <tr>
+            <th style="width:20%">Swift Code</th>
+            <td style="width:80%"><{$paymentAccount.SwiftCode}></td>
+          </tr>
+          <tr>
+            <th style="width:20%">Bank Name</th>
+            <td style="width:80%"><{$paymentAccount.BankName}></td>
+          </tr>
+          <tr>
+            <th style="width:20%">Branch Name</th>
+            <td style="width:80%"><{$paymentAccount.BranchName}></td>
+          </tr>
+          <!-- <thead>
+            <tr>
+              <th>Account Name</th>
+              <th>Account Number</th>
+              <th>Account Address</th>
+              <th>Swift Code</th>
+              <th>Bank Name</th>
+              <th>Branch Name</th>
+              <th>#</th>
+            </tr>
+          </thead>
+          <tr>
+            <td><{$paymentAccount.AccountName}></td>
+            <td><{$paymentAccount.AccountNumber}></td>
+            <td><{$paymentAccount.AccountAddress}></td>
+            <td><{$paymentAccount.SwiftCode}></td>
+            <td><{$paymentAccount.BankName}></td>
+            <td><{$paymentAccount.BranchName}></td>
+            <td><a href="javascript:void(0)" class="authPass" data-id="<{$site.ID}>" data-type="account">Edit</a></td>
+          </tr> -->
+        </table>
+      </div>
+    </div>
+    
+    <!-- sub account -->
+    <div class="panel panel-default">
+      <div class="panel-heading">Sub Account<{if $subAccountCount lt 5}><a style="float:right" href="javascript:void(0)" id="addSubAccountBtn" >Add Sub Account</a><{/if}></div>
+      <div class="panel-body" >
+         <table class="table table-bordered">
+          *You can add up to five sub accounts.
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Domain</th>
+              <th>#</th>
+            </tr>
+          </thead>
+          <{foreach from=$subAccountList item=temp}>
+          <tr data-subid="<{$temp.SubId}>" data-accountid="<{$temp.AccountId}>">
+            <td><{$temp.UserName}></td>
+            <td><{$temp.Domain}></td>
+            <td><a class="editSubAccountBtn" href="javascript:void(0)">Edit</a> / <a class="deleteSubAccountBtn" href="javascript:void(0)">Delete</a> / <a class="changeSubAccountPwdBtn" href="javascript:void(0)">Change Password</a></td>
+          </tr>
+          <{/foreach}>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<input type="hidden" id="actUrl">
+
+<div class="modal fade" id="dialog-site" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="dialog-site-title"><{$LANG.backend.account.a14}></h2>
+      </div>
+      <div class="modal-body">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2" style="text-align:center;">
+				      <form method="post" action="<{$smarty.const.BASE_URL}>/process.php" id="form_edit_profile_site">
+				        <input type="hidden" name="act" value='<{$LANG.front.s_profile_site.a1}>' />
+				        <input type="hidden" name="ID" id="siteId" value='0' />
+				          <div class="form-group check">
+				            <label><{$LANG.backend.account.a15}></label>
+				            <input type="text" class="form-control" value="" id="site-domain" name="site_domain" placeholder="http://">
+				            <span id="domainHasError" class="siteErrorMsg" style="color:red"></span>
+						  </div>
+				          <div class="form-group">
+				            <label><{$LANG.backend.account.a16}></label>
+				            <input type="text" class="form-control" value="" id="site-alias" name="site_alias" placeholder="<{$LANG.backend.account.a16}>">
+				          </div>
+				          <div class="form-group" id="pub_contentDiv">
+				            <label><{$LANG.backend.account.a33}>(Multi-choice)</label>
+				            <select name="pub_contentCategory[]" class="form-control pub_contentCategory0">
+		                      <option value="">--Select--</option>
+		                      <{foreach from=$categoryiesOfContent key=k item=c}>
+		                      <{assign var='num' value=$k|substr:0:1}>
+		                      <optgroup label="<{$k}>">
+		                        <{foreach from=$c key=subk item=subc}>
+		                        <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+		                        <{/foreach}>
+		                        <{/foreach}>
+		                    </select>
+		                    <select name="pub_contentCategory[]" class="form-control pub_contentCategory1" style="margin-top:10px;">
+		                      <option value="">--Select--</option>
+		                      <{foreach from=$categoryiesOfContent key=k item=c}>
+		                      <{assign var='num' value=$k|substr:0:1}>
+		                      <optgroup label="<{$k}>">
+		                        <{foreach from=$c key=subk item=subc}>
+		                        <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+		                        <{/foreach}>
+		                        <{/foreach}>
+		                    </select>
+		                    <select name="pub_contentCategory[]" class="form-control pub_contentCategory2"  style="margin-top:10px;">
+		                      <option value="">--Select--</option>
+		                      <{foreach from=$categoryiesOfContent key=k item=c}>
+		                      <{assign var='num' value=$k|substr:0:1}>
+		                      <optgroup label="<{$k}>">
+		                        <{foreach from=$c key=subk item=subc}>
+		                        <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+		                        <{/foreach}>
+		                        <{/foreach}>
+		                    </select>
+		                    <input style="width: 350px;margin-top: 10px;" type="text" class="form-control" name="pub_otherTypeOfContent" id="pub_contentCategory4" placeholder="<{$LANG.front.signup.a9}>">
+				            <span id="pub_contentHasError" class="siteErrorMsg" style="color:red"></span>
+				            <!-- <select name="site_type" class="form-control">
+				              	<{foreach from=$sitetypeOption item=c key=k}>
+						  			<option value="<{$k}>" <{if $site_info.SiteTpye == $k}>selected<{/if}>><{$c}></option>
+						  		<{/foreach}>
+				            </select> -->
+				          </div>
+				          <div class="form-group" id="pub_trafficDiv">
+				            <label><{$LANG.backend.account.a35}>(Multi-choice)</label>
+				            <select  name="pub_traffic[]" id="pub_traffic1" class="form-control pub_traffic0">
+		                      <option value="">--Select--</option>
+		                      <{foreach from=$countryOption item=c key=k}>
+		                      <option value="<{$k}>"><{$c}></option>
+		                      <{/foreach}>
+		                    </select>
+		                    <select  name="pub_traffic[]" class="form-control pub_traffic1" style="margin-top: 10px;">
+		                      <option value="">--Select--</option>
+		                      <{foreach from=$countryOption item=c key=k}>
+		                      <option value="<{$k}>"><{$c}></option>
+		                      <{/foreach}>
+		                    </select>
+		                    <select  name="pub_traffic[]" class="form-control pub_traffic2" style="margin-top: 10px;">
+		                      <option value="">--Select--</option>
+		                      <{foreach from=$countryOption item=c key=k}>
+		                      <option value="<{$k}>"><{$c}></option>
+		                      <{/foreach}>
+		                    </select>
+		                    <span id="pub_trafficHasError" class="siteErrorMsg" style="color:red"></span>
+				            <!-- <select name="site_country" class="form-control">
+						  		<{foreach from=$countryOption item=c key=k}>
+						  			<option value="<{$k}>" <{if $site_info.TargetCountry == $k}>selected<{/if}>><{$c}></option>
+						  		<{/foreach}>
+				            </select> -->
+				          </div>
+				          <div class="form-group">
+				            <label><{$LANG.backend.account.a25}></label>
+				            <textarea id="site-desc" name="site_desc" class="form-control" rows="3" placeholder="<{$LANG.front.s_profile_site.a2}>"></textarea>
+				          </div>
+				          <div class="form-group">
+				          	<span id="commonHasError" class="siteErrorMsg" style="color:red"></span>
+				          </div>
+				          <div class="form-group">
+				          <button type="button" class="btn  btn-primary btn-lg btn-block" onclick="edit_profile_site()"><{$LANG.backend.account.a20}></button>
+				        </div>
+				      </form>
+				  	</div>
+				</div>
+			</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="dialog-pwd" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="exampleModalLabel"><{$LANG.backend.account.a12}></h2>
+      </div>
+      <div class="modal-body">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2" style="text-align:center;">
+                <input type="hidden" name="act" value='publish_change_pwd' />
+                  <div class="form-group">
+                    <input type="password" class="form-control" id="pub_pwd_old" value="" name="pub_pwd_old" placeholder="<{$LANG.backend.account.a22}>">
+                  </div>
+                  <div class="form-group">
+                    <input type="password" class="form-control" id="pub_pwd" value="" name="pub_pwd" placeholder="<{$LANG.backend.account.a23}>">
+                  </div>
+                  <div class="form-group">
+                    <input type="password" class="form-control" id="pub_pwd_ag" value="" name="pub_pwd_ag" placeholder="<{$LANG.backend.account.a24}>">
+                  </div>
+                  <div class="form-group">
+                  <button type="submit" class="btn  btn-primary btn-lg btn-block updatepwd"><{$LANG.backend.account.a20}></button>
+                </div>
+          </div>
+        </div>
+    </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="paymentAccountModal" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog" style="width: 800px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="dialog-site-title">Edit Payment Account</h2>
+      </div>
+      <div class="modal-body">
+		<div class="container-fluid">
+			<div class="row">
+         		<div class="form-horizontal" id="payment-head-detail">
+				  	<div class="form-group">
+					    <label for="AccountName" class="col-sm-3 control-label">Account Name<span style="color:red">*</span></label>
+					    <div class="col-sm-9">
+					      <input type="text" class="form-control" id="AccountName" placeholder="Account Name">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="AccountNumber" class="col-sm-3 control-label">Account Number<span style="color:red">*</span></label>
+					    <div class="col-sm-9">
+					      <input type="text" class="form-control" id="AccountNumber" placeholder="Account Number">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					  	  <label for="AccountCountry" class="col-sm-3 control-label">Account Country<span style="color:red">*</span></label>
+					  	  <div class="col-sm-9">
+					  	  	<select id="AccountCountry" class="form-control">
+		                      <option value="">--Select--</option>
+		                      <{foreach from=$countryOption item=c key=k}>
+		                      <option value="<{$k}>"><{$c}></option>
+		                      <{/foreach}>
+		                    </select>
+					      </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="AccountCity" class="col-sm-3 control-label">Account City</label>
+					    <div class="col-sm-9">
+					      <input type="text" class="form-control" id="AccountCity" placeholder="City">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="AccountAddress" class="col-sm-3 control-label">Account Address<span style="color:red">*</span></label>
+					    <div class="col-sm-9">
+					      <input type="text" class="form-control" id="AccountAddress" placeholder="Account Address">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="SwiftCode" class="col-sm-3 control-label">Swift Code<span style="color:red">*</span></label>
+					    <div class="col-sm-9">
+					      <input type="text" class="form-control" id="SwiftCode" placeholder="Swift Code">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="BankName" class="col-sm-3 control-label">Bank Name<span style="color:red">*</span></label>
+					    <div class="col-sm-9">
+					      <input type="text" class="form-control" id="BankName" placeholder="Bank Name">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="BranchName" class="col-sm-3 control-label">Branch Name<span style="color:red">*</span></label>
+					    <div class="col-sm-9">
+					      <input type="text" class="form-control" id="BranchName" placeholder="Branch Name">
+					      <p style="color:red;" class="errormsg"></p>
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <div class="col-sm-offset-5 col-sm-10">
+					      <button type="submit" class="btn btn-primary" id="paymentAccountBtn">Submit</button>
+					      <button class="btn btn-default" style="margin-left: 10px;" data-dismiss="modal">Cancel</button>
+					    </div>
+					  </div>
+		   	 </div>
+			</div>
+         </div>
+       </div>
+     </div>
+   </div>
+ </div>
+ 
+ <div class="modal fade" id="authPassword" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog" style="width: 800px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="dialog-site-title">Verify Password</h2>
+      </div>
+      <div class="modal-body">
+		<div class="container-fluid">
+			<div class="row">
+         		<div class="form-horizontal" id="password-head-detail">
+         			<input type="hidden" id="updateType">
+				  	<div class="form-group">
+				    	<label for="verifyPassword" class="col-sm-3 control-label">Enter Your Password</label>
+				    	<div class="col-sm-9">
+					      	<input type="password" class="form-control" id="verifyPassword" placeholder="Enter Your Password">
+					  	  	<p style="color:red;" id="authpassmsg"></p>
+			    		</div>
+				  	</div>
+				  	<div class="form-group">
+					    <div class="col-sm-offset-5 col-sm-10">
+					      <button type="submit" class="btn btn-primary" id="authPasswordBtn">Submit</button>
+					      <button class="btn btn-default" style="margin-left: 10px;" data-dismiss="modal">Cancel</button>
+					    </div>
+				 	</div>
+		   	 	</div>
+			</div>
+         </div>
+       </div>
+     </div>
+   </div>
+ </div>
+ 
+<div class="modal fade" id="updatePaypalModal" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog" style="width: 800px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="dialog-site-title">Edit Paypal</h2>
+      </div>
+      <div class="modal-body">
+		<div class="container-fluid">
+			<div class="row">
+         		<div class="form-horizontal" id="paypal-head-detail">
+				  	<div class="form-group">
+				    	<label for="verifyPassword" class="col-sm-3 control-label">Enter Your Paypal<span style="color:red">*</span></label>
+				    	<div class="col-sm-9">
+					      	<input type="text" class="form-control" id="paypalEmail" placeholder="Enter Your Paypal">
+					  	  	<p style="color:red;" class="errormsg"></p>
+			    		</div>
+				  	</div>
+				  	<div class="form-group">
+					    <div class="col-sm-offset-5 col-sm-10">
+					      <button type="submit" class="btn btn-primary" id="updatePaypalBtn">Submit</button>
+					      <button class="btn btn-default" style="margin-left: 10px;" data-dismiss="modal">Cancel</button>
+					    </div>
+				 	</div>
+		   	 	</div>
+			</div>
+         </div>
+       </div>
+     </div>
+   </div>
+</div>
+
+<div class="modal fade" id="updateMinAmountModal" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog" style="width: 800px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="dialog-site-title">Edit Payment Threshold</h2>
+      </div>
+      <div class="modal-body">
+		<div class="container-fluid">
+			<div class="row">
+         		<div class="form-horizontal" id="minamount-head-detail">
+				  	<div class="form-group">
+				    	<label for="verifyPassword" class="col-sm-3 control-label">Payment Threshold<span style="color:red">*</span></label>
+				    	<div class="col-sm-9">
+					      	<input type="text" class="form-control" id="paymentAmount" maxlength="11" onkeyup="if(this.value==this.value2)return;if(this.value.search(/^\d*(?:)?$/)==-1)this.value=(this.value2)?this.value2:'';else this.value2=this.value;" placeholder="minimum of $10">
+					  	  	<p style="color:red;" class="errormsg"></p>
+			    		</div>
+				  	</div>
+				  	<div class="form-group">
+					    <div class="col-sm-offset-5 col-sm-10">
+					      <button type="submit" class="btn btn-primary" id="updateAmountBtn">Submit</button>
+					      <button class="btn btn-default" style="margin-left: 10px;" data-dismiss="modal">Cancel</button>
+					    </div>
+				 	</div>
+		   	 	</div>
+			</div>
+         </div>
+       </div>
+     </div>
+   </div>
+</div>
+<div class="modal fade" id="updateNotifyEmailModal" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog" style="width: 800px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="dialog-site-title">Edit Billing Email</h2>
+      </div>
+      <div class="modal-body">
+		<div class="container-fluid">
+			<div class="row">
+         		<div class="form-horizontal" id="notify-head-detail">
+         			<div id="notifyEmailDiv">
+         			</div>
+				  	<div class="form-group"  style="text-align:center">
+			  		  <p style="color:red;" class="errormsg"></p>
+				      <button type="button" class="btn btn-primary" id="updateNotifyBtn">Submit</button>
+				      <button class="btn btn-default" style="margin-left: 10px;" data-dismiss="modal">Cancel</button>
+				 	</div>
+		   	 	</div>
+			</div>
+         </div>
+       </div>
+     </div>
+   </div>
+</div>
+
+<!-- add sub account -->
+<div class="modal fade" id="addSubAccount" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title" id="subAccountTitle"></h2>
+            </div>
+            <div class="modal-body">
+	            <div class="container-fluid">
+	                <div class="row">
+		                <div class="col-md-8 col-md-offset-2">
+							<form class="form-horizontal" id="addform" action="process.php">
+							  <input id="subPublisherId" name="id" type="hidden" value="">
+							  <input name="act" type="hidden" value="addSubAccount">
+							  <div class="form-group">
+							    <label for="UserName" class="col-sm-2 control-label">Username</label>
+							    <div class="col-sm-8">
+							      <input type="text" class="form-control" id="username" name="username" placeholder="User Name">
+							    </div>
+							  </div>
+							  <div class="form-group" id="sub-pass">
+							    <label for="Password" class="col-sm-2 control-label">Password</label>
+							    <div class="col-sm-8">
+							      <input type="text" class="form-control" id="password" name="password" placeholder="Password">
+							    </div>
+							  </div>
+						  	  <div class="form-group">
+							      <label for="SubDomain" class="col-sm-2 control-label">Domain</label>
+							      <div class="col-sm-8">
+								      <select id="SubDomain" name="SubDomain[]" multiple class="form-control" style="width: 100%;">
+							      		 <{foreach from=$user_profile.site item=site}>
+							      			<option value="<{$site.ID}>"><{$site.Domain}></option>
+							             <{/foreach}>
+								      </select>
+							      </div>
+							  </div>
+							  <div class="form-group" style="text-align:center">
+				                   <button class="btn btn-primary" style="margin-right: 10px;" id="addSubAccountConfirm">confirm</button>
+								   <button class="btn btn-default" style="margin-left: 10px;" data-dismiss="modal">cancel</button>
+							  </div>
+							</form>
+	                	</div>
+	            	</div>
+	            </div>
+	        </div>
+        </div>
+    </div>
+</div>
+
+<!-- change sub account pwd-->
+<div class="modal fade" id="changeSubAccountPwd" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title" id="subAccountTitle">Change Password</h2>
+            </div>
+            <div class="modal-body">
+	            <div class="container-fluid">
+	                <div class="row">
+		                <div class="col-md-8 col-md-offset-2">
+							<form class="form-horizontal">
+								<input id="changeSubPubPwdId" name="pubid" type="hidden" value="">
+								<input id="changeSubPubPwdName" name="pubname" type="hidden" value="">
+							    <div class="form-group">
+							      <label for="subpassword" class="col-sm-2 control-label">Password</label>
+							      <div class="col-sm-8">
+							        <input type="text" class="form-control" id="subpassword" name="subpassword" placeholder="Password">
+							      </div>
+							    </div>
+							    <div class="form-group" style="text-align:center">
+				                     <button class="btn btn-primary" style="margin-right: 10px;" id="changeSubAccountPwdConfirm">confirm</button>
+								     <button class="btn btn-default" style="margin-left: 10px;" data-dismiss="modal">cancel</button>
+							    </div>
+							</form>
+	                	</div>
+	            	</div>
+	            </div>
+	        </div>
+        </div>
+    </div>
+</div>
+<{else}>
+	<div class="container" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1><{$LANG.backend.public.account}></h1></div>
+
+    <!-- site info -->
+    <div id="profile-site" class="panel panel-default">
+      <div class="panel-heading"><{$LANG.backend.account.a13}></div>
+      <div class="panel-body" >
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th style="width:10%"><{$LANG.backend.account.a15}></th>
+              <th style="width:10%"><{$LANG.backend.account.a16}></th>
+              <th style="width:20%"><{$LANG.backend.account.a17}></th>
+              <th style="width:30%">Core business</th>
+              <th style="width:20%">Traffic Demographics</th>
+            </tr>
+          </thead>
+          <{if $user_profile.site eq ''}>
+          <{else}>
+          <{foreach from=$user_profile.site item=site}>
+          <tr>
+            <td><{$site.Domain}></td>
+            <td><{$site.Alias}></td>
+            <td><{$site.ApiKey}></td>
+            <td><{$site.SiteTypeNewText}></td>
+            <td><{$site.GeoBreakdownText}></td>
+          </tr>
+          <{/foreach}>
+          <{/if}>
+        </table>
+      </div>
+    </div>
+
+  </div>
+<{/if}>
+
+
+<script type="text/javascript">
+
+<{if $user_profile.site eq ''}>
+	$("#profile-site").before('<div style="color:red">Please complete the sites information</div>');
+<{/if}>
+
+$(function(){
+	//select2在modal中生效
+	$.fn.modal.Constructor.prototype.enforceFocus =function(){};
+	
+	$("#SubDomain").select2({
+		theme: "bootstrap",
+		allowClear: true,
+		placeholder: "Select Domain",
+	});
+	
+})
+
+$('#revocation').bind('click',function(){
+  if(confirm("Are you sure you want to undo the change?")){
+    var data = {'remove':1}
+    $.ajax({
+      type:"post",
+      url:"b_account.php",
+      data:data,
+      async:false,
+      success: function(res){
+        if(res == 1){
+          $('#removehtml').html('<{$LANG.backend.account.a1}> <a style="float: right;margin-right: 5px;text-decoration: none" href="completioninfo.php?type=2" id="checkupdate"><{$LANG.front.signup.a66}></a>');
+        }else{
+            alert('Error');
+        }
+      }
+    });
+  }else{
+  }
+});
+$('.updatepwd').click(function(){
+  return change_pwd();
+});
+
+$('#a_edit_account').click(function(){
+  show_profile_account(1);
+});
+
+$('#a_new_site').click(function(){
+  show_profile_site(0);
+});
+
+//点击修改弹出验证密码框
+$(document).delegate('.authPass','click',function(){
+	$("#verifyPassword").val('');
+	$("#authpassmsg").html('');
+	$("#updateType").val($(this).data('type'));
+	$("#authPassword").modal();
+})
+
+//验证密码弹出框框
+$(document).delegate('#authPasswordBtn','click',function(){
+	var verifyPassword = $("#verifyPassword").val();
+	var updateType = $("#updateType").val();
+	$.ajax({
+		type:"post",
+		url:CON_BASE_URL+"/process.php",
+		data:"act=verifyPassword&verifyPassword="+verifyPassword+"&updateType="+updateType,
+		dataType:"json",
+		async:false,
+		success: function(res){
+			if(res.code==1){
+				$("#authPassword").modal('hide');
+				$(".errormsg").html('');
+				$("#actUrl").val(res.updateType);
+				switch(updateType){
+					case 'amount':
+						$("#paymentAmount").val(res.data.MinPaymentAmount);
+						$("#updateMinAmountModal").modal();
+						break;
+					case 'paypal':
+						$("#paypalEmail").val(res.data.PayPal);
+						$("#updatePaypalModal").modal();
+						break;
+					case 'account':
+						$("#AccountName").val(res.data.AccountName);
+						$("#AccountNumber").val(res.data.AccountNumber);
+						$("#AccountCountry").val(res.data.AccountCountry);
+						$("#AccountCity").val(res.data.AccountCity);
+						$("#AccountAddress").val(res.data.AccountAddress);
+						$("#SwiftCode").val(res.data.SwiftCode);
+						$("#BankName").val(res.data.BankName);
+						$("#BranchName").val(res.data.BranchName);
+						$("#paymentAccountModal").modal();
+						break;
+					case 'notifyemail':
+						var html = "";
+						for(var i in res.data.NotificationEmail){
+							html+='<div class="form-group notifyEmailList">'+
+								    	'<label class="col-sm-3 control-label">Billing Email<span class="emailCount"></span></label>'+
+								    	'<div class="col-sm-7">'+
+									      	'<input name="notifyEmail[]" type="text" class="form-control" placeholder="Enter Billing Email" value='+res.data.NotificationEmail[i]+'>'+
+										'</div>'+
+										'<div class="btn-div-notify">'+
+									    '</div>'+
+								  	'</div>';
+						}
+						$("#notifyEmailDiv").html(html);
+						refreshNotifyEmail();
+						$("#updateNotifyEmailModal").modal();
+						break;
+				}
+			}else{
+				$("#authpassmsg").html(res.msg);
+				return false;
+			}
+		}
+	});
+})
+
+//修改银行账户信息
+$(document).delegate('#paymentAccountBtn','click',function(){
+	$(".errormsg").html("");
+	var AccountName = $.trim($("#AccountName").val());
+	var AccountNumber = $.trim($("#AccountNumber").val());
+	var AccountCountry = $.trim($("#AccountCountry").val());
+	var AccountCity = $.trim($("#AccountCity").val());
+	var AccountAddress = $.trim($("#AccountAddress").val());
+	var SwiftCode = $.trim($("#SwiftCode").val());
+	var BankName = $.trim($("#BankName").val());
+	var BranchName = $.trim($("#BranchName").val());
+	if(AccountName == '' || AccountNumber == '' || AccountCountry == '' || AccountAddress == '' || SwiftCode == '' || BankName == '' || BranchName == ''){
+		$(".errormsg").html("* cannot be blank.");
+		return false;
+	}
+	if(SwiftCode.length != 11){
+		$(".errormsg").html("Swift Code must be 11 characters.");
+		return false;
+	}
+	$.ajax({
+		type:"post",
+		url:CON_BASE_URL+"/process.php",
+		data:{"act":$("#actUrl").val(),"AccountName":AccountName,"AccountNumber":AccountNumber,"AccountCountry":AccountCountry,"AccountCity":AccountCity,"AccountAddress":AccountAddress,"SwiftCode":SwiftCode,"BankName":BankName,"BranchName":BranchName},
+		dataType:"json",
+		async:false,
+		success: function(res){
+			if(res.code==1){
+				window.location.reload();
+				return false;
+			}else{
+				$(".errormsg").html(res.msg);
+				return false;
+			}
+		}
+	});
+})
+
+//修改paypal信息
+$(document).delegate('#updatePaypalBtn','click',function(){
+	var paypalEmail = $.trim($("#paypalEmail").val());
+	if(paypalEmail == ''){
+		$(".errormsg").html("Paypal email cannot be blank.");
+		return false;
+	}
+	if(!isEmail(paypalEmail)){
+		$(".errormsg").html(paypalEmail+" is not a valid email.");
+		return false;
+	}
+	$.ajax({
+		type:"post",
+		url:CON_BASE_URL+"/process.php",
+		data:{"act":$("#actUrl").val(),"paypalEmail":paypalEmail},
+		dataType:"json",
+		async:false,
+		success: function(res){
+			if(res.code==1){
+				window.location.reload();
+				return false;
+			}else{
+				$(".errormsg").html(res.msg);
+				return false;
+			}
+		}
+	});
+})
+
+//修改最低付款金额
+$(document).delegate('#updateAmountBtn','click',function(){
+	var paymentAmount = parseInt($.trim($("#paymentAmount").val()));
+	if(paymentAmount){
+		if(paymentAmount<10){
+			$(".errormsg").html("Amount not less than 10.");
+			return false;
+		}
+	}else{
+		$(".errormsg").html("Amount must be an integer.");
+		return false;
+	}
+	if(paymentAmount == ''){
+		$(".errormsg").html("Payment Threshold cannot be blank.");
+		return false;
+	}
+	$.ajax({
+		type:"post",
+		url:CON_BASE_URL+"/process.php",
+		data:{"act":$("#actUrl").val(),"paymentAmount":paymentAmount},
+		dataType:"json",
+		async:false,
+		success: function(res){
+			if(res.code==1){
+				window.location.reload();
+				return false;
+			}else{
+				$(".errormsg").html(res.msg);
+				return false;
+			}
+		}
+	});
+})
+
+//修改提醒邮箱
+$(document).delegate('#updateNotifyBtn','click',function(){
+	var emailarr = new Array();    
+	var isTrue = 1;
+	$("input[name='notifyEmail[]']").each(function(i){
+		if($(this).val()!=''){
+			if(!isEmail($(this).val())){
+				$(".errormsg").html($(this).val()+" is not a valid email.");
+				isTrue = 0;
+				return false;
+			}
+			emailarr[i] = $(this).val();
+		}
+	})	
+	//若数组为空则置为空字符串
+	if(emailarr.length == 0){
+		emailarr = '';
+	}
+	if(isTrue == 1){
+		$.ajax({
+			type:"post",
+			url:CON_BASE_URL+"/process.php",
+			data:{"act":$("#actUrl").val(),"notifyEmail":emailarr},
+			dataType:"json",
+			async:false,
+			success: function(res){
+				if(res.code==1){
+					window.location.reload();
+					return false;
+				}else{
+					$(".errormsg").html(res.msg);
+					return false;
+				}
+			}
+		});
+	}
+})
+
+//新增一个modifyemail（最多五个）
+$(document).delegate('.addemail','click',function(){
+	if($(".notifyEmailList").length<5){
+		var str = '';
+		str += '<div class="form-group notifyEmailList">'+
+			    	'<label class="col-sm-3 control-label">Billing Email<span class="emailCount"></span></label>'+
+			    	'<div class="col-sm-7">'+
+				      	'<input name="notifyEmail[]" type="text" class="form-control" placeholder="Enter Billing Email">'+
+					'</div>'+
+					'<div class="btn-div-notify">'+
+				    '</div>'+
+			  	'</div>';
+		$("#notifyEmailDiv").append(str);
+	}else{
+		$(".errormsg").html("only can add 5 email");
+	}
+	
+	refreshNotifyEmail();
+})
+
+//减少一个modifyemail
+$(document).delegate('.minusemail','click',function(){
+	$(".errormsg").html("");
+	$(this).closest('.notifyEmailList').remove();
+	refreshNotifyEmail();
+})
+
+//重新计数
+function refreshNotifyEmail(){
+	$(".notifyEmailList").each(function(i){
+		if(i>0){
+			$(this).children('label').children('.emailCount').html(i+1);
+		}else{
+			$(this).children('label').children('.emailCount').html('');
+		}
+		if($(".notifyEmailList").length > 1){
+			$(this).children('div:last').html('<button type="button" class="btn btn-default addemail" aria-label="Left Align">'+
+										    	'<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'+
+											  '</button>'+
+										      '<button type="button" class="btn btn-default minusemail" aria-label="Left Align" style="margin-left: 10px;">'+
+										    	'<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>'+
+											  '</button>');
+		}else{
+			$(this).children('div:last').html('<button type="button" class="btn btn-default addemail" aria-label="Left Align">'+
+										    	'<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'+
+											  '</button>');
+		}
+	})
+}
+
+function isEmail(str){ 
+	var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/; 
+	return reg.test(str); 
+} 
+
+	$(document).delegate('#addSubAccountBtn','click',function(){
+		$("#subAccountTitle").html('Add Sub Account');
+		$("#username").val('');
+		$("#password").val('');
+		$("#subPublisherId").val('');
+		$("#sub-pass").css('display','block');
+		$("#SubDomain").val('').trigger("change");
+		$("#addSubAccount").modal('show');
+	})
+	
+	$(document).delegate(".editSubAccountBtn","click",function(){
+		$("#sub-pass").css('display','none');
+		var _tr = $(this).closest('tr');
+		var subid = _tr.data('subid');
+		var accountid = _tr.data('accountid').toString();
+		var username = _tr.children('td:eq(0)').text();
+		var accountArr = accountid.split(",");
+		$("#subAccountTitle").html('Edit Sub Account');
+		$("#username").val(username);
+		$("#subPublisherId").val(subid);
+		$("#SubDomain").val(accountArr).trigger("change");
+		$("#addSubAccount").modal('show');
+	})
+	
+	//submit sub account
+	$(document).delegate('#addSubAccountConfirm','click',function(){
+		var username = $("#username").val();
+		var password = $("#password").val();
+		var SubDomain = $("#SubDomain").val();
+		var id = $("#subPublisherId").val();
+		if(username.length<6 || username.length>30){
+			alert("Username between 6 and 30 characters.");
+			return false;
+		}
+		if(id == ''){
+			if(password.length<6 || password.length>30){
+				alert("Password between 6 and 30 characters.");
+				return false;
+			}
+		}
+		if(SubDomain == null){
+			alert("Domain cannot be blank");
+			return false;
+		}
+		$.ajax({
+             type: "POST",
+             url: $("#addform").attr("action"),
+             data: $("#addform").serialize(),
+             dataType: "json",
+             success: function(data){
+            	 if(data.code==1){
+            		 window.location.reload();
+                     return false; 
+            	 }else{
+            		 alert(data.msg);
+                     return false; 
+            	 }
+             }
+         });
+		return false;
+	})
+	
+	$(document).delegate('.deleteSubAccountBtn','click',function(){
+		var r = confirm("Do you want to delete this account?");
+		if(r){
+			var _tr = $(this).closest('tr');
+			var subid = _tr.data('subid');
+			var username = _tr.children('td:eq(0)').text();
+			$.ajax({
+	             type: "POST",
+	             url: $("#addform").attr("action"),
+	             data: {"act":"deleteSubAccount","id":subid,"username":username},
+	             dataType: "json",
+	             success: function(data){
+	            	 if(data.code==1){
+	            		 window.location.reload();
+	                     return false; 
+	            	 }else{
+	            		 alert(data.msg);
+	                     return false; 
+	            	 }
+	             }
+	        });
+		}
+		return false;
+	})
+	
+	$(document).delegate('.changeSubAccountPwdBtn','click',function(){
+		var _tr = $(this).closest('tr');
+		var subid = _tr.data('subid');
+		var username = _tr.children('td:eq(0)').text();
+		$("#changeSubPubPwdId").val(subid);
+		$("#changeSubPubPwdName").val(username);
+		$("#changeSubAccountPwd").modal('show');
+	})
+	
+	$(document).delegate('#changeSubAccountPwdConfirm','click',function(){
+		var subid = $("#changeSubPubPwdId").val();
+		var username = $("#changeSubPubPwdName").val();
+		var password = $("#subpassword").val();
+		if(password.length<6 || password.length>30){
+			alert("Password between 6 and 30 characters.");
+			return false;
+		}
+		$.ajax({
+            type: "POST",
+            url: $("#addform").attr("action"),
+            data: {"act":"changeSubAccountPwd","id":subid,"username":username,"password":password},
+            dataType: "json",
+            success: function(data){
+           	 if(data.code==1){
+           		 window.location.reload();
+                 return false; 
+           	 }else{
+           		 alert(data.msg);
+                 return false; 
+           	 }
+            }
+       });
+		return false; 
+	})
+
+</script>
+
+<{include file="b_block_footer.html"}>

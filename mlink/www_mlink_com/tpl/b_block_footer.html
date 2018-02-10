@@ -1,0 +1,153 @@
+	<div class="footer">
+	  <div class="container">
+	    <ul class="list-inline">
+	      <li><a href="<{$smarty.const.BASE_URL}>/advertiser.php"><{$LANG.front.b_footer.a1}></a></li>
+	      <li>|</li>
+	      <li><a href="<{$smarty.const.BASE_URL}>/contactUs.php"><{$LANG.front.b_footer.a2}></a></li>
+	      <li>|</li>
+	      <li><a href="<{$smarty.const.BASE_URL}>/referral.php"><{$LANG.front.b_footer.a3}></a></li>
+	      <li>|</li>
+	      <li><a href="#"><{$LANG.front.b_footer.a4}></a></li>
+
+	    </ul>
+	  </div>
+	</div>
+
+    <{*}>
+    <!--<div id="bac" class="remodal-overlay" style="display: block"></div>-->
+    <!--<div id='login' class="layer remodal-wrapper" style="display:block" >-->
+        <!--<div class="login">-->
+            <!--<div class="x" id="x" onclick="hideModal()">X</div>-->
+            <!--<h2><{$LANG.front.login.a1}></h2>-->
+            <!--<ul>-->
+                <!--<form id="modal" method="post" action="<{$smarty.const.BASE_URL}>/process.php">-->
+                    <!--<input type="hidden" name="act" value='publish_login' />-->
+
+                    <!--<li><input type="text" class="form-control" id="login-account" value="" name="pub_account" placeholder="<{$LANG.front.login.a2}>"></li>-->
+                    <!--<li><input type="password" class="form-control" id="login-password" value="" name="pub_pwd" placeholder="<{$LANG.front.login.a3}>"></li>-->
+
+                    <!--<li><button id="submitModal"><{$LANG.front.login.a10}></button></li>-->
+                <!--</form>-->
+                <!--<li>-->
+                    <!--<p><span><a href="#" onclick="forgotPwd()"><{$LANG.front.login.a9}></a></span><span>|</span><span><a href="<{$smarty.const.BASE_URL}>/signup.php"><{$LANG.front.login.a4}></a></span></p>-->
+                <!--</li>-->
+
+            <!--</ul>-->
+        <!--</div>-->
+    <!--</div>-->
+    <{*}>
+<!--TODO-->
+
+
+
+    <div class="modal fade" id="dialog-login" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="exampleModalLabel"><{$LANG.front.b_block_banner.a1}></h2>
+      </div>
+      <div class="modal-body">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-8 col-md-offset-2" style="text-align:center;">
+			        <form method="post" action="<{$smarty.const.BASE_URL}>/process.php">
+		        		<input type="hidden" name="act" value='publish_login' />
+			          	<div class="form-group">
+			            	<input type="text" class="form-control" id="login-account" value="" name="pub_account" placeholder="<{$LANG.front.b_block_banner.a2}>">
+			          	</div>
+			          	<div class="form-group">
+			            	<input type="password" class="form-control" id="login-password" value="" name="pub_pwd" placeholder="<{$LANG.front.b_block_banner.a3}>">
+			          	</div>
+			          	<div class="form-group">
+				        	<button type="submit" class="btn  btn-primary btn-lg btn-block"><{$LANG.front.b_block_banner.a4}></button>
+				      	</div>
+			        </form>
+			        <ul class="list-inline">
+			        	<li><a><{$LANG.front.b_block_banner.a5}></a></li>
+			        	<li>|</li>
+			        	<li><a href="<{$smarty.const.BASE_URL}>/signup.php"><{$LANG.front.b_block_banner.a6}></a></li>
+			        </ul>
+		    	</div>
+		    </div>
+		</div>        
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$('#head-top-login').click(login);
+$('#head-top-logout').click(logout);
+
+function logout(){
+	$.ajax({
+        type:"post",
+        url:"<{$smarty.const.BASE_URL}>/process.php",
+        data:'act=publish_logout',
+        async:false,
+        success: function(data){
+          window.location.reload();
+        }
+      });
+}
+
+function login(){
+	$('#dialog-login').modal();
+}
+
+$(".removeinfo").bind("click",function(){
+    $('#informationdel').remove();
+});
+$('#dialog-login form').submit(function(){
+	var flag = 0;
+      $.ajax({
+        type:"post",
+        url:"<{$smarty.const.BASE_URL}>/process.php",
+        data:$('#dialog-login form').serialize(),
+        async:false,
+        success: function(data){
+          if(data == '0'){
+            window.location.href = "<{$smarty.const.BASE_URL}>";
+          }else{
+            set_msg('login-account',0,'Invalid email address or password.<br> Please try again.');
+          }
+        }
+      });
+
+      if(flag){
+        window.location.href = '<{$smarty.const.BASE_URL}>';
+        return false;
+      }else{
+        return false;
+      }
+});
+
+function set_msg(id,res,msg){
+    var fgroup = $('#'+id).parent();
+    if(res == 0){
+      fgroup.removeClass('has-error has-success');
+      fgroup.addClass('has-error');
+      if(fgroup.find('label')[0]){
+        fgroup.find('label').html(msg);
+      }else{
+        fgroup.prepend('<label class="control-label">'+msg+'</label>');
+      }
+    }else{
+      fgroup.removeClass('has-error has-success');
+      fgroup.addClass('has-success');
+       if(fgroup.find('label')[0]){
+        fgroup.find('label').remove();
+      }
+    }
+  }
+
+<{include file="../js/const.js"}>
+</script>
+
+<{foreach item=js from=$sys_footer.js }>
+      <script src="<{$js}>"></script>
+<{/foreach}>
+
+</body>
+</html>

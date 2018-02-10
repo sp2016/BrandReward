@@ -1,0 +1,81 @@
+<div class="container" style="margin-top:30px;">
+    <div class="row" style="border-bottom:1px solid #e5e5e5;padding:10px 0;">
+    <a href="javascript:void(0)" onclick="showmodal('paynetwork')">Go back</a>
+    </div>
+    <div class="row" style="padding:20px 0;">
+        <form id="form_payments_comments" action="b_paid.php">
+        <input type="hidden" name="pid" value="<{$search.pid}>">
+        <input type="hidden" name="type" value="ajax" >
+        <input type="hidden" name="act" value="dopay" >
+        <table class="table table-bordered">
+            <tr>
+              <td>Amount:</td>
+              <td>$<{$payinfo.commission}></td>
+            </tr>
+            <tr>
+              <td>Final Paid:</td>
+              <td>$<input type="text" name="amount" value="" onblur="checkPaid(this)"/></td>
+            </tr>
+            <tr>
+              <td>Trade Code:</td>
+              <td><input type="text" name="code" value=""/></td>
+            </tr>
+            <tr>
+            <td>Comment:</td>
+            <td>
+                <textarea name="comment" rows="7" style="width:100%"><{$payments.Comment}></textarea>
+            </td></tr>
+            <tr>
+            <td>Op:</td>
+            <td>
+                <button type="button" class="btn btn-primary" onclick="save_form(this)">Save</button>
+            </td></tr>
+        </form>
+    </div>
+</div>
+
+<script>
+    function checkPaid(obj){
+      var reg = /[^\d\.]/;
+      var reg2 = /\d/;
+      if(reg.test($(obj).val()) || !reg2.test($(obj).val())){
+        if($(obj).parent().find('p').length > 0){
+          $(obj).parent().find('p').html('please input only numbers or "."');
+        }else{
+          $(obj).parent().append('<p class="text-danger">please input only numbers or "."</p>');
+        }
+      }else{
+        if($(obj).parent().find('p').length > 0){
+          $(obj).parent().find('p').remove();
+        }
+      }
+    }
+
+    function save_form(obj){
+      var paid = $('#form_payments_comments input[name="amount"]').val();
+      
+      var reg = /[^\d\.]/;
+      var reg2 = /\d/;
+      if(reg.test(paid) || !reg2.test(paid)){
+        alert('Final paid should be numbers or "."');
+        return;
+      }
+
+      var form_data = $('#form_payments_comments').serialize();
+      var url = $('#form_payments_comments').attr('action');
+
+      $(obj).attr('disabled','disabled');
+      $(obj).html('Waiting...');
+
+      $.post(url, form_data,
+       function(data){
+          $(obj).removeAttr('disabled');
+          $(obj).html('Save');
+          if(data == 'success'){
+            showmodal('paynetwork');
+          }else{
+            $(obj).after('<p class="text-danger">please input only numbers or "."</p>');
+          }
+       });
+    }
+</script>

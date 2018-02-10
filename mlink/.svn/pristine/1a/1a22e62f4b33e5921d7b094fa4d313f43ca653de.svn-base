@@ -1,0 +1,40 @@
+<?php
+include_once('conf_ini.php');
+include_once(INCLUDE_ROOT.'init.php');
+
+$objPayments = new Payments();
+
+if(isset($_GET['act']) && $_GET['act'] == 'downloadpendinginvoice'){
+    $data['site'] = $_GET['site'];
+    $data['haspaid'] = $_GET['haspaid'];
+    $data['pendingmonth'] = $_GET['pendingmonth'];
+    $objPayments->download_pending_invoice($data);
+}
+if(isset($_GET['act']) && $_GET['act'] == 'downloadlist'){
+    $pending_page_info = $objPayments->downloadPaymentsPending($_GET);
+}
+
+$pending_month_list = $objPayments->getPaymentsPendingBatchTime('month');
+
+$search = $_GET;
+$page = isset($_GET['p'])?$_GET['p']:1;
+$pending_data = $objPayments->getPaymentsPending($search,$page);
+
+$search['return_t'] = 'pagination';
+$pending_page_info = $objPayments->getPaymentsPending($search,$page);
+$page_html = get_page_html($pending_page_info);
+
+$search['return_t'] = 'statis';
+$pending_statis = $objPayments->getPaymentsPending($search);
+
+$search_month = isset($_GET['pendingmonth'])?$_GET['pendingmonth']:'ALL';
+
+$objTpl->assign('search',$_GET);
+$objTpl->assign('pending_month_list',$pending_month_list);
+$objTpl->assign('pending_data',$pending_data);
+$objTpl->assign('page_html',$page_html);
+$objTpl->assign('pending_statis',$pending_statis);
+$objTpl->assign("title","Payment Pending List<br>".$search_month);
+$sys_header['css'][] = BASE_URL.'/css/front.css';
+$objTpl->assign('sys_header', $sys_header);
+$objTpl->display('b_payments_publisher_pending.html');

@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="fo-verify" content="21e12eac-b61a-4087-8a11-89825952b143">
+  <meta name="keywords" content="">
+  <meta name="description" content="Brandreward is a full service platform for high-quality content providers to instantly find, connect and integrate with the world's most coveted brands through customized monetization solutions.">
+  <meta name="author" content="">
+  <link rel="icon" href="/img/favicon.ico">
+  <title><{$title}></title>
+  <!-- Bootstrap core CSS -->
+  <{foreach item=css from=$sys_header.css }>
+  <link href="<{$css}>?v=<{$smarty.const.BR_VER}>" rel="stylesheet">
+  <{/foreach}>
+  
+<script><{include file="../js/const.js"}></script>
+
+  <{foreach item=js from=$sys_header.js }>
+  <script src="<{$js}>?v=<{$smarty.const.BR_VER}>"></script>
+  <{/foreach}>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-97246717-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</head>
+<body>

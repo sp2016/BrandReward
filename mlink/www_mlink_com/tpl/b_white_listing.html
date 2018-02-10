@@ -1,0 +1,1369 @@
+<{include file="b_block_header.html"}>
+<style>
+.navbar{background: #627491;}
+.navbar .container a{color:#fff !important}
+</style>
+<nav class="navbar navbar-default" role="navigation" style="">
+    <div class="container"> 
+    <div class="navbar-header">
+        <a class="navbar-brand hidden-sm" href="<{$smarty.const.BASE_URL}>/b_white_listing.php"><{$smarty.const.Brand}></a>
+    </div>
+    <!-- <ul class="navbar-form navbar-left">
+	    <div class="form-group">
+	    	<select id="changeStore" class="form-control">
+	    		<option></option>
+	    	</select>
+	    </div>
+    </ul> -->
+    <ul class="nav navbar-nav navbar-right"> 
+        <li><a href="javascript:void(0)" id="white-list-logout"><{$LANG.backend.public.logout}></a></li> 
+    </ul> 
+    <{if (isset($storeList) and !empty($storeList)) and (isset($storeActiveList) and !empty($storeActiveList))}>
+          <ul class="nav navbar-nav navbar-right">
+        <div class="">
+          <select id="changeWhiteListStore" class="form-control" style="width:119px;margin-top: 7px;">
+          	  <{foreach from=$storeList item=val}>
+				  <option value="<{$val.storeId}>" <{if $val.storeId == $storeActiveList.active}>selected<{/if}> ><{$val.name}></option>
+			  <{/foreach}>
+          </select>
+        </div>
+    </ul>
+    <{/if}>
+    </div>
+</nav>
+<script>
+$(function(){
+	$(document).delegate("#changeWhiteListStore","change",function(){
+		$.ajax({
+			type:"post",
+			url:"<{$smarty.const.BASE_URL}>/process.php",
+			data:"act=changeWhiteListStore&storeId="+$(this).val(),
+			dataType:"json",
+			async:false,
+			success: function(res){
+				if(res.code != 1){
+					alert(res.msg);
+				}
+				window.location.reload();
+			}
+		});
+		return false;
+	})
+	
+	$(document).delegate("#white-list-logout","click",function(){
+		$.ajax({
+			type:"post",
+			url:"<{$smarty.const.BASE_URL}>/process.php",
+			data:"act=whitelist_logout",
+			dataType:"json",
+			async:false,
+			success: function(res){
+				window.location.href = "<{$smarty.const.BASE_URL}>/advertiser_index.php";
+			}
+		});
+		return false;
+	})
+})
+</script>
+<style>
+/* .row .publisher-head-info{border: 1px solid transparent;}
+.row .publisher-head-info:hover{border: 1px solid rgb(255,195,32)}
+.row .publisher-head-info-edit{border: 1px solid transparent !important;}
+.row .publisher-head-info .head-info-edit{float: right;margin-right: 5px;text-decoration: none;display:none}
+.row .publisher-head-info .head-info-edit-none{display:none !important}
+.row .publisher-head-info:hover .head-info-edit{display:block;}
+#choose-detail div:nth-child(1):hover div button.chooseInfoBtn{display:block !important}
+#choose-detail div:nth-child(2):hover div button.chooseInfoBtn{display:block !important}
+#choose-detail div:nth-child(3):hover div button.chooseInfoBtn{display:block !important}
+
+#showmore{float:right;border: none;color: #8590a6;background-color: transparent;}
+#showmore:focus {outline: none;}
+.publisher-head-info .bPPC{padding-top: 7px;margin-bottom: 0px;word-break: break-all;word-wrap: break-word;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.publisher-head-info .bPPCMore{white-space: normal;} */
+</style>
+
+<{if $action == "addstore"}>
+<{*
+<div id="addadv" tabindex="-1" role="dialog" >
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2" style="text-align:center;">
+                            <table style="width: 100%;border-collapse: separate;border-spacing: 0 10px;">                                
+                                <tr>
+                                    <td>
+                                    	Search Advertiser: <br />
+										<input type="text" name="name" class="form-control ccc" id="name" value="" >
+									</td>
+                                </tr>                                
+                                <tr style="height: 15px"></tr>
+                                <tr>
+                                    <td colspan="3" ><button type="button"  onclick="javascript:addadv()" class="btn btn-primary btn-lg btn-block" style="margin: auto;text-align: center;width: 60%">submit</button></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+function addadv(){
+    var name = $('#name').val();
+    if (name == null || name.length == 0) {
+        alert("Please input advertiser name!");
+        return false;
+    }
+
+    var data = {'action':'ad_ad','name':name}
+    $.ajax({
+        type:"post",
+        url:"b_white_listing.php",
+        data:data,
+        async:false,
+        success: function(msg){
+			//console.info(msg);			
+			if(msg == "success"){
+				//alert(msg);
+				window.location.reload();
+			}else{
+				alert(msg);
+			}
+		}	
+    });
+}
+
+	(function(){
+	  $('.ccc').keyup(function(){
+	    var ipt = this;
+	    var keywords = $(this).val();
+	    if(keywords.length < 4){
+			return;
+	    }
+	    var url = 'b_white_listing.php';
+	    var ajaxdata = 'action=ss&keywords='+keywords;
+
+	    if(!keywords.match(/[^\s]{1,}/)){
+	      return;
+	    }
+
+	    $.ajax({
+	      type:"get",
+	      url:"b_white_listing.php",
+	      data:ajaxdata,
+	      success: function(req){
+	        var html_tip = '<ul class="dropdown-menu" >';
+	        var arr = req.split('|');
+	        for(var i in arr){
+	          html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+	        }
+	        var html_tip = html_tip+'</ul>';
+
+	        if($(ipt).parent().find('ul')){
+	          $(ipt).parent().find('ul').remove();
+	        }
+
+	        $(ipt).parent().append(html_tip);
+
+	        load_tip($(ipt).parent().find('ul'));
+	      }
+	    });
+	   
+	  });
+
+	})();
+	
+
+	function load_tip(obj){
+	  $(obj).css('display','block');  //jquery鐨刢ss()鍑芥暟锛岀浉褰撲簬display:block
+	  $(obj).find('a').click(function(){
+		 //console.info($($(obj).parent().find("input")[0]));
+		 
+		 $($(obj).parent().find("input")[0]).val($(this).html());	    
+		  $(obj).remove();
+	  });
+	}
+</script>*}>
+
+<{else}>
+	
+<div>
+  <div class="container" style="margin-top:30px;">
+    <div class="row" style="padding:20px 0;">
+      <div class="col-lg-12">
+         <div class="panel panel-default" style="margin-bottom: 0px;border-bottom: none;">
+          <div class="panel-heading">
+          	Adverteser Details
+          	<!-- <a style="float: right;margin-right: 5px;text-decoration: none" href="b_updat.php">Edit</a> -->
+          </div>
+          <div class="panel-body publisher-head-info">    
+          	  <!-- <a class="head-info-edit" id="head-info-edit" href="javascript:void(0)">Edit</a> -->
+	          <div class="row">
+	          <div class="form-horizontal" id="head-detail">
+	          		  <{if $store_org_arr.LogoName ne ''}>
+	          			  <div class="form-group">
+						    <label class="col-sm-2 control-label">Logo:</label>
+						    <div class="col-sm-8">
+						      <p class="form-control-static"><img width="220px" border=0 src="<{$smarty.const.BASE_URL}>/img/adv_logo/<{$store_org_arr.LogoName}>" /></p>
+						    </div>
+						  </div>
+					  <{/if}>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label">Advertiser Name:</label>
+					    <div class="col-sm-3">
+					      <p class="form-control-static"><{$store_org_arr.Name|default:$store_org_arr.NameOptimized|default:$store_org_arr.Name}></p>
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label">Domain:</label>
+					    <div class="col-sm-10" style="word-break: break-all;word-wrap: break-word;">
+					      <p class="form-control-static"><{$domain_text}></p>
+					    </div>
+					  </div>
+					  <!-- <div class="form-group">
+					    <label class="col-sm-2 control-label">Commission:</label>
+					    <div class="col-sm-10">
+					      <p class="form-control-static"><{$commission}></p>
+					    </div>
+					  </div>
+					  <{if $store_arr.AdvertiserEmailType && $store_arr.AdvertiserEmailType!='Unknown'}>
+					  	  <div class="form-group">
+						    <label class="col-sm-2 control-label">Affiliate Manager Type:</label>
+						    <div class="col-sm-10">
+						      <p class="form-control-static"><{$store_arr.AdvertiserEmailType}></p>
+						    </div>
+						  </div>
+				  	  <{/if}>
+					  <{if $store_arr.Desc}>
+					  	<div class="form-group">
+						    <label class="col-sm-2 control-label">Description:</label>
+						    <div class="col-sm-10">
+					        <p class="form-control-static"><{$store_arr.Desc}></p>
+					     </div>
+					    </div>
+					  <{/if}>
+					  <{if $store_arr.PPCPolicy}>
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label">Term and Conditions:</label>
+						    <div class="col-sm-9">
+						      <div id="bPPC" class="bPPC"><span id="ruler"><{$store_arr.PPCPolicy}></span></div>
+						      
+						    </div>
+						  </div>
+				  	  <{/if}> -->
+					</div>
+	          		<!-- <div class="form-horizontal" id="head-detail">
+	          		  <{if $store_arr.LogoAdr}>
+	          			  <div class="form-group">
+						    <label class="col-sm-2 control-label">Logo:</label>
+						    <div class="col-sm-8">
+						      <p class="form-control-static"><img width="220px" border=0 src="<{$smarty.const.BASE_URL}>/img/adv_logo/<{$store_arr.LogoAdr}>" /></p>
+						    </div>
+						  </div>
+					  <{elseif $store_org_arr.LogoName}>
+					  	  <div class="form-group">
+						    <label class="col-sm-2 control-label">Logo:</label>
+						    <div class="col-sm-8">
+						      <p class="form-control-static"><img width="220px" border=0 src="<{$smarty.const.BASE_URL}>/img/adv_logo/<{$store_org_arr.LogoName}>" /></p>
+						    </div>
+						  </div>
+					  <{/if}>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label">Name:</label>
+					    <div class="col-sm-3">
+					      <p class="form-control-static"><{$store_arr.Name|default:$store_org_arr.NameOptimized|default:$store_org_arr.Name}></p>
+					    </div>
+					    <{if $store_arr.AdvertiserEmail}>
+						    <label class="col-sm-2 control-label">Email:</label>
+						    <div class="col-sm-3">
+						      <p class="form-control-static"><{$store_arr.AdvertiserEmail}></p>
+						    </div>
+				  	  	<{/if}>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label">URL:</label>
+					    <div class="col-sm-10">
+					      <p class="form-control-static"><{$store_org_arr.Domains}></p>
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label">Commission:</label>
+					    <div class="col-sm-10">
+					      <p class="form-control-static"><{$commission}></p>
+					    </div>
+					  </div>
+					  <{if $store_arr.AdvertiserEmailType && $store_arr.AdvertiserEmailType!='Unknown'}>
+					  	  <div class="form-group">
+						    <label class="col-sm-2 control-label">Affiliate Manager Type:</label>
+						    <div class="col-sm-10">
+						      <p class="form-control-static"><{$store_arr.AdvertiserEmailType}></p>
+						    </div>
+						  </div>
+				  	  <{/if}>
+					  <{if $store_arr.Desc}>
+					  	<div class="form-group">
+						    <label class="col-sm-2 control-label">Description:</label>
+						    <div class="col-sm-10">
+					        <p class="form-control-static"><{$store_arr.Desc}></p>
+					     </div>
+					    </div>
+					  <{/if}>
+					  <{if $store_arr.PPCPolicy}>
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label">Term and Conditions:</label>
+						    <div class="col-sm-9">
+						      <div id="bPPC" class="bPPC"><span id="ruler"><{$store_arr.PPCPolicy}></span></div>
+						      
+						    </div>
+						  </div>
+				  	  <{/if}>
+					</div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+          	<div class="row">
+          		<div class="form-horizontal" id="choose-detail">
+	    			<div class="form-group">
+					    <label class="col-sm-3 control-label">Categories:</label>
+					    <div class="col-sm-8">
+					      <p class="form-control-static" id="category_text"><{$category_str}></p>
+					      <input type="hidden" id="category_idList" value="<{$category_idList}>">
+					    </div>
+					    <div class="col-sm-1">
+						    <button class="btn btn-primary btn-sm chooseInfoBtn" data-type="category" data-title="Category" style="display:none">Edit</button>
+					    </div>
+			  		</div>
+	          		<{*<!-- <div class="form-group">
+					    <label class="col-sm-3 control-label">Allow Publisher Types:</label>
+					    <div class="col-sm-8" style="min-height:34px">
+					        <div class="row" id="preference_text" style="padding-top: 7px;padding-bottom: 7px;margin-bottom: 0;">
+	           					<{foreach item=val from=$supportType}>
+								  <div class="col-md-4"><{$val}></div>
+							    <{/foreach}> 
+							</div>
+							<input type="hidden" id="preference_idList" value="<{','|implode:$supportType}>">
+							<input type="button" onclick="showB('preference_text', this);" value="More"/>
+					    </div>
+					    <div class="col-sm-1">
+						    <button class="btn btn-primary btn-sm chooseInfoBtn" data-type="preference" data-title="Allow Publisher Types" style="display:none">Edit</button>
+					    </div>
+				  	</div> -->*}>
+					<div class="form-group">
+					    <label class="col-sm-3 control-label">Commissionable Country:</label>
+					    <div class="col-sm-8" id="supportCountryDiv">
+					      <div id="country_text" style="padding-top: 7px;padding-bottom: 7px;margin-bottom: 0;word-break: break-all;word-wrap: break-word;"><{$country}></div>
+					      <div id="country_edit"></div>
+					      <input type="hidden" id="country_idList" value="<{$country_idList}>">
+					    </div>
+					    <div class="col-sm-1">
+						    <button class="btn btn-primary btn-sm chooseInfoBtn" data-type="country" data-title="Support Country" style="display:none">Edit</button>
+					    </div>
+					</div>
+				  </div>
+			  </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Allowed Publishers</div>
+          <div class="panel-body">
+            <table class="table table-striped" id="allowpublisher">
+              <thead><tr><th style="width:40%">Publishers</th><{*<th style="width:10%">Traffic</th><th style="width:10%">Sales</th>*}><th style="width:30%">Type</th><th style="width:5%">Status</th><th style="width:5%"></th></tr></thead>
+              <tbody><{foreach from=$publisherTraffics item=d}>
+                <tr <{if $d.blockStatus == 'Active'}>style="background-color: #e6c1c1;"<{/if}>>
+                  <!--  <td><{$d.Name}>(<{$d.country}>)</td>-->
+                  <td><{$d.Name}></td>
+                  <{*<td><{$d.traffic}></td>
+                  <td>$<{$d.sales}></td>*}>
+                  <td><{$d.iscoupon}></td>
+                  <!-- <{if $d.blockStatus == 'Active'}>
+                  	  <td>block</td>
+                  	  <td><input type="button" value="Remove" style="width: 69px;" onclick="javascript:requestB('n', '<{$d.publisherId}>')" /></td>
+                  <{else}>
+                  	  <td>active</td>
+	                  <td><input type="button" value="Block" style="width: 69px;" onclick="javascript:requestB('y', '<{$d.publisherId}>')" /></td>
+                  <{/if}> -->
+                  <td><{$d.Status}></td>
+                  <td></td>
+                </tr>  
+              <{/foreach}></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Placement Opportunity
+          <a style="float: right;margin-right: 5px;text-decoration: none" href="javascript:addProposalDiv()">Add</a></div>
+          <div class="panel-body">
+            <table class="table table-striped" id="placementoppo">    
+              <thead><tr><th style="width:15%">Exposure Type</th><th style="width:45%">Description</th><th style="width:15%">Start Date</th><th style="width:15%">Duration</th><th style="width:10%">status</th></tr></thead>         
+              <tbody><{foreach from=$proposal_arr item=d}>
+                <tr>
+					<td><{$d.title}></td>
+					<td><{$d.content}></td>
+					<td><{$d.startdate}></td>
+					<td><{$d.Duration}></td>
+					<td><{$d.Status}></td>
+                </tr>               
+              <{/foreach}></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Promotion & Banner & Product <!-- <input type="button" onclick="showPromotion(this);" value="Show"/>
+          <!-- <a style="float: right;margin-right: 5px;text-decoration: none" href="javascript:addCouponDiv()">Add</a> -->         
+          </div>
+          <div class="panel-body" id="bPromotion" style="display:block;/* height:132px;overflow:hidden */">
+            <table class="table table-striped" id="promotionList">
+              <thead><tr><th style="width:10%"></th><th style="width:15%">Title</th><th style="width:15%">Coupon Code</th><th style="width:30%">Description</th><th style="width:15%">Start Date</th><th style="width:15%">End Date</th></tr></thead>
+              <tbody><{foreach from=$promotion_arr item=d}>
+                <tr>					
+					<td rowspan='2'></td>
+					<td><{$d.title}></td>
+					<td><{$d.couponcode}></td>
+					<td><{$d.desc}></td>
+					<td><{$d.startdate}></td>
+					<td><{$d.enddate}></td>
+                </tr>
+                <tr>                	
+                	<td style="display: none;"></td>
+                	<td colspan='5' style="word-wrap: break-word;word-break: break-all;"><a href="<{$d.affurl}>" target="_blank"><{$d.affurl}></a></td>
+                	<td style="display: none;"></td>
+                	<td style="display: none;"></td>
+                	<td style="display: none;"></td>
+                	<td style="display: none;"></td>
+                </tr>
+              <{/foreach}></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      </div>
+  </div>
+</div>
+      <input type="hidden" id="sid" value="<{$storeidsession}>" />
+
+<!-- Addtional Exposure -->
+<div class="modal fade" id="Proposaldiv" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">            
+        	<div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>                
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2" style="text-align:center;">
+                            <table style="width: 100%;border-collapse: separate;border-spacing: 0 10px;">     
+                            	<tr>
+                                    <td style="text-align: right">Exposure Type:</td>
+                                    <td colspan="2" style="text-align: left">
+                                    	<select id='w_type' name='w_type'>
+                                    		<{foreach item=cate key=k from=$provide_arr}>
+                                    		<option value='<{$cate}>'><{$cate}></option>
+                                    		<{/foreach}>
+                                    	</select>
+                                    </td>
+                                </tr>                            
+                                <tr>
+                                	 <td style="text-align: right">Description: </td>
+                                     <td colspan="2">                                    	
+										<textarea rows="3" id="Proposal" placeholder=""  class="form-control" style="resize: none"></textarea>
+									</td>
+                                </tr>    
+                                <tr>
+                                    <td style="text-align: right">Plan Start Date:</td>
+                                    <td>                                    	
+                                    	<input style="width: 50%;" type="text" id="StartDate" class="form-control dtpicker" placeholder="Start Date"  data-field="datetime">                            			
+                                    </td>
+                                    <!-- <td  align="right">                                    	
+                                    	<input style="width: 50%;" type="text" id="EndDate" class="form-control dtpicker" placeholder="End Date"   data-field="datetime">
+                                    </td> -->
+                                </tr>       
+                                <tr>
+                                	<td style="text-align: right">Duration:</td>
+                                	<td>
+                                		<select style="width:50%" class="form-control" id="Duration">
+											<option value="one day">one day</option>
+											<option value="one week">one week</option>
+											<option value="two week">two week</option>
+											<option value="one month">one month</option>
+										</select>
+                                	</td>
+                                </tr>                      
+                                <tr style="height: 15px"></tr>
+                                <tr>
+                                    <td colspan="3" ><button type="button"  onclick="javascript:addProposal()" class="btn btn-primary btn-lg btn-block" style="margin: auto;text-align: center;width: 60%">submit</button></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Promotion & Banner & Product -->
+<div class="modal fade" id="newContentDiv" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title" id="exampleModalLabel">Add New Content Feed</h2>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2" style="text-align:center;">
+                            <table style="width: 100%;border-collapse: separate;border-spacing: 0 10px;">
+                                <tr>
+                                    <td style="text-align: right">title:</td>
+                                    <td colspan="2"><input id="add-content-title" placeholder="Please input the title"  type="text" class="form-control"></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right">description:</td>
+                                    <td colspan="2"><textarea rows="3" id="add-content-desc" placeholder="Please input the description"  class="form-control" style="resize: none"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right">coupon code:</td>
+                                    <td colspan="2"><input id="add-content-couponCode" placeholder="Please input the coupon code"  type="text" class="form-control"></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right">url:</td>
+                                    <td colspan="2"><input id="add-content-affUrl" placeholder="Please input the affiliate url"  type="text" class="form-control"></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right">valid date:</td>
+
+                                    <td>                                    	
+                                    	<input style="width: 50%;" type="text" id="add-content-startDate" class="form-control dtpicker" placeholder="Start Date"  data-field="datetime">
+                            			
+                                    </td>
+                                    <td  align="right">
+                                    	<input style="width: 50%;" type="text" id="add-content-endDate" class="form-control dtpicker" placeholder="End Date"   data-field="datetime">                                    	
+                                    </td>
+                                </tr>            
+                                <!-- <tr>
+                                    <td style="text-align: right">Image:</td>                  
+				                    <td colspan="2">
+				                    	<form action="upload.php" method="post" enctype="multipart/form-data">
+										<input type="file" name="files[]" id="filer_input2" multiple="multiple">
+				                    	</form>
+				                    	<input type="hidden" id="LogoAdr">  
+				                   	</td>
+				                </tr> -->
+                                <tr style="height: 15px"></tr>
+                                <tr>
+                                    <td colspan="3" ><button type="button" id="addCouponInfo" class="btn btn-primary btn-lg btn-block" style="margin: auto;text-align: center;width: 60%">submit</button></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="uploadImg" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title">Upload Logo</h2>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                    	<div class="form-group">
+							  <div class="col-sm-12">
+				                    <form action="upload.php" id="uploadLogoForm" method="post" enctype="multipart/form-data">
+				                        <input type="hidden" name="action" value="uploadLogo">
+				                        <input type="file" name="files[]" id="filer_input" multiple="multiple">
+				                    </form>
+				                    <input type="hidden" id="LogoAdr">
+							   </div>
+	                    </div>
+	                    <div class="form-group" style="text-align:center">
+		                    <button class="btn btn-primary" style="margin-right: 10px;" id="uploadLogo">confirm</button>
+							<button class="btn btn-default" style="margin-left: 10px;" data-dismiss="modal">cancel</button>
+						</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="chooseInfo" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title" id="chooseInfoModalLabel"></h2>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                    	<div class="form-group">
+							  <div class="col-sm-12" id="chooseInfoBody">
+				                    
+							   </div>
+	                    </div>
+	                    <div class="form-group" style="text-align:center">
+	                    	<input type="hidden" id="submitType">
+		                    <button class="btn btn-primary" style="margin-right: 10px;" id="chooseInfoConfirm">confirm</button>
+							<button class="btn btn-default" style="margin-left: 10px;" data-dismiss="modal">cancel</button>
+						</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		//当字符串大于一行时显示查看更多按钮
+		addShowMoreBtn();
+		
+		//切换查看更多
+		$(document).delegate('#showmore','click',function(){
+			if($("#bPPC").hasClass("bPPCMore")){
+				$("#showmore").html('Show More <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>');
+				$("#bPPC").removeClass("bPPCMore");
+			}else{
+				$("#showmore").html('Show More <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>');
+				$("#bPPC").addClass("bPPCMore");
+			}
+		})
+		
+		/* $("#bPPC").ellipsis({
+			position: 'tail'
+		}); */
+		
+		filer_default_opts = {
+		        templates: {
+		            box: '<ul class="jFiler-items-list jFiler-items-grid"></ul>',
+		            item: '<li class="jFiler-item" style="width: 49%">\
+		                        <div class="jFiler-item-container">\
+		                            <div class="jFiler-item-inner">\
+		                                <div class="jFiler-item-thumb">\
+		                                    <div class="jFiler-item-status"></div>\
+		                                    <div class="jFiler-item-info">\
+		                                        <span class="jFiler-item-title"><b title="{{fi-name}}">{{fi-name | limitTo: 25}}</b></span>\
+		                                        <span class="jFiler-item-others">{{fi-size2}}</span>\
+		                                    </div>\
+		                                    {{fi-image}}\
+		                                </div>\
+		                                <div class="jFiler-item-assets jFiler-row">\
+		                                    <ul class="list-inline pull-left">\
+		                                        <li>{{fi-progressBar}}</li>\
+		                                    </ul>\
+		                                    <ul class="list-inline pull-right">\
+		                                        <li><a class="icon-jfi-trash jFiler-item-trash-action"></a></li>\
+		                                    </ul>\
+		                                </div>\
+		                            </div>\
+		                        </div>\
+		                    </li>',
+		            itemAppend: '<li class="jFiler-item" style="width: 49%">\
+		                            <div class="jFiler-item-container">\
+		                                <div class="jFiler-item-inner">\
+		                                    <div class="jFiler-item-thumb">\
+		                                        <div class="jFiler-item-status"></div>\
+		                                        <div class="jFiler-item-info">\
+		                                            <span class="jFiler-item-title"><b title="{{fi-name}}">{{fi-name | limitTo: 25}}</b></span>\
+		                                            <span class="jFiler-item-others">{{fi-size2}}</span>\
+		                                        </div>\
+		                                        {{fi-image}}\
+		                                    </div>\
+		                                    <div class="jFiler-item-assets jFiler-row">\
+		                                        <ul class="list-inline pull-left">\
+		                                            <li><span class="jFiler-item-others">{{fi-icon}}</span></li>\
+		                                        </ul>\
+		                                        <ul class="list-inline pull-right">\
+		                                            <li><a class="icon-jfi-trash jFiler-item-trash-action"></a></li>\
+		                                        </ul>\
+		                                    </div>\
+		                                </div>\
+		                            </div>\
+		                        </li>',
+		            progressBar: '<div class="bar"></div>',
+		            itemAppendToEnd: false,
+		            removeConfirmation: true,
+		            _selectors: {
+		                list: '.jFiler-items-list',
+		                item: '.jFiler-item',
+		                progressBar: '.bar',
+		                remove: '.jFiler-item-trash-action'
+		            }
+		        },
+		        dragDrop: {},
+		        uploadFile: {
+		            url: "upload.php",
+		            data: {},
+		            type: 'POST',
+		            enctype: 'multipart/form-data',
+		            beforeSend: function(){},
+		            success: function(data, el){
+		                //console.log(data);
+		                $('#LogoAdr').val(data);
+		                var parent = el.find(".jFiler-jProgressBar").parent();
+		                el.find(".jFiler-jProgressBar").fadeOut("slow", function(){
+		                    $("<div class=\"jFiler-item-others text-success\"><i class=\"icon-jfi-check-circle\"></i> Success</div>").hide().appendTo(parent).fadeIn("slow");
+		                });
+		            },
+		            error: function(el){
+		                var parent = el.find(".jFiler-jProgressBar").parent();
+		                el.find(".jFiler-jProgressBar").fadeOut("slow", function(){
+		                    $("<div class=\"jFiler-item-others text-error\"><i class=\"icon-jfi-minus-circle\"></i> Error</div>").hide().appendTo(parent).fadeIn("slow");
+		                });
+		            },
+		            statusCode: null,
+		            onProgress: null,
+		            onComplete: null
+		        },
+		        onRemove: function(itemEl, file, id, listEl, boxEl, newInputEl, inputEl){
+		            var file = file.name;
+		            $.post('./php/remove_file.php', {file: file});
+		        },
+		    };
+		    $('#filer_input').filer({
+		    	changeInput2: '<div class="jFiler-input-dragDrop"><div class="jFiler-input-inner"><div class="jFiler-input-icon"><i class="icon-jfi-cloud-up-o"></i></div><div class="jFiler-input-text"><h3>Drag&Drop files here</h3> <span style="display:inline-block; margin: 15px 0">or</span></div><a class="jFiler-input-choose-btn blue-light">Browse Files</a></div></div>',
+		        showThumbs: true,
+		        templates: filer_default_opts.templates,
+		        //uploadFile: filer_default_opts.uploadFile,
+		        limit: 1
+		    });
+	})
+	
+	$(function(){
+		$('#promotionList').DataTable({
+			"bSort": false,
+			"lengthChange": false,
+			"language":{
+				"info":"Shsowing _START_ to _END_ of _TOTAL_ entries",  
+				"infoEmpty": "No entries to show",
+			},
+			"fnInfoCallback": function( oSettings, iStart, iEnd, iMax, iTotal, sPre ) {
+		        return "Shsowing "+Math.ceil(iStart/2)+" to "+Math.ceil(iEnd/2)+" of "+Math.ceil(iTotal/2)+" entries";
+		     }
+			/* "fnDrawCallback": function (data) {
+				console.log($(this));
+            }, */
+            /* "fnRowCallback" : function(nRow, aData, iDisplayIndex) {  
+            	console.log(aData); */ 
+                /* 用来改写用户权限的 */  
+             /*   if (aData.ISADMIN == '1')  
+                    $('td:eq(5)', nRow).html('管理员');  
+                if (aData.ISADMIN == '2')  
+                    $('td:eq(5)', nRow).html('资料下载');  
+                if (aData.ISADMIN == '3')  
+                    $('td:eq(5)', nRow).html('一般用户');  
+                  
+                return nRow;
+            },   */
+			/* "fnCreatedRow": function( nRow, aData, iDataIndex ) { 
+				console.log(nRow);
+				console.log(aData);
+				console.log(iDataIndex);
+		      // 为a的话字体加粗 
+		      if ( aData[4] == "A" ) 
+		      { 
+		        $('td:eq(4)', nRow).html( '<b>A</b>' ); 
+		      } 
+		    }  */
+		});
+		
+		$('#placementoppo').DataTable({});
+		$('#allowpublisher').DataTable({});
+		
+		//logout
+		$(document).delegate("#head-top-logout","click",function(){
+			$.ajax({
+		        type:"post",
+		        url:"<{$smarty.const.BASE_URL}>/process.php",
+		        data:'act=publish_logout',
+		        async:false,
+		        success: function(data){
+		          window.location.reload();
+		        }
+		      });
+		})
+		
+		$(document).delegate('#head-info-edit','click',function(){
+			$("#head-info-edit").addClass("head-info-edit-none");
+			$(".publisher-head-info").addClass("publisher-head-info-edit");
+			/* $("#head-detail").hide();
+			$("#head-edit").show(); */
+			$.ajax({
+				type: "post",
+	            url: "b_white_listing.php",
+	            data: {"action":"editInfo"},
+	            dataType: 'json',
+	            success: function (res) {
+	            	var html = '<div class="form-group">'+
+							  	  '<label class="col-sm-2 control-label">Logo:</label>'+
+								  '<div class="col-sm-9">'+
+							      	    '<p class="form-control-static"><img onclick="javascript:toUploadLogo()" width="220px" border=0 src="img/adv_logo/'+res.result.LogoName+'" /></p>'+
+								   '</div>'+
+						       '</div>'+
+							   '<div class="form-group">'+
+								    '<label for="inputName" class="col-sm-2 control-label">Name:</label>'+
+								    '<div class="col-sm-3">'+
+								      '<input type="text" class="form-control" id="inputName" name="Name" placeholder="Name" value="'+res.result.Name+'">'+
+								    '</div>'+
+								    '<label for="inputEmail" class="col-sm-2 control-label">Email:</label>'+
+								    '<div class="col-sm-3">'+
+								      '<input type="email" class="form-control" id="inputAdvertiserEmail" name="AdvertiserEmail" placeholder="Email" value="'+res.result.AdvertiserEmail+'">'+
+								    '</div>'+
+							   '</div>'+
+							   '<div class="form-group">'+
+								    '<label for="inputDesc" class="col-sm-2 control-label">Affiliate Manager Type:</label>'+
+								    '<div class="col-sm-3">'+
+									    '<select name="AdvertiserEmailType" id="InputAdvertiserEmailType" name="AdvertiserEmailType" class="form-control">'+
+				                        	'<option value="Unknown">select-type</option>'+
+				                            '<option value="In-house">In-house affiliate manager</option>'+
+				                            '<option value="Network">Network affiliate manager</option>'+
+				                            '<option value="Agency">Agency affiliate manager</option>'+
+				                            '<option value="Other">Other</option>'+ 
+				                    	'</select>'+
+								    '</div>'+
+								    '<label for="inputDesc" class="col-sm-2 control-label">Description:</label>'+
+								    '<div class="col-sm-3">'+
+								      '<input type="text" class="form-control" id="inputDesc" name="Desc" placeholder="Description" value="'+res.result.Desc+'">'+
+								    '</div>'+
+							  '</div>'+
+							  '<div class="form-group">'+
+								    '<label for="inputTerm" class="col-sm-2 control-label">Term and Conditions:</label>'+
+								    '<div class="col-sm-8">'+
+								      '<input type="text" class="form-control" id="inputPPCPolicy" name="PPCPolicy" placeholder="Term and Conditions" value="'+res.result.PPCPolicy+'">'+
+								    '</div>'+
+							  '</div>'+
+							    '<div style="text-align:center">'+
+									'<button class="btn btn-primary" id="info-confirm" style="margin-right: 10px;">confirm</button>'+
+									'<button class="btn btn-default" id="info-cancel" style="margin-left: 10px;">cancel</button>'+
+								'</div>';
+	                $('#head-detail').html(html);
+	                $("#InputAdvertiserEmailType").find("option[value='"+res.result.AdvertiserEmailType+"']").attr("selected",true);
+	            }
+			});
+		})
+		$(document).delegate('#info-cancel','click',function(){
+			$("#head-info-edit").removeClass("head-info-edit-none");
+			$(".publisher-head-info").removeClass("publisher-head-info-edit");
+			/* $("#head-edit").hide();
+			$("#head-detail").show(); */
+			$.ajax({
+				type: "post",
+	            url: "b_white_listing.php",
+	            data: {"action":"cancelInfo"},
+	            dataType: 'json',
+	            success: function (res) {
+	            	getInfoHtml(res);
+	            }
+			});
+		})
+		$(document).delegate('#info-confirm','click',function(){
+			$("#head-info-edit").removeClass("head-info-edit-none");
+			$(".publisher-head-info").removeClass("publisher-head-info-edit");
+			var Name = $("#inputName").val();
+			var AdvertiserEmail = $("#inputAdvertiserEmail").val();
+			var AdvertiserEmailType = $("#InputAdvertiserEmailType").val();
+			var Desc = $("#inputDesc").val();
+			var PPCPolicy = $("#inputPPCPolicy").val();
+			var data = {'action':'updateInfo','Name':Name,'AdvertiserEmail':AdvertiserEmail,'AdvertiserEmailType':AdvertiserEmailType,'Desc':Desc,'PPCPolicy':PPCPolicy};
+			$.ajax({
+	            type:"post",
+	            url:"b_white_listing.php",
+	            data:data,
+	            dataType: 'json',
+	            async:false,
+	            success: function(res){
+	            	getInfoHtml(res);
+	            }
+	        });
+		})
+		
+		//修改checkbox处的信息
+		$(document).delegate(".chooseInfoBtn","click",function(){
+			var $this = $(this);
+			var type = $this.data('type');
+			var title = $this.data('title');
+			var IdText = $("#"+type+"_idList").val();
+			var IdList = IdText.split(",");
+			var str = '';
+			switch(type){
+				case "category":
+					str+='<{foreach item=cate key=k from=$category}>'+
+						     '<div class="col-xs-4" style="margin-top:10px;height: 30px;padding-left:5px;padding-right:0px;float: left;text-align: left;">'+
+		              		 '<input id="category_<{$k}>" data-id="<{$k}>" type="checkbox">&nbsp;<label for="category_<{$k}>" style="display:inline;font-weight:100"><{$cate|addslashes}></label>'+
+		                     '</div>'+	
+	                   	'<{/foreach}>';
+                   	$("#chooseInfoBody").html(str);
+                   	for (var i = 0; i < IdList.length; i++) {
+                        $("#category_"+IdList[i]).prop("checked",true);
+                    }
+                   	$("#chooseInfoModalLabel").html(title);
+                    $("#submitType").val(type);
+        			$("#chooseInfo").modal();
+					break;
+				case "preference":
+					str+='<{foreach item=cate key=k from=$preference}>'+
+	                        '<div class="col-xs-4"  style="margin-top:10px;height: 30px;padding-left:5px;padding-right:0px;float: left;text-align: left;">'+
+			                    '<input id="preference_<{$cate}>" data-id="<{$cate}>" type="checkbox">&nbsp;<label for="preference_<{$cate}>" style="display:inline;font-weight:100"><{$cate}></label>'+
+			                '</div>'+
+		           	     '<{/foreach}>';
+                   	$("#chooseInfoBody").html(str);
+                   	for (var i = 0; i < IdList.length; i++) {
+                   		$("input[id='preference_"+IdList[i]+"']").prop("checked",true)
+                    }
+                   	$("#chooseInfoModalLabel").html(title);
+                    $("#submitType").val(type);
+        			$("#chooseInfo").modal();
+					break;
+				/* case "country":
+					str+='<{foreach item=cate key=k from=$countryList}>'+
+	                        '<div class="col-xs-3"  style="margin-top:10px;height: 30px;padding-left:5px;padding-right:0px;float: left;text-align: left;">'+
+			                    '<input id="country_<{$k}>" data-id="<{$k}>" type="checkbox">&nbsp;<label for="country_<{$k}>" style="display:inline;font-weight:100"><{$cate|addslashes}></label>'+
+			                '</div>'+
+		           	     '<{/foreach}>';
+                   	$("#chooseInfoBody").html(str);
+                   	for (var i = 0; i < IdList.length; i++) {
+                        $("#country_"+IdList[i]).prop("checked",true);
+                    }
+					break; */
+				/* case "country":
+					var countryLists = new Array();
+					//$("#supportCountryDiv").css("visibility","hidden");
+					$("#country_text").css("display","none");
+					str+='<select class="form-control" id="selectCountry" multiple="multiple">'+
+							'<{foreach item=cate key=k from=$countryList}>'+
+								'<option value="<{$k}>"><{$cate|addslashes}></option>'+
+							'<{/foreach}>'+
+				      	 '</select>'+
+				      	 '<div class="form-group" style="text-align:center;padding-top:10px">'+
+		                    '<button class="btn btn-primary" style="margin-right: 10px;" id="updateCountry">confirm</button>'+
+							'<button class="btn btn-default" style="margin-left: 10px;" id="updateCountryCancel" data-dismiss="modal">cancel</button>'+
+						 '</div>';
+                   	$("#country_edit").html(str);
+                   	for (var i = 0; i < IdList.length; i++) {
+                        countryLists.push(IdList[i]);
+                   	}
+                   	$("#selectCountry").select2({
+            			theme: "bootstrap",
+            			allowClear: true,
+            			placeholder: "Select Country",
+            		}).val(countryLists).trigger("change");
+            		//$("#supportCountryDiv").css("visibility","visible");
+					break; */
+				default :
+					return false;
+			}
+		})
+		
+		$(document).delegate("#chooseInfoConfirm","click",function(){
+			var submitType = $("#submitType").val();
+			if(submitType!="category" && submitType!="preference" && submitType!="country"){
+				return false;
+			}
+			var check = '',text = '';
+            $('#chooseInfo :checkbox').each(function(i){
+                if($(this).is(':checked')){
+                	check+=$(this).attr('data-id')+',';
+                	text+=$(this).next('label').text()+', ';
+                }
+            })
+            text = text.substring(0,text.length-2);
+            var param = check.substring(0,check.length-1);
+			var data = {'action':'updateChoose','type':submitType,'param':param};
+			$.ajax({
+	            type:"post",
+	            url:"b_white_listing.php",
+	            data:data,
+	            dataType: 'json',
+	            async:false,
+	            success: function(res){
+	            	if(submitType=='category' || submitType=='country'){
+	            		$("#"+submitType+"_text").html(text);
+	            	}else if(submitType=='preference'){
+	            		var str = '';
+	            		var paramArr = param.split(",");
+	            		for(var i=0;i<paramArr.length;i++){
+	            			str += '<div class="col-md-4">'+paramArr[i]+'</div>';
+	            		}
+	            		$("#"+submitType+"_text").html(str);
+	            	}
+	            	$("#"+submitType+"_idList").val(param);
+	            	$('#chooseInfo').modal('hide');
+	            }
+	        });
+		})
+		
+		//取消更新country
+		$(document).delegate("#updateCountryCancel","click",function(){
+			$("#country_edit").html('');
+			$("#country_text").css("display","block");
+		})
+		
+		//更新country
+		$(document).delegate("#updateCountry","click",function(){
+			var check = '',text = '';
+			$("#selectCountry option:selected").each(function(i){
+				check+=$(this).val()+',';
+            	text+=$(this).text()+', ';
+			})
+			var submitType = 'country';
+			text = text.substring(0,text.length-2);
+            var param = check.substring(0,check.length-1);
+			var data = {'action':'updateChoose','type':submitType,'param':param};
+			$.ajax({
+	            type:"post",
+	            url:"b_white_listing.php",
+	            data:data,
+	            dataType: 'json',
+	            async:false,
+	            success: function(res){
+            		$("#"+submitType+"_text").html(text);
+	            	$("#"+submitType+"_idList").val(param);
+	            	$("#country_edit").html('');
+	    			$("#country_text").css("display","block");
+	            }
+	        });
+		})
+		
+	})
+	
+		
+	function toUploadLogo(){
+		$("#uploadImg").modal();
+	}
+	
+	function getInfoHtml(res){
+		var html = '<div class="form-group">'+
+					    '<label class="col-sm-2 control-label">Logo:</label>'+
+					    '<div class="col-sm-8">'+
+					      '<p class="form-control-static"><img width="220px" border=0 src="<{$smarty.const.BASE_URL}>/img/adv_logo/'+res.result.LogoName+'" /></p>'+
+					    '</div>'+
+				   '</div>'+
+				   '<div class="form-group">'+
+				     '<label class="col-sm-2 control-label">Name:</label>'+
+				     '<div class="col-sm-3">'+
+				       '<p class="form-control-static">'+res.result.Name+'</p>'+
+				     '</div>';
+				     if(res.result.AdvertiserEmail!=''){
+				    	 html += '<label class="col-sm-2 control-label">Email:</label>'+
+							     '<div class="col-sm-3">'+
+								    '<p class="form-control-static">'+res.result.AdvertiserEmail+'</p>'+
+							 	 '</div>';
+				     }
+				html += '</div>'+
+				  '<div class="form-group">'+
+				    '<label class="col-sm-2 control-label">URL:</label>'+
+				    '<div class="col-sm-10">'+
+				      '<p class="form-control-static">'+res.result.Domains+'</p>'+
+				    '</div>'+
+				  '</div>'+
+				  '<div class="form-group">'+
+				    '<label class="col-sm-2 control-label">Commission:</label>'+
+				    '<div class="col-sm-10">'+
+				      '<p class="form-control-static"><{$commission}></p>'+
+				    '</div>'+
+				  '</div>';
+				  	if(res.result.AdvertiserEmailType!=''){
+				  		html += '<div class="form-group">'+
+								    '<label class="col-sm-2 control-label">Affiliate Manager Type:</label>'+
+								    '<div class="col-sm-10">'+
+								      '<p class="form-control-static">'+res.result.AdvertiserEmailType+'</p>'+
+								    '</div>'+
+							    '</div>';
+				  	}
+				  	if(res.result.Desc!=''){
+				  		html += '<div class="form-group">'+
+								    '<label class="col-sm-2 control-label">Description:</label>'+
+								    '<div class="col-sm-10">'+
+							        '<p class="form-control-static">'+res.result.Desc+'</p>'+
+							    '</div>'+
+							    '</div>';
+				  	}
+				  	if(res.result.PPCPolicy!=''){
+				  		html += '<div class="form-group">'+
+								    '<label class="col-sm-2 control-label">Term and Conditions:</label>'+
+								    '<div class="col-sm-9">'+
+								      '<div id="bPPC" class="bPPC"><span id="ruler">'+res.result.PPCPolicy+'</span></div>'+
+								    '</div>'+
+							    '</div>';
+				  	}
+				html += '</div>';
+				$('#head-detail').html(html);
+				addShowMoreBtn();
+	}
+	
+	$("#uploadLogo").click(function(){
+		if($("#filer_input").val() == undefined || $("#filer_input").val() == ''){
+			alert('please input a logo');
+		}else{
+			var formData = new FormData($("#uploadLogoForm")[0]);  
+			$.ajax({
+				url:"b_white_listing.php",
+	            data: formData,
+	            type: 'POST',
+	            enctype: 'multipart/form-data',
+	            dataType: 'json',
+	            contentType: false,
+	            processData: false,
+	            beforeSend: function(){},
+	            success: function(data){
+	                if(data.code==1){
+	                	window.location.reload();
+	                }else{
+	                	alert(data.msg);
+	                }
+	            }
+			})
+		}
+		return false;
+	})
+	
+	
+
+	function showPromotion(event){
+		if($("#bPromotion").css('height') == '132px'){
+			$("#bPromotion").css({height:""});
+			//$("#bPromotion").css({overflow:"visible"});
+			$(event).val('Hide');
+		}else{			
+			$("#bPromotion").css({height:"132px"});
+			$("#bPromotion").css({overflow:"hidden"});
+			$(event).val('Show');
+		}
+	}
+	
+	function showB(div_block, event){
+		if($("#"+div_block).css('height') == '20px'){
+			$("#"+div_block).css({height:""});
+			$(event).val('Hide');
+		}else{			
+			$("#"+div_block).css({height:"20px"});
+			$(event).val('More');
+		}
+		
+	}
+
+	function sPrefer(){
+		var con = '';
+		$('#Preference :checkbox').each(function(i){
+			if($('#Preference :checkbox').eq(i).is(':checked')){
+				con += $('#Preference :checkbox').eq(i).attr('data-id').trim() + ',';
+			}
+        });
+		
+		con = con.substring(0,con.length-1);		
+        var data = {'action':'s_prefer','con':con}
+        $.ajax({
+            type:"get",
+            url:"b_white_listing.php",
+            data:data,
+            async:false,
+            success: function(msg){
+				//console.info(msg);			
+				if(msg == "success"){
+					//alert(msg);					
+				}else{
+					alert(msg);
+				}
+			}	
+        });
+	}
+	
+	function deleteF(fid){
+		var url =  "b_white_listing.php?action=df";	   
+		var verifyArr = {'fid':fid};
+		$.ajax({type: "get",
+			url: url,
+			data: $.param(verifyArr),
+			success: function(msg){
+				//console.info(msg);			
+				if(msg == "success"){
+					//alert(msg);
+					window.location.reload();
+				}else{
+					alert(msg);
+				}
+			}					   
+		});
+	}
+	
+	//Promotion & Banner & Product
+	function addCouponDiv(){
+        $('#newContentDiv').modal();
+    }
+	//Addtional Exposure
+	function addProposalDiv(){
+        $('#Proposaldiv').modal();
+    }
+	function requestB(t, publisherId){
+		var url =  "b_white_listing.php?action=rb";
+	    var sid = $('#sid').val();
+		var verifyArr = {'sid':sid,'type':t,'pid':publisherId};
+		$.ajax({
+			type: "get",
+			url: url,
+			data: $.param(verifyArr),
+			dataType:"json",
+			success: function(data){
+				if(data.code == 1){
+					window.location.reload();
+				}else{
+					alert(data.msg);
+				}
+			}					   
+		});
+		return false;
+	}
+
+	$(".dtpicker").datetimepicker({
+        minView: "month",//璁剧疆鍙樉绀哄埌鏈堜唤
+        format : "yyyy-mm-dd",//鏃ユ湡鏍煎紡
+        autoclose:true,//閫変腑鍏抽棴
+        todayBtn: true//浠婃棩鎸夐挳
+    });
+    
+	$('#addCouponInfo').bind('click',function(){
+           var couponCode = $('#add-content-couponCode').val();
+          
+           var startDate = $('#add-content-startDate').val();
+           if (startDate == null || startDate.length == 0) {
+               alert("Please input the correct start date");
+               return false;
+           }
+           var currentTime = new Date();
+           var currentYear = currentTime.getFullYear();
+           var currentMonth = currentTime.getMonth()+1;
+           var currentDay = currentTime.getDate();
+           var currentDate = new Date(currentYear + "-" + currentMonth + "-" + currentDay).getTime()
+           var endDate = $('#add-content-endDate').val();
+           if (endDate == null || endDate.length == 0) {
+               alert("Please input the correct end date");
+               return false;
+           }
+           var startDateSeconds = new Date(startDate).getTime();
+           var endDateSeconds = new Date(endDate).getTime();
+           if (endDateSeconds < currentDate) {
+               alert("Error ending date must be before current date");
+               return false;
+           }
+           if (endDateSeconds < startDateSeconds) {
+               alert("Error starting date must be before ending date");
+               return false;
+           }
+
+           var title = $('#add-content-title').val();
+           if (title == null || title.length == 0) {
+               alert("Please input the correct title");
+               return false;
+           }
+
+           var desc = $('#add-content-desc').val();
+          // var LogoAdr = $('#LogoAdr').val();
+          // if (desc == null || desc.length == 0) {
+           //    alert("Please input the correct description");
+           //    return false;
+          // }
+
+           var url = $('#add-content-affUrl').val();
+           var re = /^((http|https|ftp):\/\/)?(\w(\:\w)?@)?([0-9a-z_-]+\.)*?([a-z]{2,6}(\.[a-z]{2})?(\:[0-9]{2,6})?)((\/[^?#<>\/\\*":]*)+(\?[^#]*)?(#.*)?)?$/i;
+           if(url == null || url.length == 0 || ! /^[h\H][t|T][t|T][p|P][S|s]?:\/\/.+$/.test(url)){
+               alert("Please input the correct affiliate url");
+               return false;
+           }
+       	
+           var data = {'action':'afd','code':couponCode,'startDate':startDate,'endDate':endDate,'title':title,'desc':desc,'url':url}
+           $.ajax({
+               type:"post",
+               url:"b_white_listing.php",
+               data:data,
+               async:false,
+               success: function(msg){
+				//console.info(msg);			
+				if(msg == "success"){
+					//alert(msg);
+					window.location.reload()
+				}else{
+					alert(msg);
+				}
+			}	
+           });
+       });
+
+	function addProposal(){
+           var desc = $('#Proposal').val();
+           if (desc == null || desc.length == 0) {
+               alert("Please input your Proposal");
+               return false;
+           }
+
+
+           var StartDate = $('#StartDate').val();
+           if (StartDate == null || StartDate.length == 0) {
+               alert("Please input the correct start date");
+               return false;
+           }
+
+           /* var EndDate = $('#EndDate').val();
+           if (EndDate == null || EndDate.length == 0) {
+               alert("Please input the correct end date");
+               return false;
+           } */
+           
+           var Duration = $('#Duration').val();
+
+           var w_type = $('#w_type').val();        
+
+           var data = {'action':'adp','qn':desc,'StartDate':StartDate,'Duration':Duration,'type':w_type}
+           $.ajax({
+               type:"post",
+               url:"b_white_listing.php",
+               data:data,
+               async:false,
+               success: function(msg){
+				//console.info(msg);			
+				if(msg == "success"){
+					//alert(msg);
+					window.location.reload();
+				}else{
+					alert(msg);
+				}
+			}	
+           });
+	}
+	
+	function addShowMoreBtn(){
+		if($("#ruler").width()>=845){
+			$("#bPPC").append('<button id="showmore">Show More <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></button>');
+		}
+	}
+
+	</script>
+<{/if}>

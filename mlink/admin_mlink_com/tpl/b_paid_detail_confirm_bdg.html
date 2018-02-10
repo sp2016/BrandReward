@@ -1,0 +1,44 @@
+<div class="container" style="margin-top:30px;">
+    <div class="row" style="border-bottom:1px solid #e5e5e5;padding:10px 0;">
+    <a href="javascript:void(0)" onclick="showmodal('paybdg')">Go Back</a> 
+    
+    <div class="row" style="padding:10px 0;">
+        <table class="table table-bordered">
+        <thead>
+            <tr>
+              <th>ID</th>
+              <th>Commission</th>
+              <th>Network</th>
+              <th>Date</th>
+              <th>Publisher</th>
+            </tr>
+        </thead>
+          <{foreach from=$tradelist item=list}>
+            <tr>
+                <td><{$list.ID}></td>
+                <td>$<{$list.ShowCommission}></td>
+                <td><{$list.source.Af}></td>
+                <td><{$list.Visited}></td>
+                <td><{$list.publisher.Name|default:$list.publisher.UserName}></td>
+            </tr>
+          <{/foreach}>
+        </table>
+        <{$pageHtml}>
+    </div>
+</div>
+
+<script>
+    function pageJump(page){
+        $.ajax({
+            type: "post",
+            url: "b_paid.php",
+            data: "type=ajax&act=paydetailBDG&pid=<{$search.pid}>&p="+page,
+            async: false,
+            success: function (html) {
+                $('#modal-body').html(html);
+            }
+        });
+       $('#myModal').modal({backdrop: 'static', keyboard: false});
+    }
+
+</script>

@@ -1,0 +1,63 @@
+<{include file="front_block_header.html"}>
+<{include file="front_block_banner.html"}>
+<div class="banner help_banner">
+    <span></span>
+    <!-- <img src="img/help_pic.jpg" /> -->
+    <div class="banner_text">
+        <div class="main">
+            <h5>Frequently Asked Questions</h5>
+            <form name="search" method="get"  class="search_form search">
+                <input placeholder="search your questions" value="<{$search}>" type="text" name="keyword" class="val">
+                <button type="button" class="search_button" ></button>
+            </form>
+        </div>
+    </div>
+</div>
+<{if $count>0}>
+<div class="top">
+<div class="faq">
+    <div class="main">
+        <h3><{$count}> result for "<{$search}>"</h3>
+        <ul>
+            <{foreach from=$data item=d}>
+            <li>
+                <p class='q'>Q: <{$d.qtext}></p>
+                <p class='a'>A: <{$d.atext}></p>
+            </li>
+            <{/foreach}>
+        </ul>
+    </div>
+</div>
+<{else}>
+<div class="top">
+   <div class="faq">
+     <div class="main" style="width: 100%">
+        <h3><{$count}> result for "<{$search}>"</h3>
+
+     </div>
+    </div>
+ </div>
+<{/if}>
+<div class="faq_more">
+    <img src="img/pub_four_pic.png">
+    <div class="main">
+        <h4>Need more help ?</h4>
+        <a href="<{$smarty.const.BASE_URL}>/contactUs.php">Contact Us </a>
+    </div>
+</div>
+<script type="text/javascript" src="js/jquery.goup.min.js"></script>
+<script>
+    $('.search_button').on('click',function(){
+        var val = $('.val').val();
+        if(val == ''){
+            alert('Please enter content');
+            return false;
+        }
+        if(!val.match(/[a-zA-Z\d]/)){
+            alert('Please enter content');
+            return false;
+        }
+        window.location.href = "<{$smarty.const.BASE_URL}>/help.php?search="+val;
+    })
+</script>
+<{include file="front_block_footer.html"}>

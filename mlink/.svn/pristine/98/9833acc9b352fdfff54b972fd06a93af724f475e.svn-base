@@ -1,0 +1,440 @@
+<?php
+function call_api($type,$act,$param=''){
+	if(empty($type))return '';
+
+	$api_url = '';
+	$api_user = '';
+	$api_pwd = '';
+
+	switch ($type) {
+		case 'ds':
+			$api_url = API_DS_URL.'index.php?action='.$act;
+			if($param)
+				$api_url .= '&'.$param;
+			$api_user = API_DS_USER;
+			$api_pwd = API_DS_PWD;
+			break;
+		case 'url':
+			$api_url = $act;
+			break;
+		default:
+			break;
+	}
+	print_r($api_url.'<br>'."\n");
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $api_url);
+	curl_setopt($ch, CURLOPT_USERPWD, $api_user.':'.$api_pwd);
+
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);				//不直接将结果输出到屏幕
+
+	$data = curl_exec($ch);
+
+	curl_close($ch);
+
+	return $data;
+
+}
+
+function checkScriptProcessCount($file, $max=1, $cmd_arg=''){
+	$script_name = $file;
+	$cmd = "ps aux|grep '" . $script_name ;
+	if ($cmd_arg) {
+		$cmd .= ' ' .$cmd_arg;
+	}
+	$cmd .= "'|grep -v 'grep " . $script_name . "'|grep -v 'sh -c'|wc -l";
+	$count = intval(trim(exec($cmd)));
+	$error_message = "";
+	if($count > $max){
+		$error_message .= "total number of processes more than the setting (".$script_name.":".$max."), canceled.\n";
+	}
+	if($file == ""){
+		$error_message .= "file none exists, canceled.\n";
+	}
+	if($error_message != ""){
+		echo $error_message;
+		exit;
+	} else {
+		return $count;
+	}
+}
+function send_bronto_email(&$_info){
+	$mailSender = "http://edm.bwe.io/sendmail.php";
+	$ch = curl_init($mailSender);
+	curl_setopt($ch, CURLOPT_URL,$mailSender);
+	curl_setopt($ch, CURLOPT_HEADER, false);
+	curl_setopt($ch, CURLOPT_NOBODY, false);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+	curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+	curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+	curl_setopt($ch, CURLOPT_USERAGENT, "sendmail_edm");
+	curl_setopt($ch, CURLOPT_ENCODING, "gzip, deflate");
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_POSTFIELDS,$_info);
+	$pagecontent = curl_exec($ch);
+	if(isset($_info["RemoteDebug"]) && $_info["RemoteDebug"]) return $pagecontent;
+	$curl_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	curl_close($ch);
+	if($curl_code != 200) return false;
+	if(substr($pagecontent,0,1) != "1") return false;
+	return true;
+
+}
+
+/**
+ * 需要发送邮件的模板内容
+ * $param array key为模板使用的字段 value为值
+ * @html text 模板页面
+ */
+function get_email_template($param,$html){
+    $objTemp = new TemplateSmarty();
+    foreach ($param as $key=>$temp){
+        $objTemp->assign($key,$temp);
+    }
+    $text = $objTemp->fetch($html);
+    return $text;
+}
+
+/**
+ * 发送Email
+ * $to 收件人
+ * $title 邮件标题
+ * $content 邮件内容
+ * $emailType 邮件类型(存入数据库时使用)
+ * $hostInfo 邮件账号
+ * $fromname 发件人姓名
+ */
+function send_email($to,$title,$content,$emailType='',$hostInfo='support',$fromname='brandreward'){
+    if($hostInfo == 'support'){
+        $host = 'mail01.bwe.io';
+        $username = 'support@brandreward.com';
+        $password = 'Mega@12345';
+    }else {
+        return false;
+    }
+    //引入PHPMailer的核心文件 使用require_once包含避免出现PHPMailer类重复定义的警告
+    require_once("lib/phpmailer/PHPMailer.php");
+    require_once("lib/phpmailer/SMTP.php");
+    require_once("lib/phpmailer/Exception.php");
+    //实例化PHPMailer核心类
+    $mail = new PHPMailer\PHPMailer\PHPMailer;
+
+    //是否启用smtp的debug进行调试 开发环境建议开启 生产环境注释掉即可 默认关闭debug调试模式
+    $mail->SMTPDebug = 1;
+
+    //使用smtp鉴权方式发送邮件
+    $mail->isSMTP();
+
+    //smtp需要鉴权 这个必须是true
+    $mail->SMTPAuth=true;
+
+    //链接qq域名邮箱的服务器地址
+    $mail->Host = $host;
+
+    //设置使用ssl加密方式登录鉴权
+    $mail->SMTPSecure = 'ssl';
+
+    //设置ssl连接smtp服务器的远程服务器端口号，以前的默认是25，但是现在新的好像已经不可用了 可选465或587
+    $mail->Port = 465;
+
+    //设置smtp的helo消息头 这个可有可无 内容任意
+    // $mail->Helo = 'Hello smtp.qq.com Server';
+
+    //设置发件人的主机域 可有可无 默认为localhost 内容任意，建议使用你的域名
+    $mail->Hostname = 'https://www.brandreward.com';
+
+    //设置发送的邮件的编码 可选GB2312 我喜欢utf-8 据说utf8在某些客户端收信下会乱码
+    $mail->CharSet = 'UTF-8';
+
+    //设置发件人姓名（昵称） 任意内容，显示在收件人邮件的发件人邮箱地址前的发件人姓名
+    $mail->FromName = $fromname;
+
+    //smtp登录的账号 这里填入字符串格式的qq号即可
+    $mail->Username = $username;
+
+    //smtp登录的密码 使用生成的授权码（就刚才叫你保存的最新的授权码）
+    $mail->Password = $password;
+
+    //设置发件人邮箱地址 这里填入上述提到的“发件人邮箱”
+    $mail->From = $username;
+
+    //邮件正文是否为html编码 注意此处是一个方法 不再是属性 true或false
+    $mail->isHTML(true);
+    //设置收件人邮箱地址 该方法有两个参数 第一个参数为收件人邮箱地址 第二参数为给该地址设置的昵称 不同的邮箱系统会自动进行处理变动 这里第二个参数的意义不大
+    $mail->addAddress($to,'brandreward');
+
+    //添加多个收件人 则多次调用方法即可
+    // $mail->addAddress('xxx@163.com','lsgo在线通知');
+
+    //添加该邮件的主题
+    $mail->Subject = $title;
+
+    //添加邮件正文 上方将isHTML设置成了true，则可以是完整的html字符串 如：使用file_get_contents函数读取本地的html文件
+    $mail->Body = $content;
+
+    //为该邮件添加附件 该方法也有两个参数 第一个参数为附件存放的目录（相对目录、或绝对目录均可） 第二参数为在邮件附件中该附件的名称
+    // $mail->addAttachment('./d.jpg','mm.jpg');
+    //同样该方法可以多次调用 上传多个附件
+    // $mail->addAttachment('./Jlib-1.1.0.js','Jlib.js');
+
+    $status = $mail->send();
+
+    //简单的判断与提示信息
+    if($status) {
+        save_send_email_log($emailType,$to,$username);
+        return true;
+    }else{
+        return false;
+    }
+}
+
+/**
+ * 邮件发送记录
+ */
+function save_send_email_log($emailType,$to,$username){
+    $sql = "insert into email_send_record(`Type`,`To`,`From`,`Addtime`) VALUES('".$emailType."','".$to."','".$username."','".date("Y-m-d H:i:s")."')";
+    mysql_query($sql);
+}
+
+function getDictionary($type){
+	global $dictionaryData;
+	if(isset($dictionaryData[$type])){
+		return $dictionaryData[$type];
+	}else{
+		$data = array();
+
+		$objAccount = new Account;
+		$tmp = $objAccount->table('dictionary')->where('`type` = "'.addslashes($type).'"')->find();
+		if($tmp){
+			
+			foreach($tmp as $v){
+				$data[$v['id']] = $v['name'];
+			}
+
+			$dictionaryData[$type] = $data;	
+		}
+
+		return $data;
+	}
+}
+
+
+
+function getCategory(){
+	$idToName = array();
+	$allCat = array();
+	$return_d = array();
+	$obj = new Account;
+	$sql = 'SELECT * FROM category WHERE AffId = 1 AND PID = 0';
+	$primary = $obj->getRows($sql);
+	foreach ($primary as $v) {
+		$idToName[$v['ID']] = $v['Name'];
+		$sql = 'SELECT * FROM category WHERE AffId = 1 AND PID = '.$v['ID'];
+		$sub = $obj->getRows($sql);
+		foreach($sub as $value){
+			$idToName[$value['ID']] = $value['Name'];
+			$allCat[$v['ID']][] = $value['ID'];
+		}
+	}
+	$return_d['idToName'] = $idToName;
+	$return_d['allCat'] = $allCat;
+	return $return_d;
+}
+function json_encode_no_zh($arr) {
+	$str = str_replace ( "\\/", "/", json_encode ( $arr ) );
+	$search = "#\\\u([0-9a-f]+)#ie";
+
+	if (strpos ( strtoupper(PHP_OS), 'WIN' ) === false) {
+		$replace = "iconv('UCS-2BE', 'UTF-8', pack('H4', '\\1'))";//LINUX
+	} else {
+		$replace = "iconv('UCS-2', 'UTF-8', pack('H4', '\\1'))";//WINDOWS
+	}
+
+	return preg_replace ( $search, $replace, $str );
+}
+
+function getMineCategory($id){
+	$obj = new Account;
+	if(isset($id) && !empty($id)){
+		$text = '';
+		$sql = "select CategoryId,AdvancedCategoryId from publisher_detail where PublisherId = $id";
+		$res = $obj->getRow($sql);
+		if($_SESSION['u']['Level'] == 'TIER1')
+		{
+			$categoryId = trim(trim($res['CategoryId'],',')."," . trim($res['AdvancedCategoryId'],','),',');
+		}
+		else
+		{
+			$categoryId = trim($res['CategoryId'],',');
+		}
+		$where = " WHERE `ID` IN(".$categoryId.")";
+		$sql = "SELECT * FROM category_std " . $where . " ORDER BY `Name` ASC";
+		$arr = $obj->objMysql->getRows($sql);
+		foreach($arr as $item)
+		{
+			$text.= $item['Name'].' , ';
+		}
+		return rtrim($text,", \t\n\r\0\x0B");
+	}else{
+		return ' ';
+	}
+
+}
+
+
+function getMineCountry($id){
+	if(isset($id) && !empty($id)){
+		$obj = new Account;
+		$text = '';
+		if(preg_match('/\+/',$id)){
+			$res = explode('+',$id);
+			$res = array_unique($res);
+			$res = array_filter($res);
+			foreach($res as $k){
+				if(is_numeric($k)){
+					$sql = "SELECT NAME FROM dictionary WHERE id =$k";
+					$r = $obj->getRows($sql);
+					$text.= $r[0]['NAME'].' , ';
+				}else{
+					break;
+				}
+			}
+			return rtrim($text,' , ');
+		}
+		else{
+			$sql = "SELECT NAME FROM dictionary WHERE id =$id";
+			$r = $obj->getRows($sql);
+			$text= $r[0]['NAME'];
+			return $text;
+		}
+	}else{
+		return ' ';
+	}
+}
+
+
+
+function get_page_html($page_info){
+	$query_str = $_SERVER['QUERY_STRING'];
+	parse_str($query_str,$query_parse);
+	unset($query_parse['p']);
+	$new_query_str = http_build_query($query_parse);
+	$url = BASE_URL.'/'.basename($_SERVER['SCRIPT_NAME']).'?'.$new_query_str.'&p=';
+
+	$page_now = $page_info['page_now'];
+	$page_total = $page_info['page_total'];
+	$prev = true;
+	$next = true;
+	$first = true;
+	$last = true;
+
+	if($page_now == 1){
+		$prev = false;
+	}
+
+	if($page_now == $page_total){
+		$next = false;
+	}
+
+	$numbers = array();
+	$show_num = 5;
+	$i = floor($show_num/2);
+	$start_num = 0;
+	do{
+		$start_num = $page_now-$i;
+		$i--;
+	}while($start_num<1);
+
+	for($i=0;$i<$show_num;$i++){
+		if($start_num+$i <= $page_total)
+			$numbers[] = $start_num+$i;
+	}
+
+	if(in_array('1',$numbers)){
+		$first = false;
+	}
+
+	if(in_array($page_total,$numbers)){
+		$last = false;
+	}
+
+	$html = '';
+	if($prev)
+		$html .= '<li><a href="'.$url.($page_now-1).'">&laquo;</a></li>';
+	else
+		$html .= '<li class="disabled"><a href="javascript:void(0)">&laquo;</a></li>';
+
+	if($first){
+		$html .= '<li><a href="'.$url.'1">1</a></li>';
+		if(!in_array('2',$numbers))
+			$html .= '<li class="disabled"><a href="javascript:void(0)">...</a></li>';
+	}
+
+	foreach($numbers as $d){
+		if($d == $page_now)
+			$html .= '<li class="active"><a href="'.$url.$d.'">'.$d.'</a></li>';
+		else
+			$html .= '<li><a href="'.$url.$d.'">'.$d.'</a></li>';
+	}
+	
+
+	if($last){
+		if(!in_array($page_total-1,$numbers))
+			$html .= '<li class="disabled"><a href="javascript:void(0)">...</a></li>';
+		$html .= '<li><a href="'.$url.$page_total.'">'.$page_total.'</a></li>';
+	}
+
+	if($next)
+		$html .= '<li><a href="'.$url.($page_now+1).'">&raquo;</a></li>';
+	else
+		$html .= '<li class="disabled"><a href="javascript:void(0)">&raquo;</a></li>';
+
+	$page_html = '<div><ul class="pagination">'.$html.'</ul></div>';
+	return $page_html;
+}
+
+function debug($str){
+	echo $str."<br>\r\n";
+}
+
+function check_user_login(){
+	$objAccount = new Account;
+	if(!$objAccount->get_login_user()){
+		jumpUrl(BASE_URL.'#login');
+	}
+}
+function check_user_info($id){
+	$objAccount = new Account;
+	$res = $objAccount->get_completioninfo($id);
+		$text = '';
+		foreach($res['base'] as $k=>$v){
+			if($v == '' || empty($v)){
+			    /* if($k == 'PayPal'){
+			        return 'infoNone';
+			    } */
+			    if($k !== 'PayPal' && $k !== 'CurrentNetwork'){
+			        $text.= $k.',';
+			    }
+			}
+		}
+		if($text == '' && $res['site'] == ''){
+		    return 'infoNone';
+		}
+		return rtrim($text,',');
+	}
+
+function redirect($uri = '/', $method = 'location', $http_response_code = 302){
+	switch($method)
+	{
+		case 'refresh'	: header("Refresh:0;url=".$uri);
+			break;
+		default			: header("Location: ".$uri, TRUE, $http_response_code);
+			break;
+	}
+	exit;
+}
+function jumpUrl($url){
+	echo '<script>window.location.href="'.$url.'"</script>';exit();
+}

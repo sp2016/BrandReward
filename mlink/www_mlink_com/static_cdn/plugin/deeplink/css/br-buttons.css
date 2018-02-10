@@ -1,0 +1,636 @@
+/* CJ Button - primary styles*/
+
+.br-account-manager .default-btn, .br-account-manager .ui-widget-content .default-btn.ui-state-active, .default-btn, .ui-widget-content .default-btn.ui-state-active {
+  border: 2px solid #B6B6B6;
+}
+
+.br-account-manager .default-btn, .br-account-manager .ui-dialog-buttonpane .default-btn span, .br-account-manager .default-btn span, .default-btn, .ui-dialog-buttonpane .default-btn span, .default-btn span {
+  color: #B6B6B6 !important;
+}
+
+.br-account-manager .primary-btn, .br-account-manager .ui-widget-content .primary-btn.ui-state-active, .primary-btn, .ui-widget-content .primary-btn.ui-state-active {
+  border: 2px solid #00AF66;
+}
+
+.br-account-manager .primary-btn, .br-account-manager .ui-dialog-buttonpane .primary-btn span, .br-account-manager .primary-btn span, .primary-btn, .ui-dialog-buttonpane .primary-btn span, .primary-btn span {
+  color: #00AF66;
+}
+
+.br-account-manager .info-btn {
+  color: #34657F;
+  border: 2px solid #34657F;
+}
+
+.br-account-manager .danger-btn {
+  color: #E1523D;
+  border: 2px solid #E1523D;
+}
+
+.br-account-manager .warning-btn {
+  color: #FFB500;
+  border: 2px solid #FFB500;
+}
+
+.br-account-manager .success-btn {
+  color: #49C5B1;
+  border: 2px solid #49C5B1;
+}
+
+.br-account-manager .default-btn, .br-account-manager .primary-btn, .br-account-manager .info-btn, .br-account-manager .danger-btn, .br-account-manager .warning-btn, .br-account-manager .success-btn, .default-btn, .primary-btn, .info-btn, .danger-btn, .warning-btn, .success-btn {
+  background: #FFFFFF;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.br-account-manager a.btn-d:hover, .br-account-manager a.btn-d2:hover, .br-account-manager .btn-d a:hover, .br-account-manager .btn-d2 a:hover, a.btn-d:hover, a.btn-d2:hover, .btn-d a:hover, .btn-d2 a:hover {
+  text-decoration: none;
+}
+
+/* Sec Buttons */
+
+.br-account-manager .default-btn2 {
+  background: #B6B6B6;
+  color: #FFF;
+}
+
+.br-account-manager .primary-btn2 {
+  background: #00AF66;
+  color: #FFF;
+}
+
+.br-account-manager .info-btn2 {
+  background: #34657F;
+  color: #FFF;
+}
+
+.br-account-manager .danger-btn2 {
+  background: #E1523D;
+  color: #FFF;
+}
+
+.br-account-manager .warning-btn2 {
+  background: #FFB500;
+  color: #FFF;
+}
+
+.br-account-manager .success-btn2 {
+  background: #49C5B1;
+  color: #FFF;
+}
+
+.br-account-manager .default-btn2:hover {
+  background: rgba(133, 133, 133, 0.5);
+}
+
+.br-account-manager .primary-btn2:hover {
+  background: rgba(0, 175, 102, 0.8);
+}
+
+.br-account-manager .info-btn2:hover {
+  background: rgba(52, 101, 127, 0.8);
+}
+
+.br-account-manager .danger-btn2:hover {
+  background: rgba(221, 56, 52, 0.8);
+}
+
+.br-account-manager .warning-btn2:hover {
+  background: rgba(255, 181, 20, 0.8);
+}
+
+.br-account-manager .success-btn2:hover {
+  background: rgba(73, 197, 177, 0.8);
+}
+
+.br-account-manager .default-btn:hover, .default-btn:hover {
+  background: rgba(133, 133, 133, 0.1);
+  box-shadow: none;
+}
+
+.br-account-manager .primary-btn:hover, .primary-btn:hover {
+  background: rgba(0, 175, 102, 0.1);
+  box-shadow: none;
+}
+
+.br-account-manager .info-btn:hover, .info-btn:hover {
+  background: rgba(52, 101, 127, 0.1);
+  box-shadow: none;
+}
+
+.br-account-manager .danger-btn:hover, .danger-btn:hover {
+  background: rgba(221, 56, 52, 0.1);
+  box-shadow: none;
+}
+
+.br-account-manager .warning-btn:hover, .warning-btn:hover  {
+  background: rgba(255, 181, 20, 0.1);
+  box-shadow: none;
+}
+
+.br-account-manager .success-btn:hover, .success-btn:hover {
+  background: rgba(73, 197, 177, 0.1);
+  box-shadow: none;
+}
+/*global button styles*/
+
+.br-account-manager .btn-d, .br-account-manager .btn-d2, .btn-d, .btn-d2 {
+  display: inline-block;
+  margin: 5px 0;
+  min-width: 50px;
+  width: auto;
+  border-collapse: separate;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: normal;
+  font-size: 1em;
+  cursor: pointer;
+  /*font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;*/
+  line-height: 20px;
+  overflow: hidden;
+      -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.br-account-manager .btn-d:focus, .br-account-manager .btn-d2:focus, .br-account-manager a.btn-d:focus, .br-account-manager a.btn-d:focus, .btn-d:focus, .btn-d2:focus, a.btn-d:focus, a.btn-d:focus {
+  outline: none;
+}
+
+.br-ie9-border-radius {
+  display:inline-block;
+  overflow:hidden;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.br-account-manager .primary-btn2 span, .br-account-manager .default-btn2 span {
+  color: #FFFFFF;
+}
+
+button .br-account-manager .primary-btn2, button .br-account-manager .default-btn2 {
+  border: 0;
+}
+
+.br-account-manager .btn-d:active, .br-account-manager .btn-d2:active, .br-account-manager .btn-d.active, .br-account-manager .btn-d2.active, .btn-d:active, .btn-d2:active, .btn-d.active, .btn-d2.active {
+  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/*Button sizing*/
+
+.br-account-manager .btn-d2 {
+  padding: 8px 22px;
+  border:none;
+}
+
+.br-account-manager .btn-d, .btn-d {
+  padding: 6px 20px;
+}
+
+.br-account-manager .lrg-btn2 {
+  padding: 12px 30px;
+  font-size: 1.1em;
+}
+
+.br-account-manager .small-btn2 {
+  padding: 6px 16px;
+  font-size: smaller;
+}
+
+.br-account-manager .lrg-btn, .lrg-btn {
+  padding: 10px 28px;
+  font-size: 1.1em;
+}
+
+.br-account-manager .small-btn, .small-btn {
+  padding: 4px 14px;
+  font-size: smaller;
+}
+
+.br-account-manager .sizing-block .btn-d {
+  margin-bottom: 10px;
+}
+
+.br-account-manager .primary-btn.disabled, .br-account-manager .primary-btn[disabled], .br-account-manager .primary-btn.disabled:hover, .br-account-manager .primary-btn[disabled]:hover, .br-account-manager .default-btn.disabled, .br-account-manager .default-btn[disabled], .br-account-manager .default-btn.disabled:hover, .br-account-manager .default-btn[disabled]:hover,
+.primary-btn.disabled, .primary-btn[disabled], .primary-btn.disabled:hover, .primary-btn[disabled]:hover, .default-btn.disabled, .default-btn[disabled], .default-btn.disabled:hover, .default-btn[disabled]:hover {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  opacity: 0.55;
+  filter: alpha(opacity=55);
+  cursor: not-allowed;
+}
+
+.br-account-manager .primary-btn.disabled, .br-account-manager .primary-btn[disabled], .br-account-manager .primary-btn.disabled:hover, .br-account-manager .primary-btn[disabled]:hover,
+.primary-btn.disabled, .primary-btn[disabled], .primary-btn.disabled:hover, .primary-btn[disabled]:hover {
+  background: rgba(0, 175, 102, 0.1);
+}
+
+.br-account-manager .default-btn.disabled, .br-account-manager .default-btn[disabled], .br-account-manager .default-btn.disabled:hover, .br-account-manager .default-btn[disabled]:hover,
+.default-btn.disabled, .default-btn[disabled], .default-btn.disabled:hover, .default-btn[disabled]:hover {
+  background: rgba(133, 133, 133, 0.1);
+}
+
+.br-account-manager .input-group .default-btn {
+  padding: 4px 10px;
+  min-width: auto;
+  box-shadow: none;
+}
+
+.br-account-manager .input-group .default-btn:active {
+  background: rgba(133, 133, 133, 0.1);
+  -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+  -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.br-account-manager .input-group .primary-btn:hover {
+  background: rgba(0, 175, 102, 0.8);
+  color: white;
+}
+
+.br-account-manager .input-group .primary-btn:active {
+  background: #00AF66;
+  -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+  -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.br-account-manager a.btn-d2:focus, .br-account-manager a.default-btn2:focus, .br-account-manager .btn-d2:focus, .br-account-manager .input-group .primary-btn2:focus, .br-account-manager .primary-btn2:focus, .br-account-manager .info-btn2:focus, .br-account-manager .danger-btn2:focus, .br-account-manager .warning-btn2:focus, .br-account-manager .success-btn2:focus {
+  outline: none;
+  border: none;
+}
+
+.br-account-manager .btn-icon > i {
+  margin-right: 5px;
+}
+
+
+/*Block Buttons*/
+
+.br-account-manager .block-btn {
+  display: block;
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+  clear: both;
+}
+
+/* Icon Button */
+
+.btn-d-icon {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  width: 2em;
+  height: 30px;
+  line-height: 25px;
+  vertical-align: middle;
+  font-size: 1.2em;
+}
+
+.btn-d-icon .br-i-stack-1x:active, .btn-d-icon .br-i-stack-1x.active {
+  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
+    -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.br-account-manager .label.arrowed:before, .br-account-manager .label.arrowed-in:before {
+  display: inline-block;
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: 0;
+  border: 9px solid rgba(0, 0, 0, 0);
+  border-width: 9px 7px;
+  border-right-color: #ABBAC3;
+}
+
+.br-account-manager .label.arrowed-in:before {
+  border-color: #ABBAC3;
+  border-left-color: rgba(0, 0, 0, 0)!important;
+  left: -9px;
+}
+
+.br-account-manager .label-inverse.arrowed-in:before {
+  border-color: #333;
+}
+
+.br-account-manager .badge-inverse, .br-account-manager .label-inverse {
+  background-color: #333!important;
+}
+
+.br-account-manager .btn-d.btn-app {
+  display: inline-block;
+  width: 100px;
+  margin: 2px;
+  position: relative;
+  font-size: 1.1em;
+  text-align: center;
+  text-shadow: 0 -1px -1px #FFF;
+  border-radius: 12px;
+  padding: 12px 0 8px;
+}
+
+.br-account-manager .btn-app {
+  vertical-align: middle;
+}
+
+.br-account-manager .btn-d.btn-app > [class*=icon] {
+  font-size: 42px;
+  display: block;
+  line-height: 36px;
+}
+
+.br-account-manager .btn-app > .badge, .br-account-manager .btn-app > .label {
+  position: absolute!important;
+  top: -2px;
+  right: -2px;
+  padding: 1px 3px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.br-account-manager .btn-app > .badge-right, .br-account-manager .btn-app > .label-right {
+  right: auto;
+  left: -2px;
+}
+
+.br-account-manager .btn-d.btn-app.btn-small {
+  width: 70px;
+  font-size: .8em;
+  border-radius: 10px;
+  padding: 1.3em 0 .5em 0;
+}
+
+.br-account-manager .btn-d.btn-app.btn-mini {
+  width: 60px;
+  font-size: .6em;
+  border-radius: 8px;
+  padding: 1em 0 .2em 0;
+}
+
+.br-account-manager .btn-d.btn-app.btn-small > [class*=icon], .br-account-manager .btn-d.btn-app.btn-mini > [class*=icon] {
+  display: block;
+  font-size: 2.5em;
+  line-height: .8em;
+  margin: 0 0 3px;
+}
+
+.br-account-manager .btn-app > .label {
+  padding: 1px 6px 3px;
+  font-size: 13px;
+}
+
+.br-account-manager .label-transparent, .br-account-manager .badge-transparent {
+  background-color: rgba(0, 0, 0, 0)!important;
+}
+
+/* Widget Steps */
+
+.br-account-manager .widget-step-container {
+  display: inline-block;
+  position: relative;
+  margin: -35px 4em 0;
+}
+
+.br-account-manager .widget-step {
+  margin: 1em auto 3em;
+  width: 100%;
+  text-align: center;
+  background: #F7F7F7;
+  padding: 1em 0;
+}
+
+.br-account-manager .widget-step > div {
+  margin-left: auto;
+  margin-right: auto;
+  display: inline-block;
+  text-align: center;
+}
+
+.br-account-manager .widget-step-button-circle {
+  width: 40px;
+  height: 40px;
+  background: #E2E2E2;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  position: relative;
+  top: 35px;
+  margin-right: auto;
+  margin-left: auto;
+/*  box-shadow: inset 0 0 5px 1px #CECECE;*/
+}
+
+.br-account-manager .widget-step-container div {
+  color: #939597;
+}
+
+.br-account-manager .widget-step-container > .default-btn {
+  height: 30px;
+  width: 30px !important;
+  min-width: 30px !important;
+  text-align: center;
+  position: relative;
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 1.1em;
+  display: inline-block;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  opacity: .4;
+  border: none;
+  line-height: 25px;
+}
+
+.br-account-manager .widget-step-container > .default-btn[disabled] {
+  background: rgba(133, 133, 133, 0);
+}
+
+.br-account-manager .widget-step-container > .default-btn:hover {
+  opacity: .7;
+}
+
+.br-account-manager .widget-step-container > .default-btn:hover {
+  background: #00AF66;
+  color: #FFFFFF !important;
+  transition: .2s ease;
+}
+
+.br-account-manager .widget-step-container > .default-btn.disabled:hover {
+  background: rgba(133, 133, 133, 0.2);
+  color: #FFF;
+  transition: .2s ease;
+}
+
+.br-account-manager .widget-step-container > .default-btn.active {
+  text-align: center;
+  width: 30px !important;
+  min-width: 30px !important;
+  opacity: 1;
+}
+
+.br-account-manager .widget-step-container > .default-btn:active {
+    -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+  -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.br-account-manager .widget-step-horizontal-line {
+  border-bottom: 2px solid #E2E2E2;
+  position: relative;
+  width: auto;
+  margin-left: 6em;
+  margin-right: 6.5em;
+  top: 20px;
+}
+
+/* Feature Announcement */
+
+.br-account-manager .announcement-step-container {
+  display: inline-block;
+  position: relative;
+  margin: -35px 1em 0;
+}
+
+.br-account-manager .announcement-step {
+    margin: 1em auto 0em;
+    width: 100%;
+    text-align: center;
+    padding: 1em 0 0 0;
+}
+
+.br-account-manager .announcement-step > div {
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block;
+    text-align: center;
+}
+
+
+.br-account-manager .announcement-step-button-circle {
+  width: 20px;
+  height: 20px;
+  background: #ADBBC2;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  position: relative;
+  top: 19px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.br-account-manager .announcement-step-container div {
+    color: #939597;
+}
+
+.br-account-manager .announcement-step-container > .default-btn {
+    height: 16px;
+    width: 16px !important;
+    min-width: 16px !important;
+    text-align: center;
+    position: relative;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 0.5em;
+    display: inline-block;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    background: #FFF;
+    opacity: 1;
+    border: none;
+    line-height: 25px;
+}
+
+.br-account-manager .announcement-step-container > .default-btn[disabled] {
+    background: rgba(133, 133, 133, 1);
+}
+
+.br-account-manager .announcement-step-container > .default-btn:hover {
+    opacity: 1;
+}
+
+.br-account-manager .announcement-step-container > .default-btn:hover {
+    background: #00AF66;
+    color: #FFFFFF !important;
+    transition: .2s ease;
+}
+
+.br-account-manager .announcement-step-container > .default-btn.disabled:hover {
+    background: rgba(133, 133, 133, 0.2);
+    color: #FFF;
+    transition: .2s ease;
+}
+
+.br-account-manager .announcement-step-container > .default-btn.active {
+    text-align: center;
+    background: #ADBBC2;
+    cursor: default;
+}
+
+.br-account-manager .announcement-step-container > .default-btn:active {
+    -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+    -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.br-account-manager .announcement-navigation hr {
+    margin-top: 10px;
+}
+
+.br-account-manager .announcement-container {
+    padding: 0;
+}
+
+.br-account-manager .wizard-announcement-container .modal-footer {
+    background-color: #FFF;
+}
+
+.br-account-manager .wizard-announcement-container .modal-footer .info-link {
+    padding-top: 1em;
+}
+
+.input-group-addon:first-child {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.input-group-addon {
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1;
+  text-align: center;
+  background-color: #EEE;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  width: 1%;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* Button Groups - Components */
+
+.button-group .btn-d {
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.right-default-button {
+	float: right;
+}

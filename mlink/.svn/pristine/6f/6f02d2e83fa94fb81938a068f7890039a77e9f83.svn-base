@@ -1,0 +1,153 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style>
+.panel>.table-bordered{
+    border-top:1px solid #ddd;
+    border-bottom:1px solid #ddd;
+}
+.reply_lable,th{
+    background-color: #edf3f4;
+}
+</style>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">Event</div>
+                <table class="table table-bordered">
+                    <tr>
+                        <th class="col-xs-4 col-sm-2">ID</th>
+                        <th class="col-xs-4 col-sm-2">Project</th>
+                        <th class="col-xs-4 col-sm-2">Category</th>
+                        <th class="col-xs-4 col-sm-2 hidden-xs">Reporter</th>
+                        <th class="col-xs-4 col-sm-2 hidden-xs">Create Time</th>
+                        <th class="col-xs-4 col-sm-2 hidden-xs">LastUpdate Time</th>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-4 col-sm-2">123123</td>
+                        <td class="col-xs-4 col-sm-2">Payment Tools</td>
+                        <td class="col-xs-4 col-sm-2">Account Info</td>
+                        <td class="col-xs-4 col-sm-2 hidden-xs">Jenny</td>
+                        <td class="col-xs-4 col-sm-2 hidden-xs">2017-12-12 12:12:12</td>
+                        <td class="col-xs-4 col-sm-2 hidden-xs">2017-12-12 12:12:12</td>
+                    </tr>
+                </table>
+                <!-- display in mobile -->
+                <table class="table table-bordered hidden-sm hidden-md hidden-lg" style="margin-top:10px;">
+                    <tr>
+                        <th class="col-xs-4">Reporter</th>
+                        <th class="col-xs-4">Create Time</th>
+                        <th class="col-xs-4">LastUpdate Time</th>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-4">Jenny</td>
+                        <td class="col-xs-4">2017-12-12 12:12:12</td>
+                        <td class="col-xs-4">2017-12-12 12:12:12</td>
+                    </tr>
+                </table>
+                <!-- over display in mobile -->
+                
+                <table class="table table-bordered hidden-xs" style="margin-top:10px;">
+                    <tr>
+                        <th class="col-xs-4">Network</th>
+                        <th class="col-xs-4">Publisher</th>
+                        <th class="col-xs-4">Assign AM</th>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-4">Affiliate Window coupon</td>
+                        <td class="col-xs-4">discountcode2016@gmail.com</td>
+                        <td class="col-xs-4">Gordon</td>
+                    </tr>
+                </table>
+
+                <!-- display in mobile -->
+                <table class="table table-bordered hidden-sm hidden-md hidden-lg" style="margin-top:10px;">
+                    <tr>
+                        <th class="col-xs-4">Network</th>
+                        <td class="col-xs-8">Affiliate Window coupon</td>
+                    </tr>
+                    <tr>
+                        <th class="col-xs-4">Publisher</th>
+                        <td class="col-xs-8">discountcode2016@gmail.com</td>
+                    </tr>
+                    <tr>
+                        <th class="col-xs-4">Assign AM</th>
+                        <td class="col-xs-8">Gordon</td>
+                    </tr>
+                </table>
+                <!-- over display in mobile -->
+
+                <table class="table table-bordered" style="margin-top:10px;">
+                    <tr>
+                        <th class="col-xs-4 col-sm-2">Title</th>
+                        <td class="col-xs-8 col-sm-10">0023709: mc_issue_add() function using custom fields generates "Violation of encoding rules error" message</td>
+                    </tr>
+                    <tr>
+                        <th class="col-xs-4 col-sm-2">Desc</th>
+                        <td class="col-xs-8 col-sm-10">
+Hello,<br>
+When calling the following xml file via curl, a Violation of encoding rules error message is generated.<br>
+I can therefore not input custom fields data via the soap api. Other fields are OK (ie a request without custom fields).<br>
+<br>
+xml file including the request:<br>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">Reply</span></div>
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="col-xs-4 col-sm-2 reply_lable">
+                            <div><b>Gordon</b></div>
+                            <div class="small">2017-12-12 12:12:12</div>
+                            <div><span class="label label-success">Developer</span></div>
+                        </td>
+                        <td class="col-xs-8 col-sm-10">
+For us this is also major, because we use MantisBT to manage AT bug communications with our supplier. And we don't want a developer to change the original content.<br>
+<br>
+Somehow this bug also has a relationship with 0022093. The fix described there (ver 2.7.0, bug_update.php, line 158), fixed also this issue.<br>
+Note: so 0022093 was also a major for us...<br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-4 col-sm-2 reply_lable">
+                            <div><b>Jenny</b></div>
+                            <div class="small">2017-12-12 12:12:12</div>
+                            <div><span class="label label-warning">Reporter</span></div>
+                        </td>
+                        <td class="col-xs-8 col-sm-10">没有呢还是有问题</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">History</span></div>
+                <table class="table table-bordered">
+                    <tr>
+                        <th class="col-xs-3">Update Time</th>
+                        <th class="col-xs-3">User</th>
+                        <th class="col-xs-3">Field</th>
+                        <th class="col-xs-3">Change</th>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-3">2017-12-12 12:12:12</td>
+                        <td class="col-xs-3">Gordon</td>
+                        <td class="col-xs-3">Relay new 12122</td>
+                        <td class="col-xs-3"></td>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-3">2017-12-12 12:12:12</td>
+                        <td class="col-xs-3">Sol</td>
+                        <td class="col-xs-3">Status</td>
+                        <td class="col-xs-3">From New to Doing</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<{include file="b_block_footer.html"}>

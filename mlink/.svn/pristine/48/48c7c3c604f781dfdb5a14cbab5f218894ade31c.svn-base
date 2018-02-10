@@ -1,0 +1,136 @@
+<?php
+global $_cf,$_req,$_db;
+
+$row = array();
+$content = '';
+
+if(!isset($_req['bdate']) || !isset($_req['edate']))
+	over('@error:param [bdate] and [edate] is required');
+if(!preg_match('/^\d{4}-\d{2}-\d{2}$/', $_req['bdate']) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $_req['edate']))
+	over('@error:param [bdate] or [edate] has wrong format');
+if($_req['bdate'] > $_req['edate'])
+	over('@error:the range between [bdate] and [edate] need be less than 30 days');
+if(date_range($_req['bdate'],$_req['edate']) > 31)
+	over('@error:the range between [bdate] and [edate] need be less than 30 days');
+
+if(isset($_req['datetype']) && $_req['datetype'] == 'updatedate'){
+	$datetype = 'updateddate';
+}else{
+	$datetype = 'VisitedDate';
+}
+
+$page = isset($_req['page'])?intval($_req['page']):1;
+$pagesize = isset($_req['pagesize'])?intval($_req['pagesize']):100;
+$outformat = isset($_req['outformat'])?$_req['outformat']:'txt';
+
+$title_arr = array('TransactionID','Earnings','CreateTime','UpdateTime','ClickTime','State','SID','Advertiser','ClickPage','PaidDate');
+
+if(isset($_req['demo']) && $_req['demo'] == 1){
+	if(strtotime($_req['bdate']) <= strtotime('2016-07-01') && strtotime($_req['edate']) >= strtotime('2016-07-01') && strtotime($_req['edate']) < strtotime('2016-07-15')){
+		echo "@PageTotal:1\t@PageNow:1\t@Num:9\n";
+		echo join("\t",$title_arr)."\n";
+		echo "57762bac-bdg02-0-5f5e3a8em\t0.2700\t2016-07-01 01:37:00\t2016-07-01 01:37:00\t2016-06-30 16:25:54\tPENDING\tss_01_qwe\ttoysrus\thttp://www.toysrus.com/product/index.jsp?productId=3331903&cp=&parentPage=search&iradidTRU=223766&camp=aff:TRU:11232:Mega+Information+Technology+Limited&irpidTRU=11232&irgwc=1\n";
+		echo "5776d484-bdg02-0-5f5e3adoq\t0.6300\t2016-07-01 13:37:24\t2016-07-01 13:37:24\t2016-06-30 11:33:09\tPENDING\tss_02_qwe\tloft\thttp://www.loft.com\n";
+		echo "57762bac-bdg02-0-5f5e3a6fp\t0.0000\t2016-07-01 01:37:00\t2016-07-01 01:37:00\t2016-06-08 11:27:48\tPENDING\tss_03_qwe\ttarget\thttp://www.target.com/p/minions-car/-/A-21487556\n";
+		echo "57762bac-bdg02-0-5f5e3a9bt\t0.2700\t2016-07-01 01:37:00\t2016-07-01 01:37:00\t2016-06-30 20:32:18\tPENDING\tss_04_qwe\ttoysrus\thttp://www.toysrus.com/product/index.jsp?productId=3331903&cp=&parentPage=search&iradidTRU=223766&camp=aff:TRU:11232:Mega+Information+Technology+Limited&irpidTRU=11232&irgwc=1\n";
+		echo "57762bac-bdg02-0-5f5e3aaxe\t1.4850\t2016-07-01 01:37:00\t2016-07-01 01:37:00\t2016-06-30 23:26:26\tPENDING\tss_05_qwe\ttarget\thttp://www.target.com/p/t-fal-nonstick-jumbo-cooker-5-qt/-/A-10793366\n";
+		echo "5776d484-bdg02-0-5f5e3abvx\t0.0000\t2016-07-01 13:37:24\t2016-07-01 13:37:24\t2016-06-29 10:47:47\tPENDING\tss_06_qwe\tclarksusa\thttp://www.clarksusa.com/us/c/mens-2-for-99?ref=cj&utm_source=cj&utm_medium=affiliate&utm_content=11409687&utm_campaign=2567387\n";
+		echo "5776d484-bdg02-0-5f5e3aeiz\t4.8600\t2016-07-01 13:37:24\t2016-07-01 13:37:24\t2016-06-30 12:24:19\tPENDING\tss_07_qwe\tgroupon\thttps://www.groupon.com/deals/gilroy-gardens-31\n";
+		echo "5776d484-bdg02-0-5f5e3afyz\t4.8600\t2016-07-01 13:37:24\t2016-07-01 13:37:24\t2016-06-30 13:25:39\tPENDING\tss_08_qwe\tgroupon\thttps://www.groupon.com/deals/gilroy-gardens-31\n";
+		echo "5776d484-bdg02-0-5f5e3b0mc\t1.3500\t2016-07-01 13:37:24\t2016-07-01 13:37:24\t2016-06-30 13:39:10\tPENDING\tss_09_qwe\tgroupon\thttps://www.groupon.com/deals/google-express-nat-west-coast-19-san-francisco\n";
+	}elseif(strtotime($_req['bdate']) <= strtotime('2016-07-15') && strtotime($_req['edate']) >= strtotime('2016-07-15') && strtotime($_req['edate']) < strtotime('2016-07-30')){
+		echo "@PageTotal:1\t@PageNow:1\t@Num:3\n";
+		echo join("\t",$title_arr)."\n";
+		echo "57762bac-bdg02-0-5f5e3a8em\t0.2700\t2016-07-01 01:37:00\t2016-07-15 01:37:00\t2016-06-30 16:25:54\tCONFIRMED\tss_01_qwe\ttoysrus\thttp://www.toysrus.com/product/index.jsp?productId=3331903&cp=&parentPage=search&iradidTRU=223766&camp=aff:TRU:11232:Mega+Information+Technology+Limited&irpidTRU=11232&irgwc=1\n";
+		echo "5776d484-bdg02-0-5f5e3adoq\t0.6300\t2016-07-01 13:37:24\t2016-07-15 13:37:24\t2016-06-30 11:33:09\tCONFIRMED\tss_02_qwe\tloft\thttp://www.loft.com\n";
+		echo "57762bac-bdg02-0-5f5e3a9bt\t0.2700\t2016-07-01 01:37:00\t2016-07-15 01:37:00\t2016-06-30 20:32:18\tCONFIRMED\tss_04_qwe\ttoysrus\thttp://www.toysrus.com/product/index.jsp?productId=3331903&cp=&parentPage=search&iradidTRU=223766&camp=aff:TRU:11232:Mega+Information+Technology+Limited&irpidTRU=11232&irgwc=1\n";
+	}elseif(strtotime($_req['bdate']) <= strtotime('2016-07-30') && strtotime($_req['edate']) >= strtotime('2016-07-30') && strtotime($_req['edate']) < strtotime('2016-08-15')){
+		echo "@PageTotal:1\t@PageNow:1\t@Num:5\n";
+		echo join("\t",$title_arr)."\n";
+		echo "57762bac-bdg02-0-5f5e3a8em\t0.2700\t2016-07-01 01:37:00\t2016-07-15 01:37:00\t2016-06-30 16:25:54\tPAID\tss_01_qwe\ttoysrus\thttp://www.toysrus.com/product/index.jsp?productId=3331903&cp=&parentPage=search&iradidTRU=223766&camp=aff:TRU:11232:Mega+Information+Technology+Limited&irpidTRU=11232&irgwc=1\n";
+		echo "5776d484-bdg02-0-5f5e3adoq\t0.6300\t2016-07-01 13:37:24\t2016-07-15 13:37:24\t2016-06-30 11:33:09\tPAID\tss_02_qwe\tloft\thttp://www.loft.com\n";
+		echo "57762bac-bdg02-0-5f5e3a9bt\t0.2700\t2016-07-01 01:37:00\t2016-07-15 01:37:00\t2016-06-30 20:32:18\tPAID\tss_04_qwe\ttoysrus\thttp://www.toysrus.com/product/index.jsp?productId=3331903&cp=&parentPage=search&iradidTRU=223766&camp=aff:TRU:11232:Mega+Information+Technology+Limited&irpidTRU=11232&irgwc=1\n";
+		echo "5776d484-bdg02-0-5f5e3b0mc\t1.3500\t2016-07-01 13:37:24\t2016-07-01 13:37:24\t2016-06-30 13:39:10\tCONFIRMED\tss_09_qwe\tgroupon\thttps://www.groupon.com/deals/google-express-nat-west-coast-19-san-francisco\n";
+		echo "5776d484-bdg02-0-5f5e3afyz\t4.8600\t2016-07-01 13:37:24\t2016-07-01 13:37:24\t2016-06-30 13:25:39\tCONFIRMED\tss_08_qwe\tgroupon\thttps://www.groupon.com/deals/gilroy-gardens-31\n";
+	}
+	exit();
+}
+
+
+
+if($_req['key'] == '3644a684f98ea8fe223c713b77189a77'){
+	$sql = 'SELECT {COL_TMP} 
+                    FROM rpt_transaction_unique AS t
+            WHERE t.'.$datetype.' >= "'.addslashes($_req['bdate']).'" AND t.'.$datetype.' <= "'.addslashes($_req['edate']).'" AND t.site = "70efdf2ec9b086079795c442636b55fb" AND t.PublishTracking like "%mega%" AND t.BRID != ""';
+}else{
+	$sql = 'SELECT {COL_TMP} 
+                    FROM rpt_transaction_unique AS t
+            WHERE t.'.$datetype.' >= "'.addslashes($_req['bdate']).'" AND t.'.$datetype.' <= "'.addslashes($_req['edate']).'" AND t.site = "'.addslashes($_req['key']).'" AND t.BRID != ""';
+}
+
+$count_sql = str_replace('{COL_TMP}','count(*) as c',$sql);
+$count_row = $_db->getRows($count_sql);
+$count = $count_row[0]['c'];
+$pageTotal = ceil($count/$pagesize);
+
+$column_str = 't.BRID,t.ShowCommission,t.Created,t.Updated,t.Visited,t.State,t.PublishTracking,t.domainId,t.SID';
+$data_sql = str_replace('{COL_TMP}',$column_str,$sql)." LIMIT ".($page-1)*$pagesize.",".$pagesize;
+$row = $_db->getRows($data_sql);
+// , s.`Name`,c.pageurl
+
+$return = array();
+$return['response']['PageTotal'] = $pageTotal;
+$return['response']['PageNow'] = $page;
+$return['response']['Num'] = $count;
+$return['response']['NumReturn'] = 0;
+
+if(!empty($row)){
+	$domainIDs = array();
+	$sids = array();
+	foreach($row as $k=>$v){
+		$domainIDs[] = $v['domainId'];
+		$sids[] = $v['SID'];
+	}
+
+	$sql = 'SELECT * FROM r_store_domain AS a LEFT JOIN store AS b ON a.`StoreId` = b.`ID` WHERE a.`DomainId` IN ('.join(',',$domainIDs).')';
+	$row_domain = $_db->getRows($sql);
+	$domain_map = array();
+	foreach($row_domain as $k=>$v){
+		$domain_map[$v['DomainId']] = $v['Name'];
+	}
+
+	$sql = 'SELECT sessionId,pageUrl FROM bd_out_tracking WHERE sessionId IN ("'.join('","',$sids).'")';
+	$row_clickpage = $_db->getRows($sql);
+	$clickpage_map = array();
+
+	foreach($row_clickpage as $k=>$v){
+		$clickpage_map[$v['sessionId']] = $v['pageUrl'];
+	}
+
+	foreach($row as $k=>$v){
+		$row[$k]['AdName'] = isset($domain_map[$v['domainId']])?$domain_map[$v['domainId']]:'';
+		$row[$k]['ClickPage'] = isset($clickpage_map[$v['SID']])?$clickpage_map[$v['SID']]:'';
+                $row[$k]['State'] = $v['PaidDate'] == '0000-00-00'?'PENDING':'PAID';
+                $return['data'][] = array(
+                    'TransactionID'=>$v['BRID'],
+                    'Earnings'=>$v['ShowCommission'],
+                    'CreateTime'=>$v['Created'],
+                    'UpdateTime'=>$v['Updated'],
+                    'ClickTime'=>$v['Visited'],
+                    'State'=>$v['State'],
+                    'SID'=>$v['PublishTracking'],
+                    'Advertiser'=>$row[$k]['AdName'],
+                    'ClickPage'=>$row[$k]['ClickPage'],
+                );
+	}
+        $return['response']['NumReturn'] = count($row);
+}
+
+arr_out_format($return,$outformat);
+exit();
+
+function date_range($date1,$date2){
+	$range = round( (strtotime($date2) - strtotime($date1))/86400  );
+	return $range;
+}
+?>

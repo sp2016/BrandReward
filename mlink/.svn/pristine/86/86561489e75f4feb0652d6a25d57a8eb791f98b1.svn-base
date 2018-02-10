@@ -1,0 +1,77 @@
+@CHARSET "UTF-8";
+
+/* Required CSS classes: must be included in all pages using this script */
+
+/* Apply the element you want to drag/resize */
+.drsElement {
+position: absolute;
+border: 1px solid #333;
+}
+
+
+/*
+The DragResize object name is automatically applied to all generated
+corner resize handles, as well as one of the individual classes below.
+*/
+.dragresize {
+position: absolute;
+width: 5px;
+height: 5px;
+font-size: 1px;
+background: #EEE;
+border: 1px solid #333;
+}
+
+/*
+Individual corner classes - required for resize support.
+These are based on the object name plus the handle ID.
+*/
+.dragresize-tl {
+top: -8px;
+left: -8px;
+cursor: nw-resize;
+}
+.dragresize-tm {
+top: -8px;
+left: 50%;
+margin-left: -4px;
+cursor: n-resize;
+}
+.dragresize-tr {
+top: -8px;
+right: -8px;
+cursor: ne-resize;
+}
+
+.dragresize-ml {
+top: 50%;
+margin-top: -4px;
+left: -8px;
+cursor: w-resize;
+}
+.dragresize-mr {
+top: 50%;
+margin-top: 1px;
+right: 1px;
+cursor: e-resize;
+background: #FF0080;
+}
+
+.dragresize-bl {
+bottom: -8px;
+left: -8px;
+cursor: sw-resize;
+}
+.dragresize-bm {
+bottom: 1px;
+left: 50%;
+margin-left: 1px;
+cursor: s-resize;
+background: #FF0080;
+}
+.dragresize-br {
+bottom: 1px;
+right: 1px;
+cursor: se-resize;
+background: #FF0080;
+}

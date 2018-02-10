@@ -1,0 +1,59 @@
+<{include file="front_block_header.html"}>
+
+
+<div>
+    <div class="container" style="margin-top:30px;">
+        <!--<div style="text-align:center;margin-bottom:30px;"><h1>Creat Short Url</h1></div>-->
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><{$LANG.front.getbackPWD.a1}></div>
+                    <div class="panel-body">
+                        <form method="post">
+                            <input type="hidden" name="act" value='<{$LANG.front.getbackPWD.a2}>'/>
+                            <div class="form-group">
+                                <label><{$LANG.front.getbackPWD.a3}></label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="register-email" name="register-email" placeholder="<{$LANG.front.getbackPWD.a4}>"></div>
+                        </form>
+                        <div class="form-group">
+                            <button id="f_submit" onclick="getback()"><{$LANG.front.getbackPWD.a10}></button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getback() {
+        var data = $("form").serialize();
+        $.ajax({
+            type: "POST",
+            url: 'process.php',
+            data: data,
+            success: function (msg) {
+                if (msg == 1) {
+                    alert('<{$LANG.front.getbackPWD.a5}>');
+                }
+                if (msg == 0) {
+                    alert('<{$LANG.front.getbackPWD.a6}>')
+                }
+                if (msg == 2) {
+                    alert('<{$LANG.front.getbackPWD.a7}>');
+                }
+                if (msg == 4) {
+                    alert('<{$LANG.front.getbackPWD.a8}>');
+                }
+                if (msg == 3) {
+                    alert('<{$LANG.front.getbackPWD.a9}>');
+                }
+            }
+        });
+    }
+
+</script>

@@ -1,0 +1,228 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    
+                    <div class="panel-body" >
+                        <form id="form_search">
+                            <div class="col-lg-12 form-inline">
+                                <div class="form-group">
+                                    <div class="form-group" style="position:relative;">
+                                    Publisher Name:<input type="text" Name="pname" class="form-control" value="<{$search.pname}>" placeholder="Publisher Name">
+                                    </div>
+                                    <div class="form-group" style="position:relative;">
+                                    Publisher Account:<input type="text" Name="paccount" class="form-control" value="<{$search.paccount}>" placeholder="Publisher Account">
+                                    </div>
+                                    <div class="form-group" style="position:relative;">
+                                    Publisher Site:<input type="text" Name="psite" class="form-control" value="<{$search.psite}>" placeholder="Publisher Site">
+                                    </div>
+                                   
+
+                                    <div class="form-group" style="margin-left:20px">
+                                        <a href="javascript:void(0);" onclick="submit_form()" class="btn btn-primary" role="button">Search</a>
+                                    </div>
+                                    <a href="javascript:void(0);" class="btn btn-success" role="button" onclick="showmodal('paynetwork')">Do Pay</a>
+                                    <a href="javascript:void(0);" class="btn btn-success" role="button" onclick="showmodal('paybdg')">Do Pay BDG</a>
+                                </div>
+                            </div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-12" style="text-align: center;display: none;" id="checkboxall_process"><a href="javascript:void(0);" onclick="choose_all(this)"><span class="label label-primary">Page</span> click here to choose all recode</a></div>
+
+            <div class="col-lg-12">
+                <table class="table table-striped" id="tbl_pp">
+                            <thead>
+                            <tr>
+                                <th>#<input type="checkbox" data-type="all"/></th>
+                                <th>ID</th>
+                                <th>Publisher</th>
+                                <th>Date</th>
+                                <th>Currency</th>
+                                <th>Amount</th>
+                                <th>Trade Code</th>
+                                <th>Comment</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=li}>
+                            <tr data-id="<{$li.PPID}>">
+                                <td><input type="checkbox" name="paymentsid[]" value="<{$li.PPID}>"/></td>
+                                <td><{$li.PPID}> [<a href="javascript:void(0);" onclick="showPaidInvoice('<{$li.PPID}>')">Invoice</a>]</td>
+                                <td><{$li.publisher.Name|default:$li.publisher.UserName}></td>
+                                <td><{$li.CreateTime}></td>
+                                <td><{$li.Currency}></td>
+                                <td><{$li.Amount}></td>
+                                <td><{$li.Code}></td>
+                                <td><a href="javascript:void(0);" onclick="showcomment('<{$li.PPID}>')">Edit Comment</a></td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                        <{$pageHtml}>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width: 70%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="clearAjaxHtml()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Publisher Potential</h4>
+            </div>
+            <div class="modal-body" id="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clearAjaxHtml()">close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showmodal(act){
+        $('#myModalLabel').html(act);
+            $.ajax({
+                type: "post",
+                url: "b_paid.php",
+                data: "type=ajax&act="+act,
+                async: false,
+                success: function (html) {
+                    $('#modal-body').html(html);
+                }
+            });
+       $('#myModal').modal({backdrop: 'static', keyboard: false});
+    }
+
+    function showPaidInvoice(ppid){
+        $.ajax({
+            type: "post",
+            url: "b_paid.php",
+            data: "type=ajax&act=paidinvoice&ppid="+ppid,
+            async: false,
+            success: function (html) {
+                $('#modal-body').html(html);
+            }
+        });
+         $('#myModal').modal({backdrop: 'static', keyboard: false});
+    }
+
+    function showcomment(ppid){
+        $.ajax({
+            type: "post",
+            url: "b_paid.php",
+            data: "type=ajax&act=showcomment&ppid="+ppid,
+            async: false,
+            success: function (html) {
+                $('#modal-body').html(html);
+            }
+        });
+        
+        $('#myModal').modal({backdrop: 'static', keyboard: false});
+    }    
+
+    function clearAjaxHtml(){
+        $('#modal-body').html('');
+    }
+</script>
+
+    
+    <script>
+        $('.tip_program').keyup(function(){
+            var ipt = this;
+            var keywords = $(this).val();
+            var keyname = $(this).attr('name');
+
+            var url = '<{$smarty.const.BASE_URL}>/process.php';
+            var ajaxdata = 'act=tip_payments&keywords='+keywords+'&keyname='+keyname;
+            if(!keywords.match(/[^\s]{3,}/)){
+              return;
+            }
+
+            $.ajax({
+              type:"post",
+              url:url,
+              data:ajaxdata,
+              success: function(req){
+                var html_tip = '<ul class="dropdown-menu" >';
+                var arr = req.split('|');
+                for(var i in arr){
+                  html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+                }
+                var html_tip = html_tip+'</ul>';
+
+
+                if($(ipt).parent().find('ul')){
+                  $(ipt).parent().find('ul').remove();
+                }
+
+                $(ipt).parent().append(html_tip);
+
+                load_tip($(ipt).parent().find('ul'));
+              }
+            });
+          });
+
+
+        function load_tip(obj){
+          $(obj).css('display','block');
+          $(obj).find('a').click(function(){
+            $(obj).prev().val($(this).text());
+            $(obj).remove();
+          });
+        }
+
+        $('table input:checkbox[data-type=all]').click(function(){
+            if($(this).is(':checked')){
+                $('table input:checkbox').prop('checked',true);
+                $('#checkboxall_process').css('display','');
+            }else{
+                $('table input:checkbox').prop('checked',false);
+                $('#checkboxall_process').css('display','none');
+                $('#form_search input[name=checkboxall]').val('0');
+                $('#checkboxall_process a').html('<span class="label label-primary">Page</span> click here to choose all recode');
+            }
+        });
+
+        function choose_all(obj){
+
+            var checkboxallval = $('#form_search input[name=checkboxall]').val();
+
+            if(checkboxallval > 0){
+                $(obj).html('<span class="label label-primary">Page</span> click here to choose all recode');
+                $('#form_search input[name=checkboxall]').val('0');
+            }else{
+                $('#form_search input[name=checkboxall]').val('1');
+                $(obj).html('<span class="label label-warning">All</span> click here to choose recode in this page');
+            }
+        }
+
+        function del_pp(){
+            $('#form_search input[name=action]').val('delete');
+            if($('#tbl_pp input:checkbox:checked').length > 0){
+                if(confirm('Are you sure?')){
+                    $('#form_search').submit();
+                }
+            }else{
+                alert('You should choose at least one row');
+            }
+        }
+
+        function submit_form(){
+            $('#form_search input[name=action]').val('search');
+            $('#form_search').submit();
+        }
+    </script>
+
+    <{include file="b_block_footer.html"}>

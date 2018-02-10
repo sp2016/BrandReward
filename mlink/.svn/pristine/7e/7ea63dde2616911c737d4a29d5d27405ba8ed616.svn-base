@@ -1,0 +1,841 @@
+<?php
+class Payments extends LibFactory{
+    public $msg = '';
+
+    function getPayments($opts,$page=1,$page_size=50){
+        $orderby = isset($opts['orderby'])&&!empty($opts['orderby'])?' ORDER BY '.str_replace('-', ' ', $opts['orderby']):' ORDER BY PaidTime desc';
+        $limit = '';
+        if($page>0){
+            $limit = ' LIMIT '.($page-1)*$page_size.','.$page_size;     
+        }
+        $where_arr = array();
+        if(isset($opts['publisher']) && !empty($opts['publisher'])){
+            $data = $opts['publisher'];
+            $sql = "select  a.`ID` from publisher as a left join publisher_account as b on a.ID=b.PublisherId
+                      where b.Alias LIKE '%$data%' OR a.`Name` LIKE '%$data%' OR a.`Domain` LIKE '%$data%' 
+                      OR a.`Email` LIKE '%$data%' OR a.`UserName` LIKE '%$data%' OR b.`Domain` LIKE '%$data%' 
+                      OR b.`Apikey` LIKE '%$data%' group by a.`ID`";
+            $rows = $this->getRows($sql);
+            if(!empty($rows)){
+                $ids = _array_column($rows,'ID');
+                $where_arr[] = " PublisherId IN (".join(',',$ids).")";
+            }else{
+                $where_arr[] = " 1=0 ";
+            }
+        }
+
+        if(isset($opts['paidmonth']) && !empty($opts['paidmonth'])){
+            $where_arr[] = " LEFT(PaidDate,7) = '".$opts['paidmonth']."'";
+        }
+        if(isset($opts['transactionid']) && !empty($opts['transactionid'])){
+            $where_arr[] = " TransactionId = '".$opts['transactionid']."'";
+        }
+        if(isset($opts['ptype']) && !empty($opts['ptype'])){
+            $tag = $opts['ptype'] == 'mk' ? true : false;
+            $where_arr[] = mk_publisher_where($tag);
+        }
+
+        $where = !empty($where_arr)?' WHERE '.join(' AND ',$where_arr):'';
+
+        if(isset($opts['return_t']) && $opts['return_t'] == 'pagination'){
+            $sql = "SELECT COUNT(*) as c FROM payments ".$where;
+            $row = $this->objMysql->getFirstRow($sql);
+            $return['page_now'] = $page;
+            $return['page_total'] = ceil($row['c']/$page_size);
+            $return['total'] = $row['c'];
+        }elseif(isset($opts['return_t']) && $opts['return_t'] == 'statis'){
+            $sql = "SELECT COUNT(*) as count,SUM(Amount) as sum FROM payments ".$where;
+            $row = $this->objMysql->getFirstRow($sql);
+            $return['count'] = $row['count'];
+            $return['sum'] = $row['sum'];
+        }else{
+            $sql = "SELECT * FROM payments ".$where.$orderby.$limit;
+            $rows = $this->getRows($sql);
+
+            if(!empty($rows)){
+                $publisherids = _array_column($rows,'PublisherId');
+                $sites = _array_column($rows,'Site');
+
+                $sql = "SELECT * FROM publisher WHERE ID IN (".join(',',$publisherids).")";
+                $rows_publisher = $this->getRows($sql);
+                $tmp_key = _array_column($rows_publisher,'ID');
+                $map_publisher = array_combine($tmp_key,$rows_publisher);
+
+                $sql = "SELECT * FROM publisher_account WHERE ApiKey IN ('".join("','",$sites)."')";
+                $rows_sites = $this->getRows($sql);
+                $tmp_key = _array_column($rows_sites,'ApiKey');
+                $map_site = array_combine($tmp_key,$rows_sites);
+
+                foreach($rows as $k=>$v){
+                    $rows[$k]['publisher'] = $map_publisher[$v['PublisherId']];
+                    $rows[$k]['account'] = $map_site[$v['Site']];
+                    $rows[$k]['PaymentDetail'] = str_replace("\n","<br>",$v['PaymentDetail']);
+                }
+            }
+            
+            $return = $rows;
+        }
+
+        return $return;
+    }
+
+
+    function getPaymentsBatchTime($datetype='day'){
+        $sql = "SELECT DISTINCT(PaidDate) as PaidDate FROM payments ";
+        $rows = $this->getRows($sql);
+
+        $paidBatch_list = _array_column($rows,'PaidDate');
+        if($datetype == 'month'){
+            foreach($paidBatch_list as $k=>$v){
+                $paidBatch_list[$k] = substr($v,0,7);
+            }
+        }
+        rsort($paidBatch_list);
+        return $paidBatch_list;
+    }
+  
+    function getPaymentsPendingBatchTime($datetype='day',$haspaid='all'){
+        if($haspaid =='yes'){
+            $where = " WHERE PaymentsID >0 AND PaidDate != '0000-00-00'";
+        }else{
+            $where = " WHERE PaymentsID =0 AND PaidDate = '0000-00-00'";
+        }
+        $sql = "SELECT DISTINCT(PendingDate) as PendingDate FROM payments_pending ".$where;
+        $rows = $this->getRows($sql);
+
+        $pendingDateBatch_list = _array_column($rows,'PendingDate');
+        if($datetype == 'month'){
+            foreach($pendingDateBatch_list as $k=>$v){
+                $pendingDateBatch_list[$k] = substr($v,0,7);
+            }
+        }
+        rsort($pendingDateBatch_list);
+        return $pendingDateBatch_list;
+    }
+
+    function nextPaymentTotal($opts){
+        $where_aa = "";
+        if(isset($opts['remitdate']) && !empty($opts['remitdate'])){
+            $where_aa .= " AND PendingDate <= '".$opts['remitdate']."'";
+        }
+        if(isset($opts['ptype']) && !empty($opts['ptype'])){
+            $tag = $opts['ptype'] == 'mk' ? true : false;
+            $where_aa .= " AND " . mk_publisher_where($tag);
+        }
+        if(isset($opts['Site']) && !empty($opts['Site'])){
+            $where_aa .= " AND Site IN ('".join("','",$opts['Site'])."')";
+        }
+
+        $where_having = "";
+        $where_having_arr = array();
+        if(isset($opts['amountfrom']) && !empty($opts['amountfrom'])){
+            $where_having_arr[] = "commission >= ".floatval($opts['amountfrom']);
+        }
+        if(isset($opts['amountto']) && !empty($opts['amountto'])){
+            $where_having_arr[] = "commission <= ".floatval($opts['amountto']);
+        }
+        if(!empty($where_having_arr))
+            $where_having = " HAVING ".join(' AND ',$where_having_arr);
+
+        $where_cc = "";
+        if(isset($opts['hasbank']) && !empty($opts['hasbank'])){
+            if(strtolower($opts['hasbank']) == 'yes')
+                $where_cc = " WHERE cc.`AccountNumber` != ''";
+            else
+                $where_cc = " WHERE cc.`AccountNumber` = ''";
+        }
+
+        $sql = "select aa.*,cc.Manager,bb.`PublisherId`,bb.`Domain`,cc.`Name`,cc.`Email`,cc.`PayPal`,cc.`AccountName`,cc.`AccountNumber`,cc.`AccountAddress`,cc.`BankName`,cc.`BranchName`,cc.`SwiftCode`,cc.`AccountCountry`,cc.`AccountCity` from (
+                select Site,sum(Amount) as commission from payments_pending where PaymentsID = 0 and PaidDate = '0000-00-00' ".$where_aa." group by Site ".$where_having." 
+                ) as aa left join publisher_account as bb on aa.Site = bb.`ApiKey` left join publisher as cc on bb.`PublisherId` = cc.`ID` ".$where_cc;
+
+        $list = $this->getRows($sql);
+        $tmp_sort_keys = _array_column($list,'PublisherId');
+        array_multisort($tmp_sort_keys,SORT_ASC,$list);
+        return $list;
+    }
+
+    function nextSitePaymentList($opts,$page=1,$page_size=50){
+        $return = array();
+        if(!empty($return))
+            return $return;
+        
+        $y = date('Y',strtotime($opts['next_payment_date']));
+        $m = date('m',strtotime($opts['next_payment_date']));
+        if($m == '01'){
+            $y_p = $y - 1;
+            $m_p = '12';
+        }else{
+            $y_p = $y;
+            $m_p = $m - 1;
+            if($m_p < 10)
+                $m_p = '0'.$m_p;
+        }
+        $date = $y_p.'-'.$m_p.'-01';
+        
+        $opts['toCreatedDate'] = $date;
+        $list = $this->getPaymentsInvoice($opts,$page,$page_size);
+        $opts['rtype'] = 'pagination';
+        $pagination = $this->getPaymentsInvoice($opts,$page,$page_size);
+        $statis = $this->getPaymentsStatis($opts);
+        $return['list'] = $list;
+        $return['pagination'] = $pagination;
+        $return['statis'] = $statis;
+        return $return; 
+    }
+
+    function getPaymentsInvoice($opts,$page=1,$page_size=50){
+        $return = array();
+        $where = array();
+        if(isset($opts['toCreatedDate']) && !empty($opts['toCreatedDate'])){
+            $where[] = "CreatedDate < '".$date."'";
+        }
+        if(isset($opts['nopay']) && !empty($opts['nopay'])){
+            $where[] = "PaidDate = '0000-00-00'";
+        }
+        if(isset($opts['hastax']) && !empty($opts['hastax'])){
+            $where[] = "Tax > 0";
+        }
+        if(isset($opts['site']) && !empty($opts['site'])){
+            $where[] = "Site = '".addslashes($site)."'";
+        }
+        $where_str = !empty($where)?' WHERE '.join(' AND ',$where):'';
+        $orderby = " ORDER BY ID DESC";
+        $limit  = " LIMIT ".($page-1)*$page_size.",".$page_size;
+        if(isset($opts['rtype']) && $opts['rtype'] == 'pagination'){
+            $sql = "SELECT COUNT(*) as c FROM rpt_transaction_unique ".$where_str;
+            $row = $this->objMysql->getFirstRow($sql);
+
+            $return['page_now'] = $page;
+            $return['page_total'] = ceil($row['c']/$page_size);
+            $return['total'] = $row['c'];
+        }else{
+            $sql = "SELECT Created,Visited,AffId,Sales,ShowCommission FROM rpt_transaction_unique ".$where_str;
+            $rows = $this->getRows($sql);
+        }
+    }
+
+    function getPaymentsStatis($opts){
+        $return = array();
+        $where = array();
+        if(isset($opts['toCreatedDate']) && !empty($opts['toCreatedDate'])){
+            $where[] = "CreatedDate < '".$date."'";
+        }
+        if(isset($opts['nopay']) && !empty($opts['nopay'])){
+            $where[] = "PaidDate = '0000-00-00'";
+        }
+        if(isset($opts['hastax']) && !empty($opts['hastax'])){
+            $where[] = "Tax > 0";
+        }
+        if(isset($opts['site']) && !empty($opts['site'])){
+            $where[] = "Site = '".addslashes($site)."'";
+        }
+        
+        $where_str = !empty($where)?' WHERE '.join(' AND ',$where):'';
+        $sql = "SELECT SUM(showcommission) as commission,COUNT(*) as orders FROM rpt_transaction_unique".$where_str;
+        $row = $this->getFirstRow($sql);
+        $return['total'] = $row;
+
+        $sql = "SELECT country,SUM(showcommission) as commission,COUNT(*) as orders FROM rpt_transaction_unique".$where_str." GROUP BY country";
+        $return['country'] = $this->getRows($sql);
+
+        $sql = "SELECT AffId,SUM(showcommission) as commission,COUNT(*) as orders FROM rpt_transaction_unique".$where_str." GROUP BY AffId";
+        $rows = $this->getRows($sql);
+
+        $affids = _array_column($rows);
+        $sql = "SELECT ID,Name FROM wf_aff WHERE ID IN (".join(',',$affids).")";
+        $tmp_rows = $this->getRows($sql);
+        $tmp_keys = _array_column($tmp_rows,'ID');
+        $map_network = array_combine($tmp_keys,$tmp_rows);
+        foreach($rows as $k=>$v){
+            $rows[$k]['network'] = isset($map_network[$v['AffId']])?$map_network[$v['AffId']]['Name']:'';
+        }
+        $return['network'] = $rows;
+        return $return;
+    }
+   
+    function groupPaymentInfo($data){
+         $return = array();
+         foreach($data as $k=>$v){
+             if(!empty($v['AccountNumber'])){
+                 $key = md5(strtolower($v['AccountName']).strtolower($v['AccountNumber']));
+             }else{
+                 $key = md5($v['PayPal']);
+             }
+             $return[$key]['detail'][] = $v;
+             if(!isset($return[$key]['sum'])){
+                $return[$key]['sum'] = $v['commission'];
+                $return[$key]['count'] = 1;
+             }else{
+                $return[$key]['sum'] = bcadd($return[$key]['sum'],$v['commission'],4);
+                $return[$key]['count']++;
+             }
+         }
+         
+         $tmp_key_count = _array_column($return,'count'); 
+         $tmp_key_sum = _array_column($return,'sum'); 
+         array_multisort($tmp_key_count,SORT_ASC,$tmp_key_sum,SORT_ASC,$return);
+         return $return;
+    }
+    
+    function save_next_payments($data){
+        $return = array();
+        $opts['Site'] = $data['Site'];
+        $opts['groupby'] = 'site';
+    
+        $payments_data_total = $this->nextPaymentTotal($opts); 
+        $count = 0;
+        $sum = 0;
+        foreach($payments_data_total as $k=>$v){
+            $count++;
+            $sum = bcadd($sum,$v['commission'],4);
+        }
+        $Amount_post = ltrim($data['Amount'],'USD ');
+        if($Amount_post != $sum){
+            $return['rs'] = 0;
+            $return['msg'] = 'Amount number is not correct';
+            return $return;
+        }
+        if(empty($data['TransactionId'])){
+            $return['rs'] = 0;
+            $return['msg'] = 'TransactionId can not be empty';
+            return $return;
+        }
+
+        $site_post = $data['Site'];
+        $site_db = _array_column($payments_data_total,'Site');
+        sort($site_post);
+        sort($site_db);
+        if($site_post != $site_db){
+            $return['rs'] = 0;
+            $return['msg'] = 'Site is not correct';
+            return $return;
+        }
+
+        # do the remit
+        # 1. new remit row
+        # 2. new payments
+        # 3. change payments_pending
+        # 4. change payments_pending_invoice
+        # 5. update rpt_transaction_unique
+        # 6. create inovice file
+        
+        #step 1
+        $data_remit = array();
+        $data_remit['TransactionId'] = $data['TransactionId'];
+        $data_remit['PaidTime'] = $data['PaidTime'];
+        $data_remit['Amount'] = $Amount_post;
+        $data_remit['PaymentType'] = $data['PaymentType'];
+        $data_remit['PaymentDetail'] = $data['PaymentDetail'];
+        $rs = $this->new_remit($data_remit,1);
+        if(!$rs){
+            $return['rs'] = 0;
+            $return['msg'] = $this->msg;
+            return $return;
+        }
+        
+        #step 2 new payments
+        $sql = "SELECT * FROM payments WHERE Site IN ('".join("','",$site_post)."') AND PaidDate = '".addslashes($data['PaidDate'])."' AND Source = 'CPS'";
+        $rows = $this->getRows($sql);
+        if(!empty($rows)){
+            $site_exist = _array_column($rows,'Site');
+            $return['rs'] = 0;
+            $return['msg'] = 'Payments for Site Key ('.join(',',$site_exist).') is already exist';
+            return $return;
+        }
+
+        foreach($payments_data_total as $k=>$v){
+            $tmp = array(
+                'Amount'=>$v['commission'],
+                'Currency'=>'USD',
+                'PublisherId'=>'0',
+                'Site'=>$v['Site'],
+                'CreateTime'=>date('Y-m-d H:i:s'),
+                'PaidTime'=>addslashes($data_remit['PaidTime']),
+                'Status'=>'succ',
+                'EmailSend'=>'yes',
+                'PaymentType'=>$data['PaymentType'],
+                'PaymentDetail'=>addslashes($data['PaymentDetail']),
+                'TransactionId'=>addslashes($data_remit['TransactionId']),
+                'PaidDate'=>$data['PaidDate'],
+                'Source'=>'CPS');
+            $column = array_keys($tmp);
+            $sql = "INSERT INTO payments (".join(",",$column).") value ('".join("','",$tmp)."')";
+            $this->query($sql);
+        }
+       
+        $sql = "UPDATE payments AS a LEFT JOIN publisher_account AS b ON a.`Site` = b.`ApiKey` SET a.`PublisherId` = b.`PublisherId` WHERE a.`PublisherId` =0";
+        $this->query($sql);
+
+        # step 3 change payments_pending
+        $sql = "UPDATE payments_pending AS a LEFT JOIN payments AS b ON a.`Site` = b.`Site` SET a.`PaymentsID` = b.`ID`,a.`PaidDate` = b.`PaidDate` WHERE a.`PaidDate` = '0000-00-00' AND a.`PaymentsID` = 0 AND b.`PaidDate` = '".$data['PaidDate']."' AND b.`Source` = 'CPS' AND a.`Site` IN ('".join("','",$site_post)."')";
+        $this->query($sql);
+
+        # step 4 change payments_pending_invoice
+        $sql = "UPDATE payments_pending_invoice AS a LEFT JOIN payments_pending AS b ON a.`PendingID` = b.`ID` SET a.PaidDate = b.PaidDate WHERE a.`PaidDate` = '0000-00-00' AND b.`PaidDate` != '0000-00-00'";
+        $this->query($sql);
+
+        # step 5 update rpt_transaction_unique
+        $sql = "UPDATE rpt_transaction_unique SET PaidDate = '".$data['PaidDate']."' WHERE BRID IN (SELECT BRID FROM payments_pending_invoice WHERE `PaidDate` = '".$data['PaidDate']."') AND PaidDate = '0000-00-00'";
+        $this->query($sql);
+        
+        $return['rs'] = 1;
+
+        return $return;
+    }
+
+    function edit_payments($data){
+        $return = array();
+        $return['rs'] = 1;
+        $PaymentsID = $data['PaymentsID'];
+        
+        $sql = "SELECT * FROM payments WHERE ID = ".intval($PaymentsID);
+        $row_old = $this->getRow($sql);
+
+        $sql = "SELECT * FROM payments WHERE TransactionId = '".addslashes($row_old['TransactionId'])."'";
+        $rows = $this->getRows($sql);
+        if(empty($rows)){
+            $return['rs'] = 0;
+            $return['msg'] = 'payments table data error';
+            return $return;
+        }
+
+        $res = $this->new_remit($data,true);
+        if(!$res){
+            $return['rs'] = 0;
+            $return['msg'] = $this->msg;
+            return $return;
+        }
+
+        $pids_edit = _array_column($rows,'ID');
+        $sql = "UPDATE payments SET 
+            TransactionId = '".addslashes($data['TransactionId'])."',
+            PaidTime = '".addslashes($data['PaidTime'])."',
+            PaymentType = '".addslashes($data['PaymentType'])."',
+            PaymentDetail = '".addslashes($data['PaymentDetail'])."' 
+         WHERE ID IN (".join(',',$pids_edit).")";
+         $this->query($sql);
+         return $return;
+    }
+
+    function new_remit($data,$replace=false){
+        if(empty($data['TransactionId'])){
+            $this->msg = 'transaction id can not be empty';
+            return false;
+        }
+
+        if(empty($data['PaidTime']) || empty($data['Amount']) || empty($data['PaymentType']) || empty($data['PaymentDetail'])){
+            $this->msg = 'Paid Time,Amount,Payment Type,Payment Detail can not be empty';
+            return false;
+        }
+
+        if($replace){
+            $sql = "REPLACE INTO payments_remit (TransactionId,PaidTime,Amount,Currency,PaymentType,PaymentDetail) VALUE (
+            '".addslashes($data['TransactionId'])."',
+            '".addslashes($data['PaidTime'])."',
+            ".floatval($data['Amount']).",
+            'USD',
+            '".addslashes($data['PaymentType'])."',
+            '".addslashes($data['PaymentDetail'])."')";
+            $res = $this->query($sql);
+            if(!$res){
+                $this->msg = 'replace remit row failed';
+            }
+        }else{
+            $sql = "SELECT * FROM payments_remit WHERE TransactionId = '".addslashes($data['TransactionId'])."'";
+            $row = $this->getRow($sql);
+            if($row){
+                $this->msg = 'transaction id repeat';
+                return false;
+            }
+
+            $sql = "INSERT INTO payments_remit (TransactionId,PaidTime,Amount,Currency,PaymentType,PaymentDetail) VALUE (
+            '".addslashes($data['TransactionId'])."',
+            '".addslashes($data['PaidTime'])."',
+            ".floatval($data['Amount']).",
+            'USD',
+            '".addslashes($data['PaymentType'])."',
+            '".addslashes($data['PaymentDetail'])."')";
+            $res = $this->query($sql);
+            if(!$res){
+                $this->msg = 'new remit row failed';
+            }
+        }
+        
+        return $res;
+    }
+
+    function get_pending_transaction_where($next_payment_date){
+        $y = date('Y',strtotime($next_payment_date));
+        $m = date('m',strtotime($next_payment_date));
+        if($m == '01'){
+            $y_p = $y - 1;
+            $m_p = '12';
+        }else{
+            $y_p = $y;
+            $m_p = $m - 1;
+            if($m_p < 10)
+                $m_p = '0'.$m_p;
+        }
+        $date = $y_p.'-'.$m_p.'-01';
+        $where = "CreatedDate < '".$date."' AND PaidDate = '0000-00-00' AND Tax > 0";
+        return $where; 
+    }
+
+    function get_payment_date($point='next'){
+        $month = '';
+        $thisMonth = date('Y-m');
+        if($point == 'this'){
+            $month = date('Y-m');
+        }elseif($point == 'next'){
+            $y = date('Y');
+            $m = date('m');
+            if($m == '12'){
+                $m = 1;
+                $y = $y+1;
+            }else{
+                $m = $m+1;
+            }
+            if($m < 10)
+                $m = '0'.$m;
+            $month = $y.'-'.$m;
+        }elseif($point == 'prev'){
+            $y = date('Y');
+            $m = date('m');
+            if($m == 1){
+                $m = 12;
+                $y = $y - 1;
+            }else{
+                $m = $m - 1;
+            }
+            if($m < 10)
+                $m = '0'.$m;
+            $month = $y.'-'.$m;
+        }
+        $month_lastday = date('Y-m-t',strtotime($month.'-01'));
+        $objD = new Datetime($month_lastday);
+        while($objD->format('w') < 1 || $objD->format('w') > 5){
+            $objD->modify('-1 day');
+        }
+        $payment_date = $objD->format('Y-m-d');
+        return $payment_date;
+    }
+    
+    function getPaymentsStatisByPublisher($opts){
+        $orderby = isset($opts['orderby'])&&!empty($opts['orderby'])?' ORDER BY '.str_replace('-',' ',$opts['orderby']):' ORDER BY PublisherId ASC';
+        $where = array();
+        if(isset($opts['paidmonth']) && !empty($opts['paidmonth'])){
+            $where[] = "LEFT(PaidDate,7) = '".$opts['paidmonth']."'";
+        }
+
+        $where_str = !empty($where)?' WHERE '.join(' AND ',$where):'';
+        $sql = "SELECT PublisherId,SUM(Amount) as Amount FROM payments ".$where_str." GROUP BY PublisherId".$orderby;
+        $rows = $this->getRows($sql);
+        
+        if(!empty($rows)){
+            $pids = _array_column($rows,'PublisherId');
+            $sql = "SELECT * FROM publisher WHERE ID IN (".join(',',$pids).")";
+            $rows_publisher = $this->getRows($sql);
+            $map_key = _array_column($rows_publisher,'ID');
+            $map_publisher = array_combine($map_key,$rows_publisher);
+
+            foreach($rows as $k=>$v){
+                $rows[$k]['publisher'] = $map_publisher[$v['PublisherId']];
+            } 
+        }
+        return $rows;
+    }
+
+    function getPaymentsHistoryByPublisher($opts){
+        $orderby = isset($opts['orderby'])&&!empty($opts['orderby'])?' ORDER BY '.str_replace('-',' ',$opts['orderby']):' ORDER BY PublisherId ASC';
+        $where = array();
+        if(isset($opts['paidmonth']) && !empty($opts['paidmonth'])){
+            $where[] = "LEFT(PaidDate,7) = '".$opts['paidmonth']."'";
+        }
+
+        $where_str = !empty($where)?' WHERE '.join(' AND ',$where):'';
+        $sql = "SELECT PublisherId,SUM(Amount) as Amount FROM payments ".$where_str." GROUP BY PublisherId".$orderby;
+        $rows = $this->getRows($sql);
+        
+        if(!empty($rows)){
+            $pids = _array_column($rows,'PublisherId');
+            $sql = "SELECT * FROM publisher WHERE ID IN (".join(',',$pids).")";
+            $rows_publisher = $this->getRows($sql);
+            $map_key = _array_column($rows_publisher,'ID');
+            $map_publisher = array_combine($map_key,$rows_publisher);
+
+            foreach($rows as $k=>$v){
+                $rows[$k]['publisher'] = $map_publisher[$v['PublisherId']];
+            } 
+        }
+        return $rows;
+    }
+
+    function download_pending_invoice($data){
+        $rows = $this->getPaymentsPending($data);
+        $pendingids = _array_column($rows[0]['detail'],'ID');
+        $opts = array();
+        
+        $opts['PendingID'] = join(',',$pendingids);
+        $opts['return_t'] = 'pagination';
+        $page_size = 500;
+        $page_info = $this->getPaymentsPendingInvoice($opts,1,$page_size);
+        unset($opts['return_t']);
+        header('Pragma:public');
+        header('Expires:0');
+        header("Content-type:text/csv");
+        header("Content-type:  application/octet-stream;");
+        header('Content-Transfer-Encoding: binary');
+        header("Content-Disposition: attachment; filename= invoice.csv");
+        print(chr(0xEF).chr(0xBB).chr(0xBF)); //add utf8 bom in csv file
+
+        $title = array('Network','Advertiser','Commission','Transaction Time','Clikc Time','BRID','Pending Date');
+        echo join(',',$title)."\n";
+        for($i=0;$i<$page_info['page_total'];$i++){
+            $list = $this->getPaymentsPendingInvoice($opts,($i+1),$page_size);
+            foreach($list as $k=>$v){
+                $tmp = array(
+                    str_replace('"','\"',$v['network_name']),
+                    str_replace('"','\"',$v['store_name']),
+                    str_replace('"','\"',$v['Commission']),
+                    str_replace('"','\"',$v['CreatedDate']),
+                    str_replace('"','\"',$v['VisitedDate']),
+                    str_replace('"','\"',$v['BRID']),
+                    str_replace('"','\"',$v['PendingDate']),
+                );
+                echo '"'.join('","',$tmp).'"'."\n";
+            }
+        }
+        exit();
+    }
+
+    function getPaymentsPendingInvoice($opts,$page=1,$page_size=50){
+        $where = '';
+        $orderby = ' ORDER BY ID DESC';
+        $limit = '';
+
+        $where_arr = array();
+        if(isset($opts['PendingID']) && !empty($opts['PendingID'])){
+            $PendingID_arr = explode(',',trim($opts['PendingID'],','));
+            if(!empty($PendingID_arr)){
+                $where_arr[] = "PendingID IN (".join(",",$PendingID_arr).")";
+            }
+        }
+        $where = !empty($where_arr)?" WHERE ".join(" AND ",$where_arr):'';
+
+        if($page_size > 0){
+            $limit = ' LIMIT '.($page-1)*$page_size.','.$page_size;
+        }
+
+        if(isset($opts['return_t']) && $opts['return_t'] == 'pagination'){
+            $sql = "SELECT COUNT(*) as c FROM payments_pending_invoice ".$where;
+            
+            $row = $this->objMysql->getFirstRow($sql);
+            $return['page_now'] = $page;
+            $return['page_total'] = ceil($row['c']/$page_size);
+            $return['total'] = $row['c'];
+        }else{
+            $sql = "SELECT * FROM payments_pending_invoice ".$where.$orderby.$limit;
+            $rows = $this->getRows($sql);
+
+            if(!empty($rows)){
+                $affids = _array_column($rows,'AffId');
+                $domainids = _array_column($rows,'domainId');
+
+                $sql = "SELECT ID,`Name` FROM wf_aff WHERE ID IN (".join(',',$affids).")";
+                $rows_wf = $this->getRows($sql);
+                $tmp_key = _array_column($rows_wf,'ID');
+                $map_wf = array_combine($tmp_key, $rows_wf);
+
+                $sql = "select b.`DomainId`,if(a.`NameOptimized` ='',a.`Name`,a.`NameOptimized`) as store_name from store as a left join r_store_domain as b on a.`ID` = b.`StoreId` WHERE b.`DomainId` IN (".join(',',$domainids).")";
+                $rows_domain = $this->getRows($sql);
+                $tmp_key = _array_column($rows_domain,'DomainId');
+                $map_domain = array_combine($tmp_key, $rows_domain);
+
+                foreach($rows as $k=>$v){
+                    $rows[$k]['store_name'] = $map_domain[$v['domainId']]['store_name'];
+                    $rows[$k]['network_name'] = $map_wf[$v['AffId']]['Name'];
+                }
+
+                $return = $rows;
+            }
+        }
+        return $return;
+    }
+
+    function getPaymentsPending($opts,$page=1,$page_size=50){
+        if(isset($opts['orderby']) && !empty($opts['orderby'])){
+            $orderby = ' ORDER BY '.str_replace('-',' ',$opts['orderby']);
+        }else{
+            $orderby = ' ORDER BY PendingDate DESC,PublisherId DESC';
+        }
+
+        $limit = '';
+        if($page>0){
+            $limit = ' LIMIT '.($page-1)*$page_size.','.$page_size;     
+        }
+        
+        $group = 'Site, PendingDate';
+
+        $where_arr = array();
+        if(isset($opts['publisher']) && !empty($opts['publisher'])){
+            $data = $opts['publisher'];
+            $sql = "select  a.`ID` from publisher as a left join publisher_account as b on a.ID=b.PublisherId
+                      where b.Alias LIKE '%$data%' OR a.`Name` LIKE '%$data%' OR a.`Domain` LIKE '%$data%' 
+                      OR a.`Email` LIKE '%$data%' OR a.`UserName` LIKE '%$data%' OR b.`Domain` LIKE '%$data%' 
+                      OR b.`Apikey` LIKE '%$data%' group by a.`ID`";
+            $rows = $this->getRows($sql);
+            $ids = _array_column($rows,'ID');
+            $where_arr[] = " PublisherId IN (".join(',',$ids).")";
+        }
+
+        if(isset($opts['pendingmonth']) && !empty($opts['pendingmonth'])){
+            $where_arr[] = " LEFT(PendingDate,7) = '".$opts['pendingmonth']."'";
+        }
+
+        if(isset($opts['haspaid']) && !empty($opts['haspaid'])){
+            if($opts['haspaid'] == 'yes')
+                $where_arr[] = "PaymentsID > 0 ";
+            else
+                $where_arr[] = "PaymentsID = 0 ";
+        }
+
+        if(isset($opts['site']) && !empty($opts['site'])){
+            $where_arr[] = "Site = '".addslashes($opts['site'])."' ";
+        }
+
+        if(isset($opts['ptype']) && !empty($opts['ptype'])){
+            $tag = $opts['ptype'] == 'mk' ? true : false;
+            $where_arr[] = mk_publisher_where($tag);
+        }
+
+        $where = !empty($where_arr)?' WHERE '.join(' AND ',$where_arr):'';
+
+        if(isset($opts['return_t']) && $opts['return_t'] == 'pagination'){
+            $sql = "SELECT COUNT(*) as c from (
+            SELECT ".$group.", SUM(Amount) as Amount from payments_pending ".$where." GROUP BY ".$group."
+            ) as aa";
+            
+            $row = $this->objMysql->getFirstRow($sql);
+            $return['page_now'] = $page;
+            $return['page_total'] = ceil($row['c']/$page_size);
+            $return['total'] = $row['c'];
+        }elseif(isset($opts['return_t']) && $opts['return_t'] == 'statis'){
+            $sql = "SELECT COUNT(*) as count,SUM(Amount) as sum from (
+            SELECT ".$group.", SUM(Amount) as Amount from payments_pending ".$where." GROUP BY ".$group."
+            ) as aa";
+            $return = $this->objMysql->getFirstRow($sql);
+        }else{
+            $sql = "SELECT ".$group.", SUM(Amount) as Amount,PublisherId,PaymentsID from payments_pending ".$where." GROUP BY ".$group.$orderby.$limit;
+            $rows = $this->getRows($sql);
+
+            $pids = _array_column($rows,'PublisherId');
+            $sql = "SELECT * FROM publisher WHERE ID IN (".join(',',$pids).")";
+            $rows_publisher = $this->getRows($sql);
+            $tmp_key = _array_column($rows_publisher,'ID');
+            $map_publisher = array_combine($tmp_key,$rows_publisher);
+
+            $sites = _array_column($rows,'Site');
+            $sql = "SELECT * FROM publisher_account WHERE ApiKey IN ('".join("','",$sites)."')";
+            $rows_site = $this->getRows($sql);
+            $tmp_key = _array_column($rows_site,'ApiKey');
+            $map_site = array_combine($tmp_key,$rows_site);
+            
+            $paymentids = _array_column($rows,'PaymentsID');
+            $map_payment = array();
+            if(!empty($paymentids)){
+                $sql = "SELECT * FROM payments WHERE ID IN (".join(',',$paymentids).")";
+                $rows_payment = $this->getRows($sql);
+                $tmp_key = _array_column($rows_payment,'ID');
+                $map_payment = array_combine($tmp_key,$rows_payment);    
+            }
+
+            $detail = array();
+            foreach($rows as $k=>$v){
+                $rows[$k]['publisher'] = $map_publisher[$v['PublisherId']]; 
+                $rows[$k]['account'] = $map_site[$v['Site']];
+                $rows[$k]['payment'] = isset($map_payment[$v['PaymentsID']])?$map_payment[$v['PaymentsID']]:array();
+                $detail[$v['PendingDate']][] = $v['Site'];
+            }
+
+            $sql_arr = array();
+            foreach($detail as $k=>$v){
+                $sql_arr[] = "SELECT * FROM payments_pending WHERE PendingDate = '".$k."' AND Site IN ('".join("','",$v)."')";
+            }
+            $sql = join(' UNION ',$sql_arr);
+            $rows_detail = $this->getRows($sql);
+            foreach($rows as $k=>$v){
+                foreach($rows_detail as $a=>$b){
+                    if($v['Site'] == $b['Site'] && $v['PendingDate'] == $b['PendingDate']){
+                        $rows[$k]['detail'][] = $b;
+                    }
+                } 
+            }
+
+            $return = $rows;
+        }
+
+        return $return;
+    }
+
+    function downloadPaymentsPending($opts){
+        $page_size = 500;
+        $opts['return_t'] = 'pagination';
+        $page_info = $this->getPaymentsPending($opts,1,$page_size);
+        $title = array(
+            'Publisher ID',
+            'Publisher Account',
+            'Publisher Site',
+            'Manger',
+            'Amount',
+            'Pending Date',
+            'Payment',
+            'Transaction ID',
+            );
+
+        header('Pragma:public');
+        header('Expires:0');
+        header("Content-type:text/csv");
+        header("Content-type:  application/octet-stream;");
+        header('Content-Transfer-Encoding: binary');
+        header("Content-Disposition: attachment; filename= payment_pending_list.csv");
+        print(chr(0xEF).chr(0xBB).chr(0xBF)); //add utf8 bom in csv file
+        print_r(join(',',$title)."\n");
+
+        for($i=0; $i<$page_info['page_total'];$i++){
+            unset($opts['return_t']);
+            $data = $this->getPaymentsPending($opts,($i+1),$page_size);
+            foreach($data as $k=>$v){
+                $tmp = array();
+                $tmp[] = str_replace('"','\"',$v['publisher']['ID']);
+                $tmp[] = str_replace('"','\"',$v['publisher']['UserName']);
+                $tmp[] = str_replace('"','\"',$v['account']['Domain']);
+                $tmp[] = str_replace('"','\"',$v['publisher']['Manager']);
+                $tmp[] = str_replace('"','\"',number_format($v['Amount'],2,'.',','));
+                $tmp[] = str_replace('"','\"',substr($v['PendingDate'],0,7));
+                $tmp[] = str_replace('"','\"',isset($v['payment']['PaidDate'])?$v['payment']['PaidDate']:'NULL');
+                $tmp[] = str_replace('"','\"',isset($v['payment']['TransactionId'])?$v['payment']['TransactionId']:'NULL');
+                echo '"'.join('","',$tmp).'"'."\n";
+            }
+        }
+        exit();
+    }
+
+    function getPaymentsRemitInfoById($PaymentID){
+        $sql = "SELECT * FROM payments WHERE ID = ".intval($PaymentID);
+        $row = $this->getRow($sql);
+
+        $sql = "SELECT a.*,b.`Domain` FROM payments AS a LEFT JOIN  publisher_account AS b ON a.`Site` = b.`ApiKey` WHERE a.TransactionId = '".$row['TransactionId']."'";
+        $rows_detail = $this->getRows($sql);
+
+        $sql = "SELECT * FROM payments_remit WHERE TransactionId = '".$row['TransactionId']."'";
+        $remit = $this->getRow($sql);
+
+        if(!empty($remit)){
+            $remit['detail'] = $rows_detail;
+            return $remit;
+        }else{
+            return array();
+        }
+    }
+}

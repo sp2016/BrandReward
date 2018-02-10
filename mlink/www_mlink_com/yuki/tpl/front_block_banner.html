@@ -1,0 +1,87 @@
+<div class="header">
+    <div class="main">
+        <div class="logo">
+            <a href="<{$smarty.const.BASE_URL}>"><img src="img/logo.png"/></a>
+        </div>
+        <ul class="menu">
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>/features.php" <{if $title eq 'Features'}>class="hover"<{/if}> ><{$LANG.front.public.features}></a>
+            </li>
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>/publisher.php"<{if $title eq 'Publisher'}>class="hover"<{/if}> ><{$LANG.front.public.publishers}></a>
+            </li>
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>/advertiser.php"<{if $title eq 'Advertiser'}>class="hover"<{/if}>><{$LANG.front.public.advertiser}></a>
+            </li>
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>/ourTeam.php"<{if $title eq 'Our Team'}>class="hover"<{/if}> ><{$LANG.front.public.ourteam}></a>
+            </li>
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>/contactUs.php"<{if $title eq 'Contact Us'}>class="hover"<{/if}> ><{$LANG.front.public.contactus}></a>
+            </li>
+        </ul>
+        <!--<div class="btn_sl">-->
+	<span class="mon_con">
+			<i class="nav_d" onclick="showList()"></i>
+<div class="btn_sl">
+
+    <{if $smarty.session.u.ID}>
+    <a href="<{$smarty.const.BASE_URL}>/b_home.php" target="_blank" class="su"><{$LANG.front.public.dashboard}></a>
+    <a href="javascript:void(0)" id="head-top-logout" class="lg" onclick="logout()"><{$LANG.front.public.logout}></a>
+    <{else}>
+    <a href="<{$smarty.const.BASE_URL}>/signup.php" class="su"><{$LANG.front.public.signup}></a>
+    <a href="javascript:void(0)" id="head-top-login" class="lg" onclick="remodal_login()"><{$LANG.front.public.login}></a>
+    <{/if}>
+</div>
+</span>
+ <!--country-->
+  <div class="country">
+    <!-- <h5>Länder</h5> -->
+    <div class="country_chioce">
+      <i class="c_16"></i>
+      <span>Deutschland</span>
+      <div class="three"><span></span></div>
+    </div>
+    <ul>
+    <li><a href="#" title="Australia"><i class="c_01"  title="Australia"></i><span>Australia</span></a></li>
+    <li><a href="#" title="Canada"><i class="c_02"  title="Canada"></i><span>Canada</span></a></li>
+    <li><a href="#" title="China"><i class="c_03"  title="China"></i><span>China</span></a></li>
+    <li><a href="#" title="France"><i class="c_04"  title="France"></i><span>France</span></a></li>
+    <li><a href="#" title="HongKong"><i class="c_05"  title="Hong Kong"></i><span>HK</span></a></li>
+    <li><a href="#" title="India"><i class="c_06"  title="Indonesia"></i><span>Indonesia</span></a></li>
+    <li><a href="#" title="Indonesia"><i class="c_07"  title="Ireland"></i><span>Ireland</span></a></li>
+    <li><a href="#" title="Ireland"><i class="c_08"  title="India"></i><span>India</span></a></li>
+    <li><a href="#" title="Malaysia"><i class="c_09"  title="Malaysia"></i><span>Malaysia</span></a></li>
+    <li><a href="#" title="Newzealand"><i class="c_10"  title="New Zealand"></i><span>NZ</span></a></li>
+    <li><a href="#" title="Philippines"><i class="c_11"  title="Philippines"></i><span>Philippines</span></a></li>
+    <li><a href="#" title="Singapore"><i class="c_12"  title="Singapore"></i><span>Singapore</span></a></li>
+    <li><a href="#" title="Thailand"><i class="c_13"  title="Thailand"></i><span>Thailand</span></a></li>
+    <li><a href="#" title="UK"><i class="c_14"  title="United Kingdom"></i><span>UK</span></a></li>
+    <li><a href="#" title="US"><i class="c_15"  title="United States"></i><span>US</span></a></li>
+    </ul>
+  </div>
+
+        <div class="clr"></div>
+
+    </div>
+</div>
+<script>
+    function showList() {
+        var dis = $('.header .main ul.menu').css('display');
+        if (dis == 'none')
+            $('.header .main ul.menu').show();
+        if (dis == 'block')
+            $('.header .main ul.menu').hide();
+    }
+    window.onresize = function(){
+        if($(window).width() > 1240){
+            $('.header .main ul.menu').show();
+        }else {
+            $('.header .main ul.menu').hide();
+        }
+    }
+
+
+
+
+</script>

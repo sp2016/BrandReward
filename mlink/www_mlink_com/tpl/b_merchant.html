@@ -1,0 +1,957 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<{include file="b_generate_link_modal.html"}>
+<style type="text/css">
+
+    .multiselect b.caret {
+        position: absolute;
+        top: 14px;
+        right: 8px;
+    }
+    .drop{
+        padding: 3px 20px;
+        clear: both;
+        font-weight: normal;
+        line-height: 1.42857143;
+        color: #333;
+        white-space: nowrap;
+    }
+    .multiselect-group {
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    td{
+        text-align: center;
+        vertical-align:middle;
+    }
+    th{
+        text-align: center;
+    }
+    .dropdown-menu > li label.checkbox{
+	    display: block;
+	    padding: 3px 20px;
+	    clear: both;
+	    line-height: 1.42857143;
+	    color: #333;
+	    white-space: nowrap;
+	    cursor: pointer;
+    }
+	.dropdown-menu > li label.checkbox:hover{
+	    color: rgb(183,184,205);
+    }
+	.form-inline .form-group{
+		margin-bottom: 15px;
+    }
+	.bx-wrapper .bx-loading{
+		min-height: 0px;
+    	height: 0px;
+    }
+</style>
+<div class="container title-container" style="margin-top:30px;width:90%;">
+    <div class="title-h1" style="text-align:center;margin-bottom:30px;"><h1><{$LANG.backend.adlist.a1}></h1></div>
+
+    <div class="row search-form" style="">
+		<div class="overlay" style="display:none;left: 0;"></div>
+        <div class="col-lg-12 filter" style="padding-left: 0px;padding-right: 0px;padding-bottom: 14px;">
+            <div class="panel panel-default">
+                <div class="panel-heading"><{$LANG.backend.adlist.a2}>
+                	<a href="#" class="back"></a>
+                    <a href="#" class="close"></a>
+                </div>
+                <div class="panel-body" style="width: 100%;">
+                    <form id="form_content_search">
+                        <!--<input type="hidden" name="p" value="1" />-->
+                        <div class="row">
+                            <div class=" form-inline">
+                                <div class="col-lg-12 ">
+                                    <div class="form-group dpm" style="position:relative;">
+                                        Advertiser:
+                                        <input type="text" style="width: 190px;" name="store_keywords" data-type="advertiser" class="form-control advertiser" placeholder="e.g Ebay, Amazon, etc." value="<{$search.store_keywords}>">
+                                    </div>
+                                    <div class="form-group opm" style="position:relative;">
+                                        Domain:
+                                        <input type="text" style="width: 190px;" name="domain" class="form-control domain"  data-type="domain" value="<{$search.domain}>">
+                                    </div>
+                                    <div class="form-group"  <{if $level=='TIER12' }>style="display: none;<{/if}>>
+                                        Choose Country:
+                                        <select name="country" class="form-control" style="width:100px">
+                                            <option value="">All</option>
+                                            <{foreach from=$countryArr key=k item=c}>
+                                            <option value="<{$c}>" <{if isset($search.country) and $search.country eq $c}>selected="selected"<{/if}>><{$k}></option>
+                                            <{/foreach}>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        PageSize: <select class="form-control" name="pagesize">
+                                        <option value="10" <{if $pagesize == '10'}>selected<{/if}>>10</option>
+                                        <option value="20" <{if $pagesize == '20'}>selected<{/if}>>20</option>
+                                        <option value="50" <{if $pagesize == '50'}>selected<{/if}>>50</option>
+                                        <option value="100" <{if $pagesize == '100'}>selected<{/if}>>100</option>
+                                        </select>
+                                    </div>
+	                                <div class="form-group">
+	                                    <input type="hidden" value="<{$search.categories}>" name="categories" class="categories">
+	                                    <div class="btn-group">
+	                                        <button type="button"  class="multiselect dropdown-toggle btn btn-default" data-toggle="dropdown" title="Category" >Category&nbsp;<b class="caret"></b></button>
+	                                        <ul class="multiselect-container dropdown-menu" onclick="event.stopPropagation();" style="overflow:scroll;min-height:150px;min-width: 260px;">
+	                                            <li style="margin-bottom: 5px;margin-top: 1px;padding:0 20px">
+	                                                <!-- <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-info" onclick="select_opt('all','global')">Select All</span></a>
+	                                                <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-warning" onclick="select_opt('none','global')">Deselect All</span></a> -->
+	                                                <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-info" onclick="select_opt('close','global')">Close</span></a>
+	                                            </li>
+	                                            <{foreach item=cate key=id from=$category}>
+	                                            <li><label class="checkbox"><input type="checkbox"
+	                                                <{if $sel_cate }>
+	                                                <{foreach from=$sel_cate item=sc}>
+	                                                <{if $sc == $id}> checked <{/if}>
+	                                                <{/foreach}>
+	                                                <{/if}>
+	                                                class="category" id="<{$id}>" value="<{$id}>"> <{$cate}></label></li>
+	                                            <{/foreach}>
+	                                        </ul>
+	                                      </div>
+                                   	</div>
+                                   	<{if $displayStoreType eq '1'}>
+                                   	<div class="form-group" >
+                                        Type:
+                                        <select name="advertiserType" class="form-control" style="width:100px">
+                                            <option value="">All</option>
+                                            <option value="Content" <{if isset($search.advertiserType) and $search.advertiserType eq 'Content'}>selected="selected"<{/if}>>Content</option>
+                                            <option value="Promotion" <{if isset($search.advertiserType) and $search.advertiserType eq 'Promotion'}>selected="selected"<{/if}>>Promotion</option>
+                                        </select>
+                                    </div>
+                                    <{/if}>
+                                    <div class="form-group" style="">
+                                        Sort By : <select class="form-control" name="sort">
+                                        <option value="Commission" <{if $search.sort == 'Commission'}>selected<{/if}>>Commission</option>
+                                        <option value="Clicks" <{if $search.sort == 'Clicks'}>selected<{/if}>>Clicks</option>
+                                    </select>
+                                    </div>
+                                    <div class="form-group" style="">
+                                        My Collection : <input type="checkbox" name="collect" value="1" <{if $search.collect == 1}> checked <{/if}> style="margin-bottom:3px;vertical-align: middle;">
+                                    </div>
+                                    <div class="form-group" style="">
+                                    	<{*<input type="hidden" value="<{$search.showCommissionRise}>" name="showCommissionRise" id="showCommissionRise">*}>
+                                        <input type="submit" class="btn b-primary" value="Search" id="search">
+                                    </div>
+                                    <div class="form-group" id="ppcadv" style="">	
+	                                    <div class="dropdown">
+										  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+										    PPC Advertisers
+										    <span class="caret"></span>
+										  </button>
+										  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+										    <li><a data-type="allowed" class="downloadAdvertiserPPC" href="javascript:void(0)">TM+ Allowed (Google + Bing)</a></li>
+										  </ul>
+										  <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="The Brandreward Team updates a list of TM+ PPC allowed advertisers daily, but we strictly enforce that all Terms & Conditions are followed (no exceptions). NOTE: Please ensure you focus your PPC efforts only on commission-able countries."></span>
+										</div>
+									</div>
+                            </div>
+                           </div>
+                          </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+   </div>   
+	   <{*<{if !empty($rstore)}>
+	   <div class="row featured-api">  
+	        <div class="col-lg-12" style="padding-left: 0px;padding-right: 0px;">
+	            <div class="panel panel-default">
+	                <div class="panel-heading">Top 20 Recommend Advertisers</div>
+	                <div class="panel-body" style="padding-top: 30px;height: 220px;overflow: hidden;">
+	                    <!-- <div class="m" style="width: 100%;height: 0px;overflow: hidden;padding-top: 30px;"> -->
+	                        <ul class="bxslider" style="display:none">
+	                            <{foreach item=cate  from=$rstore}>
+	                            <li style="cursor:pointer" onclick="showModal2('<{$cate.count}>','<{$cate.ID}>','<{$cate.storeName|addslashes}>')"><div style="border: 1px solid #D5D5D5;background-color:white;height: 110px;width: 240px;text-align: center;margin:auto;"><div style="width: 95%;text-align: center;margin:auto;"><img class="img-responsive center-block imgs"  style="margin-top:10px;height: 90px;" src="<{if $cate.LogoStatus == '2'}><{$smarty.const.BASE_URL}>/img/logo_program/<{$cate.LogoName}><{else}><{$smarty.const.BASE_URL}>/img/adv_logo/<{$cate.LogoName}><{/if}>" alt="picture" /></div></div><div style="border: 1px solid #D5D5D5;background-color:#D5D5D5;height: 25px;width:240px;text-align: center;margin:auto;"><div  style="font-weight: bold; text-align: center;margin-top:2px;"><span class="newname" style="color:#337ab7;"><{$cate.storeName}></span></div></div></li>
+	                            <{/foreach}>
+	                        </ul>
+	                    <!-- </div> -->
+	                </div>
+	            </div>
+	    	</div>
+        </div>
+        <{/if}>*}>
+        <{if !empty($activityStore)}>
+        <div class="row featured-api" style="">
+	        <div class="col-lg-12" style="padding-left: 0px;padding-right: 0px;">
+	            <div class="panel panel-default">
+	                <div class="panel-heading" style="height: 55px;line-height: 34px;background-color: pink;color:#fff;font-size: 40px;">Valentine's Day<input style="float:right" type="button" class="btn b-primary" id="download" value="Download"><input type="button" style="float:right;margin-right:10px" class="btn b-primary generatelink" data-type="valentine" id="generateValentine" value="Valentine API"></div>
+	                <div class="panel-body" style="padding-top: 30px;height: 220px;overflow: hidden;">
+	                    <!-- <div class="m" style="width: 100%;height: 0px;overflow: hidden;padding-top: 30px;"> -->
+	                        <ul class="bxslider" style="display:none">
+	                            <{foreach item=cate  from=$activityStore}>
+	                            <li style="cursor:pointer" onclick="showModalActivity('<{$cate.ID}>','<{$cate.storeName|addslashes}>')"><div style="border: 1px solid #D5D5D5;background-color:white;height: 110px;width: 240px;text-align: center;margin:auto;"><div style="width: 95%;text-align: center;margin:auto;"><img class="img-responsive center-block imgs"  style="margin-top:10px;height: 90px;" src="<{if $cate.LogoStatus == '2'}><{$smarty.const.BASE_URL}>/img/logo_program/<{$cate.LogoName}><{else}><{$smarty.const.BASE_URL}>/img/adv_logo/<{$cate.LogoName}><{/if}>" alt="picture" /></div></div><div style="border: 1px solid #D5D5D5;background-color:#D5D5D5;height: 25px;width:240px;text-align: center;margin:auto;"><div  style="font-weight: bold; text-align: center;margin-top:2px;"><span class="newname" style="color:#337ab7;"><{$cate.storeName}></span></div></div></li>
+	                            <{/foreach}>
+	                        </ul>
+	                    <!-- </div> -->
+	                </div>
+	            </div>
+	        </div>
+        </div>
+        <{/if}>
+        <div class="row adv-list">
+	        <div class="col-lg-12 wap-advertiserlist" style="padding-left: 0px;padding-right: 0px;margin-top: 14px;">
+	            <div class="panel panel-default">
+	            	<div class="panel-heading" style="height: 55px;line-height: 34px;"><{$LANG.backend.adlist.a3}>
+	            		<{*<span style="margin-left:30px"><input type="checkbox" name="showCommission" id="showCommission" <{if $search.showCommissionRise == 1}> checked <{/if}> >Commission rose</span>*}>
+	                	<a href="#" class="show_filter"></a>
+	                	<input type="button" style="float:right" class="btn b-primary generatelink" data-type="advertiser" id="generatelinkAdvertiser" value="Advertiser API">
+                	</div>
+	                <div class="panel-body">
+	                    <table class="table  table-bordered">
+	                        <thead>
+	                        <tr>
+	                            <!--<th><input type="checkbox" class="chkall"></th>-->
+	                            <th><{$LANG.backend.adlist.a4}></th>
+	                            <th>Name</th>
+	                            <th>Commission Value</th>
+	                            <th>PPC Status</th>
+	                            <th>Clicks</th>
+	                            <th>Commission</th>
+	                            <th>EPC
+	                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Commission / Clicks"></span>
+	                            </th>
+	                            <th>Promotions</th>
+	                            <th>Collection
+	                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Add your favorite advertiser here and check the Content Feed to see if you can get any promotions from them."></span>
+	                            </th>
+	
+	                        </tr>
+	                        </thead>
+	                        <{foreach from=$DomainList item=domain}>
+	                        <tr class="store">
+	                        <{if $domain.Type == 'multi'}>
+	                            <input type="hidden" value="<{$domain.StoreId}>">
+	                            <td class="wap-store-name" style="height: 46px;line-height:46px;"><{$domain.storeName}></td>
+	                            <td class="wap-store-multi" style="width: 30%;height: 46px;line-height:46px;"><button type="button" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="right" data-content="<{foreach from=$domain.Store item=store}><a href=&quot;javascript:void(0)&quot; onclick=&quot;showModal('<{$store.StoreId}>','<{$store.StoreName|addslashes}>')&quot;><{$store.StoreName}><br><{/foreach}>" data-trigger="foucs" data-html="true" title="Recommend Advertiser"><span class="glyphicon glyphicon-link"></span></button></td>
+	                            <td>/</td>
+	                            <td>/</td>
+	                            <td>/</td>
+	                            <td>/</td>
+	                            <td>/</td>
+	                            <td>/</td>
+	                            <td>/</td>
+	                        <{else}>
+	                            <input type="hidden" value="<{$domain.StoreId}>">
+	                            <td class="wap-store-img" width="160px;">
+	                                    <div style="width: 95%;text-align: center;margin:auto;"><img class="img-responsive center-block imgs" style="margin-top:5px;height: 40px;" src="<{if $cate.LogoStatus == '2'}><{$smarty.const.BASE_URL}>/img/logo_program/<{$domain.LogoName}><{else}><{$smarty.const.BASE_URL}>/img/adv_logo/<{$domain.LogoName}><{/if}>" alt="picture"></div>
+	                            </td>
+	                            <{if $domain.historyStore == 'yes'}>
+	                            	<td class="wap-store-name" width="200px;"><{$domain.NameOptimized}></td>
+	                            <{else}>
+		                            <td class="wap-store-name" width="200px;"> <a style="cursor:pointer" onclick="showModal('<{$domain.StoreId}>','<{$domain.storeName|addslashes}>')"><{$domain.NameOptimized}></a></td>
+	                            <{/if}>
+	                            <!-- <td><{if $domain.CommissionUsed == '0'}>other<{else}><{if $domain.CommissionType == 'Value'}><{if $domain.CommissionCurrency != ''}><{$domain.CommissionCurrency}><{else}>USD<{/if}><{$domain.CommissionUsed}><{else}><{$domain.CommissionUsed}>%<{/if}><{/if}></td> -->
+	                            <td class="wap-store-commission-range"><span>Commission Value</span><{$domain.CommissionRange}><{if $domain.CommissionImprove eq '1'}><img style="width: 16px;margin-left:2px;" src="<{$smarty.const.BASE_URL}>/img/icon/up-green.png"><{/if}></td>
+	                            <td class="wap-store-ppc"><span>PPC Status</span><{$domain.PPC}></td>
+	                            <td class="wap-store-click" style="height: 46px;line-height:46px;"><span>Clicks</span><{$domain.Clicks}></td>
+	                            <td class="wap-store-commission"><span>Commission</span><{$domain.Commission}></td>
+	                            <td class="wap-store-epc"><span>EPC</span><{$domain.epc}></td>
+	                            <{if $domain.historyStore == 'yes'}>
+	                            	<td class="wap-store-count" width="200px;"><span>Promotions</span><{$domain.StoreCount}></td>
+	                            	<td class="wap-store-favorite" width="200px;">/</td>
+	                            <{else}>
+		                            <td class="wap-store-count" width="200px;"><span>Promotions</span><a href="javascript:void(0);" onclick="showModal2('<{$domain.StoreCount}>','<{$domain.StoreId}>','<{$domain.storeName|addslashes}>')" ><{$domain.StoreCount}></a></td>
+	                            	<td class="wap-store-favorite">
+		                                <a href="javascript:void(0);" class="addfav fav<{$domain.StoreId}>" data-id="<{$domain.StoreId}>" data-type="0"><span style="color:#337ab7;font-size: 24px;" class="glyphicon  glyphicon-star-empty"></span></a>
+		                            </td>
+	                            <{/if}>
+	                        <{/if}>
+	                        </tr>
+	                        <{/foreach}>
+	                    </table>
+	                    <{$pageHtml}>
+	                </div>
+	            </div>
+	        </div>
+		</div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width: 70%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="clearAjaxHtml()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"><{$LANG.backend.b_merchant.a5}></h4>
+            </div>
+            <div class="modal-body" id="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clearAjaxHtml()"><{$LANG.backend.b_merchant.a6}></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog promolist-wrap" role="document" style="width: 90%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="clearAjaxHtml()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel1"><{$LANG.backend.b_merchant.a5}></h4>
+            </div>
+            <div class="modal-body" id="modal-body1">
+                <div class="container" style="margin-top:30px;width: 100%;">
+                    <div class="col-lg-12 adv-filter">
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><{$LANG.backend.adlist.a2}></div>
+                            <div class="panel-body" style="width: 100%;">
+                                <form id="rform">
+                                    <div class="row">
+                                        <div class="form-inline">
+                                            &nbsp;
+                                            <div class="form-group">
+                                                &nbsp;Title/Desc:
+                                                <input type="text" style="width: 330px;" name="keywords" class="form-control"  placeholder="input title or desc">
+                                            </div>
+                                            <div class="btn-group btn-groupModal" style="margin-bottom: 15px;">
+                                                <input type="hidden"  name="categories" class="categoriesModal catenull">
+                                                <button type="button"  class="multiselect dropdown-toggle btn btn-default" data-toggle="dropdown" title="Category" >Category&nbsp;&nbsp;<b class="caret"></b></button>
+                                                <ul class="multiselect-container dropdown-menu" onclick="event.stopPropagation();" style="overflow:scroll;min-height:150px;min-width: 260px;">
+                                                    <li style="margin-bottom: 5px;margin-top: 1px;margin-left: 3px;">
+                                                        <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-info" onclick="select_opt('all','Modal')">Select All</span></a>
+                                                        <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-warning" onclick="select_opt('none','Modal')">Deselect All</span></a>
+                                                        <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-info" onclick="select_opt('close','Modal')">Confirm</span></a>
+                                                    </li>
+                                                    <{foreach item=cate key=id from=$category}>
+                                                    <li><a href="javascript:void(0);"><label class="checkbox"><input type="checkbox"
+                                                        class="categoryModal" id="<{$id}>" value="<{$id}>"> <{$cate}></label></a></li>
+                                                    <{/foreach}>
+                                                </ul>
+                                            </div>
+                                            <div class="form-group">
+                                                &nbsp;Type:
+                                                <select name="type" class="form-control" style="width:120px">
+                                                    <option value="">All</option>
+                                                    <option value="Coupon">Coupon</option>
+                                                    <option value="Promotion">Deal</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                &nbsp;Site:
+                                                <select class="form-control key">
+                                                    <{foreach from=$key item=k}>
+                                                    <option value="<{$k.ApiKey}>"><{$k.Domain}></option>
+                                                    <{/foreach}>
+                                                </select>
+                                            </div>
+                                            <div class="form-group" style="margin-left: 10px;">
+                                                <input type="button" class="btn b-primary rsearch" value="Search">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="col-lg-12 promolist" style="margin-top: 20px;">
+                            <div class="panel panel-default">
+                                <div class="panel-heading"></div>
+                                <div class="panel-body">
+                                    <div id="tbzone">
+                                        <table id="example" class="ui celled table" cellspacing="0" width="95%">
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clearAjaxHtml()"><{$LANG.backend.b_merchant.a6}></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+   <div class="modal fade" id="myModalActivity" tabindex="-1" role="dialog" aria-labelledby="myModalActivity">
+    <div class="modal-dialog" role="document" style="width: 90%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="clearAjaxHtml()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabelActivity"><{$LANG.backend.b_merchant.a5}></h4>
+            </div>
+            <div class="modal-body" id="modal-body1">
+                <div class="container" style="margin-top:30px;width: 100%;">
+                    <!-- <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><{$LANG.backend.adlist.a2}></div>
+                            <div class="panel-body" style="width: 100%;">
+                                <form id="rformActivity">
+                                    <div class="row">
+                                        <div class="form-inline">
+                                            &nbsp;
+                                            <div class="form-group">
+                                                &nbsp;Title/Desc:
+                                                <input type="text" style="width: 330px;" name="keywords" class="form-control"  placeholder="input title or desc">
+                                            </div>
+                                            <div class="btn-group btn-groupModal">
+                                                <input type="hidden"  name="categories" class="categoriesModal catenull">
+                                                <button type="button"  class="multiselect dropdown-toggle btn btn-default" data-toggle="dropdown" title="Category" >Category&nbsp;&nbsp;<b class="caret"></b></button>
+                                                <ul class="multiselect-container dropdown-menu" onclick="event.stopPropagation();" style="overflow:scroll;min-height:150px;min-width: 260px;">
+                                                    <li style="margin-bottom: 5px;margin-top: 1px;margin-left: 3px;">
+                                                        <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-info" onclick="select_opt('all','Modal')">Select All</span></a>
+                                                        <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-warning" onclick="select_opt('none','Modal')">Deselect All</span></a>
+                                                        <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-info" onclick="select_opt('close','Modal')">Confirm</span></a>
+                                                    </li>
+                                                    <{foreach item=cate key=id from=$category}>
+                                                    <li><a href="javascript:void(0);"><label class="checkbox"><input type="checkbox"
+                                                        class="categoryModal" id="<{$id}>" value="<{$id}>"> <{$cate}></label></a></li>
+                                                    <{/foreach}>
+                                                </ul>
+                                            </div>
+                                            <div class="form-group">
+                                                &nbsp;Type:
+                                                <select name="type" class="form-control" style="width:120px">
+                                                    <option value="">All</option>
+                                                    <option value="Coupon">Coupon</option>
+                                                    <option value="Promotion">Deal</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                &nbsp;Site:
+                                                <select class="form-control key">
+                                                    <{foreach from=$key item=k}>
+                                                    <option value="<{$k.ApiKey}>"><{$k.Domain}></option>
+                                                    <{/foreach}>
+                                                </select>
+                                            </div>
+                                            <div class="form-group" style="margin-left: 10px;">
+                                                <input type="button" class="btn b-primary rActivitysearch" value="Search">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div> -->
+                        <div class="col-lg-12" style="margin-top: 20px;">
+                            <div class="panel panel-default">
+                                <div class="panel-heading"></div>
+                                <div class="panel-body">
+                                    <div id="tbzoneActivity">
+                                        <table id="exampleActivity" class="ui celled table" cellspacing="0" width="95%">
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clearAjaxHtml()"><{$LANG.backend.b_merchant.a6}></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<button class="copy" style="display: none;">Copy</button>
+<!-- <script src="js/jquery.bxslider.min.js"></script>
+<link href="css/jquery.bxslider.css" rel="stylesheet" /> -->
+<script>
+    $(document).ready(function(){
+    	$('.bxslider').show().bxSlider({
+            minSlides: 3,
+            maxSlides: 5,
+            slideWidth: 280,
+            speed:500
+        });
+        //$('.m').css('height','100%');
+        
+      	/* $(document).delegate("#showCommission","click",function(){
+      		if($("#showCommission").is(':checked')){
+      			$("#showCommissionRise").val("1");
+      		}else{
+      			$("#showCommissionRise").val("0");
+      		}
+      		$("#search").trigger("click");
+      	}); */
+    });
+    $(function () {
+        $("[data-toggle='popover']").popover();
+        $('[data-toggle="tooltip"]').tooltip({placement:"bottom",template : '<div class="tooltip" role="tooltip" style="width:200px;font-size:14px"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>' })
+        
+        $.fn.modal.Constructor.prototype.enforceFocus = function() {};
+     	var clipboard = new Clipboard('.copydata');
+    	    clipboard.on('success', function(e) {
+    	      alert("Copied text to clipboard:\r\n"+e.text);
+    	      e.clearSelection();
+    	    });
+    	    clipboard.on('error', function(e) {
+    	      alert('Failed,copy text manually!');
+    	 	});
+    });
+    $.ajax({
+        type:"post",
+        url:"b_merchants.php",
+        data:{'check':'check'},
+        //async:false,
+        success: function(res){
+      //      alert(res);
+            if(res != 0){
+                var cls = '.fav';
+                var arr = res.split(',');
+                for(var i = 0; i<arr.length;i++){
+                    $(cls+arr[i]).find('span').removeClass('glyphicon-star-empty');
+                    $(cls+arr[i]).find('span').addClass('glyphicon-star');
+                    $(cls+arr[i]).find('span').removeAttr('style');
+                    $(cls+arr[i]).find('span').css('font-size','24px');
+                    $(cls+arr[i]).find('span').css('color','#ffd647');
+                    $(cls+arr[i]).attr('data-type','1');
+                }
+            }
+        }
+    });
+    
+    function select_opt(val,type){
+    	if(type == 'global'){
+    		var key = "";
+    	}else{
+    		var key = "Modal";
+    	}
+        switch (val)
+        {
+            case 'all':
+                $('.category'+key).prop('checked',true);
+                break;
+            case 'none':
+                $('.category'+key).prop('checked',false);
+                break;
+            case 'close':
+                $('.btn-group'+key).removeClass('open');
+                break;
+            default:
+                break;
+        }
+        if(type == 'global'){
+        	get_category('category','categories');
+        }else{
+        	get_category('category'+key,'categories'+key);
+        }
+    }
+    
+    /* $('.multiselect-group').click(function(){
+        var pid = $(this).attr('id');
+        if($(this).attr('status')=='no'){
+            $('.category_'+pid).prop('checked','true');
+            $(this).attr('status','yes');
+        }else{
+            $('.category_'+pid).removeAttr('checked');
+            $(this).attr('status','no');
+        }
+        get_category();
+    }); */
+    function get_category(categoryClass,categoriesClass){
+        var cate='';
+        /*$('.catenull').attr('value','1212');*/
+        var cc =$("input[class='"+categoryClass+"']:checked");
+        for(var i=0;i<cc.length;i++){
+            if(cc[i].checked){
+                cate += cc[i].value+',';
+            }
+        }
+        cate=cate.substring(0,cate.length-1);
+        $('.'+categoriesClass).val(cate);
+    }
+    
+    var category = $(".categories").val().split(',');
+    for(var i=0;i<category.length;i++){
+        $('.category_'+category[i]).attr('checked','checked');
+    }
+
+    $(".category").change(function () {
+        get_category('category','categories');
+    });
+    function showModal2(count,id,name){
+        $('.catenull').val('');
+        if(count == 0){
+            alert('There is no information');
+            return false;
+        }
+        $('#rform')[0].reset()
+        $('.rsearch').attr('val',id);
+        $('#myModalLabel1').html('Promotions Of '+name);
+        $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+        table(id,name);
+        $('#myModal1').modal({backdrop: 'true', keyboard: false});
+    }
+    
+    /* $('#myModal1,#myModalActivity').on('shown.bs.modal', function () {
+    	$('.copydata').zclip({
+            path: "js/ZeroClipboard.swf",
+            copy:function(){
+                return $(this).data('val');
+            }
+        });
+ 	}) */
+    
+    function table(id){
+        var data = $('#rform').serializeArray();
+        $('#example').DataTable({
+           "fnDrawCallback": function (data) {
+               /* $('.copydata').zclip({
+                   path: "js/ZeroClipboard.swf",
+                   copy:function(){
+                       return $(this).data('val');
+                   }
+               }); */
+               $('.key').on('change',function(){
+                   var val = $(this).val();
+                   $('.copydata').each(function(i){
+                       var url = $('.copydata').eq(i).data('val');
+                       var newval = changeURLArg(url,'key',val);
+                       $('.copydata').eq(i).attr('data-clipboard-text',newval);
+                   })
+               })
+          },
+            "bServerSide": true,
+            "bProcessing": true,
+            "iDisplayLength": 20,
+            "bPaginage":true,
+            "aLengthMenu": [10, 20, 50, 100],
+            'bFilter': false,
+            'pagingType':'full_numbers',
+            "ajax": {
+                "url": "b_merchants.php",
+                "type":'POST',
+                "data": {
+                    "table":1,
+                    'id':id,
+                    "data":JSON.stringify(data)
+                }
+            },
+            columns: [
+	            { "data": "Title","title":"Title","class":"title","bSortable": false},
+	            { "data": "Desc","title":"Description","class":"desc","bSortable": false,"render":function(data, type, full, meta){
+	            	if(full.Desc == '' || full.Desc == null){
+	            		var val = "";
+	                }else{
+	                	var val = "<span>Description:</span>"+full.Desc
+	                }
+	                return val;
+	            }},
+	            { "data": "CouponCode","title":"CouponCode","class":"code","bSortable": false,"render":function(data, type, full, meta){
+	            	var val = "<span>Coupon Code:</span>";
+	                if(full.CouponCode == '' || full.CouponCode == null){
+	                    val += 'no code needed';
+	                }else{
+	                    val += full.CouponCode
+	                }
+	                return val;
+	            }},
+	            /* { "data": "CommissionUsed","title":"Commission Value","bSortable": false,"render":function(data, type, full, meta){
+	                if(full.CommissionUsed == '0'){
+	                	return 'other';
+	                }else if(full.CommissionType == 'Value'){
+	                	if(full.CommissionCurrency != ''){
+	                		return full.CommissionCurrency+full.CommissionUsed;
+	                	}else{
+	                		return "USD"+full.CommissionUsed;
+	                	}
+	                }else{
+	                	return full.CommissionUsed+'%';
+	                }
+	            }}, */
+	            { "data": "CommissionRange","title":"Commission Value","class":"range","bSortable": false,"render":function(data, type, full, meta){
+	            	var val = "<span>Commission Value:</span>"+full.CommissionRange;
+	                return val;
+	            }},
+	            { "data": "StartTime","title":"Start Date","class":"start","bSortable": false},
+	            { "data": "ExpireTime","title":"End Date","class":"end","bSortable": false},
+	            { "data":null,"class":"t1 operate","title":'Operation',"bSortable": false,"render":function(data, type, full, meta){
+	                var data = "http://r.brandreward.com/?key="+$('.key').val()+'&linkid='+encodeURIComponent(full.EncodeId);
+	                var val = '<div style="position: relative;"><input type="button"  data-clipboard-text="'+data+'" class="btn  b-primary copydata"    value="Copy Url"/></div>';
+	                return val;
+	            }},
+	        ]
+        })
+    }
+    function showModalActivity(id,name){
+        //$('.catenull').val('');
+        //$('#rformActivity')[0].reset()
+        $('.rActivitysearch').attr('val',id);
+        $('#myModalLabelActivity').html(name);
+        $('#tbzoneActivity').html('<table id="exampleActivity" class="ui celled table" cellspacing="0" width="100%"></table>');
+        tableActivity(id);
+        $('#myModalActivity').modal({backdrop: 'true', keyboard: false});
+    }
+    function tableActivity(id){
+        var data = $('#rformActivity').serializeArray();
+        $('#exampleActivity').DataTable({
+           "fnDrawCallback": function (data) {
+               /* $('.copydata').zclip({
+                   path: "js/ZeroClipboard.swf",
+                   copy:function(){
+                       return $(this).data('val');
+                   }
+               }); */
+               $('.key').on('change',function(){
+                   var val = $(this).val();
+                   $('.copydata').each(function(i){
+                       var url = $('.copydata').eq(i).data('val');
+                       var newval = changeURLArg(url,'key',val);
+                       $('.copydata').eq(i).attr('data-clipboard-text',newval);
+                   })
+               })
+          },
+            "bServerSide": true,
+            "bProcessing": true,
+            "iDisplayLength": 20,
+            "bPaginage":true,
+            "aLengthMenu": [10, 20, 50, 100],
+            'bFilter': false,
+            'pagingType':'full_numbers',
+            "ajax": {
+                "url": "b_merchants.php",
+                "type":'POST',
+                "data": {
+                    "tableActivity":1,
+                    'id':id,
+                    "data":JSON.stringify(data)
+                }
+            },
+            columns: [
+                { "data": "Title","title":"Title","bSortable": false},
+                { "data": "Desc","title":"Description","bSortable": false},
+                { "data": "CouponCode","title":"CouponCode","bSortable": false,"render":function(data, type, full, meta){
+                    if(full.CouponCode == '' || full.CouponCode == null){
+                        var val = 'no code needed';
+                    }else{
+                        var val = full.CouponCode
+                    }
+                    return val;
+                }},
+                /* { "data": "CommissionUsed","title":"Commission Value","bSortable": false,"render":function(data, type, full, meta){
+                    if(full.CommissionUsed == '0'){
+                    	return 'other';
+                    }else if(full.CommissionType == 'Value'){
+                    	if(full.CommissionCurrency != ''){
+                    		return full.CommissionCurrency+full.CommissionUsed;
+                    	}else{
+                    		return "USD"+full.CommissionUsed;
+                    	}
+                    }else{
+                    	return full.CommissionUsed+'%';
+                    }
+                }}, */
+                { "data": "CommissionRange","title":"Commission Value","bSortable": false},
+                { "data": "StartTime","title":"Start Date","bSortable": false},
+                { "data": "ExpireTime","title":"End Date","bSortable": false},
+                { "data":null,"sClass":"t1","title":'Operation',"bSortable": false,"render":function(data, type, full, meta){
+                    var data = "http://r.brandreward.com/?key="+$('.key').val()+'&linkid='+encodeURIComponent(full.EncodeId);
+                    var val = '<div style="position: relative;"><input type="button"  data-clipboard-text="'+data+'" class="btn  b-primary copydata"    value="Copy Url"/></div>';
+                    return val;
+                }},
+            ]
+        })
+    }
+    $('.rActivitysearch').bind("click",function(){
+        var id = $(this).attr('val');
+        $('#tbzoneActivity').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+        tableActivity(id);
+    })
+    function changeURLArg(url,arg,arg_val){
+        var pattern=arg+'=([^&]*)';
+        var replaceText=arg+'='+arg_val;
+        if(url.match(pattern)){
+            var tmp='/('+ arg+'=)([^&]*)/gi';
+            tmp=url.replace(eval(tmp),replaceText);
+            return tmp;
+        }else{
+            if(url.match('[\?]')){
+                return url+'&'+replaceText;
+            }else{
+                return url+'?'+replaceText;
+            }
+        }
+        return url+'\n'+arg+'\n'+arg_val;
+    }
+    function changeURLArg(url,arg,arg_val){
+        var pattern=arg+'=([^&]*)';
+        var replaceText=arg+'='+arg_val;
+        if(url.match(pattern)){
+            var tmp='/('+ arg+'=)([^&]*)/gi';
+            tmp=url.replace(eval(tmp),replaceText);
+            return tmp;
+        }else{
+            if(url.match('[\?]')){
+                return url+'&'+replaceText;
+            }else{
+                return url+'?'+replaceText;
+            }
+        }
+        return url+'\n'+arg+'\n'+arg_val;
+    }
+    $('.rsearch').bind("click",function(){
+        var id = $(this).attr('val');
+        $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+        table(id);
+    })
+    function showModal(storeId,name){
+        $('#myModalLabel').html('Domains Of '+name);
+        $.ajax({
+            type: "post",
+            url: "b_merchants_domains.php",
+            data: "id="+storeId+'&name='+name,
+            async: false,
+            success: function (html) {
+                $('#modal-body').html(html);
+            }
+        });
+        $('#myModal').modal({backdrop: 'true', keyboard: false});
+    }
+    $(".categoryModal").change(function () {
+        get_category('categoryModal','categoriesModal');
+    });
+    $('.chkall').click(function(){
+        if($(this).is(':checked')){
+           $('.chk').prop('checked',true);
+        }else{
+            $('.chk').prop('checked',false);
+        }
+    });
+    $(".chk").bind("click",function(){
+        if($(this).is(':checked')){
+            $('.chkall').prop('checked',true);
+            $(this).attr('data-type','0');
+        }else{
+            $(this).attr('data-type','1');
+            $('.chkall').prop('checked',false);
+        }
+        if($('.chk').is(':checked')){
+            $('.chkall').prop('checked',true);
+        }else{
+            $('.chkall').prop('checked',false);
+        }
+    });
+    $(".addf").bind("click",function(){
+        if(!$('.chk').is(':checked')){
+            alert("Check the businesses you'd like to add");
+        }else{
+            var val = '';
+            $('.chk').each(function(i){
+                if($('.chk').eq(i).is(':checked')){
+                    val+=$('.chk').eq(i).data('id')+',';
+                }
+            })
+            $.ajax({
+                type:"post",
+                url:"b_merchants.php",
+                data:{'sid':val},
+                async:false,
+                success: function(res){
+
+                }
+            });
+        }
+    });
+    $(".addfav").bind("click",function(){
+        var sid = $(this).data('id');
+        var type = $(this).attr('data-type');
+        $.ajax({
+            type:"post",
+            url:"b_merchants.php",
+            data:{'sid':sid,'type':type},
+            async:false,
+            success: function(res){
+                if(res == 1){
+                    var cls = ".fav"+sid;
+                    $(cls).find('span').removeClass('glyphicon-star-empty');
+                    $(cls).find('span').addClass('glyphicon-star');
+                    $(cls).find('span').removeAttr('style');
+                    $(cls).find('span').css('font-size','24px');
+                    $(cls).find('span').css('color','#ffd647');
+                    $(cls).attr('data-type','1');
+                }else{
+                    var cls = ".fav"+sid;
+                    $(cls).find('span').removeClass('glyphicon-star');
+                    $(cls).find('span').addClass('glyphicon-star-empty');
+                    $(cls).find('span').removeAttr('style');
+                    $(cls).find('span').css('font-size','24px');
+                    $(cls).find('span').css('color','#337ab7');
+                    $(cls).attr('data-type','0');
+                }
+            }
+        });
+    });
+    $('.downloadAdvertiserPPC').click(function(){
+    	var type = $(this).data('type');
+    	var country = $("select[name='country']").val();
+        window.open('<{$smarty.const.BASE_URL}>/process.php'+'?act=downloadAdvertiserPPC&type='+type+'&country='+country);
+    });
+    function clearAjaxHtml(){
+        $('#modal-body').html('');
+    }
+    
+    $(".generatelink").click(function(){
+    	var _label = $(this).val();
+    	var _type = $(this).data('type');
+    	$("#generousLinkLabel").attr("generateType",_type);
+    	$("#generousLinkLabel").html(_label);
+    	generate_link();
+    	$("#generateLink").modal();
+    });
+    
+    /* $('#generateLink').on('shown.bs.modal', function () {
+    	if($("#copyApiUrl").siblings('div').length==0){
+    		$('#copyApiUrl').zclip({
+                path: "js/ZeroClipboard.swf",
+                copy:function(){
+                    return $("#apiurl").text();
+                }
+            });
+    	}
+ 	}) */
+    
+    $(document).delegate("input:radio[name='outformat']","change",function(){
+    	generate_link();
+    })
+    
+    $(document).delegate("#fsite","change",function(){
+    	generate_link();
+    })
+    
+    function generate_link(){
+		var type = $("#generousLinkLabel").attr("generateType");
+		if(type == 'valentine'){
+			var fsite = $("#fsite").val();
+	    	var apiurl = "<{$smarty.const.API_URL}>?act=links.content_feed&key="+fsite+"&user=<{$username}>";
+	    	apiurl+="&country="+$("select[name='country']").val()+"&activity=valentine"+"&category=";
+	    	$('input[class="category"]:checked').each(function(i){
+	    		if(i>0){
+	    			apiurl += ",";
+	    		}
+	    		apiurl += $(this).val();
+	       	}); 
+	    	apiurl+="&outformat="+$("input:radio[name='outformat']:checked").val();
+	    	$("#apiurl").html(apiurl);
+		}else{
+			var fsite = $("#fsite").val();
+	    	var apiurl = "<{$smarty.const.API_URL}>?act=advertiser.advertiser_list&key="+fsite+"&user=<{$username}>";
+	    	if($("input[name='collect']").is(':checked')){
+	    		apiurl+="&favor=1";
+	    	}else{
+	    		apiurl+="&favor=0";
+	    	}
+	    	apiurl+="&domain="+$("input[name='domain']").val()+"&country="+$("select[name='country']").val()+"&category=";
+	    	$('input[class="category"]:checked').each(function(i){
+	    		if(i>0){
+	    			apiurl += ",";
+	    		}
+	    		apiurl += $(this).val();
+	       	}); 
+	    	apiurl+="&outformat="+$("input:radio[name='outformat']:checked").val();
+	    	$("#apiurl").html(apiurl);
+		}
+    	return false;
+    }
+    
+    $('#download').click(function(){
+//        var value = $('#form_content_search').serialize();
+//        window.open('<{$smarty.const.BASE_URL}>/process.php'+'?act=downloadValentine&'+value);
+        var value = '';
+        window.open('<{$smarty.const.BASE_URL}>/process.php'+'?act=downloadValentine'+value);
+    });
+    
+</script>
+<{include file="b_block_footer.html"}>

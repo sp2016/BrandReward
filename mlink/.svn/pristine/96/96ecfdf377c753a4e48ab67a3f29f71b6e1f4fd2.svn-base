@@ -1,0 +1,507 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div class="container" style="margin-top:30px;width:98%">
+    <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+    <div class="row" style="padding:20px 0;">
+
+        <!-- <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Search</div>
+                <div class="panel-heading"><b style="color: forestgreen"> Active:<{$a.c}></b>
+                    &nbsp;|&nbsp;<b style="color: #ff0000">Inactive:<{$i.c}></b>
+                    &nbsp;|&nbsp;<b style="color: darkgray">Unaudited:<{$u.c}></b>
+                    &nbsp;|&nbsp;<b>Total:<{$count}></b>
+                </div>
+                <div class="panel-body" >
+                    <form id="form_search">
+                        <input type="hidden" name="p" value="1" />
+                        <div class="col-lg-12 form-inline" >
+                            <div class="form-group" style="min-width: 800px;">
+                                Name/Alias/Domain:<input type="text" Name="na" style="width: 300px;" class="form-control" id="Name" value="<{$na}>" placeholder="Name/Alias/Domain">
+                                <div class="form-group">
+                                    &nbsp;
+                                    <input type="hidden" value="<{$categories}>" name="categories" class="categories">
+                                    <div class="btn-group">
+                                        <button type="button"  class="multiselect dropdown-toggle btn btn-default" data-toggle="dropdown" title="Category" >Category&nbsp;<b class="caret"></b></button>
+                                        <ul class="multiselect-container dropdown-menu" onclick="event.stopPropagation();" style="overflow:scroll;height: 600px;">
+                                            <li style="margin-top:5px;margin-left: 5px;">
+                                                <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-info" onclick="select_opt('all')">Select All</span></a>
+                                                <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-warning" onclick="select_opt('none')">Deselect All</span></a>
+                                                <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-info" onclick="select_opt('confirm')">Confirm</span></a>
+                                            </li>
+                                            <{foreach item=cate key=id from=$category}>
+                                            <li><a href="javascript:void(0);"><label class="checkbox"><input type="checkbox"
+                                                <{if $sel_cate }>
+                                                <{foreach from=$sel_cate item=sc}>
+                                                <{if $sc == $id}> checked <{/if}>
+                                                <{/foreach}>
+                                                <{/if}>
+                                                class="category" id="<{$id}>" value="<{$id}>"> <{$cate}></label></a></li>
+                                            <{/foreach}>
+                                        </ul>
+                                    </div>
+                                </div>
+                                Status:<select class="form-control" name="Status" style="width: 12  0px;">
+                                <option value="" <{if $Status eq 'All'}>selected="selected"<{/if}> >All</option>
+                                <option value="Active" <{if $Status eq 'Active'}>selected="selected"<{/if}> >Active</option>
+                                <option value="Inactive" <{if $Status eq 'Inactive'}>selected="selected"<{/if}> >Inactive</option>
+                                <option value="Unaudited" <{if $Status eq 'Unaudited'}>selected="selected"<{/if}> >Unaudited</option>
+                            </select>&nbsp;
+                                Manager:<select class="form-control" name="Manager">
+                                <option value="" >All</option>
+                                <{foreach from=$managers item=manager}>
+                                <option value="<{$manager}>" <{if $Manager eq $manager}>selected="selected"<{/if}> > <{$manager}></option>
+                                <{/foreach}>
+                            </select>
+                                PageSize:<select class="form-control" name="pagesize">
+                                <option value="10" <{if $pagesize == '10'}>selected<{/if}>>10</option>
+                                <option value="20" <{if $pagesize == '20'}>selected<{/if}>>20</option>
+                                <option value="50" <{if $pagesize == '50'}>selected<{/if}>>50</option>
+                                <option value="100" <{if $pagesize == '100'}>selected<{/if}>>100</option>
+                            </select>
+                                Sort By:<select class="form-control" name="sort">
+                                <option value="AddTime" <{if $sort == 'AddTime'}>selected<{/if}>>AddTime</option>
+                                <option value="commission" <{if $sort == 'commission'}>selected<{/if}>>Commission</option>
+                                <option value="click" <{if $sort == 'click'}>selected<{/if}>>Clicks</option>
+
+                            </select>
+                                &nbsp;&nbsp;
+                                <button type="submit" class="btn  btn-primary ">Search</button>
+                                &nbsp;&nbsp;
+                                <button type="button" class="btn  btn-primary down">Download</button>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+        </div> -->
+        
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Result<a href="javascript:void(0);" id="addAccount" style="float: right;">Add</a></div>
+                <div class="panel-body">
+                    <table id="example" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>UserName</th>
+                            <th>Status</th>
+                            <th>Remark</th>
+                            <th>Store</th>
+                            <th>Operate</th>
+                        </tr>
+                        </thead>
+                        <{foreach from=$accountList item=account}>
+                        <tr data-id='<{$account.ID}>' data-password='<{$account.UserPass}>' class="open-logs tr">
+                            <td><{$account.Name}></td>
+                            <td><{$account.UserName}></td>
+                            <td><{$account.Status}></td>
+                            <td><{$account.Remark}></td>
+                            <td>
+	                            <{foreach from=$account.storeName key=k item=val}>
+	                            <input type="hidden" data-id="<{$k}>" value="<{$val}>">
+	                            	<a data-storeid="<{$k}>" data-accountid="<{$account.ID}>" href="w_store_listing.php?accountid=<{$account.ID}>&storeid=<{$k}>" target="_blank" class="storeDetail"><{$val}></a> / 
+	                            <{/foreach}>
+                            </td>
+                            <td>
+	                            <a class="editStore" href="javascript:void(0)" style="cursor: pointer"/>Edit</a>
+                            </td>
+                        </tr>
+                        <{/foreach}>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="modal fade" id="storeDetailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Log Info</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table  table-bordered" id="logbody">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addAccountModal" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title">Add White List Account</h2>
+            </div>
+            <div class="modal-body">
+	            <div class="container-fluid">
+	                <div class="row">
+		                <div class="col-md-8 col-md-offset-2">
+							<form class="form-horizontal" id="addform" action="w_store_account.php">
+							  <input name="action" type="hidden" value="submit">
+							  <input id="accountId" name="id" type="hidden" value="">
+							  <div class="form-group">
+							    <label for="UserName" class="col-sm-2 control-label">User Name</label>
+							    <div class="col-sm-8">
+							      <input type="text" class="form-control" id="username" name="username" placeholder="User Name">
+							    </div>
+							  </div>
+							  <div class="form-group">
+							    <label for="Password" class="col-sm-2 control-label">Password</label>
+							    <div class="col-sm-8">
+							      <input type="text" class="form-control" id="password" name="password" placeholder="Password">
+							    </div>
+							  </div>
+							  <div class="form-group">
+							    <label for="UserName" class="col-sm-2 control-label">Name</label>
+							    <div class="col-sm-8">
+							      <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+							    </div>
+							  </div>
+							  <div class="form-group">
+							      <label for="Status" class="col-sm-2 control-label">Status</label>
+							      <div class="col-sm-8">
+								      <select id="status" name="status" class="form-control">
+								        <option value="Active">Active</option>
+								        <option value="Inactive">Inactive</option>
+								        <option value="Delete">Delete</option>
+								      </select>
+							      </div>
+							  </div>
+							  <div class="form-group">
+							    <label for="UserName" class="col-sm-2 control-label">Remark</label>
+							    <div class="col-sm-8">
+							      <input type="text" class="form-control" id="remark" name="remark" placeholder="Remark">
+							    </div>
+							  </div>
+							  <div class="storediv">
+								  <!-- <div class="form-group storelist">
+								      <label for="Store" class="col-sm-2 control-label">Store<span class="storeCount"></span></label>
+								      <div class="col-sm-8">
+									      <select name="store[]" class="form-control selectStore" style="width: 100%;">
+									      </select>
+								      </div>
+								      <div class="btn-div-store">
+								      	  <button type="button" class="btn btn-default addstore" aria-label="Left Align">
+										    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+										  </button>
+									  </div>
+								  </div> -->
+							  </div>
+							  <div class="form-group" style="text-align:center">
+			                       <input type="hidden" id="submitType">
+				                   <button class="btn btn-primary" style="margin-right: 10px;" id="addAccountConfirm">confirm</button>
+								   <button class="btn btn-default" style="margin-left: 10px;" data-dismiss="modal">cancel</button>
+							  </div>
+							</form>
+	                	</div>
+	            	</div>
+	            </div>
+	        </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	$(function(){
+		
+		$('#example').DataTable({
+			bSort:false
+		});
+		
+		//select2在modal中生效
+		$.fn.modal.Constructor.prototype.enforceFocus =function(){};
+		
+		/* $(".selectStore").select2({
+			theme: "bootstrap",
+			allowClear: true,
+			placeholder: "Select a State",
+			minimumInputLength: 1,
+			ajax:{
+	            url:"w_store_account.php",
+	            dataType:"json",
+	            delay:250,
+	            data:function(params){
+	                return {
+	                    name: params.term,
+	                    page: params.page || 1
+	                };
+	            },
+	            processResults: function (res, params) {
+	            	params.page = params.page || 1;
+	                var rs = res["data"];
+	                var options = [];
+	                for(var i= 0, len=rs.length;i<len;i++){
+	                    var option = {"id":rs[i]["storeId"], "text":rs[i]["storeName"]};
+	                    options.push(option);
+	                }
+	                return {
+	                    results: options,
+	                    pagination: {
+	                        more:((params.page) * 20) < res["more"]
+	                    }
+	                };
+	            },
+	            cache:true,
+	            escapeMarkup: function (markup) { return markup; },
+	        }
+		}); */
+		
+		$(document).delegate(".editStore","click",function(){
+			var _tr = $(this).closest('tr');
+			var id = _tr.data('id');
+			//var password = _tr.data('password');
+			var name = _tr.children('td:eq(0)').text();
+			var username = _tr.children('td:eq(1)').text();
+			var status = _tr.children('td:eq(2)').text();
+			var remark = _tr.children('td:eq(3)').text();
+			var storeArray=[];
+			/* var arr  = 
+			jsonarray.push(arr); */
+			_tr.children('td:eq(4)').children('input').each(function(){
+				storeArray.push({"id":$(this).data('id'),"name":$(this).val()});
+			})
+			$("#accountId").val(id);
+			$("#username").val(username);
+			$("#password").val('');
+			$("#name").val(name);
+			$("#status").val(status);
+			$("#remark").val(remark);
+			
+			var html = '';
+			for(var i in storeArray){
+				html+='<div class="form-group storelist">'+
+					      '<label for="Store" class="col-sm-2 control-label">Store<span class="storeCount"></span></label>'+
+					      '<div class="col-sm-8">'+
+						      '<select name="store[]" class="form-control selectStore" style="width: 100%;">'+
+						      	'<option value="'+storeArray[i].id+'">'+storeArray[i].name+'</option>'+
+						      '</select>'+
+					      '</div>'+
+					      '<div class="btn-div-store">'+
+					      	  '<button type="button" class="btn btn-default addstore" aria-label="Left Align">'+
+							    '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'+
+							  '</button>'+
+						  '</div>'+
+					 '</div>';
+			}
+			$(".storediv").html(html);
+			$(".selectStore").select2({
+				theme: "bootstrap",
+				allowClear: true,
+				placeholder: "Select a State",
+				minimumInputLength: 1,
+				ajax:{
+		            url:"w_store_account.php",
+		            dataType:"json",
+		            delay:250,
+		            data:function(params){
+		                return {
+		                    name: params.term,
+		                    page: params.page || 1
+		                };
+		            },
+		            processResults: function (res, params) {
+		            	params.page = params.page || 1;
+		                var rs = res["data"];
+		                var options = [];
+		                for(var i= 0, len=rs.length;i<len;i++){
+		                    var option = {"id":rs[i]["storeId"], "text":rs[i]["storeName"]};
+		                    options.push(option);
+		                }
+		                return {
+		                    results: options,
+		                    pagination: {
+		                        more:((params.page) * 20) < res["more"]
+		                    }
+		                };
+		            },
+		            cache:true,
+		            escapeMarkup: function (markup) { return markup; },
+		        }
+			});
+			refreshStore();
+			$("#addAccountModal").modal('show');
+		})		
+		
+		$(document).delegate('#addAccount','click',function(){
+			$("#accountId").val('');
+			$("#username").val('');
+			$("#password").val('');
+			$("#name").val('');
+			$("#status").val('Active');
+			$("#remark").val('');
+			var html ='<div class="form-group storelist">'+
+					      '<label for="Store" class="col-sm-2 control-label">Store<span class="storeCount"></span></label>'+
+					      '<div class="col-sm-8">'+
+						      '<select name="store[]" class="form-control selectStore" style="width: 100%;">'+
+						      '</select>'+
+					      '</div>'+
+					      '<div class="btn-div-store">'+
+					      	  '<button type="button" class="btn btn-default addstore" aria-label="Left Align">'+
+							    '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'+
+							  '</button>'+
+						  '</div>'+
+					 '</div>';
+			$(".storediv").html(html);
+			$(".selectStore").select2({
+				theme: "bootstrap",
+				allowClear: true,
+				placeholder: "Select a State",
+				minimumInputLength: 1,
+				ajax:{
+		            url:"w_store_account.php",
+		            dataType:"json",
+		            delay:250,
+		            data:function(params){
+		                return {
+		                    name: params.term,
+		                    page: params.page || 1
+		                };
+		            },
+		            processResults: function (res, params) {
+		            	params.page = params.page || 1;
+		                var rs = res["data"];
+		                var options = [];
+		                for(var i= 0, len=rs.length;i<len;i++){
+		                    var option = {"id":rs[i]["storeId"], "text":rs[i]["storeName"]};
+		                    options.push(option);
+		                }
+		                return {
+		                    results: options,
+		                    pagination: {
+		                        more:((params.page) * 20) < res["more"]
+		                    }
+		                };
+		            },
+		            cache:true,
+		            escapeMarkup: function (markup) { return markup; },
+		        }
+			});
+			
+			$("#addAccountModal").modal('show');
+		})
+
+		//增加一个store
+		$(document).delegate('.addstore','click',function(){
+			var str = '';
+			str += '<div class="form-group storelist">'+
+				      '<label for="Store" class="col-sm-2 control-label">Store<span class="storeCount"></span></label>'+
+				      '<div class="col-sm-8">'+
+					      '<select name="store[]" class="form-control selectStore" style="width: 100%;">'+
+					      '</select>'+
+				      '</div>'+
+				      '<div class="btn-div-store">'+
+					  '</div>'+
+				   '</div>';
+			$("#addform div:last").prev('div').append(str);
+			
+			$("#addform").children('div:last').prev('div').children('div:last').children('div').children('.selectStore').select2({
+				theme: "bootstrap",
+				allowClear: true,
+				placeholder: "Select a State",
+				minimumInputLength: 1,
+				ajax:{
+		            url:"w_store_account.php",
+		            dataType:"json",
+		            delay:250,
+		            data:function(params){
+		                return {
+		                    name: params.term,
+		                    page: params.page || 1
+		                };
+		            },
+		            processResults: function (res, params) {
+		            	params.page = params.page || 1;
+		                var rs = res["data"];
+		                var options = [];
+		                for(var i= 0, len=rs.length;i<len;i++){
+		                    var option = {"id":rs[i]["storeId"], "text":rs[i]["storeName"]};
+		                    options.push(option);
+		                }
+		                return {
+		                    results: options,
+		                    pagination: {
+		                        more:((params.page) * 20) < res["more"]
+		                    }
+		                };
+		            },
+		            cache:true,
+		            escapeMarkup: function (markup) { return markup; },
+		        }
+			});
+			
+			refreshStore();
+		})
+		
+		//减少一个store
+		$(document).delegate('.minusstore','click',function(){
+			$(this).closest('.storelist').remove();
+			refreshStore();
+		})
+		
+		//提交
+		$(document).delegate('#addAccountConfirm','click',function(){
+			$.ajax({
+	             type: "POST",
+	             url: $("#addform").attr("action"),
+	             data: $("#addform").serialize(),
+	             dataType: "json",
+	             success: function(data){
+	            	 if(data.code==1){
+	            		 window.location.reload();
+	            		 return false; 
+	            	 }else{
+	            		 alert(data.msg);
+	                     return false; 
+	            	 }
+                 }
+	         });
+			return false;
+		})
+		
+		/* $(document).delegate('.storeDetail','click',function(){
+			$("#storeDetailModal").modal();
+		}) */
+		
+	})
+	
+	function refreshStore(){
+		$(".storelist").each(function(i){
+			if(i>0){
+				$(this).children('label').children('.storeCount').html(i+1);
+			}else{
+				$(this).children('label').children('.storeCount').html('');
+			}
+			if($(".storelist").length > 1){
+				$(this).children('div:last').html('<button type="button" class="btn btn-default addstore" aria-label="Left Align">'+
+											    	'<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'+
+												  '</button>'+
+											      '<button type="button" class="btn btn-default minusstore" aria-label="Left Align">'+
+											    	'<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>'+
+												  '</button>');
+			}else{
+				$(this).children('div:last').html('<button type="button" class="btn btn-default addstore" aria-label="Left Align">'+
+											    	'<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'+
+												  '</button>');
+			}
+		})
+	}
+
+
+</script>
+
+
+
+
+
+
+
+<{include file="b_block_footer.html"}>

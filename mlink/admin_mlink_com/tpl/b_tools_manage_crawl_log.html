@@ -1,0 +1,171 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;">
+            <h1>Crawl - Log</h1>
+        </select>
+        </div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                
+                <div class="panel panel-default">
+                    <div class="panel-heading"><a href="b_tools_manage_crawl.php" target="_blank">当前脚本状态</a></div>
+                    <div class="panel-body">
+                        <form id="form_content_search">
+                            <div class="row">
+                                <div class=" form-inline">
+                                    <div class="col-lg-12 ">
+                                        <div class="form-group dpm" style="position:relative;">
+                                           <input type="text" name="date" class="form-control datepicker" placeholder="Run Time" value="<{$search.date}>"> 
+                                        </div>
+                                        <div class="form-group">
+                                            &nbsp;AffName
+                                            <select name="affid" class="form-control" style="width:120px">
+                                                <option value="">All</option>
+                                                <{foreach from=$affiList key=lk item=lc}>
+                                                <option value="<{$lk}>" <{if isset($search.affid) and $search.affid eq $lk}>selected="selected"<{/if}>><{$lc.Name}></option>
+                                                <{/foreach}>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            &nbsp;CrawlType
+                                            <select name="method" class="form-control" style="width:120px">
+                                                <option value="">All</option>
+                                                <option value="getprogram" <{if isset($search.method) and $search.method eq 'getprogram'}> selected="selected"<{/if}>>getprogram</option>
+                                                <option value="getallpagelinks" <{if isset($search.method) and $search.method eq 'getallpagelinks'}> selected="selected"<{/if}>>getallpagelinks</option>
+                                                <option value="getallfeeds" <{if isset($search.method) and $search.method eq 'getallfeeds'}> selected="selected"<{/if}>>getallfeeds</option>
+                                                <option value="transactionCrawl" <{if isset($search.method) and $search.method eq 'transactionCrawl'}> selected="selected"<{/if}>>transactionCrawl</option>
+                                                <option value="getproduct" <{if isset($search.method) and $search.method eq 'getproduct'}> selected="selected"<{/if}>>getproduct</option> 
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            &nbsp;Status
+                                            <select name="status" class="form-control" style="width:120px">
+                                                <option value="">All</option>
+                                                <option value="finish" <{if isset($search.status) and $search.status eq 'finish'}> selected="selected"<{/if}>>Finish</option>
+                                                <option value="doing" <{if isset($search.status) and $search.status eq 'doing'}> selected="selected"<{/if}>>Doing</option>
+                                                <option value="error" <{if isset($search.status) and $search.status eq 'error'}> selected="selected"<{/if}>>Error</option>
+                                            </select>
+                                        </div>
+                                       <!--   <div class="from_group">
+                                        	&nbsp;MK/BR
+                                        	<select name="platform" class="form-control" style="width:120px">
+                                        		<option value="">All</option>
+                                        		<option value="MK" <{if isset($search.platform) and $search.platform eq MK}> selected="selected"<{/if}>>MK</option>
+                                        		<option value="BR" <{if isset($search.platform) and $search.platform eq BR}> selected="selected"<{/if}>>BR</option>
+                                        	</select>
+                                        </div>-->
+                                        
+                                        <div class="form-group" style="margin-left: 10px;">
+                                            <input type="submit" class="btn b-primary" value="Search">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <table class="table table-striped" id="table_aff">
+                            <thead>
+                            <tr>
+                                <th>AffName</th>
+                                <th>Platform</th>
+                                <th>Type</th>
+                                <th>Starttime</th>
+                                <th>Endtime</th>
+                                <th>Logfile</th>
+                                <th>Status</th>
+                                <{if $search.method eq 'getprogram'}>
+                                <th>New</th>
+                                <th>NotFound</th>
+                                <th>PartnershipOn</th>
+                                <th>PartnershipOff</th>
+                                <th>StoreOff</th>
+                                <{elseif $search.method eq 'transactionCrawl'}>
+                                <th>Unknown</th>
+                                <th></th>
+                                <th></th>
+                                <{else}>
+                                <th>Total</th>
+                                <th>New</th>
+                                <th>ToInactive</th>
+                                <{/if}>
+                                
+                                
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=value key=key}>
+                            <tr>
+                                <td><{$affiList[$value.affid].Name}></td>
+                                <td><{$value.platform}></td>
+                                <td><{$value.method}></td>
+                                <td><{$value.startTime}></td>
+                                <td><{$value.endTime}></td>
+                                <td><{$value.logfile}></td>
+                                <td><{$value.status|ucfirst}></td>
+                                <{if $value.analyze_flag eq '0'}>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <{else}>
+                                 <{if $value.method eq 'getprogram'}>
+                                   <td><a href="javascript:void(0);" onclick="cate_operate(1,<{$value.id}>)"><{$value.new}></a></td>
+                                   <td><a href="javascript:void(0);" onclick="cate_operate(3,<{$value.id}>)"><{$value.notfound}></a></td>
+                                   <td><a href="javascript:void(0);" onclick="cate_operate(2,<{$value.id}>)"><{$value.update}></a></td>
+                                   <td><a href="javascript:void(0);" onclick="cate_operate(4,<{$value.id}>)"><{$value.toInactive}></a></td>
+                                   <td><{$value.storeOffcount}></td>
+                                 <{elseif $search.method eq 'transactionCrawl'}>
+                                   <td><{$value.total}></td>
+                                   <td></td>
+                                   <td></td>
+                                 <{else}>
+                                   <td><{$value.total}></td>
+                                   <td><{$value.new}></td>
+                                   <td><{$value.toInactive}></td>
+                                 <{/if}>
+                                <{/if}>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+ 
+<div class="ui fullscreen modal">
+    <i class="close icon"></i>
+    <div class="header label"></div>
+    <div class="content modelval"  style="overflow:auto;height:100%;">
+    </div>
+</div>
+
+<script type="text/javascript">    
+function cate_operate(type,id){
+	 
+	$('.modelval').html('');
+    $('.label').html('List');
+    $.ajax({
+        type: "post",
+        url: "b_tools_manage_crawl_log.php",
+        data: "id="+id+'&type='+type,
+        async: false,
+        success: function (html) {
+            $('.modelval').append(html);
+        }
+    });
+    $('.fullscreen').modal('show');
+}
+   
+</script>	      
+ 
+<{include file="b_block_footer.html"}>

@@ -1,0 +1,56 @@
+<?php
+define('INCLUDE_ROOT', dirname(__FILE__).'/');
+//define('BASE_URL', 'http://admin.brandreward.com');
+
+	define('BASE_URL', 'http://localhost/mlink/admin_mlink_com/');
+
+	define('GO_URL', 'http://go.mgsvc.com');
+
+//define('BASE_URL', 'http://felix.mgsvr.com/transaction_ticket');
+//define('DB_HOST', 'dev01.mgsvr.com');
+//define('DB_NAME', 'felix_base');
+//define('DB_USER', 'felix');
+//define('DB_PASS', '8Arj6gXv');
+
+define('API_URL', 'http://api.mgsvc.com');
+
+
+//define('DB_HOST', 'localhost');
+//define('DB_NAME', 'bdg_go_base');
+//define('DB_USER', 'bdg_go');
+//define('DB_PASS', 'shY12Nbd8J');
+define('DB_HOST', 'dev01.mgsvr.com');
+define('DB_NAME', 'mcsky_base');
+define('DB_USER', 'mcsky');
+define('DB_PASS', 'waL4GpCO');
+
+
+//pendinglinks
+define("PROD_DB_HOST", "localhost");
+define("PROD_DB_USER", "bdg_go");
+define("PROD_DB_PASS", "shY12Nbd8J");
+define("PROD_DB_NAME", "bdg_go_base");
+//define("PROD_DB_HOST", "dev01.mgsvr.com");
+//define("PROD_DB_USER", "felix");
+//define("PROD_DB_PASS", "8Arj6gXv");
+//define("PROD_DB_NAME", "felix_tracking");
+
+
+//
+//define("PROD_DB_HOST", "localhost");
+//define("PROD_DB_USER", "pl_usr");
+//define("PROD_DB_PASS", "k&ehSl4378$%A");
+//define("PROD_DB_NAME", "pendinglinks");
+
+
+//define('MYSQL_ENCODING','UTF8');
+
+//define('MYSQL_ENCODING','UTF8');
+
+define('MYSQL_ENCODING','latin1');
+
+
+define('DEBUG_MODE',true);
+define('DATA_TRANSACTION_UPLOAD_PATH','/app/site/mgsvc.com/api/data/transaction/upload');
+
+?>

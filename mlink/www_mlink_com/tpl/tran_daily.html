@@ -1,0 +1,149 @@
+<{include file="block_header.html"}>
+<{include file="block_banner.html"}> 
+
+
+<div class="container-fluid">
+  <div class="col-sm-2 col-md-2" >
+    <form class="">
+
+      <div class="form-group">
+      <label for="sel_aff"><{$LANG.front.tran_daily.a1}></label><br>
+      <select multiple class="form-control" id="sel_aff" name="sel_aff[]" size="5">
+        <option val=""><{$LANG.front.tran_daily.a2}></option>
+        <{foreach from=$AffNameIdMap item=v key=k}>
+        <option val="<{$k}>" <{if $S_GET.sel_aff && $k|in_array:$S_GET.sel_aff}>selected<{/if}>><{$k}></option>
+        <{/foreach}>
+      </select>
+      </div>
+      <div class="form-group">
+      <label for="sel_site"><{$LANG.front.tran_daily.a3}></label><br>
+      <select multiple class="form-control" id="sel_site" name="sel_site[]" size="5">
+        <option val=""><{$LANG.front.tran_daily.a4}></option>
+        <{foreach from=$site_tracking_code item=v key=k}>
+        <option val="<{$v}>" <{if $S_GET.sel_site && $v|in_array:$S_GET.sel_site}>selected<{/if}>><{$v}></option>
+        <{/foreach}>
+      </select>
+      </div>
+
+
+      <div class="form-group">
+        <label for="sel_createddate_start"><{$LANG.front.tran_daily.a5}></label><br>
+        <input type="text" name="sel_createddate_start" class="form-control" id="sel_createddate_start" value="<{$S_GET.sel_createddate_start}>">
+
+      </div>
+
+      <div class="form-group">
+        <label for="sel_createddate_end"><{$LANG.front.tran_daily.a6}></label><br>
+        <input type="text" name="sel_createddate_end" class="form-control" id="sel_createddate_end" value="<{$S_GET.sel_createddate_end}>">
+      </div>
+      
+      <div class="form-group">
+        <label for="sel_updateddate_start"><{$LANG.front.tran_daily.a7}></label><br>
+        <input type="text" name="sel_updateddate_start" class="form-control" id="sel_updateddate_start" value="<{$S_GET.sel_updateddate_start}>">
+      </div>
+      
+      <div class="form-group">
+        <label for="sel_updateddate_end"><{$LANG.front.tran_daily.a8}></label><br>
+        <input type="text" name="sel_updateddate_end" class="form-control" id="sel_updateddate_end" value="<{$S_GET.sel_updateddate_end}>">
+      </div>
+
+       <div class="form-group">
+        <label for="sel_sort"><{$LANG.front.tran_daily.a9}></label><br>
+        <select class="form-control" name="sel_sort">
+          <option value="updated"><{$LANG.front.tran_daily.a10}></option>
+          <option value="created" <{if $S_GET.sel_sort == 'created'}>selected<{/if}>><{$LANG.front.tran_daily.a11}></option>
+          <option value="commission" <{if $S_GET.sel_sort == 'comission'}>selected<{/if}>><{$LANG.front.tran_daily.a12}></option>
+          <option value="sales" <{if $S_GET.sel_sort == 'sales'}>selected<{/if}>><{$LANG.front.tran_daily.a13}></option>
+        </select>
+      </div>
+
+       <div class="form-group">
+        <label for="sel_orderby"><{$LANG.front.tran_daily.a14}></label><br>
+        <select class="form-control" name="sel_orderby">
+          <option value="desc"><{$LANG.front.tran_daily.a15}></option>
+          <option value="asc" <{if $S_GET.sel_orderby == 'asc'}>selected<{/if}>><{$LANG.front.tran_daily.a16}></option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="sel_pagesize"><{$LANG.front.tran_daily.a17}></label><br>
+        <select class="form-control" name="sel_pagesize">
+          <option value="20">20</option>
+          <option value="50" <{if $S_GET.sel_pagesize == '50'}>selected<{/if}>>50</option>
+          <option value="100" <{if $S_GET.sel_pagesize == '100'}>selected<{/if}>>100</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-default"><{$LANG.front.tran_daily.a18}></button>
+      </div>
+
+    </form>
+  </div>
+  <div class="col-sm-10 col-md-10" >
+    <h2 style="border-bottom:1px solid #eee;padding-bottom: 10px;"><{$LANG.front.tran_daily.a19}></h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><{$LANG.front.tran_daily.a20}></th>
+          <th><{$LANG.front.tran_daily.a21}></th>
+          <th><{$LANG.front.tran_daily.a22}></th>
+          <th><{$LANG.front.tran_daily.a23}></th>
+          <th><{$LANG.front.tran_daily.a24}></th>
+          <th>Aff<{$LANG.front.tran_daily.a25}>
+          <th><{$LANG.front.tran_daily.a26}></th>
+          <th><{$LANG.front.tran_daily.a27}></th>
+          <th><{$LANG.front.tran_daily.a28}></th>
+        </tr>
+      </thead>
+      <tbody>
+        <{foreach from=$tran_data item=d}>
+        <tr>
+          <td><{$d.Created}></td>
+          <td><{$d.Updated}></td>
+          <td><{$d.Sales|number_format:'2':'.':','}></td>
+          <td><{$d.Commission|number_format:'2':'.':','}></td>
+          <td><{$d.Site}></td>
+          <td><{$d.Af}></td>
+          <td><{$d.ProgramName}></td>
+          <td><{$d.SID}></td>
+          <td><{$d.PublishTracking}></td>
+        </tr>
+        <{/foreach}>
+      </tbody>
+    </table>
+
+    <{$page_html}>
+  </div>
+</div>
+
+
+
+<script>
+    $('#sel_createddate_end').datetimepicker({
+        format:'yyyy-mm-dd',
+        todayBtn: true,
+        autoclose: 1,
+        viewSelect: 2
+    });
+    $('#sel_createddate_start').datetimepicker({
+        format:'yyyy-mm-dd',
+        todayBtn: true,
+        autoclose: 1,
+        viewSelect: 2
+    });
+    $('#sel_updateddate_end').datetimepicker({
+        format:'yyyy-mm-dd',
+        todayBtn: true,
+        autoclose: 1,
+        viewSelect: 2
+    });
+    $('#sel_updateddate_start').datetimepicker({
+        format:'yyyy-mm-dd',
+        todayBtn: true,
+        autoclose: 1,
+        viewSelect: 2
+    });
+
+</script>
+<{include file="block_footer.html"}>

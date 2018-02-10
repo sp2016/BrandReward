@@ -1,0 +1,664 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style>
+    .t1{  min-width: 80px; }
+</style>
+<div class="ch-container" style="margin-top: 20px;">
+    <div class="row">
+        <div class="col-sm-2 col-lg-2" style="width: 15%;">
+            <div class="sidebar-nav" style="background-color:#f6f6f6;min-height: 1619px;">
+                <form id="search">
+                    <a href="javascript:void(0)" class="sh"><i style="margin-top: 10px;color:#627491;margin-left: 10px;font-size: 18px;" class="glyphicon glyphicon-search"></i></a>
+                    <input style="width: 95%;margin-left: 2.5%;margin-top: 5px;" type="text" name="store" class="form-control key" placeholder="Advertiser">
+                    <input  name="keyword" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control title key" placeholder="Title/Desc">
+                    <input name="linkid" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control title key" placeholder="Link ID">
+                    <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+                        <label class="control-label" style="margin-left: 3px;" for="timetype">Time Type</label>
+                        <select id="timetype" name="timetype" data-rel="chosen" class="chosen" style="width: 96%;">
+                            <option value="1">Create Time</option>
+                            <option value="2">Click Time</option>
+
+                        </select>
+                    </div>
+                    <input id="stime" name="startdate" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control dtpicker" placeholder="From">
+                    <input id="etime" name="enddate" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control dtpicker  " placeholder="To">
+                    <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+                        <label class="control-label" style="margin-left: 3px;" for="country">Choose a Country</label>
+                        <select id="country" name="country" class="chosen1" data-rel="chosen" style="width: 96%;">
+                            <option value="">All</option>
+                            <{foreach from=$countryArr key=k item=c}>
+                            <option value="<{$c}>" ><{$k}></option>
+                            <{/foreach}>
+                        </select>
+                    </div>
+                    <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+                        <label class="control-label" style="margin-left: 3px;" for="aname">Language</label>
+                        <select id="aname" name="language" class="chosen2"  data-rel="chosen" style="width: 96%;">
+                            <option value="">All</option>
+                            <option value="en">EN</option>
+                            <option value="fr">FR</option>
+                            <option value="de">DE</option>
+                        </select>
+                    </div>
+                    <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+                        <label class="control-label" style="margin-left: 3px;" for="selectError">Source</label>
+                        <select id="logo" name="source" class="chosen2"  data-rel="chosen" style="width: 96%;">
+                            <option value="">All</option>
+                            <option value="site">Site</option>
+                            <option value="manual">Manual</option>
+                        </select>
+                    </div>
+                    <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+                        <label class="control-label" style="margin-left: 3px;">Category</label>
+                        <input type="hidden"  name="categories" class="categories">
+                        <{foreach item=cate key=k from=$category}>
+                        <br />
+                        <input id="cate_<{$k}>" value="<{$k}>" type="checkbox" class="category" style="margin: 0;" />
+                        <label for="cate_<{$k}>" style="margin-left:3px;font-weight: 100;font-size: 14px;"><{$cate}></label>
+                        <{/foreach}>
+                    </div>
+                </form>
+                <input  type="button" class="btn search" style="width: 95%;margin-left:2.5%;margin-top:10px;margin-bottom:10px;background-color: #627491;color:white;" value="Search">
+                <input  type="button" class="btn  show" style="width: 95%;margin-left:2.5%;background-color: #286090;color:white;" value="Download Csv">
+            </div>
+        </div>
+        <div id="content" class="col-lg-10 col-sm-10" style="width: 85%;">
+            <!-- content starts -->
+            <div>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="<{$smarty.const.BASE_URL}>/b_home.php">Home</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" style="text-decoration:none;">Products</a>
+                    </li>
+                </ul>
+            </div>
+            <div id="append">
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0;">
+                <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+                    <div>Total Products</div>
+                    <div id="total" class="nulls"></div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0;">
+                <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+                    <div>Total Clicks</div>
+                    <div id="clicks" class="nulls"></div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0;">
+                <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+                    <div>Real Clicks</div>
+                    <div id="rclicks" class="nulls"></div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0;">
+                <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+                    <div>Total Robot</div>
+                    <div id="rob" class="nulls"></div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0;">
+                <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+                    <div>May Be Robot</div>
+                    <div id="robp" class="nulls"></div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0;">
+                <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+                    <div>Total Orders</div>
+                    <div id="orders" class="nulls"></div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0;">
+                <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+                    <div>Total Sales</div>
+                    <div id="sales" class="nulls"></div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0;">
+                <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+                    <div>Total Commission</div>
+                    <div id="commission" class="nulls"></div>
+                </a>
+            </div>
+            <div class="box col-md-12" style="padding-left:0;padding-right:0;">
+                <div class="box-inner">
+                    <div class="box-header well" data-original-title="">
+                        <a href="javascript:void(0);" id="addnew">Add New Product</a>
+                    </div>
+                    <div id="tbzone">
+                        <table id="example" class="ui celled table" cellspacing="0" width="100%">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal ui" id="editModal" tabindex="-1" role="dialog"  aria-hidden="true"  style="max-height: 750px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h3 class="modal-title ptitle">Product Feed Edit</h3>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid " id="edit-modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                            <form id="fnull" class="form-horizontal tasi-form s1" method="get">
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-sm-2 control-label">Advertiser<font color="red">*</font>:</label>
+                                    <div class="col-sm-10">
+                                        <input type="hidden" class="ID">
+                                        <input id="add-content-advertiser" placeholder="Please input the Advertiser name!"  type="text" class="form-control advertiser">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-sm-2 control-label">Country:</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control language" id="pcountry" multiple="true" data-rel="chosen" class="chosen-select">
+                                            <{foreach from=$countryArr key=k item=c}>
+                                            <option value="<{$c}>"><{$k}></option>
+                                            <{/foreach}>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-sm-2 control-label">Name<font color="red">*</font>:</label>
+                                    <div class="col-sm-10">
+                                        <input id="add-content-title" placeholder="Please input the title!"  type="text" class="form-control ProductName">
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-sm-2 control-label">LinkId:</label>
+                                    <div class="col-sm-10">
+                                        <input placeholder="Please input the title!"  type="text" class="form-control EncodeId" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-sm-2 control-label">Product Price:</label>
+                                    <div class="col-sm-10">
+                                        <input id="add-content-product-price" placeholder="Please input the product price!"  type="text" class="form-control ProductPrice" >
+                                    </div>
+                                </div>
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-sm-2 col-sm-2 control-label">Original Price:</label>-->
+                                    <!--<div class="col-sm-10">-->
+                                        <!--<input id="add-content-original-price" placeholder="Please input the product original price!"  type="text" class="form-control ProductOriginalPrice" >-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-sm-2 col-sm-2 control-label">Retail Price:</label>-->
+                                    <!--<div class="col-sm-10">-->
+                                        <!--<input id="add-content-retail-price" placeholder="Please input the product retail price!"  type="text" class="form-control ProductRetailPrice" >-->
+                                    <!--</div>-->
+                                <!--</div>-->
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-sm-2 control-label">Product Currency:</label>
+                                    <div class="col-sm-10">
+                                        <input id="add-content-product-currency" placeholder="Please input the product currency!"  type="text" class="form-control ProductCurrency" >
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-sm-2 control-label">Description<font color="red">*</font>:</label>
+                                    <div class="col-sm-10">
+                                        <textarea rows="3" id="add-content-desc" placeholder="Please input the description!" class="form-control ProductDesc" style="resize: none"></textarea>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-sm-2 control-label">Product URL:</label>
+                                    <div class="col-sm-10">
+                                        <textarea rows="3" id="add-content-originalUrl" placeholder="Please input the original url!" type="text" class="form-control ProductUrl"></textarea>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-sm-2 control-label">Valid Date:</label>
+                                    <div class="col-sm-5">
+                                        <input type="text" id="add-content-startDate" class="form-control dtpicker1 ProductStartDate" placeholder="Start Date" style="width: 90%;"  data-field="datetime">
+                                        </div>
+                                        <div class="col-sm-5">
+                                        <input type="text" id="add-content-endDate" class="form-control dtpicker1 ProductEndDate" placeholder="End Date" style="width: 90%;"  data-field="datetime">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 col-sm-2 control-label">Language:</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control language" id="add-content-language">
+                                            <option value="EN">EN</option>
+                                            <option value="FR">FR</option>
+                                            <option value="DE">DE</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <input type="hidden" id="spid" class="spid">
+                                        <button type="button" id="addCouponInfo" class="btn btn-primary btn-lg btn-block" style="margin: auto;text-align: center;width: 60%">submit</button>
+
+                                    </div>
+                                </div>
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal ui" id="newContentDiv1" tabindex="-1" role="dialog" style="height: 500px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h3 class="modal-title">Search Publisher</h3>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <div class="row" style="text-align: center;">
+                    Publisher :
+                    <select id="uid" class="chosen11" name="networkname"style="min-width: 300px;">
+                        <{foreach from=$pubres item=aff}>
+                        <option value="<{$aff.ID}>" class="aff"><{$aff.Name}></option>
+                        <{/foreach}>
+                    </select>
+                    <div style="margin-top:10px;" id="sitehtml">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+            <button type="button" class="btn btn-default download" data-dismiss="modal">DownLoad</button>
+        </div>
+    </div>
+</div>
+<script src="js/jquery.zclip.min.js"></script>
+<script>
+    $('#add-content-advertiser').typeahead({
+        items:999,
+        ajax:{
+            url:'b_content_new.php',
+            tiggerLength:3,
+            preProcess: function(data) { // 这个方法非常重要！
+                // 本插件要求处理一个javascript对象而不是一个json字符串
+                // 同时应当注意 ！
+                return $.parseJSON(data); //非常重要
+            }
+        },
+        itemSelected:getval
+    });
+    function getval(item,val) {
+        $('#spid').val(val);
+    }
+    $(".dtpicker").datetimepicker({
+        minView: "month",//设置只显示到月份
+        format : "yyyy-mm-dd",//日期格式
+        autoclose:true,//选中关闭
+        todayBtn: true//今日按钮
+    });
+    $(".dtpicker1").datetimepicker({
+        format : "yyyy-mm-dd  hh:ii",//日期格式
+        todayBtn: true//今日按钮
+    });
+    function get_category(){
+        var cate='';
+        var cc =$("input[class='category']:checked");
+        for(var i=0;i<cc.length;i++){
+            if(cc[i].checked){
+                cate += cc[i].value+',';
+            }
+        }
+        cate=cate.substring(0,cate.length-1);
+        $('.categories').val(cate);
+    }
+    $(".category").change(function () {
+        get_category();
+    });
+    $('.show').click(function(){
+        $('#newContentDiv1').modal('show');
+    });
+    $('#addnew').click(function(){
+        $('.ptitle').html('Add New Product');
+        $('#fnull')[0].reset();
+        $('.ID').val('');
+        $(".EncodeId").attr('readonly',false);
+        $("#pcountry").val('').trigger("chosen:updated");
+        $('#editModal').modal('show');
+    });
+    $('#pcountry').chosen({
+        width:"100%",
+        allow_single_deselect :true
+    });
+    $('#affiliate').chosen();
+    $('#timetype').chosen();
+
+    $('.chosen11').chosen({width:"65%"});
+    $('.chosen11').on('change',function(){
+        var uid = $('#uid').val();
+        var data = {uid:uid,utype:1}
+        $.ajax({
+            type:"post",
+            url:"b_content_new.php",
+            data:data,
+            async:false,
+            success: function(res){
+                if(res !=0){
+                    var json = $.parseJSON(res);
+                    var str = "";
+                    $.each(json.data,function(i,itme){
+                        var key = itme['ApiKey'];
+                        var domain = itme['Domain'];
+                        str+= "<option value='"+key+"'>"+domain+"</option>";
+                    })
+                    var html='Site : <select id="site"  name="networkname"style="min-width: 300px;">'+str+'</select>';
+                    $('#sitehtml').html(html);
+                    $('#site').chosen({width:"65%"});
+                }else {
+                    alert('NO Site');
+                }
+            }
+        });
+    })
+    $('#addCouponInfo').bind('click',function(){
+        var subtype = '';
+        var id = '';
+        if($('.ID').val() !=''){
+            subtype = 1;
+            id = $('.ID').val();
+        }else{
+            subtype = 2;
+        }
+        var advertiser = $('#add-content-advertiser').val();
+        if (advertiser == null || advertiser.length == 0) {
+            alert("Please input the correct advertiser name!");
+            return false;
+        }
+        var couponCode = $('#add-content-couponCode').val();
+        var country = $('#pcountry').val();
+        var startDate = $('#add-content-startDate').val();
+        var endDate = $('#add-content-endDate').val();
+        var startDateSeconds = new Date(startDate).getTime();
+        var endDateSeconds = new Date(endDate).getTime();
+        if (endDateSeconds < startDate) {
+            alert("Error ending date must be before current date");
+            return false;
+        }
+        if (endDateSeconds < startDateSeconds) {
+            alert("Error starting date must be before ending date");
+            return false;
+        }
+        var title = $('#add-content-title').val();
+        if (title == null || title.length == 0) {
+            alert("Please input the correct title!");
+            return false;
+        }
+        var desc = $('#add-content-desc').val();
+        if (desc == null || desc.length == 0) {
+            alert("Please input the correct description!");
+            return false;
+        }
+        var product_url = $('#add-content-originalUrl').val();
+        if(product_url.length != 0 && ! /^[h\H][t|T][t|T][p|P][S|s]?:\/\/.+$/.test(product_url)){
+            alert("Please input the correct original url!");
+            return false;
+        }
+        if(product_url == ''){
+            alert('Url Not Null');
+            return false;
+        }
+        var spid = $('#spid').val();
+        var language = $('#add-content-language option:selected').val();
+        var productprice = $('#add-content-product-price').val();
+//        var originalprice = $("#add-content-original-price").val();
+//        var retailprice = $("#add-content-retail-price").val();
+        var productcurrency = $("#add-content-product-currency").val();
+        var data = {'id':id,'spid':spid,'productprice':productprice,'productcurrency':productcurrency,'subtype':subtype,'country':country,'advertiser':advertiser,'startDate':startDate,'endDate':endDate,'name':title,'desc':desc,'product_url':product_url,'language':language}
+        $.ajax({
+            type:"post",
+            url:"b_product_feed.php",
+            data:data,
+            async:false,
+            success: function(res){
+                console.log(res);
+                var evalRes = JSON.parse(res);
+                if(evalRes.flag == 1){
+                    alert(evalRes.msg);
+                    $('#editModal').modal('hide');
+                    $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+                    tab();
+                } else if(evalRes.flag == 2){
+                    alert(evalRes.msg);
+                }else{
+                    alert('Error');
+                }
+            }
+        });
+    });
+    $('.download').click(function(){
+        var value = $('#search').serialize();
+        if($('#site').val() != undefined && $('#site').val() !=''){
+            value = value+'&download=1&key='+$('#site').val();
+        }else{
+            value = value+'&key=/xxxx/&download=1';
+        }
+        window.open('<{$smarty.const.BASE_URL}>/process.php'+'?act=downloadcontentnew&'+value);
+
+    });
+    function tab(){
+        var data = $('#search').serializeArray();
+        var s = $('#example').DataTable({
+            "fnDrawCallback": function (data) {
+                $('#nulls').html('');
+                var total = data.json.recordsFiltered;
+                $('#total').html(total);
+                var clciks = data.json.clicks;
+                $('#clicks').html(clciks);
+                var rclicks = data.json.rclicks;
+                $('#rclicks').html(rclicks);
+                var rob = data.json.rob;
+                $('#rob').html(rob);
+                var robp = data.json.robp;
+                $('#robp').html(robp);
+                var orders = data.json.orders;
+                $('#orders').html(orders);
+                var sales = data.json.sales;
+                $('#sales').html(sales);
+                var commission = data.json.commission;
+                $('#commission').html(commission);
+                $('.copydata').zclip({
+                    path: "js/ZeroClipboard.swf",
+                    copy:function(){
+                        return $(this).data('val');
+                    }
+                });
+                $('.delete_content').bind('click',function(){
+                    if(confirm('DO you really want to delete the content feed in ' + $(this).data('name') + '?')){
+                        var id = $(this).data('id');
+                        var index = $(this).parent().parent().index();
+                        var data = {'id':$(this).data('id'),'delete_content':1}
+                        $.ajax({
+                            type:"post",
+                            url:"b_product_feed.php",
+                            data:data,
+                            async:false,
+                            success: function(res){
+                                if(res == 1){
+                                    $('tbody tr').eq(index).remove();
+                                    alert('Success');
+                                }else {
+                                    alert('Error');
+                                }
+                            }
+                        });
+                    }
+                    else
+                    {
+                        alert('Operation cancelled!');
+                    }
+                });
+            },
+            "bServerSide": true,
+            "bProcessing": true,
+            "iDisplayLength": 20,
+            "bPaginage":true,
+            "bAutoWidth": false,
+            "aLengthMenu": [10, 20, 50, 100],
+            'bFilter': false,
+            'pagingType':'full_numbers',
+            "ajax": {
+                "url": "b_product_feed.php",
+                "type":'POST',
+                "data": {
+                    "table":1,
+                    "data":JSON.stringify(data),
+                    "id":''
+                }
+            },
+            "aaSorting": [
+                [7, "desc"],
+            ],
+            columns: [
+                { "data": "ProductImage","sClass":"t1","title":'Image',"render":function(data, type, full, meta){
+                    if(full.ProductLocalImage != '' && full.ProductLocalImage != null)
+                    {
+                        var img = full.ProductImage;
+                        return '<a class="imgval" style="cursor:pointer" name='+name+' id="'+full.StoreId+'" rate="0" ><div style="border: 1px solid #D5D5D5;background-color:white;height: 110px;width: 240px;text-align: center;margin:auto;"><div style="width: 95%;text-align: center;margin:auto;"><img class="img-responsive center-block imgs"  style="margin-top:10px;height: 90px;" src="'+img+'" alt="picture" /></div></div></a>';
+                    }else{
+                        return '-';
+                    }
+                },"bSortable": false },
+                { "data": "storeName","title":"Advertiser","bSortable": false},
+                { "data": "ProductName","title":"Name","bSortable": false},
+                { "data": "ProductDesc","title":"Description","bSortable": false},
+                { "data": 'EncodeId',"title":'Link ID',"bSortable": false },
+                { "data": null,"title":'Orders</br>Sales</br>Commission',"bSortable": false,"render":function(data,type,full,meta){
+                    var html = full.orders+"</br>"+full.sales+"</br>"+full.commission;
+                    return html;
+                }},
+                { "data": 'commissionRate',"sClass":"t1","title":"Commission Rate","bSortable": false},
+                { "data": 'AddTime',"sClass":"t1","title":"AddTime","asSorting": [ "desc", "asc", "desc" ]},
+                { "data": null,"title":"Operation","bSortable": false,"render":function(data,type,full,meta){
+                    var url = full.ProductUrl;
+                    var html = '';
+                    if (url != '') {
+                        html += '<div style="position: relative;"><input type="button"  data-val="'+url+'" class="btn btn-info copydata"  value="Copy Link"/></div>';
+                    }
+                    html += '<input type="button" style="background-color: red;color: white;width: 60px;margin-top: 10px;" data-id="'+full.id+'" class="btn  b-primary delete_content" value="Delete"/>';
+                    if(full.source == 'manual' ) {
+                        html += '<input type="button" style="background-color:#4183C4;color: white;width: 60px;margin-top: 10px;"  onclick="updatep(' + full.id + ')" class="btn  b-primary updatep" value="Update"/>';
+                    }
+                    return html;
+                }}
+            ]
+        })
+    }
+    tab();
+    $('.chosen1').chosen();
+    $('.chosen2').chosen();
+    $('.all').on('click',function(){
+        if($(this).attr('val') == 0){
+            $('#mod :checkbox').prop("checked",true);
+            $(this).attr('val',1);
+        }else{
+            $('#mod :checkbox').prop("checked",false);
+            $(this).attr('val',0);
+        }
+    })
+    function updatep(id){
+        $('.ID').val(id);
+        $('.ptitle').html('Edit Product Feed');
+        $('#add-content-title').val('');
+        $('#add-content-desc').val('');
+        $('#add-content-affUrl').val('');
+        $('#add-content-originalUrl').val('');
+        $(".EncodeId").attr('readonly',true);
+        var data = {pid:id,updatep:1}
+        $.ajax({
+            type:"post",
+            url:"b_product_feed.php",
+            data:data,
+            async:false,
+            success: function(res){
+                if(res == 'Error'){
+                    alert('Error');
+                }else {
+                    var json = $.parseJSON(res);
+                    console.log(json);
+                    $.each(json,function(i,itme){
+                        if(i == 'Type'){
+                            var coption = $(".Type option");
+                            for (var i = 0; i <coption.length; i++) {
+                                if (coption[i].value == itme) {
+                                    coption[i].selected=true;
+                                    break;
+                                }
+                            }
+                            return true;
+                        }else if(i == 'Language'){
+                            var coption = $(".Language option");
+                            for (var i = 0; i <coption.length; i++) {
+                                if (coption[i].value == itme) {
+                                    coption[i].selected=true;
+                                    break;
+                                }
+                            }
+                            return true;
+                        }
+                        else if(i == 'Country'){
+                            if(itme.indexOf(",") > 0 ){
+                                var arr = itme.split(',');
+                                $.each(arr,function(i,val){
+                                    var co = val.toUpperCase();
+                                    $("#pcountry option[value='"+co+"']").prop("selected","selected");
+                                })
+                                $('#pcountry').trigger('chosen:updated');
+                            }else{
+
+                                $('#pcountry').val(''+itme.toUpperCase()+'').trigger('chosen:updated');
+
+                            }
+                            return true;
+                        }
+                        var c = '.s1 .'+i;
+                        $(c).val(itme);
+                    })
+                    $('#editModal').modal('show');
+                }
+            }
+        });
+    }
+    function clearAjaxHtml(){
+        $('#mb').html('');
+        $('#mb1').html('');
+    }
+    $(".key").keydown(function() {
+        if (event.keyCode == "13") {//keyCode=13是回车键
+            $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+            tab();
+        }
+    });
+    $('.sh').bind("click",function(){
+        $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+        tab();
+    })
+    $('.search').bind("click",function(){
+        $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+        tab();
+    })
+    $('#show').click(function(){
+        $('#newContentDiv1').modal('show');
+    });
+    $("#editModal").on("hidden.bs.modal", function() {
+        $(this).removeData("bs.modal");
+    });
+</script>
+<{include file="b_block_footer.html"}>

@@ -1,0 +1,465 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<{assign var='performanceName' value=$LANG.backend.public.performance}>
+<div>
+    <div class="container" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$LANG.backend.public.performance}> -
+
+
+            <{foreach from=$subMenu.$performanceName key=k item=v}>
+            <{if $v.abb eq $abbreviation}>
+            <{$k}>
+            <{/if}>
+            <{/foreach}>
+
+        </h1></div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><{$LANG.backend.dailyreport.a1}></div>
+                    <div class="panel-body">
+                        <form id="form_tran_search">
+
+                            <!-- <input type="hidden" name="p" value="1"/> -->
+                            <input type="hidden" name="type" value="<{$search.type}>"/>
+
+                            <div class="col-lg-12 form-inline">
+                                <div class="form-group">
+					                <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+									    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+									    <span></span> <b class="caret"></b>
+									</div>
+									<input type="hidden" name="tran_from" id="tran_from">
+				          			<input type="hidden" name="tran_to" id="tran_to">
+								</div>
+								<div class="form-group">
+				                  	<select name="datetype" class="form-control">
+				                  		<option value="clickdate" <{if isset($search.datetype) and $search.datetype eq 'clickdate'}>selected="selected"<{/if}>>Click Date</option>
+				                  		<option value="transactiondate" <{if isset($search.datetype) and $search.datetype eq 'transactiondate'}>selected="selected"<{/if}>>Transaction Date</option>
+				                  	</select>
+				                </div>
+                                <!-- <{if $search.type eq merchants or $search.type eq daily}>
+                                Site:
+                                <select name="site" class="form-control">
+                                    <option value="">All</option>
+                                    <{foreach from=$site item=c}>
+                                    <option value="<{$c.ApiKey}>" <{if isset($search.site) and $search.site eq $c.ApiKey}>selected="selected"<{/if}>><{$c.Domain}></option>
+                                    <{/foreach}>
+                                </select>
+                                <{/if}> -->
+                                <{if $search.type eq merchants}>
+                                Type:
+                                <select name="earningstype" class="form-control">
+                                    <option value="only_earnings" <{if isset($search.earningstype) and $search.earningstype eq only_earnings}>selected="selected"<{/if}>>Only Earnings</option>
+                                    <option value="all" <{if isset($search.earningstype) and $search.earningstype eq all}>selected="selected"<{/if}>>All</option>
+                                </select>
+                                <{/if}>
+                                <div class="form-group">
+                                    <input type="submit" class="btn  b-primary " value="<{$LANG.backend.dailyreport.a1}>">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><{$LANG.backend.dailyreport.a4}></div>
+                    <div class="panel-body">
+                        <div id="chart">
+                            <canvas id="canvas" height="30%;" width="95%"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <{if $search.type eq 'daily'}><{$LANG.backend.dailyreport.a5}><{/if}>
+                        <{if $search.type eq 'merchants'}><{$LANG.backend.dailyreport.a9}><{/if}>
+                        <{if $search.type eq 'sites'}><{$LANG.backend.dailyreport.a10}><{/if}>
+                    </div>
+                    <div class="panel-body">
+                        <{if $search.type == 'daily'}>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th><{$LANG.backend.dailyreport.a6}></th>
+                                <th><{$LANG.backend.dailyreport.a7}></th>
+                                <th><{$LANG.backend.dailyreport.a13}></th>
+                                <th><{$LANG.backend.dailyreport.a8}></th>
+                                <th>EPC</th>
+                                <th>Site</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$tranData.tran item=Tran}>
+                            <{assign var="date" value=$Tran.createddate}>
+
+                            <{if $Tran.Sales > 0 }>
+                            <{assign var='commrate' value=$Tran.Commission/$Tran.Sales*100|number_format:'2':'.':','}>
+                            <{else}>
+                            <{assign var='commrate' value='-'}>
+                            <{/if}>
+                            <tr>
+                                <td><{$date}></td>
+                                <td>$<{$Tran.Commission|number_format:'2':'.':','}></td>
+                                <td><{$Tran.clicks}></td>
+                                <td><{$Tran.num|number_format:'0':'.':','}></td>
+                                <td>$<{$Tran.epc}></td>
+                                <td><{$Tran.Domain}></td>
+                            </tr>
+                            <{/foreach}>
+                            <tr>
+                                <th><{$LANG.backend.b_performance.a8}>:</th>
+                                <th>$<{$tranData.totalAccount.totalCommission|number_format:'2':'.':','}></th>
+                                <th><{$tranData.totalAccount.totalClicks}></th>
+                                <th><{$tranData.totalAccount.totalNum|number_format:'0':'.':','}></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </table>
+                        <!-- <{$pageHtml}> -->
+                        <{elseif $search.type == 'merchants'}>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th><{$LANG.backend.dailyreport.a11}></th>
+                                <th><{$LANG.backend.dailyreport.a7}></th>
+                                <th><{$LANG.backend.dailyreport.a13}></th>
+                                <th><{$LANG.backend.dailyreport.a8}></th>
+                                <th>EPC</th>
+                                <th><{$LANG.backend.dailyreport.a14}></th>
+                                <th>Site</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$tranData.tran item=Tran}>
+
+                            <{assign var="store" value=$Tran.store}>
+
+                            <{if $Tran.Sales > 0 }>
+                            <{assign var='commrate' value=$Tran.Commission/$Tran.Sales*100|number_format:'2':'.':','}>
+                            <{else}>
+                            <{assign var='commrate' value='-'}>
+                            <{/if}>
+                            <tr class="store">
+                                <input type="hidden" value="<{$Tran.storeId}>">
+                                <td><{$store}></td>
+                                <td>$<{$Tran.Commission|number_format:'2':'.':','}></td>
+                                <td><{$Tran.clicks}></td>
+                                <td><{$Tran.num|number_format:'0':'.':','}></td>
+                                <td>$<{$Tran.epc}></td>
+                                <td><a style="cursor: pointer" onclick="showDomainList(this)"><{$LANG.backend.b_performance.a4}></a></td>
+                                <td><{$Tran.Domain}></td>
+                            </tr>
+                            <{/foreach}>
+                            <tr>
+                                <th><{$LANG.backend.b_performance.a8}>:</th>
+                                <th>$<{$tranData.totalAccount.totalCommission|number_format:'2':'.':','}></th>
+                                <th><{$tranData.totalAccount.totalClicks|number_format:'0':'.':','}></th>
+                                <th><{$tranData.totalAccount.totalNum|number_format:'0':'.':','}></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </table>
+                        <!-- <{$pageHtml}> -->
+                        <{elseif $search.type=='sites'}>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th><{$LANG.backend.dailyreport.a12}><span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="<{$LANG.backend.b_performance.a6}>"></span></th>
+                                <th><{$LANG.backend.dailyreport.a7}></th>
+                                <th><{$LANG.backend.dailyreport.a8}></th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$tranData.tran item=Tran}>
+                            <{assign var="site" value=$Tran.Site}>
+
+                            <{if $Tran.Sales > 0 }>
+                            <{assign var='commrate' value=$Tran.Commission/$Tran.Sales*100|number_format:'2':'.':','}>
+                            <{else}>
+                            <{assign var='commrate' value='-'}>
+                            <{/if}>
+                            <tr>
+                                <td><{$Tran.Alias}> -- <{$Tran.Domain}></td>
+                                <td>$<{$Tran.Commission|number_format:'2':'.':','}></td>
+                                <td><{$Tran.num|number_format:'0':'.':','}></td>
+                            </tr>
+                            <{/foreach}>
+                            <tr>
+                                <th><{$LANG.backend.b_performance.a8}>:</th>
+                                <th>$<{$tranData.totalAccount.totalCommission|number_format:'2':'.':','}></th>
+                                <th><{$tranData.totalAccount.totalNum|number_format:'0':'.':','}></th>
+                                <th></th>
+                            </tr>
+                        </table>
+                        <{/if}>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <{assign var="data" value=$tranData.tran|@json_encode}>
+    <{assign var="storeData" value=$search|@json_encode}>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            
+            var start = moment('<{$search.tran_from}>');
+            var end = moment('<{$search.tran_to}>');
+
+            function changeDate(start, end) {
+            	$("#tran_from").val(start.format("YYYY-MM-DD"));
+            	$("#tran_to").val(end.format("YYYY-MM-DD"));
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+
+            $('#reportrange').daterangepicker({
+            	  "alwaysShowCalendars": true,
+                "startDate": start,
+                "endDate": end,
+                "maxDate": moment().subtract(1, 'days'),
+                "opens": "center",
+                "ranges": {
+                   'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                   'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
+                   'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
+                   'This Week': [moment().startOf('week'), moment().subtract(1, 'days')],
+                   'Last Week': [moment().startOf('week').subtract(7, 'days'), moment().startOf('week').subtract(1, 'days')],
+                   'This Month': [moment().startOf('month'), moment().subtract(1, 'days')],
+                   'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+            }, changeDate);
+
+            changeDate(start, end);
+            
+        })
+
+        var type = '<{$search.type}>';
+        if (type == 'merchants') {
+        	var data = <{$data}>;
+            var labels = [];
+            var dataY = [];
+            // console.info(data);
+            $.each(data,function(key,val){
+                labels.push(val['store']);
+                dataY.push(Math.round(val['Commission']*100)/100);
+            });
+        	Highcharts.chart('chart', {
+        		chart: {
+        	        type: 'column'
+        	    },
+        	    title: {
+        	        text: false
+        	    },
+        	    credits: {
+       	            enabled:false
+        		},
+        	    legend: {
+        	        layout: 'vertical',
+        	        align: 'right',
+        	        verticalAlign: 'middle',
+        	        enabled: false
+        	    },
+        	    xAxis: {
+                    categories: labels
+                },
+                yAxis: {
+        	        title: false
+        	    },
+        	    tooltip: {
+        	    	backgroundColor: {
+        	            linearGradient: [0, 0, 0, 60],
+        	            stops: [
+        	                [0, '#FFFFFF'],
+        	                [1, '#E0E0E0']
+        	            ]
+        	        },
+        	        borderWidth: 1,
+        	        borderColor: '#AAA',
+        	    	formatter: function() {
+        	            return this.x + ':<span style="font-weight:bold">' + this.y+"</span>";
+        	        }
+      	  		},
+        	    series: [{
+        	        data: dataY
+        	    }]
+        	});
+            /* var data = <{$data}>;
+                var labels = [];
+                var dataY = [];
+                // console.info(data);
+                $.each(data,function(key,val){
+                    labels.push(val['store']);
+                    dataY.push(Math.round(val['Commission']*100)/100);
+                });
+
+
+                var barChartData = {
+                    labels: labels,
+                    datasets: [
+                {
+                    fillColor: "rgba(151,187,205,0.5)",
+                    strokeColor: "rgba(151,187,205,0.8)",
+                    highlightFill: "rgba(151,187,205,0.75)",
+                    highlightStroke: "rgba(151,187,205,1)",
+                    data: dataY
+                }
+                    ]
+
+                }
+
+
+                var ctx = $("#canvas").get(0).getContext("2d");
+                var myBar = new Chart(ctx).Bar(barChartData, {
+                    responsive: true,
+                }); */
+
+
+                } else if (type == 'daily') {
+                	var data = <{$data}>;
+                    var createddate = [];
+                    var commission = [];
+                    // console.info(data);
+                    $.each(data,function(key,val){
+                        createddate.push(val['createddate']);
+                        commission.push(Math.round(val['Commission']*100)/100);
+                    });
+                	Highcharts.chart('chart', {
+                		chart: {
+                	        type: 'line'
+                	    },
+                	    title: {
+                	        text: false
+                	    },
+                	    credits: {
+               	            enabled:false
+                		},
+                	    legend: {
+                	        layout: 'vertical',
+                	        align: 'right',
+                	        verticalAlign: 'middle',
+                	        enabled: false
+                	    },
+                	    xAxis: {
+                	    	 labels: {
+               	                step: Math.ceil(data.length/10),
+               	                staggerLines: 1
+              	             },
+                            categories: createddate
+                        },
+                        yAxis: {
+                	        title: false
+                	    },
+                	    tooltip: {
+                	    	backgroundColor: {
+                	            linearGradient: [0, 0, 0, 60],
+                	            stops: [
+                	                [0, '#FFFFFF'],
+                	                [1, '#E0E0E0']
+                	            ]
+                	        },
+                	        borderWidth: 1,
+                	        borderColor: '#AAA',
+                	    	formatter: function() {
+                	            return this.x + ':<span style="font-weight:bold">' + this.y+"</span>";
+                	        }
+              	  		},
+                	    series: [{
+                	        data: commission
+                	    }]
+                	});
+            /* var data = <{$data}>;
+                var createddate = [];
+                var commission = [];
+                // console.info(data);
+                $.each(data,function(key,val){
+                    createddate.push(val['createddate']);
+                    commission.push(Math.round(val['Commission']*100)/100);
+                });
+
+
+                var lineChartData = {
+                    labels : createddate,
+                    datasets : [
+                {
+                    label: "Line Chart",
+                    fillColor : "rgba(151,187,205,0.2)",
+                    strokeColor : "rgba(151,187,205,1)",
+                    pointColor : "rgba(151,187,205,1)",
+                    pointStrokeColor : "#fff",
+                    pointHighlightFill : "#fff",
+                    pointHighlightStroke : "rgba(151,187,205,1)",
+                    data : commission
+                }
+                    ]
+
+                }
+
+                window.onload = function(){
+                    var ctx = document.getElementById("canvas").getContext("2d");
+                    window.myLine = new Chart(ctx).Line(lineChartData, {
+                    responsive: true
+                });
+                } */
+
+                } else if (type == 'sites') {
+
+
+            var data = <{$data}>;
+                var color = ['#F7464A','#46BFBD','#FDB45C','#949FB1','#4D5360'];
+                var highlight = ['#FF5A5E','#5AD3D1','#FFC870','#A8B3C5','#616774'];
+                var pieData = [];
+                var i = 0;
+                $.each(data,function(key,val){
+                    i++;
+                    if(i>4)
+                    i=0;
+                    pieData.push(
+                {
+                    value: Math.round(val['Commission']*100)/100,
+                    color:color[i],
+                    highlight: highlight[i],
+                    label: val['Alias']
+                }
+                    );
+                });
+
+
+                window.onload = function(){
+                    var ctx = document.getElementById("canvas").getContext("2d");
+                    window.myPie = new Chart(ctx).Pie(pieData,{
+                    	responsive: true
+                    });
+                };
+
+                }
+
+        function showDomainList(obj) {
+            var storeId = $(obj).parent().prev().prev().prev().prev().prev().prev().val();
+            var storeData = JSON.stringify(<{$storeData}>);
+                $.ajax({
+                    type: "post",
+                    url: "process.php",
+                    data: "act=show_domain_list&storeId=" + storeId + "&storeData="+storeData,
+                    async: false,
+                    success: function (html) {
+                    var domainList = $(obj).parent().parent().nextUntil(".store");
+                    if(domainList.length > 0){
+                        $(domainList).remove();
+                }else{
+                    $(obj).parent().parent().after(html);
+                }
+                }
+                });
+                }
+    </script>
+    <{include file="b_block_footer.html"}>

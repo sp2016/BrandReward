@@ -1,0 +1,274 @@
+<?php
+include_once("comm.php");
+include_once("func.php");
+include_once("lib/currency_exchange.php");
+global $_db;
+$_db = new Mysql();
+
+$uniqueList = array(
+    2   =>  'orderid',  #ls,linkshare
+    6   =>  'TradeId',  #pjn,pepperjamnetwork
+    7   =>  'TradeId',  #sas,shareasale
+    );
+
+
+$data_dir = PATH_DATA;
+
+$fileList = getDir($data_dir,'file',false,1);
+
+#chenck payments list & get update file
+
+$sql = 'SELECT * FROM payments';
+// $sql = 'SELECT * FROM payments where ID = 65';
+$rows = $_db->getRows($sql);
+
+$md5list = array();
+$paymentsMap = array();
+foreach($rows as $k=>$v){
+    $key = $v['NetworkID'].'_'.str_replace('-','',$v['CreatedDate']);
+    $md5list[$key] = $v['FileMd5'];
+    $paymentsMap[$key] = $v;
+}
+
+$TODOlist = array();
+foreach($fileList as $k=>$v){
+    $file = $v;
+    if(substr($file,-3) == 'upd'){
+        #if need to make the upd and dat file have a contrast
+        $new_name = substr($file,0,-3).'dat';
+        rename($file,$new_name);
+        $fileList[$k] = $new_name;
+    }
+
+    $file = $fileList[$k];
+    $key = getKey($file);
+    
+    if(isset($md5list[$key]) && $md5list[$key] != md5_file($file)){
+        $TODOlist[] = $file;
+    }
+}
+
+#do file data update to db
+
+foreach($TODOlist as $file){
+    $key = getKey($file);
+    $payments = $paymentsMap[$key];
+
+    update_data($file,$payments);
+    info_data($payments);
+    update_file_md5($payments,md5_file($file));
+}
+
+echo 'done';exit();
+
+function update_file_md5($payments,$file_md5){
+    global $_db;
+    $sql = 'UPDATE payments SET FileMd5 = "'.addslashes(trim($file_md5)).'" WHERE ID = '.$payments['ID'];
+    $_db->query($sql);
+}
+
+function getKey($file){
+    $filedir = basename(dirname($file));
+    $filename = basename($file);
+
+    list(,$affid) = explode('_',$filedir);
+    preg_match('/\d+/', $filename,$m);
+
+    $datenum = $m[0];
+
+    $key = $affid.'_'.$datenum;
+    return $key;
+}
+
+
+function info_data($payments){
+    global $_db;
+    $paymentsID = $payments['ID'];
+    $af_short = array(
+            '9999'=>'mega',
+            '1'=>'cj',
+            '2'=>'ls',
+            '7'=>'sas',
+            '6'=>'pjn',
+            '22'=>'afffuk',
+            '115'=>'cf',
+            '13'=>'wg',
+            '58'=>'impradus',
+            );
+
+    $sql = 'SELECT ID,MatchID,MatchKey,NetworkID,Currency,Commission FROM payments_invoice WHERE paymentsID = '.intval($paymentsID);
+    $row_invoice = $_db->getRows($sql);
+    if(empty($row_invoice))
+        return ;
+
+    $tmp = $row_invoice[0];
+    $sql = 'SELECT a.ID,a.ShowRate,a.RefRate,a.RefPublisherId,a.Site,a.'.$tmp['MatchKey'].',b.PublisherId FROM rpt_transaction_unique as a left join publisher_account as b on a.Site = b.ApiKey WHERE a.af = "'.$af_short[$tmp['NetworkID']].'" AND '.$tmp['MatchKey'].' IN (SELECT MatchID FROM payments_invoice WHERE paymentsID = '.$paymentsID.')';
+    $rows_match = $_db->getRows($sql);
+    $transInfo = array();
+    $key = $tmp['MatchKey'];
+    foreach($rows_match as $k=>$v){
+        $tmp = array(
+                'ShowRate' => $v['ShowRate'],
+                'RefRate' => $v['RefRate'],
+                'RefPublisherId' => $v['RefPublisherId'],
+                'Site' => $v['Site'],
+                'publisherId' => $v['PublisherId']?$v['PublisherId']:0,
+            );
+
+        if(!isset($transInfo[$v[$key]])){
+            $transInfo[$v[$key]] = $tmp;
+        }elseif(!empty($tmp['publisherId'])){
+            $transInfo[$v[$key]] = $tmp;
+        }
+    }
+
+    $sql = 'SELECT * FROM payments WHERE ID = '.intval($paymentsID);
+    $row_payments = $_db->getFirstRow($sql);
+    $cur_exr = cur_exchange($row_payments['Currency'],'USD',$row_payments['CreatedDate']);
+    $AmountUSD = round($row_payments['Amount'] * $cur_exr, 4);
+
+    #update payments invoice
+    #do commission currency exchange
+    #do sync rate site info
+    $invoiceUp = array();
+    foreach($row_invoice as $k=>$v){
+        $cur_exr = cur_exchange($v['Currency'],'USD',$row_payments['CreatedDate']);
+        $CommissionUSD = round($v['Commission'] * $cur_exr, 4);
+
+        $IsMatch = 'no';
+        $ShowRate = 0;
+        $RefRate = 0;
+        $RefPublisherId = 0;
+        $ShowSite = '';
+        $ShowPublisherId = 0;
+        if(isset($transInfo[$v['MatchID']])){
+            $IsMatch = 'yes';
+            $ShowRate = $transInfo[$v['MatchID']]['ShowRate'];
+            $RefRate = $transInfo[$v['MatchID']]['RefRate'];
+            $RefPublisherId = $transInfo[$v['MatchID']]['RefPublisherId'];
+            $ShowSite = $transInfo[$v['MatchID']]['Site'];
+            $ShowPublisherId = $transInfo[$v['MatchID']]['publisherId'];
+        }
+
+        $tmp = array(
+            'ID' => $v['ID'],
+            'CommissionUSD' => $CommissionUSD,
+            'IsMatch' => $IsMatch,
+            'ShowRate' => $ShowRate,
+            'RefRate' => $RefRate,
+            'RefPublisherId' => $RefPublisherId,
+            'ShowSite' => $ShowSite,
+            'ShowPublisherId' => $ShowPublisherId,
+            );
+        $invoiceUp[] = $tmp;
+    }
+
+    $sql = getBatchUpdateSql($invoiceUp,'payments_invoice','ID');
+    $_db->query($sql);
+
+    $sql = 'SELECT SUM(CommissionUSD) as InvoiceAmountUSD FROM payments_invoice WHERE paymentsID = '.intval($paymentsID);
+    $row_sum = $_db->getFirstRow($sql);
+    $InvoiceAmountUSD = $row_sum['InvoiceAmountUSD'];
+
+    #update payments
+    #do payments commission currency exchange
+    #do update payments invoice amount to payments
+    $sql = 'UPDATE payments SET AmountUSD = '.floatval($AmountUSD).',InvoiceAmountUSD = '.floatval($InvoiceAmountUSD).' WHERE ID = '.intval($paymentsID);
+    $_db->query($sql);
+
+    echo 'update payments @ AmountUSD = '.floatval($AmountUSD).',InvoiceAmountUSD = '.floatval($InvoiceAmountUSD)."\n";
+}
+
+function update_data($file,$payments){
+
+    global $uniqueList,$_db;
+
+    $sql = 'DELETE FROM payments_invoice WHERE PaymentsID = '.intval($payments['ID']);
+    $_db->query($sql);
+
+    $db_data = array();
+    $c = 0;
+
+    if(is_file($file)){
+        $fp=fopen($file,'r');
+        while(!feof($fp)){
+            $line=fgets($fp,4000);
+            $line = trim($line);
+            if(empty($line))
+                continue;
+
+            $Arr = explode("\t",$line);
+            if(empty($Arr[0]))
+                continue;
+
+            if(empty($Arr[2]))
+                continue;
+
+            $tmp = array(
+                'PaymentsID'=>$payments['ID'],
+                'MatchID'=>$Arr[2],
+                'MatchKey'=>$uniqueList[$payments['NetworkID']],
+                'Commission'=>$Arr[1],
+                'Currency'=>$payments['Currency'],
+                'PaymentKey'=>$payments['PaymentKey'],
+                'NetworkID'=>$payments['NetworkID'],
+                'Network'=>$payments['Network'],
+                );
+
+            $c++;
+            $db_data[] = $tmp;
+            if(count($db_data) > 499){
+                $sql = getBatchInsertSql($db_data,'payments_invoice');
+                $_db->query($sql);
+                $db_data = array();
+            }
+
+        }
+        fclose($fp);
+        if(count($db_data) > 0){
+            $sql = getBatchInsertSql($db_data,'payments_invoice');
+            $_db->query($sql);
+            $db_data = array();
+        }
+    }
+    echo "update file @ ".$file." , nums: ".$c."\n";
+}
+
+function getDir($dir,$only='',$last_name=false,$loop=false){
+    if (empty($dir)) {
+        return array();
+    }
+
+    $content = array();
+
+    if(is_array($dir)){
+        foreach($dir as $d){
+            $tmp = getDir($d,$only,$last_name,$loop);
+            $content = array_merge($content,$tmp);
+        }
+    }else{
+        $ch = '';
+        if(substr($dir,-1) != '/')
+            $ch = '/';
+
+        $dc = scandir($dir);
+        foreach($dc as $k=>$v){
+            if($v == '.' || $v == '..')
+                continue;
+            if($only=='dir' && is_dir($dir.$ch.$v)){
+                $content[] = $last_name?$v:$dir.$ch.$v;
+            }
+            if($only=='file' && is_file($dir.$ch.$v)){
+                $content[] = $last_name?$v:$dir.$ch.$v;
+            }
+
+            if($loop && is_dir($dir.$ch.$v)){
+                $tmp = getDir($dir.$ch.$v,$only,$last_name,$loop);
+                $content = array_merge($content,$tmp);
+            }
+        }
+    }
+
+    return $content;
+}
+?>

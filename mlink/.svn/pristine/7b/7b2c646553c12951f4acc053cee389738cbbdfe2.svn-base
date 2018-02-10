@@ -1,0 +1,429 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    <div class="panel-body">
+                        <form>
+                            <input type="hidden" name="p" value="1"/>
+                            <div class="col-lg-12 form-inline">
+                                <div class="form-group">
+
+                                    Domain:<input type="text" name="Domain" class="form-control tip" id="Domain" value="<{$search.Domain}>" placeholder="Domain">
+                                    Program:<input type="text" name="fakeProgram" class="form-control tip2" id="Program" value="<{$search.fakeProgram}>" placeholder="Program">
+                                    <input type="hidden" name="Program"  value="<{$search.Program}>">
+
+                                    IsFake:<select name="IsFake" id="Status" class="form-control">
+                                    <option value="">ALL</option>
+
+                                    <option value="YES"
+                                    <{if $search.IsFake eq "YES"}>selected<{/if}>>YES</option>
+                                    <option value="NO"
+                                    <{if $search.IsFake eq "NO"}>selected<{/if}>>NO</option>
+                                </select>
+                                    Country:<select name="site" id="site" class="form-control">
+                                    <option value="">ALL</option>
+
+                                    <option value="us"
+                                    <{if $search.site eq "us"}>selected<{/if}>>us</option>
+                                    <option value="uk"
+                                    <{if $search.site eq "uk"}>selected<{/if}>>uk</option>
+                                    <option value="au"
+                                    <{if $search.site eq "au"}>selected<{/if}>>au</option>
+                                    <option value="de"
+                                    <{if $search.site eq "de"}>selected<{/if}>>de</option>
+                                    <option value="ca"
+                                    <{if $search.site eq "ca"}>selected<{/if}>>ca</option>
+                                    <option value="fr"
+                                    <{if $search.site eq "fr"}>selected<{/if}>>fr</option>
+                                </select>
+                                    <div class="form-group" style="margin-left:20px">
+                                        <button type="submit" class="btn  btn-primary ">Search</button>
+                                    </div>
+                                    <div class="form-group" style="margin-left:20px">
+                                        <button id="add" type="button" data-toggle="modal" data-target="#myMotal" class="btn  btn-primary">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Result</div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Domain</th>
+                                <th>Country</th>
+                                <th>Pricing</th>
+                                <th>Commission</th>
+                                <th>IsFake</th>
+                                <th>Program</th>
+                                <th>
+                                    <table style="text-align: center">
+                                        <tr>
+                                            <th></th>
+                                            <th>Sales</th>
+                                            <th></th>
+                                        </tr>
+                                        <tr>
+                                            <th width="33%" style="text-align: center">7D</th>
+                                            <th width="33%" style="text-align: center">1M</th>
+                                            <th width="33%" style="text-align: center">3M</th>
+                                        </tr>
+                                    </table>
+                                </th>
+                                <th></th>
+                                <th>
+                                    <table style="text-align: center">
+                                        <tr>
+                                            <th></th>
+                                            <th>Orders</th>
+                                            <th></th>
+                                        </tr>
+                                        <tr>
+                                            <th width="33%" style="text-align: center">7D</th>
+                                            <th width="33%" style="text-align: center">1M</th>
+                                            <th width="33%" style="text-align: center">3M</th>
+                                        </tr>
+                                    </table>
+                                </th>
+                                <th></th>
+                                <th>
+                                    <table style="text-align: center">
+                                        <tr>
+                                            <th></th>
+                                            <th>Revenue</th>
+                                            <th></th>
+                                        </tr>
+                                        <tr>
+                                            <th width="33%" style="text-align: center">7D</th>
+                                            <th width="33%" style="text-align: center">1M</th>
+                                            <th width="33%" style="text-align: center">3M</th>
+                                        </tr>
+                                    </table>
+                                </th>
+                                <th></th>
+                                <th>
+                                    <table style="text-align: center">
+                                        <tr>
+                                            <th></th>
+                                            <th>Clicks</th>
+                                            <th></th>
+                                        </tr>
+                                        <tr>
+                                            <th width="33%" style="text-align: center">7D</th>
+                                            <th width="33%" style="text-align: center">1M</th>
+                                            <th width="33%" style="text-align: center">3M</th>
+                                        </tr>
+                                    </table>
+                                </th>
+                                <th>DPL</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$DomainList key=did_site item=domain}>
+                            <{assign var=did value=$domain.ID}>
+                            <tr>
+                                <td><{$domain.Domain}></td>
+                                <td><{$domain.Site}></td>
+                                <td>CPA</td>
+                                <td><{$domain.CommissionTxt}></td>
+                                <td><{$domain.IsFake}></td>
+                                <td><a class="ava_pro" href="javascript:void(0);" data-list="<{foreach from=$programInfo.all.$did item=p}><{$p.a_name}> | <{$p.p_name}>,<{$p.CommissionValue}>##<{/foreach}>"><{$programInfo.current.$did_site.a_name}> | <{$programInfo.current.$did_site.p_name}></a></td>
+                                <td>
+                                    <table style="text-align: center;height: 100%;width: 100%;white-space: nowrap ">
+                                        <td width="33%">&nbsp;<{$domain.Sales7D}>&nbsp;</td>
+                                        <td width="33%">&nbsp;<{$domain.Sales1M}>&nbsp;</td>
+                                        <td width="33%">&nbsp;<{$domain.Sales3M}>&nbsp;</td>
+                                    </table>
+                                </td>
+                                <td style="white-space: nowrap">|</td>
+                                <td>
+                                    <table style="text-align: center;height: 100%;width: 100%;white-space: nowrap ">
+                                        <td width="33%">&nbsp;<{$domain.Orders7D}>&nbsp;</td>
+                                        <td width="33%">&nbsp;<{$domain.Orders1M}>&nbsp;</td>
+                                        <td width="33%">&nbsp;<{$domain.Orders3M}>&nbsp;</td>
+                                    </table>
+                                </td>
+                                <td style="white-space: nowrap">|</td>
+                                <td>
+                                    <table style="text-align: center;height: 100%;width: 100%;white-space: nowrap ">
+                                        <td width="33%">&nbsp;<{$domain.Revenue7D|string_format:'%.2f'}>&nbsp;</td>
+                                        <td width="33%">&nbsp;<{$domain.Revenue1M|string_format:'%.2f'}>&nbsp;</td>
+                                        <td width="33%">&nbsp;<{$domain.Revenue3M|string_format:'%.2f'}>&nbsp;</td>
+                                    </table>
+                                </td>
+                                <td style="white-space: nowrap">|</td>
+                                <td>
+                                    <table style="text-align: center;height: 100%;width: 100%;white-space: nowrap ">
+                                        <td width="33%">&nbsp;<{$domain.Clicks7D}>&nbsp;</td>
+                                        <td width="33%">&nbsp;<{$domain.Clicks1M}>&nbsp;</td>
+                                        <td width="33%">&nbsp;<{$domain.Clicks3M}>&nbsp;</td>
+                                    </table>
+                                </td>
+
+                                <td><a id="dpl" href="b_dpl.php?id=<{$domain.ID}>&site=<{$domain.Site}>" style="cursor: pointer" target="dpl">DPL</a></td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                        <{$pageHtml}>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="ava-program-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title" id="exampleModalLabel">Available Program List</h2>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>program</th>
+                            <th>option</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- add模态框 -->
+    <form id="form_motal" action="" method="post">
+        <div name="motaikuang" class="modal fade" id="myMotal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close"
+                                data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="<{$aff.Id}>Label">
+                            to add PDC!
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        Domain:<input type="text" name="add_domain" class="form-control add_tip" id="add_domain" value="">
+                        <div id="hide_domain" style="display:none"><font color="red" style="font-size:15px;">*cannot be null</font></div>
+                        <br/>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">Close
+                        </button>
+                        <button id="sub" type="submit" class="btn btn-primary">
+                            Save
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </form>
+
+    <script>
+        $('.ava_pro').click(function () {
+            var datalist = $(this).attr('data-list');
+            if (datalist.length > 0) {
+                datalist = datalist.substring(0, datalist.length - 2);
+                var arr = datalist.split('##');
+                var tbody = '<tbody>';
+                tbody += '<tr class="text-success"><td>' + $(this).html() + '</td><td>' + $(this).parent().prev().html() + '</td><td></td></tr>';
+                for (var i in arr) {
+                    var row = arr[i].split(',');
+                    if (row[0] == $(this).html())
+                        continue;
+                    tbody += '<tr><td>' + row[0] + '</td><td>' + row[1] + '</td><td><a href="javascript:void(0);">change</a></td></tr>';
+                }
+                tbody += '</tbody>';
+
+                if ($('#ava-program-modal table tbody')) {
+                    $('#ava-program-modal table tbody').remove();
+                }
+                $('#ava-program-modal table').append(tbody);
+
+                $('#ava-program-modal').modal();
+            }
+        });
+
+
+        //------------------------------------------------------------------------Domain搜索提示功能------------------------------------------------------------
+        $('.tip').keyup(function () {//keyup是jquery函数，表示松开键盘
+            var ipt = this;
+            var keywords = $(this).val();
+            var url = '<{$smarty.const.BASE_URL}>/process.php';
+            var ajaxdata = 'act=tip_PDC_Domain&keywords=' + keywords;
+
+            if (!keywords.match(/[^\s]{1,}/)) {//排除空白符，即空白符不算字符
+                return;
+            }
+
+            $.ajax({
+                type: "post",
+                url: "<{$smarty.const.BASE_URL}>/process.php",
+                data: ajaxdata,
+                success: function (req) {
+                    var html_tip = '<ul class="dropdown-menu" >';
+                    var arr = req.split('|');
+                    for (var i in arr) {
+                        html_tip = html_tip + '<li><a href="javascript:void(0);">' + arr[i] + '</a></li>';
+                    }
+                    var html_tip = html_tip + '</ul>';
+
+
+                    if ($(ipt).parent().find('ul')) {
+                        $(ipt).parent().find('ul').remove();
+                    }
+
+                    $(ipt).parent().append(html_tip);
+
+                    load_tip($(ipt).parent().find('ul'));
+                }
+            });
+
+
+        });
+
+
+        //------------------------------------------------------------------------add Domain搜索提示功能------------------------------------------------------------
+        $('.add_tip').keyup(function () {//keyup是jquery函数，表示松开键盘
+            var ipt = this;
+            var keywords = $(this).val();
+            var url = '<{$smarty.const.BASE_URL}>/process.php';
+            var ajaxdata = 'act=tip_Domain_add&keywords=' + keywords;
+
+            if (!keywords.match(/[^\s]{1,}/)) {//排除空白符，即空白符不算字符
+                return;
+            }
+
+            $.ajax({
+                type: "post",
+                url: "<{$smarty.const.BASE_URL}>/process.php",
+                data: ajaxdata,
+                success: function (req) {
+                    var html_tip = '<ul class="dropdown-menu" >';
+                    var arr = req.split('|');
+                    for (var i in arr) {
+                        html_tip = html_tip + '<li><a href="javascript:void(0);">' + arr[i] + '</a></li>';
+                    }
+                    var html_tip = html_tip + '</ul>';
+
+
+                    if ($(ipt).parent().find('ul')) {
+                        $(ipt).parent().find('ul').remove();
+                    }
+
+                    $(ipt).parent().append(html_tip);
+
+                    load_tip($(ipt).parent().find('ul'));
+                    if ($.trim(req) == "Cannot add for this Domain already exists") {
+                        $("#sub").attr("type", "button");
+                        $("#sub").addClass("btn-warning");
+                    } else {
+                        $("#sub").attr("type", "submit");
+                        $("#sub").removeClass("btn-warning");
+                    }
+                }
+            });
+
+
+        });
+
+
+        function load_tip(obj) {
+            $(obj).css('display', 'block');  //jquery的css()函数，相当于display:block
+            $(obj).find('a').click(function () {
+                //console.info($($(obj).parent().find("input")[0]));
+
+                $($(obj).parent().find("input")[0]).val($(this).html());
+                $(obj).remove();
+            });
+        }
+        //------------------------------------------------------------Program搜索提示功能-------------------------------------------------------------------------------------
+
+        $('.tip2').keyup(function () {//keyup是jquery函数，表示松开键盘
+            var ipt = this;
+            var keywords = $(this).val();
+            var url = '<{$smarty.const.BASE_URL}>/process.php';
+            var ajaxdata = 'act=tip_PDC_Program&keywords=' + keywords;
+
+            if (!keywords.match(/[^\s]{1,}/)) {//排除空白符，即空白符不算字符
+                return;
+            }
+
+            $.ajax({
+                type: "post",
+                url: "<{$smarty.const.BASE_URL}>/process.php",
+                data: ajaxdata,
+                dataType: "json",
+                success: function (req) {
+                    console.log(req);
+                    //console.info(req);
+                    var html_tip = '<ul style="margin-left:300px" class="dropdown-menu" >';
+
+
+
+                   /* var arr = req.split('|');
+                    for (var i in arr) {
+                        html_tip = html_tip + '<li><a href="javascript:void(0);">' + arr[i] + '</a></li>';
+                    }*/
+
+                    $.each(req,function(k,v){
+                        html_tip = html_tip + '<li><a href="javascript:void(0);" pid='+v+'>' + k + '</a></li>';
+                    });
+
+
+                    var html_tip = html_tip + '</ul>';
+
+
+                    if ($(ipt).parent().find('ul')) {
+                        $(ipt).parent().find('ul').remove();
+                    }
+
+                    $(ipt).parent().append(html_tip);
+
+                    load_tip2($(ipt).parent().find('ul'));
+
+
+                }
+            });
+
+
+        });
+
+
+        function load_tip2(obj) {
+            $(obj).css('display', 'block');  //jquery的css()函数，相当于display:block
+            $(obj).find('a').click(function () {
+                //console.info($($(obj).parent().find("input")[0]));
+
+                $($(obj).parent().find("input")[1]).val($(this).text());
+                $($(obj).parent().find("input")[2]).val($(this).attr("pid"));
+                //console.info($(this).text());
+                $(obj).remove();
+            });
+        }
+    </script>
+
+    <{include file="b_block_footer.html"}>

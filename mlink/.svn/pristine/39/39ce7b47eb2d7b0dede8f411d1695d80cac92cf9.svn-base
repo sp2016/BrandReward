@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Excel</title>
+<style>
+td{
+    text-align:center;
+    font-size:12px;
+    font-family:Arial, Helvetica, sans-serif;
+    border:#000000 1px solid;
+    color:#000000;
+    width:100px;
+}
+table,tr{
+    border-style:none;
+}
+.title{
+    background:#7DDCF0;
+    color:#FFFFFF;
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th style="width:5%">Domain</th>
+          <{if $colspan.num}><th id="choose_num"  colspan="<{$colspan.num}>" >Order Num</th><{/if}>
+          <{if $colspan.sale}><th id="choose_sale" colspan="<{$colspan.sale}>">Order Sale</th><{/if}>
+          <{if $colspan.commission}><th id="choose_commission" colspan="<{$colspan.commission}>" >Order Commission</th><{/if}>
+          <{if $colspan.cr}><th id="choose_cr" colspan="<{$colspan.cr}>">Order CR</th><{/if}>
+          <{if $colspan.click}><th id="choose_click"  colspan="<{$colspan.click}>">Order Clicks</th><{/if}>
+        </tr>
+        <tr>
+          <th></th>
+          <{if 'num_his'|in_array:$checked}><th id="num_his">History</th><{/if}>
+          <{if 'num_now'|in_array:$checked}><th id="num_now" >Now</th><{/if}>
+          <{if 'num_diff'|in_array:$checked}><th id="num_diff">Diff</th><{/if}>
+          <{if 'num_change'|in_array:$checked}><th id="num_change">Change</th><{/if}>
+          <{if 'sale_his'|in_array:$checked}><th id="sale_his" >History</th><{/if}>
+          <{if 'sale_now'|in_array:$checked}><th id="sale_now" >Now</th><{/if}>
+          <{if 'sale_diff'|in_array:$checked}><th id="sale_diff">Diff</th><{/if}>
+          <{if 'sale_change'|in_array:$checked}><th id="sale_change">Change</th><{/if}>
+          <{if 'commission_his'|in_array:$checked}><th id="commission_his">History</th><{/if}>
+          <{if 'commission_now'|in_array:$checked}><th id="commission_now" >Now</th><{/if}>
+          <{if 'commission_diff'|in_array:$checked}><th id="commission_diff" >Diff</th><{/if}>
+          <{if 'commission_change'|in_array:$checked}><th id="commission_change" >Change</th><{/if}>
+          <{if 'cr_his'|in_array:$checked}><th id="cr_his" >History</th><{/if}>
+          <{if 'cr_now'|in_array:$checked}><th id="cr_now" >Now</th><{/if}>
+          <{if 'cr_diff'|in_array:$checked}><th id="cr_diff" >Diff</th><{/if}>
+		  <{if 'cr_change'|in_array:$checked}><th id="cr_change">change</th><{/if}>
+		  <{if 'click_his'|in_array:$checked}><th id="click_his">History</th><{/if}>
+          <{if 'click_now'|in_array:$checked}><th id="click_now" >Now</th><{/if}>
+          <{if 'click_diff'|in_array:$checked}><th id="click_diff">Diff</th><{/if}>
+		  <{if 'click_change'|in_array:$checked}><th id="click_change" >change</th><{/if}>
+        </tr>
+        
+        
+          
+        <tr>
+          <th>Total</th>
+          <{if 'num_his'|in_array:$checked}><th id="num_his_total"><{$transactionTotal.his_ordernum|number_format:'0':'.':','}></th><{/if}>
+          <{if 'num_now'|in_array:$checked}><th id="num_now_total"><{$transactionTotal.now_ordernum|number_format:'0':'.':','}></th><{/if}>
+          <{if 'num_diff'|in_array:$checked}><th id="num_diff_total"><{$transactionTotal.diff_ordernum|number_format:'0':'.':','}></th><{/if}>
+          <{if 'num_change'|in_array:$checked}><th id="num_change_total" <{if $transactionTotal.per_ordernum > 20 }>style="color:red;font-weight:900;"<{ elseif $transactionTotal.per_ordernum < -20}>style="color:green;font-weight:900;"<{/if}>>
+            <{$transactionTotal.per_ordernum|number_format:'0':'.':','}>%
+          </th><{/if}>
+          <{if 'sale_his'|in_array:$checked}><th id="sale_his_total">$<{$transactionTotal.his_ordersales|number_format:'2':'.':','}></th><{/if}>
+          <{if 'sale_now'|in_array:$checked}><th id="sale_now_total">$<{$transactionTotal.now_ordersales|number_format:'2':'.':','}></th><{/if}>
+          <{if 'sale_diff'|in_array:$checked}><th id="sale_diff_total">$<{$transactionTotal.diff_ordersales|number_format:'2':'.':','}></th><{/if}>
+          <{if 'sale_change'|in_array:$checked}><th id="sale_change_total" <{if $transactionTotal.per_ordersales > 20 }>style="color:red;font-weight:900;"<{ elseif $transactionTotal.per_ordersales < -20}>style="color:green;font-weight:900;"<{/if}>><{$transactionTotal.per_ordersales|number_format:'2':'.':','}>%</th><{/if}>
+          <{if 'commission_his'|in_array:$checked}><th id="commission_his_total">$<{$transactionTotal.his_commission|number_format:'2':'.':','}></th><{/if}>
+          <{if 'commission_now'|in_array:$checked}><th id="commission_now_total">$<{$transactionTotal.now_commission|number_format:'2':'.':','}></th><{/if}>
+          <{if 'commission_diff'|in_array:$checked}><th id="commission_diff_total">$<{$transactionTotal.diff_commission|number_format:'2':'.':','}></th><{/if}>
+          <{if 'commission_change'|in_array:$checked}><th id="commission_change_total" <{if $transactionTotal.per_commission > 20 }>style="color:red;font-weight:900;"<{ elseif $transactionTotal.per_commission < -20}>style="color:green;font-weight:900;"<{/if}>><{$transactionTotal.per_commission|number_format:'2':'.':','}>%</th><{/if}>
+          <{if 'cr_his'|in_array:$checked}><th id="cr_his_total"><{$transactionTotal.his_cr|number_format:'2':'.':','}>%</th><{/if}>
+          <{if 'cr_now'|in_array:$checked}><th id="cr_now_total"><{$transactionTotal.now_cr|number_format:'2':'.':','}>%</th><{/if}>
+          <{if 'cr_diff'|in_array:$checked}><th id="cr_diff_total"><{$transactionTotal.diff_cr|number_format:'2':'.':','}></th><{/if}>
+          <{if 'cr_change'|in_array:$checked}><th id="cr_change_total"><{$transactionTotal.per_cr|number_format:'2':'.':','}>%</th><{/if}>
+          <{if 'click_his'|in_array:$checked}><th id="click_his_total"><{$transactionTotal.his_click}></th><{/if}>
+          <{if 'click_now'|in_array:$checked}><th id="click_now_total"><{$transactionTotal.now_click}></th><{/if}>
+          <{if 'click_diff'|in_array:$checked}><th id="click_diff_total"><{$transactionTotal.diff_click}></th><{/if}>
+          <{if 'click_change'|in_array:$checked}><th id="click_change_total"><{$transactionTotal.per_cr|number_format:'2':'.':','}>%</th><{/if}>
+        </tr>
+      </thead>
+ 
+      <tbody>
+        <{foreach from=$transactionData item=tran}>
+        <tr>
+          <td><a style="cursor:pointer" class="publisher"><{$tran.name}></a></td>
+          <{if 'num_his'|in_array:$checked}><td class="num_his_data"><{$tran.his_ordernum|number_format:'0':'.':','}></td><{/if}>
+          <{if 'num_now'|in_array:$checked}><td class="num_now_data"><{$tran.now_ordernum|number_format:'0':'.':','}></td><{/if}>
+          <{if 'num_diff'|in_array:$checked}><td class="num_diff_data"><{$tran.diff_ordernum|number_format:'0':'.':','}></td><{/if}>
+          <{if 'num_change'|in_array:$checked}><td class="num_change_data" <{if $tran.per_ordernum > 20 }>style="color:red;font-weight:900;"<{ elseif $tran.per_ordernum < -20}>style="color:green;font-weight:900;"<{/if}>>
+            <{$tran.per_ordernum|number_format:'0':'.':','}>%
+          </td><{/if}>
+          <{if 'sale_his'|in_array:$checked}><td class="sale_his_data">$<{$tran.his_ordersales|number_format:'2':'.':','}></td><{/if}>
+          <{if 'sale_now'|in_array:$checked}><td class="sale_now_data">$<{$tran.now_ordersales|number_format:'2':'.':','}></td><{/if}>
+          <{if 'sale_diff'|in_array:$checked}><td class="sale_diff_data">$<{$tran.diff_ordersales|number_format:'2':'.':','}></td><{/if}>
+          <{if 'sale_change'|in_array:$checked}><td class="sale_change_data" <{if $tran.per_ordersales > 20 }>style="color:red;font-weight:900;"<{ elseif $tran.per_ordersales < -20}>style="color:green;font-weight:900;"<{/if}>><{$tran.per_ordersales|number_format:'2':'.':','}>%</td><{/if}>
+          <{if 'commission_his'|in_array:$checked}><td class="commission_his_data">$<{$tran.his_commission|number_format:'2':'.':','}></td><{/if}>
+          <{if 'commission_now'|in_array:$checked}><td class="commission_now_data">$<{$tran.now_commission|number_format:'2':'.':','}></td><{/if}>
+          <{if 'commission_diff'|in_array:$checked}><td class="commission_diff_data">$<{$tran.diff_commission|number_format:'2':'.':','}></td><{/if}>
+          <{if 'commission_change'|in_array:$checked}><td class="commission_change_data" <{if $tran.per_commission > 20 }>style="color:red;font-weight:900;"<{ elseif $tran.per_commission < -20}>style="color:green;font-weight:900;"<{/if}>><{$tran.per_commission|number_format:'2':'.':','}>%</td><{/if}>
+          <{if 'cr_his'|in_array:$checked}><td class="cr_his_data"><{$tran.his_cr|number_format:'2':'.':','}>%</td><{/if}>
+          <{if 'cr_now'|in_array:$checked}><td class="cr_now_data"><{$tran.now_cr|number_format:'2':'.':','}>%</td><{/if}>
+          <{if 'cr_diff'|in_array:$checked}><td class="cr_diff_data"><{$tran.diff_cr|number_format:'2':'.':','}></td><{/if}>
+          <{if 'cr_change'|in_array:$checked}><td class="cr_change_data" <{if $tran.per_cr > 0 }>style="color:red;font-weight:900;"<{ elseif $tran.per_cr < 0}>style="color:green;font-weight:900;"<{/if}>><{$tran.per_cr|number_format:'2':'.':','}>%</td><{/if}>
+          <{if 'click_his'|in_array:$checked}><td class="click_his_data"><{$tran.his_click}></td><{/if}>
+          <{if 'click_now'|in_array:$checked}><td class="click_now_data"><{$tran.now_click}></td><{/if}>
+          <{if 'click_diff'|in_array:$checked}><td class="click_diff_data"><{$tran.diff_click}></td><{/if}>
+          <{if 'click_change'|in_array:$checked}><td class="click_change_data" <{if $tran.per_click > 0 }>style="color:red;font-weight:900;"<{ elseif $tran.per_click < 0}>style="color:green;font-weight:900;"<{/if}>><{$tran.per_click|number_format:'2':'.':','}>%</td><{/if}>
+        </tr>
+        <{/foreach}>
+      </tbody>
+
+    </table>
+</body>
+</html>

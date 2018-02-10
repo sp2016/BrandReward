@@ -1,0 +1,168 @@
+<?php
+global $_cf,$_req,$_db,$_objPendingMysql;
+echo "<< Start @ ".date("Y-m-d H:i:s")." >>\r\n";
+
+
+$nowDay = date('Y-m-d H:i:s',time());
+$_objPendingMysql = new Mysql('pendinglinks', 'localhost', 'bdg_go', 'shY12Nbd8J');
+$sql_names_set = 'SET NAMES latin1';
+$_objPendingMysql->query($sql_names_set);
+//获取返回的有效promotion Patrick
+//$getDate = date('Y-m-d',time());
+$getDate = date('Y-m-d',strtotime("-1day"));
+define('CRUL_NAME', 'mg_comm_user');
+define('CRUL_PASSWORD', 'mg_comm_user');
+echo $getDate;
+//$getDate = '2017-05-15';
+//do{   
+    
+    $url = "http://us-bcg.bwe.io/?act=emailpromo&date=$getDate";
+    $http_data['file_temp'] = DATA_ROOT.'correctFeed/email'. date('Ymd',strtotime($getDate)).'.dat';
+    //$http_data['file_temp'] = './aff_br_data_20170405.txt';
+    
+    _http($url,$http_data);
+    
+    
+    
+    //读文件
+    $fp = fopen($http_data['file_temp'], 'r');
+    $links = array();
+    $istitle = 0;
+    while (!feof($fp)) {
+    
+        $lr = explode("\t",trim(fgets($fp)));
+        /*
+         [0] => Country
+         [1] => CouponID
+         [2] => Merchant Name
+         [3] => Merchant Origianl Url
+         [4] => Title
+         [5] => Description
+         [6] => StartTime
+         [7] => ExpireTime / RemindDate
+         [8] => AffUrl
+         [9] => DestUrl
+         [10] => Code
+        */
+    
+        $istitle ++;
+        if($istitle == 1) continue;
+        if($lr[0]){
+    
+            $data['Country'] = isset($lr[0]) ? $lr[0] : '';
+            $data['CouponID'] = isset($lr[1]) ? $lr[1] : '';
+            $data['Merchant'] = isset($lr[2]) ? $lr[2] : '';
+            $data['Merchant_Originanl_Url'] = isset($lr[3]) ? $lr[3] : '';
+            $data['Title'] = isset($lr[4]) ? $lr[4] : '';
+            $data['Description'] = isset($lr[5]) ? $lr[5] : '';
+            $data['StartTime'] = isset($lr[6]) ? $lr[6] : '';
+            $data['ExpireTime'] = isset($lr[7]) ? $lr[7] : '';
+            $data['AffUrl'] = isset($lr[8]) ? $lr[8] : '';
+            $data['DestUrl'] = isset($lr[9]) ? $lr[9] : '';
+            $data['Code'] = isset($lr[10]) ? $lr[10] : '';
+    
+            $links[] = $data;
+            if(count($links)>=100){
+                update_promotion($links);
+                //print_r($links);exit;
+                $links = array();
+            }
+        }
+    }
+    fclose($fp);
+    if(count($links)>0){
+        update_promotion($links);
+    }
+    
+//    $getDate = date('Y-m-d',strtotime("$getDate+1day"));
+
+//}while ($getDate<date('Y-m-d'));
+
+
+
+
+function update_promotion($data){
+    //global $_db;
+    global $_objPendingMysql;
+    $i = 0;
+    $j = 0;
+    foreach ($data as $v){
+        
+        $Sql = "SELECT ID FROM affiliate_email_promo WHERE Country = '{$v['Country']}' AND CouponID = '".addslashes($v['CouponID'])."'";
+        $ePArr = $_objPendingMysql->getRows($Sql);
+        if(!empty($ePArr)){
+            $updateArr = array();
+            foreach ($v as $k1=>$v1){
+                $updateArr[] = "`$k1` = '".addslashes($v1)."'";
+            }
+            $updateArr[] = "`LastUpdateTime` = '".date('Y-m-d H:i:s')."'";
+            $updateSql = "update affiliate_email_promo SET ".implode(',', $updateArr)."  WHERE Country = '{$v['Country']}' AND CouponID = '".addslashes($v['CouponID'])."'";
+            $_objPendingMysql->query($updateSql);
+            $i++;
+        }else{
+            $insert_col = array();
+            $insert_value = array();
+            foreach ($v as $k2=>$v2){
+                $insert_col[] = $k2;
+                $insert_value[] = "'".addslashes($v2)."'";
+            }
+            $insert_col[] = 'AddTime';
+            $insert_value[] = "'".date('Y-m-d H:i:s')."'";
+            $insertSql = "insert into affiliate_email_promo (".implode(',', $insert_col).") values ( ".implode(',', $insert_value)." )";
+            $_objPendingMysql->query($insertSql);
+        }
+        $j++;
+    }
+    
+    echo "all total count:$j====>update count:$i\r\n";
+    return;
+}
+
+echo "<< End @ ".date("Y-m-d H:i:s")." >>\r\n";
+exit;
+
+
+
+
+function _http($url,$data=array(),$return=false){
+     
+    $file_temp =  $data['file_temp'];
+    $fw = fopen($file_temp, 'w+');
+
+    print_r("curl :".$url."\n");
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_HEADER         , false);
+    curl_setopt($ch, CURLOPT_NOBODY         , false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER , true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION , true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER , false);
+    curl_setopt($ch, CURLOPT_USERAGENT      , 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2');
+    curl_setopt($ch, CURLOPT_FILE           , $fw);
+    curl_setopt($ch, CURLOPT_REFERER        , $url);
+    curl_setopt($ch, CURLOPT_TIMEOUT        , 300);
+    curl_setopt($ch, CURLOPT_USERPWD, CRUL_NAME . ":" . CRUL_PASSWORD);
+    
+    if(isset($data['postdata']) && !empty($data['postdata'])){
+        $post_query = http_build_query($data['postdata']);
+        curl_setopt($ch, CURLOPT_POST , true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS , $post_query);
+        print_r("curl_post :".$post_query."\n");
+    }
+
+    if(isset($data['headers']) && !empty($data['headers'])){
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $data['headers']);
+    }
+
+    $rs = curl_exec($ch);
+    curl_close($ch);
+    var_dump($rs);
+    fclose($fw);
+
+    if($return){
+        return file_get_contents($file_temp);
+    }else{
+        return $return;
+    }
+}
+
+?>

@@ -1,0 +1,71 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+  <div class="container" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1><{$LANG.backend.b_unaffiliated.a1}> - <{$search.type}></h1></div>
+    <div class="row" style="padding:20px 0;">
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading"><{$LANG.backend.b_unaffiliated.a2}></div>
+          <div class="panel-body" >
+            <form id="form_tran_search">
+            
+              <input type="hidden" name="p" value="1" />
+
+              <div class="col-lg-8 form-inline">
+                <div class="form-group">
+                  <input type="text" name="tran_from" class="form-control datepicker" id="tran_from" value="<{$search.tran_from}>" placeholder="<{$LANG.backend.b_unaffiliated.a3}>">
+                </div>
+                <div class="form-group">
+                  <input type="text" name="tran_to" class="form-control datepicker" id="tran_to" value="<{$search.tran_to}>" placeholder="<{$LANG.backend.b_unaffiliated.a4}>">
+                </div>
+                <input class="btn btn-default" type="button" value="<{$LANG.backend.b_unaffiliated.a5}>">
+                <input class="btn btn-default" type="button" value="<{$LANG.backend.b_unaffiliated.a6}>">
+              </div>
+
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <input type="submit" class="btn  btn-primary " value="<{$LANG.backend.b_unaffiliated.a7}>">
+                </div>
+              </div>
+            
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">List</div>
+          <div class="panel-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+
+                  <th><{$LANG.backend.b_unaffiliated.a8}></th>
+                  <th><{$LANG.backend.b_unaffiliated.a9}></th>
+                  <th><{$LANG.backend.b_unaffiliated.a10}></th>
+                  <th><{$LANG.backend.b_unaffiliated.a11}></th>
+                </tr>
+              </thead>
+              <{foreach from=$outList item=out}>
+                <{assign var='oftotal' value=$out.unaff/$out.c*100|number_format:'2':'.':','}>
+                <tr>
+                  <td><{$out.domainUsed|substr:8}></td>
+                  <td><{$out.unaff|number_format:'0':'.':','}></td>
+                  <td><{$out.c|number_format:'0':'.':','}></td>
+                  <td><{$oftotal}>%</td>
+                </tr>
+              <{/foreach}>
+            </table>
+            <{$pageHtml}>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<{include file="b_block_footer.html"}>

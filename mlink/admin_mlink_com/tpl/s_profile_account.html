@@ -1,0 +1,65 @@
+<{if $is_form}>
+<form id="f_account">
+	<input type="hidden" name="act" value="edit_profile_account">
+	<div class="col-lg-6">
+	  <dl class="dl-horizontal"><dt>Contact Name:</dt><dd id="f_name">
+		  <div class="form-group">
+	        <input type="text" name="pub_name" class="form-control" id="pub_name" value="<{$user_profile.base.Name}>" placeholder="Your name">
+	      </div>
+	  </dd></dl>
+	  <dl class="dl-horizontal"><dt>Email:</dt><dd id="f_email">
+	  	<div class="form-group">
+	    	<input type="text" name="pub_email" class="form-control" id="pub_email" value="<{$user_profile.base.Email}>" placeholder="Your email">
+	    </div>
+	  </dd></dl>
+	  <dl class="dl-horizontal"><dt>Phone:</dt><dd id="f_phone">
+	  	<div class="form-group">
+	    	<input type="text" name="pub_phone" class="form-control" id="pub_phone" value="<{$user_profile.base.Phone}>" placeholder="Your phone">
+	    </div>
+	  </dd></dl>
+	  <dl class="dl-horizontal"><dt>Password:</dt><dd id="f_password"><a href="javascript:void(0)" onclick="show_change_pwd()">Change password</a></dd></dl>
+	</div>
+	<div class="col-lg-6">
+		<dl class="dl-horizontal"><dt>Domain:</dt><dd id="f_company">
+	  	<div class="form-group">
+	    	<input type="text" name="pub_site" class="form-control" id="pub_site" value="<{$user_profile.base.Domain}>" placeholder="http://">
+	    </div>
+	  </dd></dl>
+	  <dl class="dl-horizontal"><dt>Company:</dt><dd id="f_company">
+	  	<div class="form-group">
+	    	<input type="text" name="pub_company" class="form-control" id="pub_company" value="<{$user_profile.base.Company}>" placeholder="Your company name">
+	    </div>
+	  </dd></dl>
+	  <dl class="dl-horizontal"><dt>Company Address:</dt><dd id="f_companyaddress">
+	  	<div class="form-group">
+	    	<input type="text" name="pub_companyaddr" class="form-control" id="pub_companyaddr" value="<{$user_profile.base.CompanyAddr}>" placeholder="Your company address">
+	    </div>
+	  </dd></dl>
+	  <dl class="dl-horizontal"><dt>Country:</dt><dd id="f_country">
+	  	<select name="pub_country" class="form-control">
+	  		<{foreach from=$countryOption item=c key=k}>
+	  			<option value="<{$k}>"<{if $user_profile.base.Country == $k }>selected<{/if}>><{$c}></option>
+	  		<{/foreach}>
+	  	</select>
+	  </dd></dl>
+	</div>
+	<div class="col-lg-12" style="text-align:center;">
+		<button type="button" class="btn btn-success" onclick="edit_profile_account()"> Apply </button>
+		<button type="button" class="btn btn-default" onclick="show_profile_account(0)"> Cancel </button>
+	</div>
+</form>
+<{else}>
+<div class="col-lg-6">
+  <dl class="dl-horizontal"><dt>Contact Name:</dt><dd id="f_name"><{$user_profile.base.Name}></dd></dl>
+  <dl class="dl-horizontal"><dt>Email:</dt><dd id="f_email"><{$user_profile.base.Email}></dd></dl>
+  <dl class="dl-horizontal"><dt>Phone:</dt><dd id="f_phone"><{$user_profile.base.Phone}></dd></dl>
+  <dl class="dl-horizontal"><dt>Password:</dt><dd id="f_password"><a href="javascript:void(0)" onclick="show_change_pwd()">Change password</a></dd></dl>
+</div>
+<div class="col-lg-6">
+  <dl class="dl-horizontal"><dt>Domain:</dt><dd id="f_company"><{$user_profile.base.Domain}></dd></dl>
+  <dl class="dl-horizontal"><dt>Company:</dt><dd id="f_company"><{$user_profile.base.Company}></dd></dl>
+  <dl class="dl-horizontal"><dt>Company Address:</dt><dd id="f_companyaddress"><{$user_profile.base.CompanyAddr}></dd></dl>
+  <{assign var=countryid value=$user_profile.base.Country}>
+  <dl class="dl-horizontal"><dt>Country:</dt><dd id="f_country"><{$countryOption.$countryid}></dd></dl>
+</div>
+<{/if}>

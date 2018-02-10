@@ -1,0 +1,235 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;">
+            <h1>AFF Crawl Config</h1>
+        </select>
+        </div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                
+                <div class="panel panel-default">
+                    
+                    <div class="panel-body">
+                         
+                            <div class="row">
+                                <div class=" form-inline">
+                                    <div class="col-lg-12 ">
+                                        <div class="form-group">
+                                            
+                                        </div>
+                                        
+                                        <div class="form-group" style="margin-left: 10px;">
+                                            <input type="button" class="btn b-primary" id="addConfig" value="Add">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                         
+                    </div>
+                </div>
+            
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <table class="table table-striped" id="table_aff">
+                            <thead>
+                            <tr>
+                                <th>Network</th>
+                                <th>Status</th>
+                                <th>ProgramCrawlStatus</th>
+                                <th>LinkCrawlStatus</th>
+                                <th>StatsCrawlStatus</th>
+                                <th>FeedCrawlStatus</th>
+                                <th>ProductCrawlStatus</th>
+                                <th>Operation</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=value}>
+                            <tr>
+                                <td><{$affArr[$value.AffId].name}> (<{if $affArr[$value.AffId].isactive eq NO }>InActive<{else}>Active<{/if}>)</td>
+                                <td <{if $affArr[$value.AffId].isactive eq NO AND $value.Status eq Active }>style="color:#f00;"<{/if}>><{$value.Status}></td>
+                                <td><{$value.ProgramCrawlStatus}></td>
+                                <td><{$value.LinkCrawlStatus}></td>
+                                <td><{$value.StatsCrawlStatus}></td>
+                                <td><{$value.FeedCrawlStatus}></td>
+                                <td><{$value.ProductCrawlStatus}></td>
+                                <td  onclick="updateconfig(<{$value.AffId}>)" ><a  href="javascript:void(0)">Update</a></td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+ <!-- Modal -->
+<div class="modal ui" id="updateConfig" tabindex="-1" role="dialog"  aria-hidden="true"  style="max-height: 350px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">AFF Crawl Config</h3>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <div class="row">
+                     <div style="margin-top:10px;" id="show_updateConfig">
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal ui" id="addConfigUI" tabindex="-1" role="dialog"  aria-hidden="true"  style="max-height: 350px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">AFF Crawl Config</h3>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <div class="row">
+                     <div style="margin-top:10px;" id="show_addConfig">
+                     <form id="fnull">
+	<table style="width: 100%; border-collapse: separate; border-spacing: 0 10px;" class="s1">
+	    <tr>
+			<td style="text-align: right">Name: </td>
+			<td colspan="2">
+			<select class="chosen-select" name="AffId">
+                   <{foreach from=$affArr item=affList}>
+                   <option  value="<{$affList.id}>"><{$affList.name}></option>
+                   <{/foreach}>
+            </select>
+            </td>
+		</tr>
+		<tr>
+			<td style="text-align: right">Status: </td>
+			<td colspan="2">
+			<select class="chosen-select" name="Status">
+                   <option  value="Active">Active</option>
+                   <option  value="Inactive">Inactive</option>
+            </select>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: right">ProgramCrawlStatus :
+			</td>
+			<td colspan="2">
+               <select class="chosen-select" name="ProgramCrawlStatus">
+                   <option value="Yes">Yes</option>
+                   <option value="No">No</option>
+               </select>
+            </td>
+		</tr>
+		
+		<tr>
+			<td style="text-align: right">LinkCrawlStatus :
+			</td>
+			<td colspan="2">
+               <select class="chosen-select" name="LinkCrawlStatus">
+                   <option  value="Yes">Yes</option>
+                   <option  value="No">No</option>
+               </select>
+            </td>
+		</tr>
+		
+		<tr>
+			<td style="text-align: right">StatsCrawlStatus :
+			</td>
+			<td colspan="2">
+               <select class="chosen-select" name="StatsCrawlStatus">
+                   <option  value="Yes">Yes</option>
+                   <option  value="No">No</option>
+               </select>
+            </td>
+		</tr>
+		
+		<tr>
+			<td style="text-align: right">FeedCrawlStatus :
+			</td>
+			<td colspan="2">
+               <select class="chosen-select" name="FeedCrawlStatus">
+                   <option  value="Yes">Yes</option>
+                   <option  value="No">No</option>
+               </select>
+            </td>
+		</tr>
+		
+		<tr>
+			<td style="text-align: right">ProductCrawlStatus :
+			</td>
+			<td colspan="2">
+               <select class="chosen-select" name="ProductCrawlStatus">
+                   <option  value="Yes">Yes</option>
+                   <option  value="No">No</option>
+               </select>
+            </td>
+		</tr>
+		
+		<tr style="height: 15px"></tr>
+        <tr>
+           <input type="hidden" name="act" value="addConfig">
+           <td colspan="3" ><button type="button" onClick="addConfig()" class="btn btn-primary btn-lg btn-block" style="margin: auto;text-align: center;width: 20%">submit</button></td>
+        </tr>
+        
+        
+	</table>
+</form>
+                     
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+function addConfig(){
+	
+	var affid = $("select[name='AffId']").val();
+	var Status =  $("select[name='Status']").val();
+	var ProgramCrawlStatus =  $("select[name='ProgramCrawlStatus']").val();
+	var LinkCrawlStatus =  $("select[name='LinkCrawlStatus']").val();
+	var StatsCrawlStatus =  $("select[name='StatsCrawlStatus']").val();
+	var FeedCrawlStatus =  $("select[name='FeedCrawlStatus']").val();
+	var ProductCrawlStatus =  $("select[name='ProductCrawlStatus']").val();
+	$.ajax({
+    	type: "post",
+        url: "aff_crawl_config.php",
+        data: "type=ajax&act=addConfig&affid="+affid+"&Status="+Status+"&ProgramCrawlStatus="+ProgramCrawlStatus+"&LinkCrawlStatus="+LinkCrawlStatus+"&FeedCrawlStatus="+FeedCrawlStatus+"&ProductCrawlStatus="+ProductCrawlStatus+"&StatsCrawlStatus="+StatsCrawlStatus,
+        async: false,
+        success: function (res) {
+        	var ress = JSON.parse(res);
+        	alert(ress.msg);
+        	window.location.reload();
+        }
+    });
+    
+}
+
+$('#addConfig').on('click',function(){
+	$('#addConfigUI').modal('show');
+})
+
+function updateconfig(affid){
+	var data = {affid:affid,updateconfig:1}
+	$.ajax({
+        type:"post",
+        url:"aff_crawl_config.php",
+        data:data,
+        async:false,
+        success: function(res){
+            $('#show_updateConfig').html(res);
+            $('#updateConfig').modal('show');
+        }
+    });
+}
+
+</script>
+
+<{include file="b_block_footer.html"}>

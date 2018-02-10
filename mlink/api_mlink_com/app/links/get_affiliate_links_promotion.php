@@ -1,0 +1,116 @@
+<?php
+global $_cf,$_req,$_db;
+echo "<< Start @ ".date("Y-m-d H:i:s")." >>\r\n";
+
+
+$nowDay = date('Y-m-d H:i:s',time());
+//获取返回的有效promotion Patrick
+$getDate = date('Y-m-d',time());
+$url = "http://us-bcg.bwe.io/?act=brpromo&date=$getDate";
+
+$http_data['file_temp'] = DATA_ROOT.'correctFeed/feed_'. date('Ymd',strtotime($getDate)).'.dat';
+//$http_data['file_temp'] = './aff_br_data_20170405.txt';
+
+_http($url,$http_data);
+
+
+//读文件
+$fp = fopen($http_data['file_temp'], 'r');
+$links = array();
+$istitle = 0;
+while (!feof($fp)) {
+    
+    $lr = explode("\t",trim(fgets($fp)));
+    $istitle ++;
+    if($istitle == 1) continue;
+    if($lr[0]){
+        $affid    = $lr[0];
+        $PidInaff = $lr[1];
+        $AffLinkId = $lr[2];
+        $data['affid'] = $lr[0];
+        $data['PidInaff'] = $lr[1];
+        $data['AffLinkId'] = $lr[2];
+        $data['KeyWords'] = $lr[3];
+        $links[] = $data; 
+        if(count($links)>=100){
+            update_promotion($links); 
+            //print_r($links);exit;
+            $links = array();
+        }
+    }
+}
+fclose($fp);
+if(count($links)>0){
+    update_promotion($links);
+}
+
+
+function update_promotion($data){
+    global $_db;
+    $i = 0;
+    $j = 0;
+    foreach ($data as $v){
+        $currentDate = date('Y-m-d H:i:s');
+        $Sql = "SELECT ID FROM affiliate_links_all_simple WHERE affid = {$v['affid']} AND PidInaff = '".addslashes($v['PidInaff'])."' AND AffLinkId = '".addslashes($v['AffLinkId'])."'";
+        $simpleArr = $_db->getRows($Sql);
+        if(!empty($simpleArr)){
+            $corSql = "update affiliate_links_all_simple SET IsPromotion = 'YES', `KeyWords`='{$v['KeyWords']}',ScriptTime='{$currentDate}'  WHERE affid = {$v['affid']} AND PidInaff = '".addslashes($v['PidInaff'])."' AND AffLinkId = '".addslashes($v['AffLinkId'])."' ";
+            $_db->query($corSql);
+            //echo $corSql.PHP_EOL;
+            $i++;
+        }
+        $j++;
+    }
+    
+    echo "all total count:$j====>update count:$i\r\n";
+    return;
+}
+
+echo "<< End @ ".date("Y-m-d H:i:s")." >>\r\n";
+exit;
+
+
+
+
+function _http($url,$data=array(),$return=false){
+     
+    $file_temp =  $data['file_temp'];
+    $fw = fopen($file_temp, 'w+');
+
+    print_r("curl :".$url."\n");
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_HEADER         , false);
+    curl_setopt($ch, CURLOPT_NOBODY         , false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER , true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION , true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER , false);
+    curl_setopt($ch, CURLOPT_USERAGENT      , 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2');
+    curl_setopt($ch, CURLOPT_FILE           , $fw);
+    curl_setopt($ch, CURLOPT_REFERER        , $url);
+    curl_setopt($ch, CURLOPT_TIMEOUT        , 300);
+    curl_setopt($ch, CURLOPT_USERPWD, 'merlinxu' . ":" . 'Mega@12345');
+    
+    if(isset($data['postdata']) && !empty($data['postdata'])){
+        $post_query = http_build_query($data['postdata']);
+        curl_setopt($ch, CURLOPT_POST , true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS , $post_query);
+        print_r("curl_post :".$post_query."\n");
+    }
+
+    if(isset($data['headers']) && !empty($data['headers'])){
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $data['headers']);
+    }
+
+    $rs = curl_exec($ch);
+    curl_close($ch);
+    var_dump($rs);
+    fclose($fw);
+
+    if($return){
+        return file_get_contents($file_temp);
+    }else{
+        return $return;
+    }
+}
+
+?>

@@ -1,0 +1,374 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container" style="margin-top:30px;width:80%">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    <div class="panel-body" >
+                        <{if $seachtype eq '1'}>
+                        <form>
+                            <div class="col-lg-12 form-inline">
+                                <div class="form-group">
+                                    Url&nbsp;:&nbsp;<input type="text" Name="search" class="form-control url" placeholder="please input a url!">&nbsp;
+                                    <div class="form-group" style="margin-left:20px">
+                                        AddUser:&nbsp;<select class="form-control user" name="user">
+                                        <option value="" Name="user">All</option>
+                                        <{foreach from=$users  item=c}>
+                                        <option value="<{$c}>" name="user"><{$c}></option>
+                                        <{/foreach}>
+                                        <input type="hidden" id="user" value="<{$user}>">
+                                    </select>
+                                    <div class="form-group" style="margin-left:20px">
+                                        Status:&nbsp;<select class="form-control status" name="status">
+                                        <option value="All" Name="status" <{if $status eq 'All'}>selected="selected"<{/if}> >All</option>
+                                        <option value="done" Name="status" <{if $status eq 'done'}>selected="selected"<{/if}> >done</option>
+                                        <option value="processing" Name="status" <{if $status eq 'processing'}>selected="selected"<{/if}> >processing</option>
+                                        <option value="pending" Name="status" <{if $status eq 'pending'}>selected="selected"<{/if}> >pending</option>
+                                    </select>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <button type="submit" class="btn  btn-primary ">Search</button>
+                                        <button  type="button" onclick="urldiv($(this).parent().parent().index())" class="btn  btn-primary ">AddUrl</button>
+                                        &nbsp;
+                                        <button type="button" class="btn  btn-primary csv1">Download Csv</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <{else}>
+                            <input type="hidden" id="url" value="<{$url}>" />
+                            <div class="col-lg-12 form-inline">
+                                <div class="form-group">
+                                    <input type="text" id="search" Name="search" class="form-control" placeholder="please input a domain!">
+
+                                    <div class="form-group" style="margin-left:20px">
+                                        <button type="button" id="sub" class="btn  btn-primary ">Search</button>
+                                    </div>
+                                    PageSize:
+                                    <select id="select_pagesize" class="form-control" name="pagesize">
+                                        <option value="10" >10</option>
+                                        <option value="30" selected>30</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>&nbsp;
+                                    <input type="hidden" id="id" value="<{$id}>">
+                                    <button type="button" class="btn  btn-primary csv2">Download Csv</button>
+                                </div>
+                            </div>
+                        <{/if}>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Result</div>
+                    <div class="panel-body">
+
+                        <table class="table table-striped">
+                            <thead>
+                            <{if $type eq '1'}>
+                            <{if $type1 eq 'null'}>
+                            <tr style="width: 100%">
+                                <td align="center"><h1>No Data</h1></td>
+                            </tr>
+                            <tr style="width: 100%">
+                                <td align="center"><a href="javascript:void(0);" data-id="1" class="back"><h1>BACK</h1></a></td>
+                            </tr>
+                            <{else}>
+                            <tr>
+                                <th style="text-align: center">Number</th>
+                                <th style="text-align: center">Url</th>
+                                <th style="text-align: center">AddUser</th>
+                                <th style="text-align: center">AddTime</th>
+                                <th style="text-align: center">Status</th>
+                                <th style="text-align: center">Affiliate</th>
+                                <th style="text-align: center">Subaffiliate</th>
+                                <th style="text-align: center">Detail</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=publisher}>
+                            <tr id ='<{$publisher.ID}>' class="open-logs">
+                                <td style="text-align: center"><{$publisher.Number}></td>
+                                <td style="text-align: left"><{$publisher.Url}></td>
+
+                                <{if $publisher.AddUser eq ''}>
+                                <td style="text-align: center">System</td>
+                                <{else}>
+                                <td style="text-align: center"><{$publisher.AddUser}></td>
+                                <{/if}>
+
+                                <{if $publisher.AddUser eq ''}>
+                                <td style="text-align: center">/</td>
+                                <{else}>
+                                <td style="text-align: center"><{$publisher.Addtime}></td>
+                                <{/if}>
+                                <td style="text-align: center"><{$publisher.Status}></td>
+                                <{if $publisher.IsPassAff eq ''}>
+                                <td style="text-align: center">/</td>
+                                <{else}>
+                                <td style="text-align: center"><{$publisher.IsPassAff}></td>
+                                <{/if}>
+                                <{if $publisher.IsPassSubAff eq ''}>
+                                <td style="text-align: center">/</td>
+                                <{else}>
+                                <td style="text-align: center"><{$publisher.IsPassSubAff}></td>
+                                <{/if}>
+
+                                <{if $publisher.Status eq 'done'}>
+                                <td style="text-align: center"><a id="detail" href="b_publisher_site.php?id=<{$publisher.ID}>&type=2&name=<{$publisher.PublisherName}>" style="cursor: pointer" target="dpl">Detail</a></td>
+                                <{else}>
+                                <td style="text-align: center"><a onclick="alert('Waiting')"  href="javascript:void(0);" style="cursor: pointer"><font style="color: gray">Detail</font></a></td>
+                                <{/if}>
+
+                            </tr>
+                            <{/foreach}>
+                            <{/if}>
+                            <{else}>
+                            <{if $type eq 'null'}>
+                            <tr style="width: 100%">
+                                <td align="center"><h1>No Data</h1></td>
+                            </tr>
+                            <tr style="width: 100%">
+                                <td align="center"><a data-id="2" href="javascript:void(0);" class="back"><h1>BACK</h1></a></td>
+                            </tr>
+                            <{else}>
+                            <tr>
+                                <th width="10%;">Number</th>
+                                <th width="80%;">Domain</th>
+                                <th style="text-align: center" width="10%;">Amount</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=publisherd}>
+                            <tr id ='<{$publisherd.ID}>' class="open-logs">
+                                <td style="text-align: center"><{$publisherd.Number}></td>
+                                <td style="text-align: left"><a style="cursor:pointer" data-id="<{$publisherd.ExtDomain}>" onclick="showModal($(this).attr('data-id'))"><{$publisherd.ExtDomain}></a></td>
+                                <td style="text-align: center"><{$publisherd.amount}></td>
+                            </tr>
+                            <{/foreach}>
+                            <{/if}>
+
+                            <{/if}>
+
+                        </table>
+                        <{$pageHtml}>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="urldiv" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog" style="width: 1000px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title" id="exampleModalLabel">Add Url</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-8 col-md-offset-2" style="text-align:center;">
+                                    <dl class="dl-horizontal urldiv">
+                                        <dt style="width: 86%;"><input placeholder="Url"  type="text" class="form-control urlval"></dt>
+                                        <dd>
+                                            <button type="button" onclick="adddiv()" class="btn btn-primary addurlinput">+</button>
+                                            <button type="button" onclick="deldiv($(this).parent().parent().index())" data-id="1" class="btn btn-primary delurlinput">-</button>
+                                        </dd>
+                                        <span></span>
+                                    </dl>
+                                <div class="form-group">
+                                    <button type="button" id="addurl" class="btn  btn-primary btn-lg btn-block">submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document" style="width: 50%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="clearAjaxHtml()"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Detail</h4>
+                </div>
+                <div class="modal-body" id="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clearAjaxHtml()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if($('#user').val() != ''){
+            var vals = $('#user').val();
+            $('.user option').each(function(i){
+                if($('.user option').eq(i).val() == vals){
+                    $('.user option').eq(i).prop('selected',true);
+                    return false;
+                }
+            })
+        }
+        function adddiv(){
+            var html = '<dl class="dl-horizontal urldiv"><dt style="width: 86%;"><input type="text" placeholder="Url" class="form-control urlval"></dt><dd><button type="button" onclick="adddiv()" class="btn btn-primary addurlinput">+</button> <button type="button" onclick="deldiv($(this).parent().parent().index())" data-id="1" class="btn btn-primary delurlinput">-</button></dd> <span></span></dl>';
+            $('.urldiv').last().after(html);
+        }
+        function urldiv(){
+            $('#urldiv').modal();
+        }
+        function deldiv(s){
+            if($('.urldiv').length <= 1){
+                alert('Not Empty');
+            }else{
+                $('.urldiv').eq(s).remove();
+            }
+
+        }
+        function checkurl(){
+           var check = 1;
+            var re = /^((http|https|ftp):\/\/)?(\w(\:\w)?@)?([0-9a-z_-]+\.)*?([a-z]{2,6}(\.[a-z]{2})?(\:[0-9]{2,6})?)((\/[^?#<>\/\\*":]*)+(\?[^#]*)?(#.*)?)?$/i;
+            var val = $('.urlval');
+            $.each(val, function(i){
+                var val = $('.urlval').eq(i).val()
+              if(!re.test(val)){
+                   check = 0;
+                    $('.urldiv span').eq(i).html('<font color="red">Please enter the correct HTML</font>');
+                }else{
+                  $('.urldiv span').eq(i).html('');
+              }
+            })
+            return check;
+        }
+        $('.csv1').bind("click",function(){
+            var url = $('.url').val();
+            var status = $('.status').val();
+            var user = $('.user').val();
+            window.location.href = 'process.php?act=AnalysisCsv&user='+user+'&url='+url+'&status='+status;
+        })
+        $('.csv2').bind("click",function(){
+            var search = $('#search').val();
+            var id = $('#id').val();
+            window.location.href = 'process.php?act=AnalysisCsv2&id='+id+'&search='+search;
+        })
+        $('#addurl').bind('click',function(){
+            var check = checkurl();
+                var url = '';
+                if(check == 1){
+                    var val = $('.urlval');
+                    $.each(val, function(i){
+                        var val = $('.urlval').eq(i).val()
+                        url+= val+',';
+                    })
+                    var data = {'url':url.substr(0,url.length-1)}
+                    $.ajax({
+                        type:"post",
+                        url:"b_publisher_site.php",
+                        data:data,
+                        async:false,
+                        success: function(res){
+                            if(res == 1){
+                                alert('success');
+                                location.href = 'b_publisher_site.php';
+                            }else{
+                                alert('Error');
+                            }
+                        }
+                    });
+                }
+        })
+        $('#sub').bind('click',function(){
+            var search = $('#search').val();
+            if(search == ''){
+                alert('Please enter the');
+                return false;
+            }else{
+                var urldata = $('#url').val();
+                var urldata = urldata.split('?');
+                var urlhead = urldata[0];
+                var urlget = urldata[1].split('&');
+                var urlget = urlget[0]+'&'+urlget[1]+'&'+urlget[2]+'&search='+ $.trim(search);
+                var search = $('#search').val();
+                var url = urlhead+'?'+urlget;
+                location.href = url;
+            }
+
+        })
+        $('.back').bind('click',function(){
+                var urldata = $('#url').val();
+                var type = $(this).data('id');
+                if(type == 1){
+                    location.href = 'b_publisher_site.php';
+                }else{
+                    var urldata = urldata.split('?');
+                    var urlhead = urldata[0];
+                    var urlget = urldata[1].split('&');
+                    var urlget = urlget[0]+'&'+urlget[1]+'&'+urlget[2];
+                    var url = urlhead+'?'+urlget;
+                    location.href = url;
+                }
+        })
+        function showModal(domain){
+            var domainid = GetQueryString("id");
+            $.ajax({
+                type: "post",
+                url: "b_publisher_site.php",
+                data: "id=" +domainid +'&domain='+domain,
+                async: false,
+                success: function (res) {
+                    var data = eval(res);
+                    var show = "<table class='table table-striped'><thead><tr><th>NO.</th><th>Url</th></tr></thead>";
+                    for(var i = 0;i < data.length;i++)
+                    {
+                        var number = i+1;
+                        show =show +"<tr><td>"+number+"</td><td>"+data[i].ExtUrl+"</td></tr>";
+                    }
+                    show += "</table>";
+                    $('#modal-body').append(show);
+                }
+            });
+            $('#myModal').modal({ keyboard: false});
+        }
+
+        function GetQueryString(name)
+        {
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null)return  unescape(r[2]); return null;
+        }
+        function clearAjaxHtml(){
+            $('#modal-body').html('');
+        }
+        $(function(){
+            var pageSize = GetQueryString('pagesize');
+            var id=GetQueryString('id');
+            if(id != null)
+            {
+                if(pageSize == null)
+                    pageSize = 30;
+                $("#select_pagesize").val(pageSize);
+            }
+            $('#select_pagesize').change(function(e){
+                var pageSize= $('#select_pagesize option:selected').val();
+                replaceParamVal('pagesize',pageSize);
+            })
+        });
+        function replaceParamVal(paramName,replaceValue) {
+            var oUrl = this.location.href.toString();
+            var re=eval('/('+ paramName+'=)([^&]*)/gi');
+            var nUrl = oUrl.replace(re,paramName+'='+replaceValue);
+            if(oUrl == nUrl)
+                nUrl +='&'+ paramName+'='+replaceValue;
+            this.location = nUrl;
+        }
+    </script>
+
+    <{include file="b_block_footer.html"}>

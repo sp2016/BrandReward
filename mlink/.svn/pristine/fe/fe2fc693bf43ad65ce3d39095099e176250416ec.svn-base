@@ -1,0 +1,203 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+  <div class="container" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1><{$LANG.backend.createlink.a1}></h1></div>
+    <div class="row" style="padding:20px 0;">
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading"><{$LANG.backend.createlink.a1}></div>
+          <div class="panel-body">
+            <form id="form_tools">
+              <div class="form-group">
+                <label> 1. <{$LANG.backend.createlink.a2}>:</label>
+                <select class="form-control" id="f_site">
+                  <{foreach from=$sites item=site}>
+                    <option value="<{$site.ApiKey}>" ac="<{$site.ID}>"><{$site.Domain}></option>
+                  <{/foreach}>
+                </select>
+              </div>
+              <div class="form-group">
+                <label> 2. <{$LANG.backend.createlink.a3}>:</label>
+              </div>
+              <div class="form-group">
+                <input type="text" name="url" class="form-control" id="f_url" value="" placeholder="<{$LANG.backend.createlink.a7}>">
+              </div>
+              <div class="form-group">
+                <label class="radio-inline">
+					<input type="radio" name="link" value="ordinaryLink" checked>Create Link
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="link"  value="shortLink">Create Short Link
+				</label>
+              </div>
+              <div id="domain-result"></div>
+              <div class="form-group">
+                <input type="buttom" class="btn  b-primary create" name="build" value="<{$LANG.backend.createlink.a5}>" />
+              </div>
+              <div class="form-group html">
+                <label> 3. <{$LANG.backend.createlink.a4}>:</label>
+                <p id="f_afflink" class="bg-success" style="padding:15px;"><{$LANG.backend.createlink.a6}></p>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="row" style="padding:20px 0;">
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Deep Link Generator</div>
+          <div class="panel-body">
+          		<p>1.Open a supported browser (Chrome, Firefox, Safari, IE9+).</p>
+          		<p>2.Make sure that your bookmarks toolbar is visible in the selected browser.</p>
+          		<p>3.Drag <a class="btn-d default-btn bookmarklet-button" href="javascript:(function(){document.body.appendChild(document.createElement('script')).src='https://www.brandreward.com/static_cdn/plugin/deeplink/js/publisherBookmarklet.js?version=1';})();" title="Drag me to your bookmark bar" style="border: 1px solid rgba(27, 31, 7, 0.22);padding: 5px;">brandreward</a> generator to your bookmarks toolbar.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+//var siteType = "<{$siteType}>";
+
+/* $(document).delegate("#f_url","input propertychange",function(){
+	$.ajax({
+        type:"post",
+        url:"b_tools_createlink.php",
+        data:{url:$('#f_url').val(),siteType:siteType},
+        success: function(res){
+        	if($('#f_url').val()!=''){
+	            if(res==1){
+	           	 $("#domain-result").html('<span style="color:green">"'+$('#f_url').val()+'"<{$LANG.backend.createlink.a10}></span>');
+	            }else{
+	           	 $("#domain-result").html('<span style="color:red">"'+$('#f_url').val()+'"<{$LANG.backend.createlink.a11}></span>');
+	            }
+        	}else{
+        		$("#domain-result").html('');
+        	}
+        }
+   });
+}) */
+
+  function click(){
+	  set_msg('f_url',1,'');
+	  $(".copy").hide();
+	  //要生成的链接
+	  var url = $.trim($('#f_url').val());
+	  var site = $('#f_site').val();
+          var ac = $('#f_site option:selected').attr('ac');
+	  url.replace("\s",'');
+	  if(url == ''){
+        set_msg('f_url',0,'<{$LANG.backend.createlink.a8}>');
+        $('#f_afflink').html('<{$LANG.backend.createlink.a9}>');
+        return false;
+      }
+      if($("input[name='link']:checked").val()=='shortLink'){
+    	   if (!url.match(/[a-zA-z]+:\/\/[\S]*/)) {
+    	      set_msg('f_url', 0, '<{$LANG.backend.b_tools_shorturl.a6}>');
+    	      $('#f_afflink').html('<{$LANG.backend.createlink.a9}>');
+    	      return false;
+    	   }
+    	   $.ajax({
+	   	        type: "GET",
+	   	        url: 'shorturl_get.php',
+	   	        data: $.param({'long':url,'ac':ac}),
+	   	        success: function(msg){
+	   	          if(msg == 2){
+	   	            alert ('<{$LANG.backend.b_tools_shorturl.a7}>');
+	   	          }else if(msg){
+	   	              $("#f_afflink").html('https://brwd.me/'+msg);
+	   	              $("#f_afflink").data('val','https://brwd.me/'+msg);
+	   	              var val = $("#f_afflink").data('val');
+	   	              if($('.copy').length < 1){
+	   	                $('.html').append('<div class="form-group copy" ><input type="button" data-clipboard-action="copy" data-clipboard-target="#f_afflink" class="btn  b-primary copydata"  name="build"  value="Copy Url"/></div>');
+	   	                  var clipboard = new Clipboard('.copydata');
+	   	                  clipboard.on('success', function(e) {
+	   	                      alert('Success');
+	   	                  });
+	   	                  clipboard.on('error', function(e) {
+	   	                      alert('Error');
+	   	                  });
+	   	              }
+	   	          }
+	   	          $(".copy").show();
+   	           }
+   	       });
+      }else{
+    	  if(url.substr(0,7) != 'http://' && url.substr(0,8) != 'https://'){
+              url = 'http://'+url;
+            }
+            var afflink = CON_GO_URL+'?key='+site+'&url='+encodeURIComponent(url);
+            $('#f_afflink').html(afflink);
+            if($('.copy').length < 1){
+              $('.html').append('<div class="form-group copy" ><input type="button" data-clipboard-action="copy" data-clipboard-target="#f_afflink" class="btn  b-primary copydata"  name="build"  value="Copy Url"/></div>');
+              var clipboard = new Clipboard('.copydata');
+              clipboard.on('success', function(e) {
+                alert('Success');
+              });
+              clipboard.on('error', function(e) {
+                alert('Error');
+              });
+            }
+            $(".copy").show();
+      }
+      /* if(url == ''){
+        set_msg('f_url',0,'<{$LANG.backend.createlink.a8}>');
+        $('#f_afflink').html('<{$LANG.backend.createlink.a9}>');
+      }else{
+        if(url.substr(0,7) != 'http://' && url.substr(0,8) != 'https://'){
+          url = 'http://'+url;
+        }
+        var afflink = CON_GO_URL+'?key='+site+'&url='+encodeURIComponent(url);
+        $('#f_afflink').html(afflink);
+        set_msg('f_url',1,'');
+        if($('.copy').length < 1){
+          $('.html').append('<div class="form-group copy" ><input type="button" data-clipboard-action="copy" data-clipboard-target="#f_afflink" class="btn  b-primary copydata"  name="build"  value="Copy Url"/></div>');
+          var clipboard = new Clipboard('.copydata');
+          clipboard.on('success', function(e) {
+            alert('Success');
+          });
+          clipboard.on('error', function(e) {
+            alert('Error');
+          });
+        }
+      } */
+  }
+
+$('#f_url').on('keydown',function(){
+  if (event.keyCode == "13"){
+      click();
+  }
+});
+  $('.create').on('click',function(){
+      click();
+  });
+function set_msg(id,res,msg){
+  var fgroup = $('#'+id).parent();
+  if(res == 0){
+    fgroup.removeClass('has-error has-success');
+    fgroup.addClass('has-error');
+    if(fgroup.find('label')[0]){
+      fgroup.find('label').html(msg);
+    }else{
+      fgroup.prepend('<label class="control-label">'+msg+'</label>');
+    }
+  }else{
+    fgroup.removeClass('has-error has-success');
+    fgroup.addClass('has-success');
+     if(fgroup.find('label')[0]){
+      fgroup.find('label').remove();
+    }
+  }
+}
+
+</script>
+
+<{include file="b_block_footer.html"}>

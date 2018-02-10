@@ -1,0 +1,39 @@
+<div class="container" style="margin-top:30px;">
+    <div class="row" style="padding:10px 0;">
+        <table class="table table-bordered">
+        <thead>
+            <tr>
+              <th>ID</th>
+              <th>Commission</th>
+              <th>Network</th>
+              <th>Payment Date</th>
+            </tr>
+        </thead>
+          <{foreach from=$tradelist item=list}>
+            <tr>
+                <td><{$list.ID}></td>
+                <td>$<{$list.ShowCommissionUSD}></td>
+                <td><{$list.Network}></td>
+                <td><{$list.CreatedDate}></td>
+            </tr>
+          <{/foreach}>
+        </table>
+        <{$pageHtml}>
+    </div>
+</div>
+
+<script>
+    function pageJump(page){
+        $.ajax({
+            type: "post",
+            url: "b_paid.php",
+            data: "type=ajax&act=paydetail&pid=<{$search.pid}>&p="+page,
+            async: false,
+            success: function (html) {
+                $('#modal-body').html(html);
+            }
+        });
+       $('#myModal').modal({backdrop: 'static', keyboard: false});
+    }
+
+</script>

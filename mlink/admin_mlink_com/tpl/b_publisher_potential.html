@@ -1,0 +1,109 @@
+ <div class="container" style="margin-top:30px;">
+        <div class="row" style="padding:20px 0;">
+
+<form id="publisher_potential_form" action="b_publisher_potential.php">
+<input type="hidden" name="ppid" value="<{$publisher.id}>" />
+<input type="hidden" name="action" value="save_publisher_potential" />
+
+            <div class="col-lg-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Basic Info</div>
+                    <div class="panel-body">
+                        <table class="table table-bordered">
+                           <tr>
+                               <td class="cell_label">Country:</td><td class="cell_value"><input style="width:80%;" type="text" value="<{$publisher.country}>" name="country" /></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label">Category:</td><td class="cell_value"><input style="width:80%;" type="text" value="<{$publisher.category}>" name="category" /></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label">URL:</td><td class="cell_value"><input style="width:80%;" type="text" value="<{$publisher.url}>" name="url" /></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label">BlogName:</td><td class="cell_value"><input style="width:80%;" type="text" value="<{$publisher.blogname}>" name="blogname" /></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label">Name:</td><td class="cell_value"><input style="width:80%;" type="text" value="<{$publisher.name}>" name="name" /></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label">Email:</td><td class="cell_value"><input style="width:80%;" type="text" value="<{$publisher.email}>" name="email" /></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label">AddTime:</td><td class="cell_value"><{$publisher.createtime}></td>
+                           </tr>
+                            <tr>
+                               <td class="cell_label">Comment:</td><td class="cell_value"><textarea name="comment" rows='5' cols="62"><{$publisher.comment}></textarea></td>
+                           </tr>
+                        </table>
+                        <button type="button" class="btn btn-primary" onclick="save_form()">Save Changes</button>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="font-weight :bold">Contact Info</div>
+                    <div class="panel-body">
+                        <table class="table table-bordered">
+                           <tr>
+                               <td class="cell_label" style="width:30px;"><b>@Coldcall:</b></td><td class="cell_value"></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label">Mail1:</td><td class="cell_value"><{if $contactlist.coldcall_1}><{$contactlist.coldcall_1.time}><{else}><button type="button" data-mail-act="coldcall_1" class="btn btn-primary">Mail1</button><{/if}></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label">Mail2:</td><td class="cell_value"><{if $contactlist.coldcall_2}><{$contactlist.coldcall_2.time}><{else}><button type="button" data-mail-act="coldcall_2" class="btn btn-primary">Mail2</button><{/if}></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label">Mail3:</td><td class="cell_value"><{if $contactlist.coldcall_3}><{$contactlist.coldcall_3.time}><{else}><button type="button" data-mail-act="coldcall_3" class="btn btn-primary">Mail3</button><{/if}></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label"><b>@welcome:</b></td><td class="cell_value"></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label">Mail1:</td><td class="cell_value"><{if $contactlist.welcome_1}><{$contactlist.welcome_1.time}><{else}><button type="button" data-mail-act="welcome_1" class="btn btn-primary">Mail1</button><{/if}></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label">Mail2:</td><td class="cell_value"><{if $contactlist.welcome_2}><{$contactlist.welcome_2.time}><{else}><button type="button" data-mail-act="welcome_2" class="btn btn-primary">Mail2</button><{/if}></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label">Mail3:</td><td class="cell_value"><{if $contactlist.welcome_3}><{$contactlist.welcome_3.time}><{else}><button type="button" data-mail-act="welcome_3" class="btn btn-primary">Mail3</button><{/if}></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label"><b>@Active:</b></td><td class="cell_value"></td>
+                           </tr>
+                           <tr>
+                               <td class="cell_label">Mail:</td><td class="cell_value"><{if $contactlist.active}><{$contactlist.active.time}><{else}><button type="button"  data-mail-act="active" class="btn btn-primary">Mail</button><{/if}></td>
+                           </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+</form>
+        </div>
+    </div>
+
+<script>
+$('button[data-mail-act]').click(function(){
+  var objBtn = $(this);
+  var mailtype = $(this).attr('data-mail-act');
+  var ppid = $('#publisher_potential_form input[name=ppid]').val();
+
+  $.post("process.php", { act: "publisher_potential_mail", ppid: ppid, mailtype:mailtype },
+   function(data){
+     objBtn.parent().html(data);
+   });
+});
+
+function save_form(){
+  var form_data = $('#publisher_potential_form').serialize();
+  var url = $('#publisher_potential_form').attr('action');
+  $.post(url, form_data,
+   function(data){
+      alert('success!');
+   });
+}
+</script>

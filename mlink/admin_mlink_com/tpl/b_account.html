@@ -1,0 +1,115 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+  <div class="container" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1>Account</h1></div>
+
+    <!-- account info -->
+    <div class="panel panel-default" id="panel_account">
+      <div class="panel-heading">Account Details<span style="float:right"><a href="javascript:void(0)" id="a_edit_account">Edit Details</a></span></div>
+      <div class="panel-body" >
+        <div class="row">
+            <{include file="s_profile_account.html"}>
+        </div>
+      </div>
+    </div>
+
+    <!-- site info -->
+    <div id="profile-site" class="panel panel-default">
+      <div class="panel-heading">Sites Details<span style="float:right"><a href="javascript:void(0)" id="a_new_site" >New Site</a></span></div>
+      <div class="panel-body" >
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Site Url</th>
+              <th>Site Alias</th>
+              <th>Site ID</th>
+              <th>Type of Site</th>
+              <th>Target audience</th>
+              <th>#</th>
+            </tr>
+          </thead>
+          <{foreach from=$user_profile.site item=site}>
+          <{assign  var="sstid" value=$site.SiteType}>
+          <{assign  var="tcid" value=$site.TargetCountry}>
+          <tr>
+            <td><{$site.Domain}></td>
+            <td><{$site.Alias}></td>
+            <td><{$site.ApiKey}></td>
+            <td><{$sitetypeOption.$sstid}></td>
+            <td><{$countryOption.$tcid}></td>
+            <td><a href="javascript:void(0)" id="a_site_<{$site.ID}>" onclick="show_profile_site(<{$site.ID}>,'view');">Edit Details</a></td>
+          </tr>
+          <{/foreach}>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="dialog-site" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="dialog-site-title">New Site</h2>
+      </div>
+      <div class="modal-body">
+          
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="dialog-password" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="exampleModalLabel">Change password</h2>
+      </div>
+      <div class="modal-body">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2" style="text-align:center;">
+              <form method="post" action="<{$smarty.const.BASE_URL}>/process.php">
+                <input type="hidden" name="act" value='publish_change_pwd' />
+                  <div class="form-group">
+                    <input type="password" class="form-control" id="pub_pwd_old" value="" name="pub_pwd_old" placeholder="Old password">
+                  </div>
+                  <div class="form-group">
+                    <input type="password" class="form-control" id="pub_pwd" value="" name="pub_pwd" placeholder="New password">
+                  </div>
+                  <div class="form-group">
+                    <input type="password" class="form-control" id="pub_pwd_ag" value="" name="pub_pwd_ag" placeholder="Confirm new password">
+                  </div>
+                  <div class="form-group">
+                  <button type="submit" class="btn  btn-primary btn-lg btn-block">Apply</button>
+                </div>
+              </form>
+          </div>
+        </div>
+    </div>        
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+$('#dialog-password form').submit(function(){
+  return change_pwd();
+});
+
+$('#a_edit_account').click(function(){
+  show_profile_account(1);
+});
+
+$('#a_new_site').click(function(){
+  show_profile_site(0,'edit');
+});
+
+</script>
+
+<{include file="b_block_footer.html"}>

@@ -1,0 +1,15 @@
+<?php
+namespace App\Http\Entity\Statistics;
+use App\Http\Entity\BasicEntity;
+
+/**
+ * Class StatisticsQueryEntity
+ * @package App\Http\Entity\Statistics
+ *
+ * @property integer $type  统计维度：1.affiliate 2.store 3.domain 4.program 5.link 
+ *
+ */
+class StatisticsQueryEntity extends BasicEntity
+{
+
+}

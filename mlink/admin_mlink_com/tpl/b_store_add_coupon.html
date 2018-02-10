@@ -1,0 +1,177 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2" style="text-align:center;">
+            <form id="fnull">
+                <table style="width: 100%;border-collapse: separate;border-spacing: 0 10px;" class="s1">
+                    <tr>
+                        <input type="hidden" class="ID">
+                        <td style="text-align: right">Advertiser<font color="red">*</font>:</td>
+                        <td colspan="2">
+                            <select class="form-control language chosen3" id="add-content-advertiser" data-rel="chosen" class="chosen-select">
+                            <{$advertiser}>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">Country:</td>
+                        <td colspan="2">
+                            <select class="form-control language chosen2" id="pcountry" multiple="true" data-rel="chosen" class="chosen-select">
+                                <{foreach from=$countryArr key=k item=c}>
+                                <option value="<{$c}>"><{$k}></option>
+                                <{/foreach}>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">coupon code:</td>
+                        <td colspan="2">
+                            <input id="add-content-couponCode" placeholder="Please input the coupon code!" type="text" class="form-control CouponCode">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">title<font color="red">*</font>:</td>
+                        <td colspan="2">
+                            <input id="add-content-title" placeholder="Please input the title!" type="text" class="form-control Title">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">description<font color="red">*</font>:</td>
+                        <td colspan="2">
+                            <textarea rows="3" id="add-content-desc" placeholder="Please input the description!" class="form-control Desc" style="resize: none"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">affiliate url<font color="red">*</font>:</td>
+                        <td colspan="2"><input id="add-content-affUrl" placeholder="Please input the affiliate url!"
+                                               type="text" class="form-control AffUrl"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">original url:</td>
+                        <td colspan="2">
+                            <input id="add-content-originalUrl" placeholder="Please input the original url!" type="text" class="form-control OriginalUrl">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">valid date:</td>
+                        <td>
+                            <input type="text" id="add-content-startDate" class="form-control dtpicker1 StartDate" placeholder="Start Date" style="width: 90%;" data-field="datetime">
+                            <div id="dtBox"></div>
+                        </td>
+                        <td align="right">
+                            <input type="text" id="add-content-endDate" class="form-control dtpicker1 EndDate" placeholder="End Date" style="width: 90%;" data-field="datetime">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">type:</td>
+                        <td colspan="2">
+                            <select class="form-control Type" id="add-content-type">
+                                <option value="Promotion">Promotion</option>
+                                <option value="Coupon">Coupon</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">language:</td>
+                        <td colspan="2">
+                            <select class="form-control language" id="add-content-language">
+                                <option value="EN">EN</option>
+                                <option value="FR">FR</option>
+                                <option value="DE">DE</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr style="height: 15px"></tr>
+                    <tr>
+                        <input type="hidden" id="spid" class="spid">
+                        <td colspan="3">
+                            <button type="button" id="addCouponInfo" class="btn btn-primary btn-lg btn-block" style="margin: auto;text-align: center;width: 60%">submit
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="application/javascript">
+    $(function () {
+        $('.chosen3,.chosen2').chosen({width:'100%;'});
+        $(".dtpicker1").datetimepicker({
+            format : "yyyy-mm-dd  hh:ii",//日期格式
+            todayBtn: true//今日按钮
+        });
+        $('#addCouponInfo').on('click',function(){
+            var advertiser = $('#add-content-advertiser').val();
+            if (advertiser == null || advertiser.length == 0) {
+                alert("Please input the correct advertiser name!");
+                return false;
+            }
+            var couponCode = $('#add-content-couponCode').val();
+            var country = $('#pcountry').val();
+            var ptype = $('#add-content-type').val();
+            if(ptype == 'Coupon'){
+                if (couponCode == null || couponCode.length == 0) {
+                    alert("Please input the correct coupon code!");
+                    return false;
+                }
+            }
+            var startDate = $('#add-content-startDate').val();
+            var endDate = $('#add-content-endDate').val();
+            var startDateSeconds = new Date(startDate).getTime();
+            var endDateSeconds = new Date(endDate).getTime();
+            if (endDateSeconds < startDate) {
+                alert("Error ending date must be before current date");
+                return false;
+            }
+            if (endDateSeconds < startDateSeconds) {
+                alert("Error starting date must be before ending date");
+                return false;
+            }
+            var title = $('#add-content-title').val();
+            if (title == null || title.length == 0) {
+                alert("Please input the correct title!");
+                return false;
+            }
+            var desc = $('#add-content-desc').val();
+            if (desc == null || desc.length == 0) {
+                alert("Please input the correct description!");
+                return false;
+            }
+            var re = /^((http|https|ftp):\/\/)?(\w(\:\w)?@)?([0-9a-z_-]+\.)*?([a-z]{2,6}(\.[a-z]{2})?(\:[0-9]{2,6})?)((\/[^?#<>\/\\*":]*)+(\?[^#]*)?(#.*)?)?$/i;
+            var url = $('#add-content-affUrl').val();
+            if(url.length != 0 && ! /^[h\H][t|T][t|T][p|P][S|s]?:\/\/.+$/.test(url)){
+                alert("Please input the correct affiliate url!");
+                return false;
+            }
+            var original_url = $('#add-content-originalUrl').val();
+            if(original_url.length != 0 && ! /^[h\H][t|T][t|T][p|P][S|s]?:\/\/.+$/.test(original_url)){
+                alert("Please input the correct original url!");
+                return false;
+            }
+            if(original_url == '' && url == ''){
+                alert('Url Not Null');
+                return false;
+            }
+
+            var language = $('#add-content-language option:selected').val();
+            var data = {'spid':advertiser,'subtype':2,'country':country,'couponCode':couponCode,'startDate':startDate,'endDate':endDate,'title':title,'desc':desc,'url':url,'original_url':original_url,'ptype':ptype,'language':language}
+            $.ajax({
+                type:"post",
+                url:"b_content_new.php",
+                data:data,
+                async:false,
+                success: function(res){
+                    var evalRes = JSON.parse(res);
+                    if(evalRes.flag == 1){
+                        alert('Success');
+                        $('#newContentDiv').modal('hide');
+                    } else if(evalRes.flag == 2){
+                        alert(evalRes.msg);
+                    }else{
+                        alert('Error');
+                    }
+                }
+            });
+        })
+    });
+</script>

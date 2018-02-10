@@ -1,0 +1,220 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<{include file="b_generate_link_modal.html"}>
+
+<div class="b_transaction">
+  <div class="container-fluid" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1><{$LANG.backend.public.transactions}></h1></div>
+    <div class="row" style="padding:20px 0;">
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading"><{$LANG.backend.public.search}></div>
+          <div class="panel-body" >
+            <form id="form_tran_search">
+              <input type="hidden" name="p" value="1" />
+              <div class="col-lg-12 form-inline">
+              	<div class="form-group">
+                    Advertiser:
+                    <input type="text" style="width: 240px;" name="advertiser" data-type="advertiser" class="form-control advertiser" placeholder="e.g Ebay, Amazon, etc." value="<{$search.advertiser}>">
+                </div>&nbsp;&nbsp;
+                <div class="form-group">
+	                <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+					    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+					    <span></span> <b class="caret"></b>
+					</div>
+					<input type="hidden" name="tran_from" id="tran_from">
+          			<input type="hidden" name="tran_to" id="tran_to">
+				</div>
+				<div class="form-group">
+                  	<select name="datetype" class="form-control">
+                  		<option value="clickdate" <{if isset($search.datetype) and $search.datetype eq 'clickdate'}>selected="selected"<{/if}>>Click Date</option>
+                  		<option value="transactiondate" <{if isset($search.datetype) and $search.datetype eq 'transactiondate'}>selected="selected"<{/if}>>Transaction Date</option>
+                  		<option value="updatedate" <{if isset($search.datetype) and $search.datetype eq 'updatedate'}>selected="selected"<{/if}>>Update Date</option>
+                  	</select>
+                </div>
+                &nbsp;&nbsp;
+                PageSize: <select class="form-control" name="pagesize">
+                <option value="10" <{if $pagesize == '10'}>selected<{/if}>>10</option>
+                <option value="20" <{if $pagesize == '20'}>selected<{/if}>>20</option>
+                <option value="50" <{if $pagesize == '50'}>selected<{/if}>>50</option>
+                <option value="100" <{if $pagesize == '100'}>selected<{/if}>>100</option>
+              </select>&nbsp;
+                <!-- Site:
+                <select name="site" class="form-control">
+                  <option value="">All</option>
+                  <{foreach from=$site item=c}>
+                  <option value="<{$c.ApiKey}>" <{if isset($search.site) and $search.site eq $c.ApiKey}>selected="selected"<{/if}>><{$c.Domain}></option>
+                  <{/foreach}>
+                </select>&nbsp; -->
+                Status:
+                <select name="state" class="form-control">
+                  <option value="">All</option>
+                  <option value="PENDING" <{if isset($search.state) and $search.state eq 'PENDING'}>selected="selected"<{/if}>>PENDING</option>
+                  <option value="PAID" <{if isset($search.state) and $search.state eq 'PAID'}>selected="selected"<{/if}>>PAID</option>
+                </select>&nbsp;
+                
+                
+                <input type="submit" class="btn  b-primary " value="<{$LANG.backend.public.search}>">
+                &nbsp;
+                <input type="button" class="btn  b-primary " id="download" value="Download">
+                
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- referrer data start -->
+      <{if $sys_userinfo.isreferrer}>
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Referrer Summary</div>
+          <div class="panel-body">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th style="width:10%">Created Date</th>
+                <th style="width:10%">Earnings</th>
+              </tr>
+              </thead>
+              <{foreach from=$referrerData item=Tran}>
+              <tr>
+                <td><{$Tran.VisitedDate}></td>
+                <td><{$Tran.RefCommission}></td>
+              </tr>
+              <{/foreach}>
+            </table>
+          </div>
+        </div>
+      </div>
+      <{/if}>
+      <!-- referrer data end -->
+
+		 <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 15px;padding-right: 15px;">
+             <div class="well top-block">
+                 <div>Total Items</div>
+                 <div id="total"><{$total.total_num}></div>
+             </div>
+         </div>
+         <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 15px;padding-right: 15px;">
+             <div class="well top-block">
+                 <div>Total Earnings</div>
+                 <div id="total"><{$total.ShowCommissionTotal}></div>
+             </div>
+         </div>
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading" style="height: 55px;line-height: 34px;"><{$LANG.backend.transactions.a1}><input type="button" style="float:right" class="btn b-primary" id="generatelink" value="Transaction API"></div>
+          <div class="panel-body">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th style="width:10%">Click Date<span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Original date and time of transaction"></span></th>
+                <th style="width:10%">Transaction Date</th>
+                <{*<th style="width:10%"><{$LANG.backend.transactions.a3}></th>*}>
+                <th style="width:5%">Advertiser</th>
+                <th style="width:15%"><{$LANG.backend.transactions.a4}></th>
+                <th style="width:5%"><{$LANG.backend.transactions.a5}></th>
+                <th style="width:10%"><{$LANG.backend.transactions.a6}></th>
+                <th style="width:5%"><{$LANG.backend.transactions.a7}></th>
+                <th>Site</th>
+                <th style="width:40%"><{$LANG.backend.transactions.a8}></th>
+              </tr>
+              </thead>
+              <{foreach from=$TranData item=Tran}>
+              <tr>
+                <td><{$Tran.VisitedDate}></td>
+                <td><{$Tran.CreatedDate}></td>
+                <{*<td><{$Tran.Updated}></td>*}>
+                <td><{$Tran.adv}></td>
+                <td><{$Tran.BRID}></td>
+                <td>$<{$Tran.ShowCommission|number_format:'2':'.':','}></td>
+                <td><{$Tran.PublishTracking}></td>
+                <td><{$Tran.State}></td>
+                <td><{$Tran.Alias}></td>
+                <td style="word-break:break-all;word-wrap:break-word;"><{$Tran.clickpage}></td>
+              </tr>
+              <{/foreach}>
+            </table>
+            <{$pageHtml}>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script>
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip();
+      
+      var start = moment('<{$search.tran_from}>');
+      var end = moment('<{$search.tran_to}>');
+
+      function changeDate(start, end) {
+      	$("#tran_from").val(start.format("YYYY-MM-DD"));
+      	$("#tran_to").val(end.format("YYYY-MM-DD"));
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+      }
+
+      $('#reportrange').daterangepicker({
+      	  "alwaysShowCalendars": true,
+          "startDate": start,
+          "endDate": end,
+          "maxDate": moment().subtract(1, 'days'),
+          "opens": "center",
+          "ranges": {
+             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+             'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
+             'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
+             'This Week': [moment().startOf('week'), moment().subtract(1, 'days')],
+             'Last Week': [moment().startOf('week').subtract(7, 'days'), moment().startOf('week').subtract(1, 'days')],
+             'This Month': [moment().startOf('month'), moment().subtract(1, 'days')],
+             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+          }
+      }, changeDate);
+
+      changeDate(start, end);
+    })
+    $('#download').click(function(){
+      var value = $('#form_tran_search').serialize();
+      window.open('<{$smarty.const.BASE_URL}>/b_transaction.php'+'?act=downloadcontent&'+value);
+    });
+    
+    $("#generatelink").click(function(){
+    	generate_link();
+    	$("#generateLink").modal();
+    });
+    
+    $('#generateLink').on('shown.bs.modal', function () {
+    	if($("#copyApiUrl").siblings('div').length==0){
+    		$('#copyApiUrl').zclip({
+                path: "js/ZeroClipboard.swf",
+                copy:function(){
+                    return $("#apiurl").text();
+                }
+            });
+    	}
+ 	})
+    
+    $(document).delegate("input:radio[name='outformat']","change",function(){
+    	generate_link();
+    })
+    
+    $(document).delegate("#fsite","change",function(){
+    	generate_link();
+    })
+    
+    function generate_link(){
+    	$("#generousLinkLabel").html($("#generatelink").val());
+    	var fsite = $("#fsite").val();
+    	var apiurl = "<{$smarty.const.API_URL}>?act=report.transaction_data&key="+fsite+"&user=<{$username}>";
+    	apiurl+="&datetype="+$("select[name='datetype']").val();
+    	apiurl+="&bdate="+$("input[name='tran_from']").val()+"&edate="+$("input[name='tran_to']").val();
+    	apiurl+="&outformat="+$("input:radio[name='outformat']:checked").val();
+    	$("#apiurl").html(apiurl);
+    }
+  </script>
+  <{include file="b_block_footer.html"}>

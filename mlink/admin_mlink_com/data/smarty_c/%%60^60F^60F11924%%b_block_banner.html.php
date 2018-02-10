@@ -1,0 +1,216 @@
+<?php /* Smarty version 2.6.26, created on 2018-01-09 02:41:57
+         compiled from b_block_banner.html */ ?>
+<nav class="navbar navbar-default" role="navigation">
+    <nav class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="<?php echo @BASE_URL; ?>
+/index.php">Brandreward</a>
+        </div>
+        <div class="collapse navbar-collapse" id="example-navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="<?php echo @BASE_URL; ?>
+/index.php">Home</a>
+                </li>
+                <li class="dropdown">
+                    <a href="javascript:void(0);" data-toggle="dropdown">Advertiser<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_store.php" target="_blank">Advertiser - List</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_store_merge.php" target="_blank">Advertiser Merge</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_program.php" target="_blank">Program - List</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_category.php" target="_parent">Category</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/temp_store_off.php" target="_blank">Advertiser -Offline</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/partnershipTemp.php" target="_blank">Advertiserpartnership - Active</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_outlog.php" target="_blank">OutLog</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:void(0)">Network<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_aff_aff.php?isActive=YES" target="_blank">Network List</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_operation_log.php" target="_blank">Network Change Log</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:void(0)">Publisher<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_publisher.php" target="_blank">Publisher List</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_publisher_site.php" target="_blank">Publisher Site Analysis</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_publisher_page.php" target="_blank">Publisher Page Analysis</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_publisher_update.php" target="_blank">Publisher Update</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_publisher_crm.php" target="_blank">Publisher Index</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:void(0)">Stats<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_performance_site.php" target="_blank">Publisher Performance</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_performance.php?type=merchants" target="_blank">Advertiser Performance</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_performance.php?type=affiliate" target="_blank">Network Performance</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_transaction.php">Transaction Report</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_payments_publisher.php">Payments</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:void(0)">Promotions<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_content_new.php" target="_blank">Promotions</a>
+                        </li>
+
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_product_feed.php" target="_blank">Products</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_quicklink.php" target="_blank">Quick link</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_check_content.php" target="_blank">ContentCheck</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:void(0)">Tools<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/t_affiliate_block.php" target="_blank">Violations Index</a>
+                        </li>
+	                    <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_store_weekly_report.php" target="_blank">Weekly Report</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_program_performance.php" target="_blank">Program Performance</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_feedback.php" target="_blank">Feed back</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:void(0)">IT Tools<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_check_outbound.php" target="_blank">Outbound Check</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_check_homepage.php" target="_blank">Homepage Check</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_tools_manage_crawl_log.php" target="_blank">Crawl Log</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_content_check_log.php" target="_blank">Content Check Log</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_tools_key_msg_lose_alert.php" target="_blank">Key Msg Lose Alert</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/aff_crawl_config.php" target="_blank">Aff Crawl Config</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/b_tools_aff_info_select_oversee.php" target="_blank">Aff Crwal Info Select Show</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:void(0)">White list(test)<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?php echo @BASE_URL; ?>
+/w_store_account.php" target="_blank">store account</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            </ul>
+        </div>
+    </nav>
+</nav>
+
+
+<!-- head-top end  -->

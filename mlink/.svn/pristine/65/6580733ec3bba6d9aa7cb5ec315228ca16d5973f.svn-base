@@ -1,0 +1,105 @@
+<{if $is_form}>
+<form id="f_account">
+	<input type="hidden" name="act" value="edit_profile_account">
+	<div class="col-lg-6">
+	  <dl class="dl-horizontal"><dt><{$LANG.backend.account.a3}>:</dt><dd id="f_name">
+	<{if $user_profile.base.Career == 'network'}>
+		<{$user_profile.base.Name}>
+	<{else}>
+		<div class="form-group">
+                <input type="text" name="pub_name" class="form-control" id="pub_name" value="<{$user_profile.base.Name}>" placeholder="<{$LANG.backend.account.a26}>">
+              </div>
+	<{/if}>
+	  </dd></dl>
+	  <dl class="dl-horizontal"><dt><{$LANG.backend.account.a5}>:</dt><dd id="f_email">
+	  	<div class="form-group">
+	    	<input type="text" name="pub_email" class="form-control" id="pub_email" value="<{$user_profile.base.Email}>" placeholder="<{$LANG.backend.account.a27}>">
+	    </div>
+	  </dd></dl>
+	  <dl class="dl-horizontal"><dt><{$LANG.backend.account.a9}>:</dt><dd id="f_phone">
+	  	<div class="form-group">
+	    	<input type="text" name="pub_phone" class="form-control" id="pub_phone" value="<{$user_profile.base.Phone}>" placeholder="<{$LANG.backend.account.a29}>">
+	    </div>
+	  </dd></dl>
+	  <dl class="dl-horizontal"><dt><{$LANG.backend.account.a11}>:</dt><dd id="f_password"><a href="javascript:void(0)" onclick="show_change_pwd()"><{$LANG.backend.account.a30}></a></dd></dl>
+	</div>
+	<div class="col-lg-6">
+		<dl class="dl-horizontal"><dt><{$LANG.backend.account.a4}>:</dt><dd id="f_company">
+	  	<div class="form-group">
+	    	<input type="text" name="pub_site" class="form-control" id="pub_site" value="<{$user_profile.base.Domain}>" placeholder="http://">
+	    </div>
+	  </dd></dl>
+	  <dl class="dl-horizontal"><dt><{$LANG.backend.account.a6}>:</dt><dd id="f_company">
+	  	<div class="form-group">
+	    	<input type="text" name="pub_company" class="form-control" id="pub_company" value="<{$user_profile.base.Company}>" placeholder="<{$LANG.backend.account.a31}>">
+	    </div>
+	  </dd></dl>
+	  <dl class="dl-horizontal"><dt><{$LANG.backend.account.a8}>:</dt><dd id="f_companyaddress">
+	  	<div class="form-group">
+	    	<input type="text" name="pub_companyaddr" class="form-control" id="pub_companyaddr" value="<{$user_profile.base.CompanyAddr}>" placeholder="<{$LANG.backend.account.a32}>">
+	    </div>
+	  </dd></dl>
+	  <dl class="dl-horizontal"><dt><{$LANG.backend.account.a10}>:</dt><dd>
+	  	<select name="pub_country" class="form-control">
+	  		<{foreach from=$countryOption item=c key=k}>
+	  			<option value="<{$k}>"<{if $user_profile.base.Country == $k }>selected<{/if}>><{$c}></option>
+	  		<{/foreach}>
+	  	</select>
+	  </dd></dl>
+		<dl class="dl-horizontal"><dt><{$LANG.backend.account.a10}>:</dt><dd>
+			<select name="pub_country" class="form-control">
+				<{foreach from=$countryOption item=c key=k}>
+				<option value="<{$k}>"<{if $user_profile.base.Country == $k }>selected<{/if}>><{$c}></option>
+				<{/foreach}>
+			</select>
+		</dd></dl>
+	</div>
+	<div class="col-lg-12" style="text-align:center;">
+		<button type="button" class="btn btn-success" onclick="edit_profile_account()"> <{$LANG.backend.account.a20}> </button>
+		<button type="button" class="btn btn-default" onclick="show_profile_account(0)"> <{$LANG.backend.account.a21}> </button>
+	</div>
+</form>
+<{else}>
+<div class="col-lg-6">
+  <dl class="dl-horizontal"><dt><{$LANG.backend.account.a3}>:</dt><dd><{$user_profile.base.Name}></dd></dl>
+  <dl class="dl-horizontal"><dt><{$LANG.backend.account.a5}>:</dt><dd><{$user_profile.base.Email}></dd></dl>
+  <!-- <dl class="dl-horizontal"><dt><{$LANG.backend.account.a7}>:</dt><dd><{$user_profile.base.PayPal}></dd></dl> -->
+  <dl class="dl-horizontal"><dt><{$LANG.backend.account.a9}>:</dt><dd><{$user_profile.base.Phone}></dd></dl>
+	<!-- <dl class="dl-horizontal"><dt><{$LANG.backend.account.a35}>:</dt><dd><{$country}></dd></dl> -->
+	<dl class="dl-horizontal"><dt class="htmlcurr"><{$LANG.front.signup.r5}>:</dt><dd><{$user_profile.base.CurrentNetwork}></dd></dl>
+	<dl class="dl-horizontal"><dt class="htmlpro"><{$LANG.front.signup.l3}>:</dt><dd><{$ProfitModel}></dd></dl>
+	<dl class="dl-horizontal"><dt ><{$LANG.front.signup.r4}>:</dt><dd><{$ContentProduction}></dd></dl>
+	<dl class="dl-horizontal"><dt ><{$LANG.front.signup.zipcode}>:</dt><dd><{$user_profile.base.ZipCode}></dd></dl>
+	<dl class="dl-horizontal"><dt><{$LANG.backend.account.a11}>:</dt><dd><a href="javascript:void(0)" onclick="show_change_pwd()"><{$LANG.backend.account.a30}></a></dd></dl>
+</div>
+<div class="col-lg-6">
+  <dl class="dl-horizontal"><dt><{$LANG.backend.account.a4}>:</dt><dd><{$user_profile.base.Domain}></dd></dl>
+  <dl class="dl-horizontal"><dt><{$LANG.backend.account.a6}>:</dt><dd><{$user_profile.base.Company}></dd></dl>
+  <dl class="dl-horizontal"><dt><{$LANG.front.signup.addr1}>:</dt><dd><{$user_profile.base.CompanyAddr}></dd></dl>
+  <{assign var=countryid value=$user_profile.base.Country}>
+  <dl class="dl-horizontal"><dt><{$LANG.backend.account.a10}>:</dt><dd><{$countryOption.$countryid}></dd></dl>
+	<!-- <dl class="dl-horizontal"><dt><{$LANG.backend.account.a33}>:</dt><dd><{$sitetype}></dd></dl> -->
+	<dl class="dl-horizontal"><dt><{$LANG.backend.account.a34}>:</dt><dd><{$category}></dd></dl>
+	<dl class="dl-horizontal"><dt class="fontways"><{$LANG.front.signup.r3}>:</dt><dd><{$WaysOfTraffic}></dd></dl>
+	<dl class="dl-horizontal"><dt><{$LANG.front.signup.l1}>:</dt><dd><{$StaffNumber}></dd></dl>
+
+</div>
+<{/if}>
+<script>
+	var myReg = /^[\u4e00-\u9fa5]+$/;
+	var htmlways = $('.htmlcurr').html();
+	if(!myReg.test(htmlways)){
+		var waysarr =htmlways.split('currently');
+		$('.htmlcurr').html(waysarr[0]+'</br>currently'+waysarr[1]);
+	}
+	var htmlways = $('.fontways').html();
+	if(!myReg.test(htmlways)){
+		var waysarr =htmlways.split('traffic');
+		$('.fontways').html(waysarr[0]+'</br>traffic'+waysarr[1]);
+	}
+	var htmlpro = $('.htmlpro').html();
+	if(!myReg.test(htmlpro)){
+		var proarr =htmlpro.split('Model');
+		$('.htmlpro').html(proarr[0]+'</br> Model (Multi-choice):');
+	}
+</script>

@@ -1,0 +1,439 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div class="ch-container" style="margin-top: 20px;">
+  <div class="row">
+    <div class="col-sm-2 col-lg-2">
+      <div class="sidebar-nav" style="background-color:#f6f6f6;">
+        <a href="javascript:void(0)" class="sh"><i style="margin-top: 10px;color:#627491;margin-left: 10px;font-size: 18px;" class="glyphicon glyphicon-search"></i></a>
+        <input id="stime" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control dtpicker" placeholder="From" value="<{$stime}>">
+        <input id="etime" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control dtpicker  " placeholder="To" value="<{$etime}>">
+        <input  type="button" class="btn d1" style="width: 95%;margin-left: 2.5%;margin-top:10px;color:#627491;" value="Last 7 Day">
+        <input  type="button" class="btn d2" style="width: 95%;margin-left:2.5%;margin-top:10px;color:#627491;" value="Last 30 Day">
+        <input id="advertiser" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control" placeholder="advertiser">
+        <input id="site" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control Advertiser" placeholder="site name">
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Choose a Country</label>
+          <select id="country" class="chosen chosen-select"  multiple="multiple"  data-rel="chosen" style="width: 96%;">
+            <option value="">All</option>
+            <{foreach from=$countryArr key=k item=c}>
+            <option value="<{$c}>"><{$k}></option>
+            <{/foreach}>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Affiliate Name</label>
+          <select id="affiliate" class="chosen chosen-select"  multiple="multiple"  data-rel="chosen" style="width: 96%;">
+            <option value="">ALL</option>
+            <{foreach from=$affname item=aff}>
+            <option value="<{$aff.ID}>" class="aff"><{$aff.Name}></option>
+            <{/foreach}>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Data Type</label>
+          <select id="datatype" data-rel="chosen" class="chosen" style="width: 96%;">
+            <option value="1">Publisher</option>
+            <option value="2">All</option>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Time Type</label>
+          <select id="timetype" data-rel="chosen" class="chosen" style="width: 96%;">
+            <option value="1">CreateTime</option>
+            <option value="2">ClickTime</option>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Site Type</label>
+          <select id="sitetype" data-rel="chosen" class="chosen" style="width: 96%;">
+            <option value="">All</option>
+            <option value="Content">Content</option>
+            <option value="Promotion">Promotion</option>
+            <option value="Mixed">Mixed</option>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;margin-right: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Advertiser Status</label>
+          <select id="status" class="chosen"  data-rel="chosen" style="width: 96%;">
+            <option value="">All</option>
+            <option value="Content">Content Only</option>
+            <option value="Promotion">Promotion Only</option>
+            <option value="All">Content & Promotion</option>
+            <option value="Mixed">Mixed</option>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Cooperation Status</label>
+          <select id="ctype" data-rel="chosen" class="chosen" style="width: 96%;">
+            <option value="">All</option>
+            <option value="YES">YES</option>
+            <option value="NO">NO</option>
+          </select>
+        </div>
+        <input  type="button" class="btn search" style="width: 95%;margin-left:2.5%;margin-top:10px;margin-bottom:10px;background-color: #627491;color:white;" value="Search">
+        <input  type="button" class="btn csv" style="width: 95%;margin-left:2.5%;margin-bottom:10px;background-color: #286090;color:white;" value="Download Csv">
+      </div>
+    </div>
+
+
+    <div id="content" class="col-lg-10 col-sm-10">
+      <!-- content starts -->
+      <div>
+        <ul class="breadcrumb">
+          <li>
+            <a href="<{$smarty.const.BASE_URL}>/b_home.php">Home</a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" style="text-decoration:none;">performance</a>
+          </li>
+        </ul>
+      </div>
+      <div id="append">
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Total<{if $smarty.get.type!="affiliate"}> Advertiser<{else}> Affiliate<{/if}></div>
+          <div id="adv"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Total Commission</div>
+          <div id="commission"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Total Clicks</div>
+          <div id="totals"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Real Clicks<span style="margin-left:3px;" class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Total Clicks - Robot"></span></div>
+          <div id="clicks"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Robot</div>
+          <div id="rob"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>May be Robot</div>
+          <div id="robp"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Total Sales</div>
+          <div id="sales"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Order Num</div>
+          <div id="num"></div>
+        </a>
+      </div>
+      <div class="box col-md-12" style="padding-left:0px;padding-right:0px;">
+        <div class="box-inner">
+          <div class="box-header well" data-original-title="">
+          </div>
+          <div id="tbzone">
+            <table id="example" class="ui celled table" cellspacing="0" width="100%">
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+
+<div class="ui fullscreen modal">
+  <i class="close icon"></i>
+  <div class="header label"></div>
+  <div class="content modelval" style="overflow:auto;height:100%;">
+  </div>
+</div>
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+  <div class="modal-dialog" style="width:80%;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"
+                aria-hidden="true">×
+        </button>
+        <h4 class="modal-title" id="myModalLabel">
+          <{if $smarty.get.type=="sites"}>Publisher<{elseif $smarty.get.type=="merchants"}>Advertiser<{elseif $smarty.get.type=="affiliate"}>Network<{else}>Publisher<{/if}> Daily Performance
+        </h4>
+      </div>
+      <div class="modal-body">
+        Data Loading....
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script src="js/dataTables.min.js"></script>
+<script src="js/dataTables.semanticui.min.js"></script>
+<script>
+  $(".chosen").chosen();
+  $('.d1').on('click',function(){
+    var mydate = new Date();
+    var y = mydate.getFullYear();
+    var m = parseInt(mydate.getMonth()) + 1;
+    var d = mydate.getDate();
+    if (m < 10)
+      m = '0' + m;
+    if (d < 10)
+      d = '0' + d;
+
+    var today = y + '-' + m + '-' + d;
+    var mydate = new Date();
+    mydate.setDate(mydate.getDate() - 7);
+    var y = mydate.getFullYear();
+    var m = parseInt(mydate.getMonth()) + 1;
+    var d = mydate.getDate();
+    if (m < 10)
+      m = '0' + m;
+    if (d < 10)
+      d = '0' + d;
+
+    var lastday = y + '-' + m + '-' + d;
+    $('#stime').val(lastday);
+    $('#etime').val(today);
+  })
+  $('.d2').on('click',function(){
+    var mydate = new Date();
+    var y = mydate.getFullYear();
+    var m = parseInt(mydate.getMonth()) + 1;
+    var d = mydate.getDate();
+    if (m < 10)
+      m = '0' + m;
+    if (d < 10)
+      d = '0' + d;
+
+    var today = y + '-' + m + '-' + d;
+    var mydate = new Date();
+    mydate.setDate(mydate.getDate() - 30);
+    var y = mydate.getFullYear();
+    var m = parseInt(mydate.getMonth()) + 1;
+    var d = mydate.getDate();
+    if (m < 10)
+      m = '0' + m;
+    if (d < 10)
+      d = '0' + d;
+
+    var lastday = y + '-' + m + '-' + d;
+    $('#stime').val(lastday);
+    $('#etime').val(today);
+  })
+  $(".dtpicker").datetimepicker({
+    minView: "month",//设置只显示到月份
+    format : "yyyy-mm-dd",//日期格式
+    autoclose:true,//选中关闭
+    todayBtn: true//今日按钮
+  });
+  $('.csv').bind("click", function () {
+    var stime = $('#stime').val();
+    var etime = $('#etime').val();
+    var site = $('#site').val();
+    var advertiser = $('#advertiser').val();
+    var datatype = $('#datatype').val();
+    var timetype = $('#timetype').val();
+    var affiliate = $('#affiliate').val();
+    var country = $('#country').val();
+    var ctype = $('#ctype').val();
+    var status = $("#status").val();
+    var sitetype = $('#sitetype').val();
+    if (stime == '' || etime == '') {
+      alert('Time not null');
+      return false;
+    }
+    var type = '<{$smarty.get.type}>';
+    if (type == 'merchants') {
+      window.location.href = 'process.php?act=PerformanceCsv_adv&sitetype=' + sitetype + '&status=' + status + '&ctype=' + ctype + '&country=' + country + '&affiliate=' + affiliate + '&advertiser=' + advertiser + '&type=merchants&timetype=' + timetype + '&datatype=' + datatype + '&from=' + stime + '&to=' + etime + '&site=' + site;
+    }
+    if (type == 'affiliate') {
+      window.location.href = 'process.php?act=PerformanceCsv_aff&sitetype=' + sitetype + '&status=' + status + '&ctype=' + ctype + '&country=' + country + '&affiliate=' + affiliate + '&advertiser=' + advertiser + '&type=merchants&timetype=' + timetype + '&datatype=' + datatype + '&from=' + stime + '&to=' + etime + '&site=' + site;
+    }
+  });
+  function tab(){
+    var stime = $('#stime').val();
+    var etime = $('#etime').val();
+    var site = $('#site').val();
+    var advertiser = $('#advertiser').val();
+    var datatype = $('#datatype').val();
+    var timetype = $('#timetype').val();
+    var affiliate = $('#affiliate').val();
+    var sitetype = $('#sitetype').val();
+    var country = $('#country').val();
+    var status = $('#status').val();
+    var ctype = $('#ctype').val();
+    $('#example').dataTable({
+      "fnDrawCallback": function (data) {
+        var clicks = data.json.clicks;
+        var sales = data.json.sales;
+        var com = data.json.com;
+        var order = data.json.order;
+        var rob = data.json.rob;
+        var robp = data.json.robp;
+        var total = data.json.total;
+        var adv = data.json.recordsFiltered;
+        $('#adv').html(adv);
+        $('#commission').html(com);
+        $('#clicks').html(clicks);
+        $('#sales').html(sales);
+        $('#num').html(order);
+        $('#rob').html(rob);
+        $('#robp').html(robp);
+        $('#totals').html(total);
+      },
+      "bServerSide": true,
+      "bProcessing": true,
+      "iDisplayLength": 20,
+      "bPaginage": true,
+      "aLengthMenu": [10, 20, 50, 100],
+      'bFilter': false,
+      'pagingType': 'full_numbers',
+      "ajax": {
+        "url": "b_performance.php",
+        "type": 'POST',
+        "data": {
+          "table": 1,
+          'advertiser': advertiser,
+          "stime": stime,
+          "etime": etime,
+          "datatype": datatype,
+          "timetype": timetype,
+          "affiliate": affiliate,
+          "site": site,
+          "country": country,
+          "sitetype": sitetype,
+          "ctype": ctype,
+          "status": status,
+          "type":'<{$smarty.get.type}>'
+        }
+      },
+      "aaSorting": [
+        [1, "desc"],
+      ],
+      columns: [
+        {
+          "data": "alias",
+          "title": '<{if $smarty.get.type=="sites"}>Publisher<{elseif $smarty.get.type=="merchants"}>Advertiser<{elseif $smarty.get.type=="affiliate"}>Network<{else}>Publisher<{/if}>',
+          "bSortable": false,
+          "render": function (data, type, full, meta) {
+            if (full.alias != '' && full.alias != null) {
+              var type = '<{$smarty.get.type}>';
+              var action = 'group=';
+              switch (type) {
+                case 'merchants' :
+                  action += 'store';
+                  break;
+                case 'affiliate' :
+                  action += 'network';
+                  break;
+              }
+              return "<a data-toggle='modal' href='/b_daily_transaction.php?" + action +
+                      "&id=" + full.id +
+                      "&advertiser=" + advertiser +
+                      "&sdate=" + stime +
+                      "&edate=" + etime +
+                      "&datatype="+datatype+
+                      "&timetype=" + timetype +
+                      "&site=" + site +
+                      "&country=" + country +
+                      "&sitetype=" + sitetype +
+                      "&country=" + country +
+                      "&ctype="+ctype+
+                      "' data-target='#myModal'>" + full.alias + "</a>";
+            } else {
+              return '<font color="red">Unknown</font>';
+            }
+          }
+        },
+        { "data": "Sales","title":'Order Sales', "asSorting": [ "desc", "asc", "desc" ]},
+        { "data": "Commission","title":'Commission',"asSorting": [ "desc", "asc", "desc" ]},
+        { "data": "orders","title":'Order Num', "asSorting": [ "desc", "asc", "desc" ]},
+        { "data": "clicks","title":'Total Clicks', "asSorting": [ "desc", "asc", "desc" ]},
+        { "data": "realclicks","title":'<a href="javascript:void(0)" title="(Total Clicks - Robot)">Real Clicks</a>', "asSorting": [ "desc", "asc", "desc" ]},
+        { "data": "rob","title":'Robot'},
+        { "data": "robp","title":'May Be Robot'},
+        { "data": "commrate","title":'<a href="javascript:void(0)" title="(commission/sales*100)">Commission.Rate</a>',"bSortable": false },
+        { "data": "epc","title":'<a href="javascript:void(0)" title="(commission/clicks)">EPC</a>',"bSortable": false },
+        { "data": "status","title":'Cooperation Status',"bSortable": false,"visible":<{if $smarty.get.type!="affiliate"}>true<{else}>false<{/if}> },
+      ],
+    });}
+  tab();
+  function changes(t){
+    if(confirm("DO you really want to change support type?"))
+    {
+      var storeId = $(t).attr('val');
+      var supportType = t.value;
+      var data = {UpdateSupport:1,storeId:storeId,supportType:supportType};
+      $.ajax({
+        type: "post",
+        url: "b_store.php",
+        data:data,
+        async: false,
+        success: function (res) {
+          if(res == 1){
+            alert('Success!');
+          }else {
+            alert('Failed!');
+          }
+        },
+        error:function(){
+          alert('Failed!');
+        }
+      });
+    }
+    // console.log();
+  }
+  $('.search').bind("click",function(){
+    $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+    tab();
+  })
+  $('.sh').bind("click",function(){
+    $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+    tab();
+  })
+  $('#t1').bind("click",function(){
+    $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+    tab();
+  })
+  $('#t2').bind("click",function(){
+    $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+    tab();
+  })
+  function toThousands(num) {
+    var num = (num || 0).toString(), result = '';
+    while (num.length > 3) {
+      result = ',' + num.slice(-3) + result;
+      num = num.slice(0, num.length - 3);
+    }
+    if (num) { result = num + result; }
+    return result;
+  }
+  $("#myModal").on("hide.bs.modal",function(){
+    $(this).removeData("bs.modal");
+    $(".modal-body").children().remove();
+    $(".modal-body").html('Data Loading....');
+  });
+  $("#myModal").on("hidden.bs.modal", function() {
+    $(this).removeData("bs.modal");
+    $(".modal-body").children().remove();
+    $(".modal-body").html('Data Loading....');
+  });
+</script>
+<{include file="b_block_footer.html"}>

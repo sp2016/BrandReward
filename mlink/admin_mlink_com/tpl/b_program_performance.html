@@ -1,0 +1,120 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<div class="ch-container">
+    <div class="row">
+        <div id="content" class="col-lg-12">
+            <!-- content starts -->
+            <div>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="#">Home</a>
+                    </li>
+                    <li>
+                        <a href="#">Program Performance</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="row">
+                <div class="box-content" style="text-align: center;">
+	                <div style="margin: 0 auto;width:40%;">
+		                <div id="reportrange" style="background: #fff;border: 1px solid #ccc;width:46%; padding: 5px 13px; float: left">
+		                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+		                <span></span><b class="caret"></b>
+	                    </div>
+		                <input id="program_key" type="text" class="form-control" placeholder="Program" style="width: 20%; float: left;margin-left:2% ">
+		                <input type="button" class="btn search" style="background-color: #627491;color:white;margin-left:2%;float: left" value="Search">
+	                </div>
+                </div>
+	            <input type="hidden" name="startDate" id="startDate">
+	            <input type="hidden" name="endDate" id="endDate">
+            </div>
+              <div class="row">
+                <div class="box col-md-12" style="min-height: 550px;">
+                    <div class="box-inner homepage-box">
+                        <div class="box-content">
+                            <div id="myTabContent" class="tab-content">
+                                <div class="box-inner" style="margin-top: 30px;" >
+                                    <div id="tbzone">
+                                        <table id="example" class="ui celled table" cellspacing="0" width="100%">
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(".chosen").chosen();
+    var start = moment().subtract(30, 'days');
+    var end = moment().subtract(1, 'days');
+    $("#startDate").val(start.format("YYYY-MM-DD"));
+    $("#endDate").val(end.format("YYYY-MM-DD"));
+    function tab(){
+        $('#example').DataTable({
+            "bServerSide": true,
+            "bProcessing": true,
+            "iDisplayLength": 20,
+            "bPaginage":true,
+            "aLengthMenu": [10, 20, 50, 100],
+            'bFilter': false,
+            'pagingType':'full_numbers',
+            "ajax": {
+                "url": "b_program_performance.php",
+                "type":'POST',
+                data:{"startDate":$("#startDate").val(),"endDate":$("#endDate").val(),"table":"1","program":$("#program_key").val()}
+            },
+            "aaSorting":[],
+            columns:[
+	            {
+		            "title": 'Program',
+		            "bSortable": false,
+		            "render": function (data, type, full, meta) {
+			            return full.Program + "("+ full.ID +")" + "<br />" + full.Homepage;
+		            }
+	            },
+                { "data": "IsActive","title":"HasPartnership(BR)","bSortable": false},
+                { "data": "Clicks_BR","title":"Clicks(BR)"},
+                { "data": "Commission_BR","title":"Commission(BR)"},
+                { "data": "Sales_BR","title":"Sales(BR)"},
+                { "data": "Clicks_MK","title":"Clicks(MK)"},
+                { "data": "Commission_MK","title":"Commission(MK)"},
+                { "data": "Sales_MK","title":"Sales(MK)"}
+            ]
+        })
+    }
+    function changeDate(start, end) {
+        $("#startDate").val(start.format("YYYY-MM-DD"));
+        $("#endDate").val(end.format("YYYY-MM-DD"));
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    }
+    $('#reportrange').daterangepicker({
+        "alwaysShowCalendars": true,
+        "startDate": start,
+        "endDate": end,
+        "maxDate": moment().subtract(1, 'days'),
+        "ranges": {
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
+            'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
+            'This Week': [moment().startOf('week'), moment().subtract(1, 'days')],
+            'Last Week': [moment().startOf('week').subtract(7, 'days'), moment().startOf('week').subtract(1, 'days')],
+            'This Month': [moment().startOf('month'), moment().subtract(1, 'days')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    },changeDate);
+    changeDate(start, end);
+
+    tab();
+    $('.search').on('click',function(){
+        $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+        $('#tbzone1').html('<table id="example1" class="ui celled table" cellspacing="0" width="100%"></table>');
+        $('#tbzone2').html('<table id="example2" class="ui celled table" cellspacing="0" width="100%"></table>');
+        tab();
+    })
+
+</script>
+<{include file="b_block_footer.html"}>

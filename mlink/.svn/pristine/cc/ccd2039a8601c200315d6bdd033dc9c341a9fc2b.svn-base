@@ -1,0 +1,251 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+        <div class="row" style="padding:20px 0;">
+            <div style="text-align:center;margin-bottom:30px;"><h1>Account - manage</h1></div>
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body" style="text-align: center">
+                        <form>
+                            <input type="hidden" name="p" value="1" />
+                            <div class="col-lg-12 form-inline">
+                                <div class="form-group">
+                                    <div class="form-group" style="margin-left:20px">
+                                        <a href="b_admin_edit.php?method=add" target="_blank"><button  id="add" type="button" class="btn  btn-primary">Add</button></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Info</div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>AffId</th>
+                                <th>AffName</th>
+                                <th>LoginUrl</th>
+                                <th>UserName</th>
+                                <th>PassWord</th>
+                                <th>LoginTest</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=account}>
+                            <tr>
+                                <td><{$account.ID}></td>
+                                <td><{$account.Name}></td>
+                                <td><a href="<{$account.AffLoginUrl}>" target="_blank" style="cursor: pointer;"><{$account.AffLoginUrl}></a></td>
+                                <td><{$account.Account}></td>
+                                <td><{$account.Password}></td>
+                                <td><{if $account.AffLoginVerifyString}><button class="btn  btn-primary">Test</button><{/if}></td>
+                                <td><button class="btn  btn-primary">修改</button></td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        $('.ava_pro').click(function(){
+            var datalist = $(this).attr('data-list');
+            if(datalist.length > 0 ){
+                datalist = datalist.substring(0,datalist.length-2);
+                var arr = datalist.split('##');
+                var tbody = '<tbody>';
+                tbody += '<tr class="text-success"><td>'+$(this).html()+'</td><td>'+$(this).parent().prev().html()+'</td><td></td></tr>';
+                for(var i in arr){
+                    var row = arr[i].split(',');
+                    if(row[0] == $(this).html() )
+                        continue;
+                    tbody += '<tr><td>'+row[0]+'</td><td>'+row[1]+'</td><td><a href="javascript:void(0);">change</a></td></tr>';
+                }
+                tbody += '</tbody>';
+
+                if($('#ava-program-modal table tbody')){
+                    $('#ava-program-modal table tbody').remove();
+                }
+                $('#ava-program-modal table').append(tbody);
+
+                $('#ava-program-modal').modal();
+            }
+        });
+
+
+
+        //------------------------------------------------------------------------Domain搜索提示功能------------------------------------------------------------
+        $('.tip').keyup(function(){//keyup是jquery函数，表示松开键盘
+            var ipt = this;
+            var keywords = $(this).val();
+            var url = '<{$smarty.const.BASE_URL}>/process.php';
+            var ajaxdata = 'act=tip_PDC_Domain&keywords='+keywords;
+
+            if(!keywords.match(/[^\s]{1,}/)){//排除空白符，即空白符不算字符
+                return;
+            }
+
+            $.ajax({
+                type:"post",
+                url:"<{$smarty.const.BASE_URL}>/process.php",
+                data:ajaxdata,
+                success: function(req){
+                    var html_tip = '<ul class="dropdown-menu" >';
+                    var arr = req.split('|');
+                    for(var i in arr){
+                        html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+                    }
+                    var html_tip = html_tip+'</ul>';
+
+
+                    if($(ipt).parent().find('ul')){
+                        $(ipt).parent().find('ul').remove();
+                    }
+
+                    $(ipt).parent().append(html_tip);
+
+                    load_tip($(ipt).parent().find('ul'));
+                }
+            });
+
+
+        });
+
+
+
+        //------------------------------------------------------------------------add Domain搜索提示功能------------------------------------------------------------
+        $('.add_tip').keyup(function(){//keyup是jquery函数，表示松开键盘
+            var ipt = this;
+            var keywords = $(this).val();
+            var url = '<{$smarty.const.BASE_URL}>/process.php';
+            var ajaxdata = 'act=tip_Domain_add&keywords='+keywords;
+
+            if(!keywords.match(/[^\s]{1,}/)){//排除空白符，即空白符不算字符
+                return;
+            }
+
+            $.ajax({
+                type:"post",
+                url:"<{$smarty.const.BASE_URL}>/process.php",
+                data:ajaxdata,
+                success: function(req){
+                    var html_tip = '<ul class="dropdown-menu" >';
+                    var arr = req.split('|');
+                    for(var i in arr){
+                        html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+                    }
+                    var html_tip = html_tip+'</ul>';
+
+
+                    if($(ipt).parent().find('ul')){
+                        $(ipt).parent().find('ul').remove();
+                    }
+
+                    $(ipt).parent().append(html_tip);
+
+                    load_tip($(ipt).parent().find('ul'));
+                    if($.trim(req) =="Cannot add for this Domain already exists"){
+                        $("#sub").attr("type","button");
+                        $("#sub").addClass("btn-warning");
+                    }else{
+                        $("#sub").attr("type","submit");
+                        $("#sub").removeClass("btn-warning");
+                    }
+                }
+            });
+
+
+        });
+
+
+
+        function load_tip(obj){
+            $(obj).css('display','block');  //jquery的css()函数，相当于display:block
+            $(obj).find('a').click(function(){
+                //console.info($($(obj).parent().find("input")[0]));
+
+                $($(obj).parent().find("input")[0]).val($(this).html());
+                $(obj).remove();
+            });
+        }
+        //------------------------------------------------------------Program搜索提示功能-------------------------------------------------------------------------------------
+
+        $('.tip2').keyup(function(){//keyup是jquery函数，表示松开键盘
+            var ipt = this;
+            var keywords = $(this).val();
+            var url = '<{$smarty.const.BASE_URL}>/process.php';
+            var ajaxdata = 'act=tip_PDC_Program&keywords='+keywords;
+
+            if(!keywords.match(/[^\s]{1,}/)){//排除空白符，即空白符不算字符
+                return;
+            }
+
+            $.ajax({
+                type:"post",
+                url:"<{$smarty.const.BASE_URL}>/process.php",
+                data:ajaxdata,
+                success: function(req){
+                    //console.info(req);
+                    var html_tip = '<ul style="margin-left:300px" class="dropdown-menu" >';
+                    var arr = req.split('|');
+                    for(var i in arr){
+                        html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+                    }
+                    var html_tip = html_tip+'</ul>';
+
+
+                    if($(ipt).parent().find('ul')){
+                        $(ipt).parent().find('ul').remove();
+                    }
+
+                    $(ipt).parent().append(html_tip);
+
+                    load_tip2($(ipt).parent().find('ul'));
+
+
+                }
+            });
+
+
+        });
+
+
+        function load_tip2(obj){
+            $(obj).css('display','block');  //jquery的css()函数，相当于display:block
+            $(obj).find('a').click(function(){
+                //console.info($($(obj).parent().find("input")[0]));
+
+                $($(obj).parent().find("input")[1]).val($(this).text());
+                //console.info($(this).text());
+                $(obj).remove();
+            });
+        }
+    </script>
+
+    <{include file="b_block_footer.html"}>

@@ -1,0 +1,106 @@
+<?php
+//auth_ini.php must be included after init_back.php so that we can use function like '__autoload' and  'session_start'
+
+
+$_menu = array(
+    $LANG[$language]['backend']['public']['home'] => array('file' => 'b_home.php', 'abb' => 'ho', 'sub' => 'no'),
+    $LANG[$language]['backend']['public']['performance'] => array('file' => 'b_performance.php', 'abb' => 'pe', 'sub' => 'yes'),
+    $LANG[$language]['backend']['public']['adlist'] => array('file' => 'b_merchants.php', 'abb' => 'me', 'sub' => 'no'),
+    $LANG[$language]['backend']['public']['transactions'] => array('file' => 'b_transaction.php', 'abb' => 'tr', 'sub' => 'no'),
+    $LANG[$language]['backend']['public']['content'] => array('file' => '', 'abb' => 'pe', 'sub' => 'yes'),
+    $LANG[$language]['backend']['public']['tools'] => array('file' => '', 'abb' => 'to', 'sub' => 'yes'),
+    $LANG[$language]['backend']['public']['traffic'] => array('file' => 'b_aff_traffic.php', 'abb' => 'tra', 'sub' => 'no'),
+    $LANG[$language]['backend']['public']['ad_traffic'] => array('file' => 'b_ad_traffic.php', 'abb' => 'trad', 'sub' => 'no'),
+    $LANG[$language]['backend']['public']['ad_traffic_ctr'] => array('file' => 'b_ad_traffic_ctr.php', 'abb' => 'tradctr', 'sub' => 'no'),
+);
+$_subMenu = array(
+    $LANG[$language]['backend']['public']['performance'] => array(
+        $LANG[$language]['backend']['public']['dailyreport'] => array('file' => 'b_performance.php?type=daily', 'abb' => 'da'),
+        $LANG[$language]['backend']['public']['your'] => array('file' => 'b_performance.php?type=merchants', 'abb' => 'mer'),
+        $LANG[$language]['backend']['public']['sitereport'] => array('file' => 'b_performance.php?type=sites', 'abb' => 'si'),
+    ),
+    $LANG[$language]['backend']['public']['content'] => array(
+        $LANG[$language]['backend']['public']['content'] => array('file' => 'b_content_new.php', 'abb' => 'da'),
+        $LANG[$language]['backend']['public']['productfeed'] => array('file' => 'b_product_feed.php', 'abb' => 'si'),
+    ),
+    $LANG[$language]['backend']['public']['tools'] => array(
+        $LANG[$language]['backend']['public']['createlink'] => array('file' => 'b_tools_createlink.php', 'abb' => 'cr'),
+//         $LANG[$language]['backend']['public']['shorturl'] => array('file' => 'b_tools_shorturl.php', 'abb' => 'sh'),
+        $LANG[$language]['backend']['public']['api'] => array('file' => 'b_tools_apidocs.php', 'abb' => 'ap'),
+    ),
+
+
+);
+
+
+
+
+
+
+
+
+foreach ($_menu as $k => $v) { //file name is key and abbreviation is value
+    $fileToAbb[$v['file']] = $v['abb'];
+    if ($v['sub'] == 'yes') {
+        foreach($_subMenu[$k] as $key => $value){
+            $fileToAbb[$value['file']] = $value['abb'];
+        }
+    }
+}
+
+
+
+if ($_SERVER["QUERY_STRING"]){
+    $tail = explode('&',$_SERVER["QUERY_STRING"]);
+    $tag = false;
+    foreach($tail as $v){
+        $tempFile = basename($_SERVER["PHP_SELF"]) . '?' .$v;
+        if(isset($fileToAbb[$tempFile])){
+            $file = $tempFile;
+            $tag = true;
+        }
+        if(!$tag)
+            $file = basename($_SERVER["PHP_SELF"]);
+
+    }
+
+
+
+
+
+
+    if(!in_array($file,array_keys($fileToAbb)))
+        $file = basename($_SERVER["PHP_SELF"]);
+}
+else
+    $file = basename($_SERVER["PHP_SELF"]);//current filename
+
+
+if(isset($fileToAbb[$file]))
+    $abbreviation = $fileToAbb[$file];
+else
+    $abbreviation = '';
+
+
+
+$obj = new Account;
+$userArr = $obj->get_login_user();
+$user = $userArr['UserName'];//current username
+
+
+//get user authority from table publisher
+$sql = 'SELECT b.Career,b.Auth from publisher AS a LEFT JOIN publisher_auth AS b ON a.Career = b.Career  WHERE a.UserName = "' . $user . '"';
+$arr = $obj->getRow($sql);
+
+$authArr = explode('|', $arr['Auth']);
+
+if(!empty($abbreviation) && !in_array($abbreviation,$authArr)){
+    echo 'No permmission to this page';
+    exit;
+}
+
+$objTpl->assign('abbreviation',$abbreviation);
+$objTpl->assign('menu',$_menu);
+$objTpl->assign('subMenu',$_subMenu);
+$objTpl->assign('authArr',$authArr);
+?>

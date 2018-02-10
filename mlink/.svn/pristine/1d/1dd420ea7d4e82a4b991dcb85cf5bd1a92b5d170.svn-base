@@ -1,0 +1,96 @@
+<?php
+include_once('conf_ini.php');
+include_once(INCLUDE_ROOT.'init2.php');
+
+$pagesize = 20;
+$where = '1=1';
+
+if($_GET){
+    if(isset($_GET['date']) && !empty($_GET['date']))
+        $where .= " AND a.OffTime like '".$_GET['date']."%'";
+    
+    if(isset($_GET['affid']) && !empty($_GET['affid']))
+        $where .= " AND c.id = ".$_GET['affid'];
+    
+    if(isset($_GET['StatusInAff']) && !empty($_GET['StatusInAff']))
+        $where .= " AND a.StatusInAff = '".$_GET['StatusInAff']."'";
+    
+    if(isset($_GET['Partnership']) && !empty($_GET['Partnership']))
+        $where .= " AND a.Partnership = '".$_GET['Partnership']."'";
+    
+    if(isset($_GET['store']) && !empty($_GET['store']))
+        $where .= " AND b.Name like '%".$_GET['store']."%' ";
+}
+
+$page = isset($_GET['p']) ? $_GET['p'] : 1;
+$limit = " LIMIT ".($page-1)*$pagesize.",$pagesize";
+
+
+$list = array();
+$merchant = new MerchantExt();
+
+$sql = "select a.StoreId,a.Storename,b.Name,b.NameOptimized,a.ProgramName,a.Homepage,a.OffTime,c.Name as affname,a.MailTo,a.StatusInAff,a.Partnership,b.Clicks,b.Commission,p.Contacts,c.manager
+    from temp_store_off a left join store b on a.StoreId = b.id  
+    left join wf_aff c on c.id = a.Affid
+    LEFT JOIN program p on p.ID = a.programId
+    where $where AND b.StoreAffSupport = 'NO' AND b.Commission > 0 group by a.StoreId order by OffTime desc $limit";
+
+$row = $merchant->getRows($sql);
+
+
+
+foreach ($row as $key=>$value){
+    
+    $list[$key]['storename'] = $value['NameOptimized'] ? $value['NameOptimized']:$value['Name'];
+    $list[$key]['affname'] = $value['affname'];
+    $list[$key]['ProgramName'] = $value['ProgramName'];
+    $list[$key]['StatusInAff'] = $value['StatusInAff'];
+    $list[$key]['Partnership'] = $value['Partnership'];
+    $list[$key]['OffTime'] = $value['OffTime'];
+    $list[$key]['MailTo'] = $value['manager'];
+    $list[$key]['Homepage'] = $value['Homepage'];
+    $list[$key]['Clicks'] = $value['Clicks'];
+    $list[$key]['Contacts'] = $value['Contacts'];
+    $list[$key]['Commission'] = $value['Commission'];
+    
+}
+
+
+
+$sql = "select count(distinct a.StoreId) as count
+    from temp_store_off a left join store b on a.StoreId = b.id
+    left join wf_aff c on c.id = a.Affid
+    where $where AND b.StoreAffSupport = 'NO' AND b.Commission > 0";
+  
+$count = $merchant->getRows($sql);
+
+
+$page_html = get_page_html(array('page_now'=>$page,'page_total'=>ceil($count[0]['count']/$pagesize)));
+
+
+
+
+$objOutlog = new Outlog;
+$affname = $objOutlog->get_affname();
+
+$sys_header['css'][] = BASE_URL.'/css/front.css';
+$sys_header['js'][] = BASE_URL.'/js/b_account.js';
+$sys_header['js'][] = BASE_URL.'/js/Chart.js';
+
+$sys_footer['js'][] = BASE_URL.'/js/back.js';
+$sys_footer['js'][] = BASE_URL.'/js/b_performance.js';
+
+ 
+//print_r($affiList);exit;
+$objTpl->assign('list', $list);
+
+$sys_header['css'][] = BASE_URL.'/css/DateTimePicker.css';
+$sys_footer['js'][] = BASE_URL.'/js/DateTimePicker.js';
+$objTpl->assign('search', $_GET);
+$objTpl->assign('aff', $affname);
+$objTpl->assign('pageHtml', $page_html);
+$objTpl->assign('title','Advertiser partnership - Off');
+$objTpl->assign('sys_header', $sys_header);
+$objTpl->assign('sys_footer', $sys_footer);
+$objTpl->display('temp_store_off.html');
+?>

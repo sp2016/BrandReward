@@ -1,0 +1,72 @@
+<?php
+include_once('conf_ini.php');
+include_once(INCLUDE_ROOT.'init.php');
+$Publisher = new Publisher();
+$Account = new Account();
+//修改
+if(isset($_POST['ID']) && !empty($_POST['ID'])){
+    $res = $Account->updatepublisher($_POST);
+    if($res == 1){
+        echo 1;
+    }else{
+        echo 0;
+    }
+    die;
+}
+//申请修改
+if(isset($_POST['uptype']) && !empty($_POST['uptype'])){
+	$_POST['update_user'] = $USERINFO['UserName'];
+    $res = $Account->updatepublisher($_POST);
+    if($res == 1){
+        echo 1;
+    }else{
+        echo 0;
+    }
+    die;
+}
+$p = $Publisher->getPublisherById($_GET['id']);
+//申请修改展示
+if(isset($_GET['id']) && isset($_GET['type'])) {
+    $para['id'] = $_GET['id'];
+    $elist = $Publisher->getpublierupdate($para,1,1);
+	$objTpl->assign('upid',$elist['0']['PublisherId']);
+    $objTpl->assign('etype', 2);
+    $objTpl->assign('elist', $elist['0']['info']);
+}
+
+if(isset($_GET['id']) && !empty($_GET['id'])){
+    //展示信息入口
+    $countryOption = getDictionary('country');
+    $statis = new Statis();
+    $category = $statis->getCategory();
+    $questionnaires = $Publisher->getQuestionnaires($_GET['id']);
+    $objTpl->assign('info',$p);
+    $objTpl->assign('countryOption',$countryOption);
+    $objTpl->assign("title","Publisher Edit");
+    $objTpl->assign("id",$_GET['id']);
+    $objTpl->assign('category', $category);
+
+    $sql = 'SELECT `LoginTime` FROM publisher_login_log WHERE PublisherId = "'.$_GET['id'].'" ORDER BY LoginTime DESC LIMIT 1';
+    $arr = $Publisher->mysql->getRows($sql);
+    if(!empty($arr)){
+        $lastLoginTime = $arr[0]['LoginTime'];
+        $objTpl->assign('lastLoginTime',$lastLoginTime);
+    }else{
+        $objTpl->assign('lastLoginTime','Null');
+    }
+}
+$sql = 'SELECT ID,Career FROM publisher_auth';
+$careerArr = $Publisher->mysql->getRows($sql);
+$managers = $sys_am;
+$objTpl->assign('managers',$managers);
+$sys_header['css'][] = BASE_URL.'/css/front.css';
+unset($sys_header['js'][2]);
+unset($sys_header['js'][4]);
+$objTpl->assign('sys_header', $sys_header);
+$objTpl->assign('career', $careerArr);
+$objTpl->assign('pid', $_GET['id']);
+if(isset($_GET['det']) && !empty($_GET['det'])){
+    echo $objTpl->fetch('d_publisher.html');
+}else{
+    $objTpl->display('b_publisher_edit.html');
+}

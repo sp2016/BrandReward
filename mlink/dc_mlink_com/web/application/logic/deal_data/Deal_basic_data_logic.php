@@ -1,0 +1,492 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+use Illuminate\Database\Query\Expression as Expression;
+use Illuminate\Database\Eloquent\Builder as Builder;
+/**
+ * Created by PhpStorm.
+ * User: sdiao
+ * Date: 2017/12/15
+ * Time: 10:24
+ */
+class Deal_basic_data_logic
+{
+    protected $query;
+    protected $data_type;//1.ALL;2.Publisher
+    protected $start_date;
+    protected $end_date;
+    protected $date_type = 1;//1:createDate;2:clickDate
+    protected $site;
+    protected $except_site;
+    
+    
+    //类型参数(后加)
+    private $store_type;
+    //合作状态标记:YES OR NO
+    private $store_network_status;
+    //有无图片标记:YES OR NO
+    private $store_picture_status;
+    //PPC标记
+    private $store_ppc_status;
+    //有无Name标记：YES OR NO
+    private $store_name_status;
+    
+    private $publisher_type;
+    
+    
+    //允许统计方式
+    protected $allow_cal_type = array();
+    //查询条件
+    protected $filter = array();
+
+    //是否分页
+    protected $pageable = false;
+    //Pages
+    protected $offset = 1;
+    //Limit
+    protected $limit = 20;
+    //排序Key
+    protected $order_key;
+    //排序方式：'ASC','DESC'
+    protected $order_seq;
+
+
+    //统计字段名称1
+    protected $cal1_keys = array(
+        'CLS' => 'clicks',
+        'ROB' => 'clicks_robot',
+        'ROP' => 'clicks_robot_p',
+    );
+    //统计字段名称2
+    protected $cal2_keys = array(
+        'ORD' => 'orders',
+        'SAL' => 'sales',
+        'CMS' => 'revenues',
+        'SRV' => 'showrevenues',
+    );
+    protected $cal_key_fields;
+    //统计前缀
+    private $cal_pre_key;
+
+
+    public function __construct($entity)
+    {
+        if ($entity instanceof Basic_entity)
+        {
+            //发布者区分MK、BR
+            !$entity->is_empty('data_type') ? $this->set_data_type($entity->data_type) : $this->set_data_type(1);
+            //设置查询日期类型;
+            !$entity->is_empty('date_type') ? $this->set_date_type($entity->date_type) : $this->set_date_type(1);
+            //设置开始时间
+            !$entity->is_empty('start_date') && $this->set_start_date($entity->start_date);
+            //设置结束时间
+            !$entity->is_empty('end_date') && $this->set_end_date($entity->end_date);
+            //设置site
+            !$entity->is_empty('site') && $this->set_site($entity->site);
+            //设置except_site
+            !$entity->is_empty('except_site') && $this->set_except_site($entity->except_site);
+            
+            
+            //设置商家类型
+            !$entity->is_empty('store_type') && $this->set_store_type($entity->store_type);
+            //设置商家联盟TAG
+            !$entity->is_empty('store_network_status') && $this->set_store_network_status($entity->store_network_status);
+            //设置商家图片TAG
+            !$entity->is_empty('store_picture_status') && $this->set_store_picture_status($entity->store_picture_status);
+            //S设置商家PPC TAG
+            !$entity->is_empty('store_ppc_status') && $this->set_store_ppc_status($entity->store_ppc_status);
+            //设置商家Name Tag；
+            !$entity->is_empty('store_name_status') && $this->set_store_name_status($entity->store_name_status);
+            //设置publisher类型
+            !$entity->is_empty('publisher_type') && $this->set_publisher_type($entity->store_type);
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_store_name_status()
+    {
+        return $this->store_name_status;
+    }
+
+    /**
+     * @param mixed $store_name_status
+     */
+    public function set_store_name_status($store_name_status)
+    {
+        $this->store_name_status = $store_name_status;
+    }
+
+    
+    /**
+     * @return mixed
+     */
+    public function get_store_ppc_status()
+    {
+        return $this->store_ppc_status;
+    }
+
+    /**
+     * @param mixed $store_ppc_status
+     */
+    public function set_store_ppc_status($store_ppc_status)
+    {
+        $this->store_ppc_status = $store_ppc_status;
+    }
+    
+    
+    /**
+     * @return mixed
+     */
+    public function get_store_picture_status()
+    {
+        return $this->store_picture_status;
+    }
+
+    /**
+     * @param mixed $store_picture_status
+     */
+    public function set_store_picture_status($store_picture_status)
+    {
+        $this->store_picture_status = $store_picture_status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_store_network_status()
+    {
+        return $this->store_network_status;
+    }
+
+    /**
+     * @param mixed $store_network_status
+     */
+    public function set_store_network_status($store_network_status)
+    {
+        $this->store_network_status = $store_network_status;
+    }
+
+    
+    
+    /**
+     * @return mixed
+     */
+    public function get_publisher_type()
+    {
+        return $this->publisher_type;
+    }
+
+    /**
+     * @param mixed $publisher_type
+     */
+    public function set_publisher_type($publisher_type)
+    {
+        $this->publisher_type = $publisher_type;
+    }
+
+    
+    
+    /**
+     * @return mixed
+     */
+    public function get_store_type()
+    {
+        return $this->store_type;
+    }
+
+    /**
+     * @param mixed $store_type
+     */
+    public function set_store_type($store_type)
+    {
+        $this->store_type = $store_type;
+    }
+    
+    protected function do_init_cal_pre_key()
+    {
+        $this->cal_pre_key = $this->date_type != 2 ? '' : 'c_';
+    }
+
+    protected function do_init_cal_key_fields()
+    {
+        $cal_key_fields_array = array();
+        foreach ($this->cal1_keys as $cal_key => $cal_value) {
+            array_push($cal_key_fields_array, 'SUM(`' . $cal_value . '`) AS `' . $cal_key . '`');
+        }
+        foreach ($this->cal2_keys as $cal_key => $cal_value) {
+            array_push($cal_key_fields_array, 'SUM(`' . $this->cal_pre_key . $cal_value . '`) AS `' . $cal_key . '`');
+        }
+        if (empty($cal_key_fields_array)) {
+            return false;
+        }
+        $this->cal_key_fields = implode(',', $cal_key_fields_array);
+
+        return true;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_data_type()
+    {
+        return $this->data_type;
+    }
+
+    /**
+     * @param mixed $data_type
+     */
+    public function set_data_type($data_type)
+    {
+        $this->data_type = $data_type;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function get_site()
+    {
+        return $this->site;
+    }
+
+    /**
+     * @param mixed $site
+     */
+    public function set_site($site)
+    {
+        $this->site = $site;
+    }
+
+    /**
+     * @return int
+     */
+    public function get_date_type()
+    {
+        return $this->date_type;
+    }
+
+    /**
+     * @param int $date_type
+     */
+    public function set_date_type($date_type)
+    {
+        $this->date_type = $date_type;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_end_date()
+    {
+        return $this->end_date;
+    }
+
+    /**
+     * @param mixed $end_date
+     */
+    public function set_end_date($end_date)
+    {
+        $this->end_date = $end_date;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_start_date()
+    {
+        return $this->start_date;
+    }
+
+    /**
+     * @param mixed $start_date
+     */
+    public function set_start_date($start_date)
+    {
+        $this->start_date = $start_date;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function get_order_key()
+    {
+        return $this->order_key;
+    }
+
+    /**
+     * @param mixed $order_key
+     */
+    public function set_order_key($order_key)
+    {
+        $this->order_key = $order_key;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_order_seq()
+    {
+        return $this->order_seq;
+    }
+
+    /**
+     * @param mixed $order_seq
+     */
+    public function set_order_seq($order_seq)
+    {
+        $this->order_seq = $order_seq;
+    }
+
+    /**
+     * @return int
+     */
+    public function get_limit()
+    {
+        return $this->limit;
+    }
+
+    /**
+     * @param int $limit
+     */
+    public function set_limit($limit)
+    {
+        $this->limit = $limit;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_except_site()
+    {
+        return $this->except_site;
+    }
+
+    /**
+     * @param mixed $except_site
+     */
+    public function set_except_site($except_site)
+    {
+        $this->except_site = $except_site;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function get_offset()
+    {
+        return $this->offset;
+    }
+
+    /**
+     * @param int $offset
+     */
+    public function set_offset($offset)
+    {
+        $this->offset = $offset;
+    }
+
+
+    public function check_cal_type($type)
+    {
+        if (!in_array($type, array_keys($this->allow_cal_type)))
+        {
+            return false;
+        }
+        
+        return true;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function is_pageable()
+    {
+        return $this->pageable;
+    }
+
+    /**
+     * @param boolean $pageable
+     */
+    public function set_pageable($pageable)
+    {
+        $this->pageable = $pageable;
+    }
+    
+
+    public function get_filter_condition()
+    {
+        if ($this->query instanceof Builder) {
+            $data_type = $this->get_data_type();
+            if (!empty($data_type) && $data_type != 1) {
+                $this->query->whereHas(
+                    'publisherAccount',
+                    function ($subQuery) {
+                        $subQuery->whereNotIn('PublisherId',array(90692,54,432));
+                        $subQuery->where('PublisherId','>',10);
+                });
+            }
+            
+            $start_date = $this->get_start_date();
+            if (!empty($start_date)) {
+                $this->query->where('createddate','>=',$start_date);
+            }
+
+            $end_date = $this->get_end_date();
+            if (!empty($end_date)) {
+                $this->query->where('createddate','<=',$end_date);
+            }
+
+            $sites = $this->get_site();
+            if (!empty($sites)) {
+                !is_array($sites) && $sites = array($sites);
+                $this->query->where(function ($query) use ($sites) {
+                    $sids = array_chunk($sites, 100);
+                    foreach ($sids as $sid) {
+                        $query->orWhereIn('site',$sid);
+                    }
+                });
+            }
+
+            $except_sites = $this->get_except_site();
+            if (!empty($except_sites)) {
+                if (!is_array($except_sites)) {
+                    $except_sites = array($except_sites);
+                }
+                $this->query->whereNotIn('site',$except_sites);
+            }
+        }
+    }
+
+
+    public function get_calculation_data($type = '',$alias = '')
+    {
+        $this->get_filter_condition();
+        $this->do_init_cal_pre_key();
+        $this->do_init_cal_key_fields();
+        if (!$this->check_cal_type($type)) {
+            return false;
+        }
+        if (!$this->query instanceof Builder) {
+            return false;
+        }
+        if (!empty($this->cal_key_fields)) {
+            $cal_type = empty($alias) ? $this->allow_cal_type[$type] : new Expression($this->allow_cal_type[$type] . ' AS `' . $alias .'`' );
+            !empty($cal_type) && $this->query->select($cal_type,new Expression($this->cal_key_fields));
+            empty($cal_type) && $this->query->select(new Expression($this->cal_key_fields));
+        }
+        $types = $this->allow_cal_type[$type];
+        !empty($types) && $this->query->groupBy($types);
+
+        $pageable = $this->is_pageable();
+        if (!empty($pageable)) {
+            $this->query->take($this->get_limit())->skip($this->get_offset() * $this->get_limit());
+        }
+
+        return [1,$this->query->toSql() . json_encode($this->query->getBindings()), 'start_date=' . $this->start_date . '&end_date='. $this->end_date];
+
+        return $this->query->get();
+    }
+}

@@ -1,0 +1,62 @@
+<?php
+include_once('conf_ini.php');
+include_once(INCLUDE_ROOT.'init.php');
+
+$_GET['tran_from'] = isset($_GET['tran_from'])?$_GET['tran_from']:date('Y-m-d', strtotime("-9 day"));
+$_GET['tran_to'] = isset($_GET['tran_to'])?$_GET['tran_to']:date('Y-m-d');
+$_GET['type'] = isset($_GET['type'])?$_GET['type']:1;
+$T = new Transaction();
+$list = $T->getDailyTransaction($_GET);
+foreach($list as $k=>$v){
+    krsort($list[$k]); 
+}
+
+
+$date = array_keys(current($list));
+krsort($date);
+
+
+$total = array();
+$alltotal = '';
+foreach($list as $k=>$v){
+    foreach($date as $d){
+        $alltotal+= $list[$k][$d];
+        $list[$k]['total']+= $list[$k][$d];
+        if(!isset($list[$k][$d]))
+            $list[$k][$d] = 0;
+
+        if(!isset($total[$d])){
+            $total[$d] = number_format($list[$k][$d],2);
+        }else{
+            $total[$d] = bcadd($total[$d], $list[$k][$d],2);
+        }
+    }
+}
+
+$warning = array();
+/*
+#delete compare warning with weekly data
+foreach($list as $aff=>$revlist){
+    foreach($revlist as $d=>$r){
+        $dw = date('Y-m-d',strtotime($d." -7 day"));
+        if($r < 2)
+            continue;
+
+        if(isset($revlist[$dw]) && $revlist[$dw] > 0){
+            if(bcdiv($r,$revlist[$dw],3) > 1.25 || bcdiv($r,$revlist[$dw],3) < 0.75){
+                $warning[$aff][$d] = bcdiv($r,$revlist[$dw],3);
+            }
+        }
+    }
+}
+*/
+$objTpl->assign('all',number_format($alltotal,2));
+$objTpl->assign('total',$total);
+$objTpl->assign('warning',$warning);
+$sys_header['css'][] = BASE_URL.'/css/front.css';
+$sys_header['js'][] = BASE_URL.'/js/Chart.js';
+$objTpl->assign('sys_header', $sys_header);
+$objTpl->assign('title','Daily Transaction');
+$objTpl->assign('column',$date);
+$objTpl->assign('info',$list);
+$objTpl->display('b_daily_transaction.html');

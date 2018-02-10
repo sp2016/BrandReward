@@ -1,0 +1,116 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" style="text-align: center;">Change outbound Url!</h2>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2" style="text-align:center;">
+                            <table style="width: 100%;border-collapse: separate;border-spacing: 0 10px;" class="s1">
+                                <tr>
+                                    <td style="text-align: right" width="20%">Pid:</td>
+                                    <td ><input id="pid" placeholder="Please input pid!"  type="text" class="form-control" style="width: 100%"></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right">Dids:</td>
+                                    <td id="dids" style="text-align: left"></td>
+                                </tr>
+	                            <tr>
+		                            <td style="text-align: right">Field:</td>
+		                            <td>
+			                            <select id = "sel" >
+				                            <option value = "AffDefaultUrl" selected = "selected">AffiliateDefaultUrl</option >
+				                            <option value = "DeepUrlTpl">DeepUrlTemplate</option >
+			                            </select >
+		                            </td>
+	                            </tr>
+                                <tr>
+                                    <td style="text-align: right">Url:</td>
+                                    <td ><input id="url" placeholder="Please input url!"  type="text" class="form-control" style="width: 100%"></td>
+                                </tr>
+                                <tr>
+                                    <td  colspan="2">
+                                    <button type="button" onclick="outbound_change('submit')" class="btn btn-primary btn-lg btn-block" style="margin: auto;text-align: center;width: 100%">Submit</button></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script type="text/javascript">
+	$("#pid").blur(function(){
+		$('.did').remove();
+		var pid = $('#pid').val();
+		if(pid)
+		{
+			var data={'act':'outbound_change','pid':pid,'func':'get_did'}
+			$.ajax({
+	            type: "post",
+	            url: "process.php",
+	            data:data,
+	            async: false,
+	            success: function (res) {
+	            	res = eval('(' + res + ')');
+	            	console.log(res);
+	            	if (res.length)
+		            {
+		            	for(var i=0 ;i<res.length;i++){
+
+                            $("#dids").append("<label class='did'><input type='checkbox' value='"+res[i]+"' name='did'/>"+res[i]+"</label>");
+                        }
+		            }
+		            else
+		            {
+		            	alert('Invalid pid');
+		            }
+
+	            },
+	            error:function(){
+	                alert('Failed!');
+	            }
+	        });
+		}
+	});
+
+	function outbound_change() {
+		var pid = $('#pid').val();
+		var field = $("#sel ").val();
+		var dids = '';
+		$('input[name="did"]:checked').each(function(){
+			dids += ','+$(this).val();
+		});
+		dids=dids.substr(1)
+
+		var url = $('#url').val();
+		if(dids)
+		{
+			var data={'act':'outbound_change','pid':pid,'dids':dids,'url':url,'field':field,'func':'submit'}
+	        $.ajax({
+	            type: "post",
+	            url: "process.php",
+	            data:data,
+	            async: false,
+	            success: function (res) {
+	            	if(res)
+                        alert ('Success');
+	            	else
+	            		alert('Error');
+	            },
+	            error:function(){
+	                alert('Failed!');
+	            }
+	        });
+		}
+
+	}
+
+</script>
+
+<{include file="b_block_footer.html"}>

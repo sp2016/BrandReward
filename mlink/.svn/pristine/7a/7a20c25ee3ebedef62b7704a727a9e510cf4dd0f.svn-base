@@ -1,0 +1,186 @@
+<div class="page">
+  <h2 class="clearup"><{$LANG.front.doc_transaction.a1}></h2>
+  <h3><{$LANG.front.doc_transaction.a2}></h3>
+  <pre><{$smarty.const.API_URL}>?act=report.transaction_data&bdate=[begindate]&edate=[end date]&key=[Site ID]&user=[Login User Name]</pre>
+  <h3><{$LANG.front.doc_transaction.a3}></h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><{$LANG.front.doc_transaction.a4}></th>
+        <th><{$LANG.front.doc_transaction.a5}></th>
+        <th><{$LANG.front.doc_transaction.a6}></th>
+        <th><{$LANG.front.doc_transaction.a7}></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a8}></td>
+        <td><{$LANG.front.doc_transaction.a9}></td>
+        <td><{$LANG.front.doc_transaction.a10}></td>
+        <td><{$LANG.front.doc_transaction.a11}></td>
+      </tr>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a12}></td>
+        <td><{$LANG.front.doc_transaction.a13}></td>
+        <td><{$LANG.front.doc_transaction.a14}></td>
+        <td><{$LANG.front.doc_transaction.a15}></td>
+      </tr>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a16}></td>
+        <td><{$LANG.front.doc_transaction.a17}></td>
+        <td><{$LANG.front.doc_transaction.a18}></td>
+        <td><{$LANG.front.doc_transaction.a19}></td>
+      </tr>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a20}></td>
+        <td><{$LANG.front.doc_transaction.a21}></td>
+        <td><{$LANG.front.doc_transaction.a22}></td>
+        <td><{$LANG.front.doc_transaction.a23}></td>
+      </tr>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a24}></td>
+        <td><{$LANG.front.doc_transaction.a25}></td>
+        <td><{$LANG.front.doc_transaction.a26}></td>
+        <td><{$LANG.front.doc_transaction.a27}></td>
+      </tr>
+      <tr>
+        <td>page</td>
+        <td>N</td>
+        <td>Int</td>
+        <td>Specifies the page of the results set that is currently being viewed.(default:1)</td>
+      </tr>
+      <tr>
+        <td>pagesize</td>
+        <td>N</td>
+        <td>Int</td>
+        <td>Specifies the number of records to be viewed per page.(default:100)</td>
+      </tr>
+      <tr>
+        <td>datetype</td>
+        <td>N</td>
+        <td>String</td>
+        <td>Parameters [bdate] and [edate] search data.(empty/clickdate: ClickTime, updatedate:UpdateTime,tradedate: TransactionTime)</td>
+      </tr>
+      <tr>
+        <td>outformat</td>
+        <td>N</td>
+        <td>String</td>
+        <td>output content format (default:txt , option:'txt','json','xml','csv')</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="alert alert-warning" role="alert"><{$LANG.front.doc_transaction.a28}></div>
+
+  <h3><{$LANG.front.doc_transaction.a29}></h3>
+  <pre><{$smarty.const.API_URL}>?act=report.transaction_data&bdate=2016-01-01&edate=2016-01-15&key=eccbc87e4b5ce2fe28308fd9f2a7baf3&user=account1</pre>
+
+  <h3>Parameters Response</h3>
+  <h4>API info</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Parameters</th>
+        <th>Data Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>PageTotal</td>
+        <td>Int</td>
+        <td>Total number of pages</td>
+      </tr>
+      <tr>
+        <td>PageNow</td>
+        <td>Int</td>
+        <td>The current page</td>
+      </tr>
+      <tr>
+        <td>Num</td>
+        <td>Int</td>
+        <td>Total number of data</td>
+      </tr>
+      <tr>
+        <td>NumReturn</td>
+        <td>Int</td>
+        <td>Number of data on the current page</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>Data info</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Parameters</th>
+        <th>Data Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>TransactionID</td>
+        <td>String</td>
+        <td>Unique Transaction ID per recorded transaction</td>
+      </tr>
+      <tr>
+        <td>Earnings</td>
+        <td>Float</td>
+        <td>Your earnings made per transaction</td>
+      </tr>
+      <tr>
+        <td>CreateTime</td>
+        <td>Datetime</td>
+        <td>Date and Time the transaction was created in the system</td>
+      </tr>
+      <tr>
+        <td>UpdateTime</td>
+        <td>Datetime</td>
+        <td>Date and Time the transaction was last updated in the system</td>
+      </tr>
+      <tr>
+        <td>ClickTime</td>
+        <td>Datetime</td>
+        <td>Date and Time of end user's first click on your content link to start the transaction</td>
+      </tr>
+      <tr>
+        <td>State</td>
+        <td>String</td>
+        <td>Current status of the transaction</td>
+      </tr>
+      <tr>
+        <td>SID</td>
+        <td>String</td>
+        <td>Your company's own tracking ID that we help to embed into each link</td>
+      </tr>
+      <tr>
+        <td>Advertiser</td>
+        <td>String</td>
+        <td>Name of the advertiser that confirmed the transaction</td>
+      </tr>
+      <tr>
+        <td>ClickPage</td>
+        <td>String</td>
+        <td>The content page on your site and/or app that the end user exited to start the transaction</td>
+      </tr>
+    </tbody>
+  </table>
+
+<h3><{$LANG.front.doc_transaction.a30}></h3>
+  <pre>
+@PageTotal:5	@PageNow:5	@Num:211	@NumReturn:11
+TransactionID Earnings  CreateTime UpdateTime  ClickTime State SID Advertiser  ClickPage
+57762bac-bdg02-0-5f5e3a8em  0.2700  2016-07-01 01:37:00 2016-07-01 13:35:01 2016-06-30 16:25:54 PENDING s01-qw0-lwi-02  toysrus http://www.toysrus.com
+5776d484-bdg02-0-5f5e3adoq  0.6300  2016-07-01 13:37:24 2016-07-02 01:35:02 2016-06-30 11:33:09 PENDING s01-qw0-lwi-03  loft  http://www.loft.com
+57762bac-bdg02-0-5f5e3a6fp  0.0000  2016-07-01 01:37:00 2016-07-01 13:35:01 2016-06-08 11:27:48 PENDING s01-qw0-lwi-04  target  http://www.target.com
+57762bac-bdg02-0-5f5e3a9bt  0.2700  2016-07-01 01:37:00 2016-07-01 13:35:01 2016-06-30 20:32:18 PENDING s01-qw0-lwi-05  toysrus http://www.toysrus.com
+57762bac-bdg02-0-5f5e3aaxe  1.4850  2016-07-01 01:37:00 2016-07-01 13:35:01 2016-06-30 23:26:26 PENDING s01-qw0-lwi-06  target  http://www.target.com
+5776d484-bdg02-0-5f5e3abvx  0.0000  2016-07-01 13:37:24 2016-07-02 01:35:02 2016-06-29 10:47:47 PENDING s01-qw0-lwi-07  clarksusa http://www.clarksusa.com
+5776d484-bdg02-0-5f5e3aeiz  4.8600  2016-07-01 13:37:24 2016-07-02 01:35:02 2016-06-30 12:24:19 PENDING s01-qw0-lwi-08  groupon https://www.groupon.com
+5776d484-bdg02-0-5f5e3afyz  4.8600  2016-07-01 13:37:24 2016-07-02 01:35:02 2016-06-30 13:25:39 PENDING s01-qw0-lwi-09  groupon https://www.groupon.com
+5776d484-bdg02-0-5f5e3b0mc  1.3500  2016-07-01 13:37:24 2016-07-02 01:35:02 2016-06-30 13:39:10 PENDING s01-qw0-lwi-12  groupon https://www.groupon.com
+5776d484-bdg02-0-5f5e3b1eo  4.8600  2016-07-01 13:37:24 2016-07-02 01:35:02 2016-06-30 13:46:48 PENDING s01-qw0-lwi-22  groupon https://www.groupon.com
+5776d484-bdg02-0-5f5e3b2ih  2.3220  2016-07-01 13:37:24 2016-07-02 01:35:02 2016-06-30 13:21:26 PENDING s01-qw0-lwi-32  loft  http://www.loft.com
+  </pre>
+</div>

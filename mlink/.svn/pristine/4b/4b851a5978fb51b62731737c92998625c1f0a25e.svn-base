@@ -1,0 +1,101 @@
+<form id="fnull">
+	<table style="width: 100%; border-collapse: separate; border-spacing: 0 10px;" class="s1">
+	    <tr>
+			<td style="text-align: right">Name: </td>
+			<td><{$affArr[$info.AffId].name}></td>
+		</tr>
+		<tr>
+			<td style="text-align: right">Status: </td>
+			<td colspan="2">
+			<select class="chosen-select" name="Statusu">
+                   <option <{if $info.Status == 'Active'}>selected<{/if}> value="Active">Active</option>
+                   <option <{if $info.Status == 'Inactive'}>selected<{/if}> value="Inactive">Inactive</option>
+               </select>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: right">ProgramCrawlStatus :
+			</td>
+			<td colspan="2">
+               <select class="chosen-select" name="ProgramCrawlStatusu">
+                   <option <{if $info.ProgramCrawlStatus == 'Yes'}>selected<{/if}> value="Yes">Yes</option>
+                   <option <{if $info.ProgramCrawlStatus == 'No'}>selected<{/if}> value="No">No</option>
+               </select>
+            </td>
+		</tr>
+		
+		<tr>
+			<td style="text-align: right">LinkCrawlStatus :
+			</td>
+			<td colspan="2">
+               <select class="chosen-select" name="LinkCrawlStatusu">
+                   <option <{if $info.LinkCrawlStatus == 'Yes'}>selected<{/if}> value="Yes">Yes</option>
+                   <option <{if $info.LinkCrawlStatus == 'No'}>selected<{/if}> value="No">No</option>
+               </select>
+            </td>
+		</tr>
+		
+		<tr>
+			<td style="text-align: right">StatsCrawlStatus :
+			</td>
+			<td colspan="2">
+               <select class="chosen-select" name="StatsCrawlStatusu">
+                   <option <{if $info.StatsCrawlStatus == 'Yes'}>selected<{/if}> value="Yes">Yes</option>
+                   <option <{if $info.StatsCrawlStatus == 'No'}>selected<{/if}> value="No">No</option>
+               </select>
+            </td>
+		</tr>
+		
+		<tr>
+			<td style="text-align: right">FeedCrawlStatus :
+			</td>
+			<td colspan="2">
+               <select class="chosen-select" name="FeedCrawlStatusu">
+                   <option <{if $info.FeedCrawlStatus == 'Yes'}>selected<{/if}> value="Yes">Yes</option>
+                   <option <{if $info.FeedCrawlStatus == 'No'}>selected<{/if}> value="No">No</option>
+               </select>
+            </td>
+		</tr>
+		
+		<tr>
+			<td style="text-align: right">ProductCrawlStatus :
+			</td>
+			<td colspan="2">
+               <select class="chosen-select" name="ProductCrawlStatusu">
+                   <option <{if $info.ProductCrawlStatus == 'Yes'}>selected<{/if}> value="Yes">Yes</option>
+                   <option <{if $info.ProductCrawlStatus == 'No'}>selected<{/if}> value="No">No</option>
+               </select>
+            </td>
+		</tr>
+		
+		<tr style="height: 15px"></tr>
+        <tr>
+           <td colspan="3" ><button type="button"  onClick="updateConfig('<{$info.AffId}>')" class="btn btn-primary btn-lg btn-block" style="margin: auto;text-align: center;width: 20%">submit</button></td>
+        </tr>
+        
+        
+	</table>
+</form>
+<script>
+function updateConfig(affid){
+	
+	var Status =  $("select[name='Statusu']").val();
+	var ProgramCrawlStatus =  $("select[name='ProgramCrawlStatusu']").val();
+	var LinkCrawlStatus =  $("select[name='LinkCrawlStatusu']").val();
+	var StatsCrawlStatus =  $("select[name='StatsCrawlStatusu']").val();
+	var FeedCrawlStatus =  $("select[name='FeedCrawlStatusu']").val();
+	var ProductCrawlStatus =  $("select[name='ProductCrawlStatusu']").val();
+	$.ajax({
+    	type: "post",
+        url: "aff_crawl_config.php",
+        data: "type=ajax&act=updateOperation&affid="+affid+"&Status="+Status+"&ProgramCrawlStatus="+ProgramCrawlStatus+"&LinkCrawlStatus="+LinkCrawlStatus+"&FeedCrawlStatus="+FeedCrawlStatus+"&ProductCrawlStatus="+ProductCrawlStatus+"&StatsCrawlStatus="+StatsCrawlStatus,
+        async: false,
+        success: function (res) {
+        	var ress = JSON.parse(res);
+        	alert(ress.msg);
+        	window.location.reload();
+        }
+    });
+    
+}
+</script>

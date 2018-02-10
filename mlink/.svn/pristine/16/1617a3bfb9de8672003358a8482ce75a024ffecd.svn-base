@@ -1,0 +1,741 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style>
+/* .row .publisher-head-info{border: 1px solid transparent;}
+.row .publisher-head-info:hover{border: 1px solid rgb(255,195,32)}
+.row .publisher-head-info-edit{border: 1px solid transparent !important;}
+.row .publisher-head-info .head-info-edit{float: right;margin-right: 5px;text-decoration: none;display:none}
+.row .publisher-head-info .head-info-edit-none{display:none !important}
+.row .publisher-head-info:hover .head-info-edit{display:block;}
+#choose-detail div:nth-child(1):hover div button.chooseInfoBtn{display:block !important}
+#choose-detail div:nth-child(2):hover div button.chooseInfoBtn{display:block !important}
+#choose-detail div:nth-child(3):hover div button.chooseInfoBtn{display:block !important} */
+.table > thead > tr > th{text-align: left !important;}
+</style>
+
+<div>
+  <div class="container" style="margin-top:30px;">
+    <div class="row" style="padding:20px 0;">
+      <div class="col-lg-12">
+         <div class="panel panel-default" style="margin-bottom: 0px;border-bottom: none;">
+          <div class="panel-heading">
+          	Brands Info
+          </div>
+          <div class="panel-body publisher-head-info">    
+          	  <!-- <a class="head-info-edit" id="head-info-edit" href="javascript:void(0)">Edit</a> -->
+	          <div class="row">
+	          		<div class="form-horizontal" id="head-detail">
+	          		  <{if $store_org_arr.LogoName ne ''}>
+	          			  <div class="form-group">
+						    <label class="col-sm-2 control-label">Logo:</label>
+						    <div class="col-sm-8">
+						      <p class="form-control-static"><img width="220px" border=0 src="<{$smarty.const.BASE_URL}>/img/adv_logo/<{$store_org_arr.LogoName}>" /></p>
+						    </div>
+						  </div>
+					  <{/if}>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label">Advertiser Name:</label>
+					    <div class="col-sm-3">
+					      <p class="form-control-static"><{$store_org_arr.Name|default:$store_org_arr.NameOptimized|default:$store_org_arr.Name}></p>
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label">Domain:</label>
+					    <div class="col-sm-10" style="word-break: break-all;word-wrap: break-word;">
+					      <p class="form-control-static"><{$domain_text}></p>
+					    </div>
+					  </div>
+					  
+	          		  <!-- <{if $store_arr.LogoAdr}>
+	          			  <div class="form-group">
+						    <label class="col-sm-2 control-label">Logo:</label>
+						    <div class="col-sm-8">
+						      <p class="form-control-static"><img width="220px" border=0 src="<{$smarty.const.BASE_URL}>/img/adv_logo/<{$store_arr.LogoAdr}>" /></p>
+						    </div>
+						  </div>
+					  <{elseif $store_org_arr.LogoName}>
+					  	  <div class="form-group">
+						    <label class="col-sm-2 control-label">Logo:</label>
+						    <div class="col-sm-8">
+						      <p class="form-control-static"><img width="220px" border=0 src="<{$smarty.const.BASE_URL}>/img/adv_logo/<{$store_org_arr.LogoName}>" /></p>
+						    </div>
+						  </div>
+					  <{/if}>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label">Name:</label>
+					    <div class="col-sm-3">
+					      <p class="form-control-static"><{$store_arr.Name|default:$store_org_arr.NameOptimized|default:$store_org_arr.Name}></p>
+					    </div>
+					    <{if $store_arr.AdvertiserEmail}>
+						    <label class="col-sm-2 control-label">Email:</label>
+						    <div class="col-sm-3">
+						      <p class="form-control-static"><{$store_arr.AdvertiserEmail}></p>
+						    </div>
+				  	  	<{/if}>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label">URL:</label>
+					    <div class="col-sm-10">
+					      <p class="form-control-static"><{$store_org_arr.Domains}></p>
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label class="col-sm-2 control-label">Commission:</label>
+					    <div class="col-sm-10">
+					      <p class="form-control-static"><{$commission}></p>
+					    </div>
+					  </div> -->
+					  <{if $store_arr.AdvertiserEmailType && $store_arr.AdvertiserEmailType!='Unknown'}>
+					  	  <div class="form-group">
+						    <label class="col-sm-2 control-label">Affiliate Manager Type:</label>
+						    <div class="col-sm-10">
+						      <p class="form-control-static"><{$store_arr.AdvertiserEmailType}></p>
+						    </div>
+						  </div>
+				  	  <{/if}>
+					  <{if $store_arr.Desc}>
+					  	<div class="form-group">
+						    <label class="col-sm-2 control-label">Description:</label>
+						    <div class="col-sm-10">
+					        <p class="form-control-static"><{$store_arr.Desc}></p>
+					     </div>
+					    </div>
+					  <{/if}>
+					  <{if $store_arr.PPCPolicy}>
+						  <div class="form-group">
+						    <label class="col-sm-2 control-label">Term and Conditions:</label>
+						    <div class="col-sm-10">
+						      <div id="bPPC" style="padding-top: 7px;margin-bottom: 0px;word-break: break-all;word-wrap: break-word;"><{$store_arr.PPCPolicy}></div>
+						    </div>
+						  </div>
+				  	  <{/if}>
+					</div>
+					
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+          	<div class="row">
+          		<div class="form-horizontal" id="choose-detail">
+	    			<div class="form-group">
+					    <label class="col-sm-2 control-label">Category:</label>
+					    <div class="col-sm-9">
+					      <p class="form-control-static" id="category_text"><{$category_str}></p>
+					      <input type="hidden" id="category_idList" value="<{$category_idList}>">
+					    </div>
+					    <div class="col-sm-1">
+						    <button class="btn btn-primary btn-sm chooseInfoBtn" data-type="category" data-title="Category" style="display:none">Edit</button>
+					    </div>
+			  		</div>
+	          		<!-- <div class="form-group">
+					    <label class="col-sm-2 control-label">Publisher Preference:</label>
+					    <div class="col-sm-9" style="min-height:34px">
+					        <div class="row" id="preference_text" style="padding-top: 7px;padding-bottom: 7px;margin-bottom: 0;">
+	           					<{foreach item=val from=$supportType}>
+								  <div class="col-md-4"><{$val}></div>
+							    <{/foreach}> 
+							</div>
+							<input type="hidden" id="preference_idList" value="<{','|implode:$supportType}>">
+							<input type="button" onclick="showB('preference_text', this);" value="More"/>
+					    </div>
+					    <div class="col-sm-1">
+						    <button class="btn btn-primary btn-sm chooseInfoBtn" data-type="preference" data-title="Publisher Preference" style="display:none">Edit</button>
+					    </div>
+				  	</div> -->
+					<div class="form-group">
+					    <label class="col-sm-2 control-label">Commissionable Country:</label>
+					    <div class="col-sm-9">
+					      <div id="country_text" style="/* overflow: hidden;height: 27px; */padding-top: 7px;padding-bottom: 7px;margin-bottom: 0;word-break: break-all;word-wrap: break-word;"><{$country}></div><!-- <input type="button" onclick="showB('country_text', this);" value="More"/> -->
+					      <input type="hidden" id="country_idList" value="<{$country_idList}>">
+					    </div>
+					    <div class="col-sm-1">
+						    <button class="btn btn-primary btn-sm chooseInfoBtn" data-type="country" data-title="Support Country" style="display:none">Edit</button>
+					    </div>
+					</div>
+				  </div>
+			  </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Allowed Publishers</div>
+          <div class="panel-body">
+          	<table class="table table-striped" id="allowpublisher">
+              <thead><tr><th style="width:40%">Publishers</th><th style="width:10%">Traffic</th><th style="width:10%">Sales</th><th style="width:30%">Type</th><th style="width:5%">Status</th><th style="width:5%"></th></tr></thead>
+              <tbody><{foreach from=$publisherTraffics item=d}>
+                <tr <{if $d.blockStatus == 'Active'}>style="background-color: #e6c1c1;"<{/if}>>
+                  <!--  <td><{$d.Name}>(<{$d.country}>)</td>-->
+                  <td><{$d.Name}></td>
+                  <td><{$d.traffic}></td>
+                  <td>$<{$d.sales}></td>
+                  <td><{$d.iscoupon}></td>
+                  <!-- <{if $d.blockStatus == 'Active'}>
+                  	  <td>block</td>
+                  	  <td><input type="button" value="Remove" style="width: 69px;" onclick="javascript:requestB('n', '<{$d.publisherId}>')" /></td>
+                  <{else}>
+                  	  <td>active</td>
+	                  <td><input type="button" value="Block" style="width: 69px;" onclick="javascript:requestB('y', '<{$d.publisherId}>')" /></td>
+                  <{/if}> -->
+                  <td><{$d.Status}></td>
+                  <td></td>
+                </tr>  
+              <{/foreach}></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Placement Opportunity</div>
+          <div class="panel-body">
+            <table class="table table-striped" id="placementoppo">    
+              <thead><tr><th style="width:15%">Exposure Type</th><th style="width:45%">Description</th><th style="width:15%">Start Date</th><th style="width:15%">Duration</th><th style="width:10%">status</th></tr></thead>         
+              <tbody><{foreach from=$proposal_arr item=d}>
+                <tr>
+					<td><{$d.title}></td>
+					<td><{$d.content}></td>
+					<td><{$d.startdate}></td>
+					<td><{$d.Duration}></td>
+					<td><{$d.Status}></td>
+                </tr>               
+              <{/foreach}></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Promotion & Banner & Product </div>
+          <div class="panel-body" id="bPromotion" style="display:block;/* height:132px;overflow:hidden */">
+            <table class="table table-striped" id="promotionList">
+              <thead><tr><th style="width:10%">Image</th><th style="width:15%">Title</th><th style="width:15%">Coupon Code</th><th style="width:30%">Description</th><th style="width:15%">Start Date</th><th style="width:15%">End Date</th></tr></thead>
+              <tbody><{foreach from=$promotion_arr item=d}>
+                <tr>					
+					<td rowspan='2'><{if $d.ImgAdr}><img width="120px" border=0 src="img/adv_logo/<{$d.ImgAdr}>" /><{/if}></td>
+					<td><{$d.title}></td>
+					<td><{$d.couponcode}></td>
+					<td><{$d.desc}></td>
+					<td><{$d.startdate}></td>
+					<td><{$d.enddate}></td>
+                </tr>
+                <tr>                	
+                	<td style="display: none;"></td>
+                	<td colspan='5'><a href="<{$d.affurl}>" target="_blank"><{$d.affurl}></a></td>
+                	<td style="display: none;"></td>
+                	<td style="display: none;"></td>
+                	<td style="display: none;"></td>
+                	<td style="display: none;"></td>
+                </tr>
+              <{/foreach}></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      </div>
+  </div>
+</div>
+      <input type="hidden" id="sid" value="<{$store_arr.StoreId}>" />
+
+<div class="modal fade" id="uploadImg" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title">Upload Logo</h2>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                    	<div class="form-group">
+							  <div class="col-sm-12">
+				                    <form action="upload.php" id="uploadLogoForm" method="post" enctype="multipart/form-data">
+				                        <input type="file" name="files[]" id="filer_input" multiple="multiple">
+				                    </form>
+				                    <input type="hidden" id="LogoAdr">
+							   </div>
+	                    </div>
+	                    <div class="form-group" style="text-align:center">
+		                    <button class="btn btn-primary" style="margin-right: 10px;" id="uploadLogo">confirm</button>
+							<button class="btn btn-default" style="margin-left: 10px;" data-dismiss="modal">cancel</button>
+						</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="chooseInfo" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title" id="chooseInfoModalLabel"></h2>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                    	<div class="form-group">
+							  <div class="col-sm-12" id="chooseInfoBody">
+				                    
+							   </div>
+	                    </div>
+	                    <div class="form-group" style="text-align:center">
+	                    	<input type="hidden" id="submitType">
+		                    <button class="btn btn-primary" style="margin-right: 10px;" id="chooseInfoConfirm">confirm</button>
+							<button class="btn btn-default" style="margin-left: 10px;" data-dismiss="modal">cancel</button>
+						</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		filer_default_opts = {
+		        templates: {
+		            box: '<ul class="jFiler-items-list jFiler-items-grid"></ul>',
+		            item: '<li class="jFiler-item" style="width: 49%">\
+		                        <div class="jFiler-item-container">\
+		                            <div class="jFiler-item-inner">\
+		                                <div class="jFiler-item-thumb">\
+		                                    <div class="jFiler-item-status"></div>\
+		                                    <div class="jFiler-item-info">\
+		                                        <span class="jFiler-item-title"><b title="{{fi-name}}">{{fi-name | limitTo: 25}}</b></span>\
+		                                        <span class="jFiler-item-others">{{fi-size2}}</span>\
+		                                    </div>\
+		                                    {{fi-image}}\
+		                                </div>\
+		                                <div class="jFiler-item-assets jFiler-row">\
+		                                    <ul class="list-inline pull-left">\
+		                                        <li>{{fi-progressBar}}</li>\
+		                                    </ul>\
+		                                    <ul class="list-inline pull-right">\
+		                                        <li><a class="icon-jfi-trash jFiler-item-trash-action"></a></li>\
+		                                    </ul>\
+		                                </div>\
+		                            </div>\
+		                        </div>\
+		                    </li>',
+		            itemAppend: '<li class="jFiler-item" style="width: 49%">\
+		                            <div class="jFiler-item-container">\
+		                                <div class="jFiler-item-inner">\
+		                                    <div class="jFiler-item-thumb">\
+		                                        <div class="jFiler-item-status"></div>\
+		                                        <div class="jFiler-item-info">\
+		                                            <span class="jFiler-item-title"><b title="{{fi-name}}">{{fi-name | limitTo: 25}}</b></span>\
+		                                            <span class="jFiler-item-others">{{fi-size2}}</span>\
+		                                        </div>\
+		                                        {{fi-image}}\
+		                                    </div>\
+		                                    <div class="jFiler-item-assets jFiler-row">\
+		                                        <ul class="list-inline pull-left">\
+		                                            <li><span class="jFiler-item-others">{{fi-icon}}</span></li>\
+		                                        </ul>\
+		                                        <ul class="list-inline pull-right">\
+		                                            <li><a class="icon-jfi-trash jFiler-item-trash-action"></a></li>\
+		                                        </ul>\
+		                                    </div>\
+		                                </div>\
+		                            </div>\
+		                        </li>',
+		            progressBar: '<div class="bar"></div>',
+		            itemAppendToEnd: false,
+		            removeConfirmation: true,
+		            _selectors: {
+		                list: '.jFiler-items-list',
+		                item: '.jFiler-item',
+		                progressBar: '.bar',
+		                remove: '.jFiler-item-trash-action'
+		            }
+		        },
+		        dragDrop: {},
+		        uploadFile: {
+		            url: "upload.php",
+		            data: {},
+		            type: 'POST',
+		            enctype: 'multipart/form-data',
+		            beforeSend: function(){},
+		            success: function(data, el){
+		                //console.log(data);
+		                $('#LogoAdr').val(data);
+		                var parent = el.find(".jFiler-jProgressBar").parent();
+		                el.find(".jFiler-jProgressBar").fadeOut("slow", function(){
+		                    $("<div class=\"jFiler-item-others text-success\"><i class=\"icon-jfi-check-circle\"></i> Success</div>").hide().appendTo(parent).fadeIn("slow");
+		                });
+		            },
+		            error: function(el){
+		                var parent = el.find(".jFiler-jProgressBar").parent();
+		                el.find(".jFiler-jProgressBar").fadeOut("slow", function(){
+		                    $("<div class=\"jFiler-item-others text-error\"><i class=\"icon-jfi-minus-circle\"></i> Error</div>").hide().appendTo(parent).fadeIn("slow");
+		                });
+		            },
+		            statusCode: null,
+		            onProgress: null,
+		            onComplete: null
+		        },
+		        onRemove: function(itemEl, file, id, listEl, boxEl, newInputEl, inputEl){
+		            var file = file.name;
+		            $.post('./php/remove_file.php', {file: file});
+		        },
+		    };
+		    $('#filer_input').filer({
+		    	changeInput2: '<div class="jFiler-input-dragDrop"><div class="jFiler-input-inner"><div class="jFiler-input-icon"><i class="icon-jfi-cloud-up-o"></i></div><div class="jFiler-input-text"><h3>Drag&Drop files here</h3> <span style="display:inline-block; margin: 15px 0">or</span></div><a class="jFiler-input-choose-btn blue-light">Browse Files</a></div></div>',
+		        showThumbs: true,
+		        templates: filer_default_opts.templates,
+		        //uploadFile: filer_default_opts.uploadFile,
+		        limit: 1
+		    });
+	})
+	
+	$(function(){
+		$('#promotionList').DataTable({
+			"lengthChange": false,
+			"language":{
+				"info":"Shsowing _START_ to _END_ of _TOTAL_ entries",  
+				"infoEmpty": "No entries to show",
+			},
+			"fnInfoCallback": function( oSettings, iStart, iEnd, iMax, iTotal, sPre ) {
+		        return "Shsowing "+Math.ceil(iStart/2)+" to "+Math.ceil(iEnd/2)+" of "+Math.ceil(iTotal/2)+" entries";
+		     }
+		});
+		
+		$('#placementoppo').DataTable({});
+		$('#allowpublisher').DataTable({});
+		
+		$(document).delegate('#head-info-edit','click',function(){
+			$("#head-info-edit").addClass("head-info-edit-none");
+			$(".publisher-head-info").addClass("publisher-head-info-edit");
+			/* $("#head-detail").hide();
+			$("#head-edit").show(); */
+			$.ajax({
+				type: "post",
+	            url: "w_store_listing.php",
+	            data: {"action":"editInfo","advertiserid":"<{$advertiserid}>","storeid":"<{$storeid}>"},
+	            dataType: 'json',
+	            success: function (res) {
+	            	var html = '<div class="form-group">'+
+							  	  '<label class="col-sm-2 control-label">Logo:</label>'+
+								  '<div class="col-sm-9">'+
+							      	    '<p class="form-control-static"><img onclick="javascript:toUploadLogo()" width="220px" border=0 src="img/adv_logo/'+res.result.LogoName+'" /></p>'+
+								   '</div>'+
+						       '</div>'+
+							   '<div class="form-group">'+
+								    '<label for="inputName" class="col-sm-2 control-label">Name:</label>'+
+								    '<div class="col-sm-3">'+
+								      '<input type="text" class="form-control" id="inputName" name="Name" placeholder="Name" value="'+res.result.Name+'">'+
+								    '</div>'+
+								    '<label for="inputEmail" class="col-sm-2 control-label">Email:</label>'+
+								    '<div class="col-sm-3">'+
+								      '<input type="email" class="form-control" id="inputAdvertiserEmail" name="AdvertiserEmail" placeholder="Email" value="'+res.result.AdvertiserEmail+'">'+
+								    '</div>'+
+							   '</div>'+
+							   '<div class="form-group">'+
+								    '<label for="inputDesc" class="col-sm-2 control-label">Affiliate Manager Type:</label>'+
+								    '<div class="col-sm-3">'+
+									    '<select name="AdvertiserEmailType" id="InputAdvertiserEmailType" name="AdvertiserEmailType" class="form-control">'+
+				                        	'<option value="Unknown">select-type</option>'+
+				                            '<option value="In-house">In-house affiliate manager</option>'+
+				                            '<option value="Network">Network affiliate manager</option>'+
+				                            '<option value="Agency">Agency affiliate manager</option>'+
+				                            '<option value="Other">Other</option>'+ 
+				                    	'</select>'+
+								    '</div>'+
+								    '<label for="inputDesc" class="col-sm-2 control-label">Description:</label>'+
+								    '<div class="col-sm-3">'+
+								      '<input type="text" class="form-control" id="inputDesc" name="Desc" placeholder="Description" value="'+res.result.Desc+'">'+
+								    '</div>'+
+							  '</div>'+
+							  '<div class="form-group">'+
+								    '<label for="inputTerm" class="col-sm-2 control-label">Term and Conditions:</label>'+
+								    '<div class="col-sm-8">'+
+								      '<input type="text" class="form-control" id="inputPPCPolicy" name="PPCPolicy" placeholder="Term and Conditions" value="'+res.result.PPCPolicy+'">'+
+								    '</div>'+
+							  '</div>'+
+							    '<div style="text-align:center">'+
+									'<button class="btn btn-primary" id="info-confirm" style="margin-right: 10px;">confirm</button>'+
+									'<button class="btn btn-default" id="info-cancel" style="margin-left: 10px;">cancel</button>'+
+								'</div>';
+	                $('#head-detail').html(html);
+	                $("#InputAdvertiserEmailType").find("option[value='"+res.result.AdvertiserEmailType+"']").attr("selected",true);
+	            }
+			});
+		})
+		$(document).delegate('#info-cancel','click',function(){
+			$("#head-info-edit").removeClass("head-info-edit-none");
+			$(".publisher-head-info").removeClass("publisher-head-info-edit");
+			/* $("#head-edit").hide();
+			$("#head-detail").show(); */
+			$.ajax({
+				type: "post",
+	            url: "w_store_listing.php",
+	            data: {"action":"cancelInfo","advertiserid":"<{$advertiserid}>","storeid":"<{$storeid}>"},
+	            dataType: 'json',
+	            success: function (res) {
+	            	getInfoHtml(res);
+	            }
+			});
+		})
+		$(document).delegate('#info-confirm','click',function(){
+			$("#head-info-edit").removeClass("head-info-edit-none");
+			$(".publisher-head-info").removeClass("publisher-head-info-edit");
+			var Name = $("#inputName").val();
+			var AdvertiserEmail = $("#inputAdvertiserEmail").val();
+			var AdvertiserEmailType = $("#InputAdvertiserEmailType").val();
+			var Desc = $("#inputDesc").val();
+			var PPCPolicy = $("#inputPPCPolicy").val();
+			var data = {'action':'updateInfo','Name':Name,'AdvertiserEmail':AdvertiserEmail,'AdvertiserEmailType':AdvertiserEmailType,'Desc':Desc,'PPCPolicy':PPCPolicy,"advertiserid":"<{$advertiserid}>","storeid":"<{$storeid}>"};
+			$.ajax({
+	            type:"post",
+	            url:"w_store_listing.php",
+	            data:data,
+	            dataType: 'json',
+	            async:false,
+	            success: function(res){
+	            	getInfoHtml(res);
+	            }
+	        });
+		})
+		
+		//�޸�checkbox������Ϣ
+		$(document).delegate(".chooseInfoBtn","click",function(){
+			var $this = $(this);
+			var type = $this.data('type');
+			var title = $this.data('title');
+			var IdText = $("#"+type+"_idList").val();
+			var IdList = IdText.split(",");
+			var str = '';
+			switch(type){
+				case "category":
+					str+='<{foreach item=cate key=k from=$category}>'+
+						     '<div class="col-xs-4" style="margin-top:10px;height: 30px;padding-left:5px;padding-right:0px;float: left;text-align: left;">'+
+		              		 '<input id="category_<{$k}>" data-id="<{$k}>" type="checkbox">&nbsp;<label for="category_<{$k}>" style="display:inline;font-weight:100"><{$cate|addslashes}></label>'+
+		                     '</div>'+	
+	                   	'<{/foreach}>';
+                   	$("#chooseInfoBody").html(str);
+                   	for (var i = 0; i < IdList.length; i++) {
+                        $("#category_"+IdList[i]).prop("checked",true);
+                    }
+					break;
+				case "preference":
+					str+='<{foreach item=cate key=k from=$preference}>'+
+	                        '<div class="col-xs-4"  style="margin-top:10px;height: 30px;padding-left:5px;padding-right:0px;float: left;text-align: left;">'+
+			                    '<input id="preference_<{$cate}>" data-id="<{$cate}>" type="checkbox">&nbsp;<label for="preference_<{$cate}>" style="display:inline;font-weight:100"><{$cate}></label>'+
+			                '</div>'+
+		           	     '<{/foreach}>';
+                   	$("#chooseInfoBody").html(str);
+                   	for (var i = 0; i < IdList.length; i++) {
+                   		$("input[id='preference_"+IdList[i]+"']").prop("checked",true)
+                    }
+					break;
+				case "country":
+					str+='<{foreach item=cate key=k from=$countryList}>'+
+	                        '<div class="col-xs-3"  style="margin-top:10px;height: 30px;padding-left:5px;padding-right:0px;float: left;text-align: left;">'+
+			                    '<input id="country_<{$k}>" data-id="<{$k}>" type="checkbox">&nbsp;<label for="country_<{$k}>" style="display:inline;font-weight:100"><{$cate|addslashes}></label>'+
+			                '</div>'+
+		           	     '<{/foreach}>';
+                   	$("#chooseInfoBody").html(str);
+                   	for (var i = 0; i < IdList.length; i++) {
+                        $("#country_"+IdList[i]).prop("checked",true);
+                    }
+					break;
+				default :
+					return false;
+			}
+            $("#chooseInfoModalLabel").html(title);
+            $("#submitType").val(type);
+			$("#chooseInfo").modal();
+		})
+		
+		$(document).delegate("#chooseInfoConfirm","click",function(){
+			var submitType = $("#submitType").val();
+			if(submitType!="category" && submitType!="preference" && submitType!="country"){
+				return false;
+			}
+			var check = '',text = '';
+            $('#chooseInfo :checkbox').each(function(i){
+                if($(this).is(':checked')){
+                	check+=$(this).attr('data-id')+',';
+                	text+=$(this).next('label').text()+', ';
+                }
+            })
+            text = text.substring(0,text.length-2);
+            var param = check.substring(0,check.length-1);
+			var data = {'action':'updateChoose','type':submitType,'param':param,"advertiserid":"<{$advertiserid}>","storeid":"<{$storeid}>"};
+			$.ajax({
+	            type:"post",
+	            url:"w_store_listing.php",
+	            data:data,
+	            dataType: 'json',
+	            async:false,
+	            success: function(res){
+	            	if(submitType=='category' || submitType=='country'){
+	            		$("#"+submitType+"_text").html(text);
+	            	}else if(submitType=='preference'){
+	            		var str = '';
+	            		var paramArr = param.split(",");
+	            		for(var i=0;i<paramArr.length;i++){
+	            			str += '<div class="col-md-4">'+paramArr[i]+'</div>';
+	            		}
+	            		$("#"+submitType+"_text").html(str);
+	            	}
+	            	$("#"+submitType+"_idList").val(param);
+	            	$('#chooseInfo').modal('hide');
+	            }
+	        });
+		})
+		
+	})
+	
+		
+	function toUploadLogo(){
+		$("#uploadImg").modal();
+	}
+	
+	function getInfoHtml(res){
+		var html = '<div class="form-group">'+
+					    '<label class="col-sm-2 control-label">Logo:</label>'+
+					    '<div class="col-sm-8">'+
+					      '<p class="form-control-static"><img width="220px" border=0 src="<{$smarty.const.BASE_URL}>/img/adv_logo/'+res.result.LogoName+'" /></p>'+
+					    '</div>'+
+				   '</div>'+
+				   '<div class="form-group">'+
+				     '<label class="col-sm-2 control-label">Name:</label>'+
+				     '<div class="col-sm-3">'+
+				       '<p class="form-control-static">'+res.result.Name+'</p>'+
+				     '</div>';
+				     if(res.result.AdvertiserEmail!=''){
+				    	 html += '<label class="col-sm-2 control-label">Email:</label>'+
+							     '<div class="col-sm-3">'+
+								    '<p class="form-control-static">'+res.result.AdvertiserEmail+'</p>'+
+							 	 '</div>';
+				     }
+				html += '</div>'+
+				  '<div class="form-group">'+
+				    '<label class="col-sm-2 control-label">URL:</label>'+
+				    '<div class="col-sm-10">'+
+				      '<p class="form-control-static">'+res.result.Domains+'</p>'+
+				    '</div>'+
+				  '</div>'+
+				  '<div class="form-group">'+
+				    '<label class="col-sm-2 control-label">Commission:</label>'+
+				    '<div class="col-sm-10">'+
+				      '<p class="form-control-static"><{$commission}></p>'+
+				    '</div>'+
+				  '</div>';
+				  	if(res.result.AdvertiserEmailType!=''){
+				  		html += '<div class="form-group">'+
+								    '<label class="col-sm-2 control-label">Affiliate Manager Type:</label>'+
+								    '<div class="col-sm-10">'+
+								      '<p class="form-control-static">'+res.result.AdvertiserEmailType+'</p>'+
+								    '</div>'+
+							    '</div>';
+				  	}
+				  	if(res.result.Desc!=''){
+				  		html += '<div class="form-group">'+
+								    '<label class="col-sm-2 control-label">Description:</label>'+
+								    '<div class="col-sm-10">'+
+							        '<p class="form-control-static">'+res.result.Desc+'</p>'+
+							    '</div>'+
+							    '</div>';
+				  	}
+				  	if(res.result.PPCPolicy!=''){
+				  		html += '<div class="form-group">'+
+								    '<label class="col-sm-2 control-label">Term and Conditions:</label>'+
+								    '<div class="col-sm-10">'+
+								      '<div id="bPPC" style="padding-top: 7px;margin-bottom: 0px;word-break: break-all;word-wrap: break-word;">'+res.result.PPCPolicy+'</div>'+
+								    '</div>'+
+							    '</div>';
+				  	}
+				html += '</div>';
+				$('#head-detail').html(html);
+	}
+	
+	$("#uploadLogo").click(function(){
+		if($("#filer_input").val() == undefined || $("#filer_input").val() == ''){
+			alert('please input a logo');
+		}else{
+			var formData = new FormData($("#uploadLogoForm")[0]);  
+			$.ajax({
+				url: "upload.php",
+	            data: formData,
+	            type: 'POST',
+	            enctype: 'multipart/form-data',
+	            contentType: false,
+	            processData: false,
+	            beforeSend: function(){},
+	            success: function(data, el){
+	                alert(data);
+	            }
+			})
+		}
+		return false;
+	})
+	
+	function showB(div_block, event){
+		if($("#"+div_block).css('height') == '20px'){
+			$("#"+div_block).css({height:""});
+			$(event).val('Hide');
+		}else{			
+			$("#"+div_block).css({height:"20px"});
+			$(event).val('More');
+		}
+		
+	}
+
+	function deleteF(fid){
+		var url =  "w_store_listing.php?action=df";	   
+		var verifyArr = {'fid':fid,"advertiserid":"<{$advertiserid}>","storeid":"<{$storeid}>"};
+		$.ajax({type: "get",
+			url: url,
+			data: $.param(verifyArr),
+			success: function(msg){
+				console.info(msg);			
+				if(msg == "success"){
+					//alert(msg);
+					window.location.reload();
+				}else{
+					alert(msg);
+				}
+			}					   
+		});
+	}
+	
+	function requestB(t, p){
+		var url =  "w_store_listing.php?action=rb";
+	    var sid = $('#sid').val();
+		var verifyArr = {'sid':sid,'type':t,'pid':p,"advertiserid":"<{$advertiserid}>","storeid":"<{$storeid}>"};
+		$.ajax({type: "get",
+			url: url,
+			data: $.param(verifyArr),
+			success: function(msg){
+				console.info(msg);			
+				if(msg == "success"){
+					//alert(msg);
+					window.location.reload();
+				}else{
+					alert(msg);
+				}
+			}					   
+		});
+	}
+
+	$(".dtpicker").datetimepicker({
+        minView: "month",//设置只显示到月份
+        format : "yyyy-mm-dd",//日期格式
+        autoclose:true,//选中关闭
+        todayBtn: true//今日按钮
+    });
+    
+	</script>

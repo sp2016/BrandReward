@@ -1,0 +1,7 @@
+<?php
+define('DB_BDG_HOST', 'localhost');
+define('DB_BDG_NAME', 'bdg_go_base');
+define('DB_BDG_USER', 'root');
+define('DB_BDG_PASS', '');
+
+?>

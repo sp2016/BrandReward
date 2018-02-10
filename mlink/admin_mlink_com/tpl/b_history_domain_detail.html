@@ -1,0 +1,168 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+  <div class="container" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1>Detail-<{$search.domain}></h1></div>
+    <div class="row" style="padding:20px 0;">
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Search</div>
+          <div class="panel-body" >
+            <form id="form_tran_search" >
+            
+              <input type="hidden" name="domain" value="<{$search.domain}>" />
+              <div class="col-lg-10 form-inline">
+                <div class="form-group">
+                  <input type="text" name="tran_from" class="form-control datepicker" id="tran_from" value="<{$search.tran_from}>" placeholder="date from">
+                </div>
+                <div class="form-group">
+                  <input type="text" name="tran_to" class="form-control datepicker" id="tran_to" value="<{$search.tran_to}>" placeholder="date to">
+                </div>
+                <input class="btn btn-default" type="button" value="Last 7 Days">
+                <input class="btn btn-default" type="button" value="Last 30 Days">
+                <div class="form-group" style="position:relative;">
+                  <input type="text" name="pid" class="form-control tip" id="pid" value="<{$search.pid}>" placeholder="site" data-type="tip_publisher">
+                  
+                </div>
+              </div>
+
+              <div class="col-lg-2">
+                <div class="form-group">
+                  <input type="submit" class="btn  btn-primary " value="Search">
+                </div>
+              </div>
+            
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">List</div>
+          <div class="panel-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Commission</th>
+                  <!-- <th>Clicks</th> -->
+                  <!-- <th>EPC</th> -->
+                  <th>Order sales</th>
+                  <th>Order num</th>
+                  <th>Conv.Rate</th>
+                  <th>Alias Detail</th>
+                </tr>
+              </thead>
+              <{foreach from=$tranData item=Tran}>
+              <{if $Tran.Sales > 0 }>
+                <{assign var='commrate' value=$Tran.Commission/$Tran.Sales*100|number_format:'2':'.':','}>
+              <{else}>
+                <{assign var='commrate' value='-'}>
+              <{/if}>
+                <tr>
+                  <td><{$Tran.Createddate}></td>
+                  <td>$<{$Tran.Commission|number_format:'2':'.':','}></td>
+                  <td>$<{$Tran.Sales|number_format:'2':'.':','}></td>
+                  <td><{$Tran.num|number_format:'0':'.':','}></td>
+                  <td><{$commrate}>%</td>
+                  <td><a style="cursor:pointer" class="search">Search</a></td>
+                </tr>
+              <{/foreach}>
+            </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  $('.tip').keyup(function(){
+    var ipt = this;
+    var keywords = $(this).val();
+    var url = '<{$smarty.const.BASE_URL}>/process.php';
+    var ajaxdata = 'act=tip_site&keywords='+keywords;
+
+    if(!keywords.match(/[^\s]{1,}/)){
+      return;
+    }
+
+    $.ajax({
+      type:"post",
+      url:"<{$smarty.const.BASE_URL}>/process.php",
+      data:ajaxdata,
+      success: function(req){
+        var html_tip = '<ul class="dropdown-menu" >';
+        var arr = req.split('|');//split将字符串变成字符串数组
+        for(var i in arr){
+          html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+        }
+        var html_tip = html_tip+'</ul>';
+
+
+        if($(ipt).parent().find('ul')){
+          $(ipt).parent().find('ul').remove();
+        }
+
+        $(ipt).parent().append(html_tip);
+
+        load_tip($(ipt).parent().find('ul'));
+      }
+    });
+
+   
+  });
+
+})();
+
+function load_tip(obj){
+  $(obj).css('display','block');  //jquery的css()函数，相当于display:block
+  $(obj).find('a').click(function(){
+
+    $(obj).prev().val($(this).html());
+    $(obj).remove();
+  });
+}
+
+
+
+
+
+$('.search').click(function(){
+	var ipt = this;
+	var date = $($(ipt).parent().parent().find('td')[0]).html();
+	var ajaxdata = 'act=tip_history_domain_detail&date='+date+'&domain=<{$search.domain}>';
+	var html = '<tr><table>';
+    $.ajax({
+        type:"post",
+        dataType:"json",
+        url:"<{$smarty.const.BASE_URL}>/process.php",
+        data:ajaxdata,
+        success: function(req){ //req是二维数组
+        	for(var i in req){
+        		var rate = (req[i].Commission/req[i].Sales*100).toFixed(2);
+        	    var html = html+'<tr name="alias" style="background-color:#A0E8FF" ><td>'+req[i].Alias+'</td><td>$'+parseFloat(req[i].Commission).toFixed(2)+'</td><td>$'+parseFloat(req[i].Sales).toFixed(2)+'</td><td>'+req[i].num+'</td><td>'+rate+'%</td></tr>';
+        		
+        	}
+        	var html = html+'</table></tr>'
+        	if($($(ipt).parent().parent().next()).attr("name") == "alias"){
+        		$($(ipt).parent().parent().next()).remove();
+        	}else{
+        		$(ipt).parent().parent().after(html);
+        	} 
+        	
+        	
+        }
+      });
+
+
+})
+
+
+</script>
+
+<{include file="b_block_footer.html"}>

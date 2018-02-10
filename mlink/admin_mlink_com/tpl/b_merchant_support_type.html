@@ -1,0 +1,283 @@
+<div class="container" style="margin-top:30px;width: 100%;">
+	<div class="row" style="padding:20px 0;">
+		<div class="col-lg-12">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<table class="table table-striped comtab">
+						<thead>
+						<tr>
+							<th>Network</th>
+							<th>Program</th>
+							<th>Domains</th>
+							<th>Country</th>
+							<th>Commission</th>
+							<th>SupportType</th>
+							<th>PPC Status</th>
+							<th>ManualCtrl</th>
+							<th>PPC Term</th>
+						</tr>
+						</thead>
+						<{foreach from=$programs item=program}>
+						<tr class="store store<{$program.ProgramId}>">
+							<td align="center"><{$program.AffName}></td>
+							<td align="center"><{$program.Name}></td>
+							<td align="center">
+								<{$program.domain}>
+							</td>
+							<td align="center" style="word-wrap:break-word;word-break:break-all">
+								<span style="color: red"><{$program.major}></span>
+								<span style="color: red"><{$program.minor}></span>
+								<span><{$program.general}></span>
+							</td>
+							<td align="center">
+								<a href="javascript:void(0);" oldval="<{$program.check}>" class="upcom upcom<{$program.ProgramId}>" id="<{$program.ProgramId}>"><{$program.commission}></a>
+								<{if $program.uptype eq '1' }>
+								<a href="javascript:void(0)" style="margin-left: 10px;" id="<{$program.ProgramId}>" newval="<{$program.newcom}>" class="upinfo upinfo<{$program.ProgramId}>"><font color="red">Original Commission Rate has been changed</font></a>
+								<{/if}>
+							</td>
+							<td align="center">
+								<select class="selector 1" data-id="<{$search.id}>" data-programid="<{$program.ProgramId}>">
+									<option value ="Content" <{if $program.SupportType eq 'Content' }> selected="selected"<{/if}>>Content</option>
+									<option value='Promotion' <{if $program.SupportType eq 'Promotion' }> selected="selected"<{/if}>>Promotion</option>
+									<option value='All' <{if $program.SupportType eq 'All' }> selected="selected"<{/if}>>All</option>
+								</select>
+							</td>
+							<td align="center">
+								<select class="selector 2" data-id="<{$search.id}>" data-programid="<{$program.ProgramId}>">
+                                	<option value="0" <{if $program.PPC eq 0 }> selected="selected"<{/if}>>0--UNKNOWN</option>
+                                	<option value="1" <{if $program.PPC eq 1 }> selected="selected"<{/if}>>1--Google Restricted</option>
+                                	<option value="2" <{if $program.PPC eq 2 }> selected="selected"<{/if}>>2--Google + Bing Restricted</option>
+                                    <option value="3" <{if $program.PPC eq 3 }> selected="selected"<{/if}>>3--PPC Allowed</option>
+                                    <option value="4" <{if $program.PPC eq 4 }> selected="selected"<{/if}>>4--100% Restricted</option>
+                                </select>
+							</td>
+							<td align="center"><{$program.SupportTypeManualCtrl}></td>
+							<td align="center">
+								<button class="updatetc" type="0" id=".showtab1<{$program.ProgramId}>">Update</button>&nbsp;<{if $program.ntext !=''}><font color="red">*</font><{else}><font color="black">*</font><{/if}>
+							</td>
+						</tr>
+						<tr class="showtab1<{$program.ProgramId}>" style="display: none;">
+							<td colspan="8">
+                            <textarea class="text<{$program.ProgramId}>" style="width: 100%;height:300px;margin-top:10px;"><{if $program.ntext !=''}><{$program.ntext}><{else}><{$program.TermAndCondition}><{/if}></textarea>
+								<button style="float:left;margin-top: 10px;margin-left: 48%;margin-bottom: 10px;" sid="<{$search.id}>"  id="<{$program.ProgramId}>" class="btn subtc  btn-primary">Submit</button>
+							</td>
+						</tr>
+						<{/foreach}>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="ui  modal catemodel" style="min-height: 500px;min-width: 1000px;">
+	<div class="header label">Category of <font id="catename"></font></div>
+
+	<div class="content" id="mod" style="overflow:auto;height:100%;padding-top:5px;">
+		<div class="col-xs-6 col-md-3" style="margin-top:10px;height: 30px;padding-left:0px;padding-right:0px;">
+			<input id="fate_<{$k}>" data-id="<{$k}>" type="checkbox">&nbsp;<{$cate}>
+		</div>
+		<div style="float: left;width: 100%;margin-top: 10px;text-align: center;">
+
+			<input  type="button" class="btn all" val="0" style="width: 100px;background-color: #5bbfde;color:white;" value="Select All">
+			&nbsp;
+			<input  type="button" class="btn upcate" val="0" style="width: 100px;background-color: #627491;color:white;" value="Confirm">
+		</div>
+	</div>
+</div>
+<script>
+	$('.updatetc').on('click',function(){
+		var id = $(this).attr('id');
+		var type = $(this).attr('type');
+		if(type == '0'){
+			$(id).css('display','');
+			$(this).attr('type','1');
+		}else{
+			$(id).css('display','none');
+			$(this).attr('type','0');
+		}
+	})
+	$('.subtc').on('click',function(){
+		var id = $(this).attr('id');
+		var sid = $(this).attr('sid');
+		var c = ".text"+id;
+		var val = $(c).val();
+		if(val == ''){
+			alert('Not Empty');
+			return false;
+		}
+		$.ajax({
+			type: "post",
+			url: "b_merchants_support_type.php",
+			data:{val:val,subtc:1,id:id},
+			async: false,
+			success: function (res) {
+				if(res == 2){
+					alert('error');
+				}else {
+					$.ajax({
+						type: "post",
+						url: "b_merchants_support_type.php",
+						data: {id:sid},
+						async: false,
+						success: function (html) {
+							alert('Success');
+							$('.modelval').html('');
+							$('.modelval').append(html);
+						},
+						error:function(){
+							alert('Failed!');
+						}
+					});
+				}
+			}
+		});
+	})
+	$('.upcom').on('click',function(){
+		var id = $(this).attr('id');
+		var oldval = $(this).attr('oldval');
+		var c = $('.store'+id).next().attr('class');
+		if(c == 'com'){
+			$('.store'+id).next().remove();
+		}else{
+			$('.store'+id).after('<tr class="com">' +
+					'<td colspan=5 align="right">' +
+					'<select onchange="uptype(this)"><option value="Percent">Percent</option><option value="Value">Value</option></select>' +
+					'&nbsp;&nbsp;&nbsp;<input type="text" style="width: 100px;">&nbsp;&nbsp;&nbsp;<input type="button" oldval="'+oldval+'" onclick="updatecom(this)" value="Submit" id="'+id+'" class="sub btn search">'+
+					'</td><td></td><td></td>' +
+					'</tr>')
+		}
+	})
+	$('.upinfo').on('click',function(){
+		var id = $(this).attr('id');
+		var val = $(this).attr('newval');
+		if(confirm('DO you really want to change Commission('+val+')?'))
+		{
+			var data = {id:id,upinfo:1};
+			$.ajax({
+				type: "post",
+				url: "b_merchants_support_type.php",
+				data:data,
+				async: false,
+				success: function(res){
+					if(res != 2){
+						$('.upcom'+id).html(res);
+						$('.upinfo'+id).remove();
+					}else{
+						alert('Failed!');
+					}
+				},
+				error:function(){
+					alert('Failed!');
+				}
+			});
+		}
+	})
+	function updatecom(ths){
+		var type = $(ths).prev().prev().val();
+		var id = $(ths).attr('id');
+		var oldval = $(ths).attr('oldval');
+		if(type == 'Percent'){
+			var val = $(ths).prev().val();
+			var unit = '';
+			if(val == ''){
+				alert('Not Null');
+				return false;
+			}
+		}else{
+			var val = $(ths).prev().val();
+			var unit = $(ths).prev().prev().val();
+			if(val == '' || unit == ''){
+				alert('Not Null');
+				return false;
+			}
+		}
+		if(confirm("DO you really want to change Commission?"))
+		{
+			var data = {id:id,val:val,unit:unit,oldval:oldval,upcom:1};
+			$.ajax({
+				type: "post",
+				url: "b_merchants_support_type.php",
+				data:data,
+				async: false,
+				success: function (res) {
+					if(res == 1){
+						if(unit == ''){
+							var html = val+'%';
+						}else{
+							var html = unit+val;
+						}
+						$('.upcom'+id).html(html);
+						$('.store'+id).next().remove();
+							alert('Success!');
+					}else {
+						alert('Failed!');
+					}
+				},
+				error:function(){
+					alert('Failed!');
+				}
+			});
+		}
+	}
+	function uptype(ths){
+		var val = $(ths).val();
+		if(val == 'Value'){
+			$(ths).after('&nbsp;&nbsp;&nbsp;<input placeholder="monetary unit" type="text">')
+		}else{
+			$(ths).next().remove();
+		}
+
+	}
+    $(".selector.1").change(function(){
+        var supportType = this.value;
+        var store_id = $(this).data('id');
+        var programid = $(this).data('programid');
+        if(confirm("DO you really want to change support type?"))
+        {
+            var data = {act:'update_support_type',program_id:programid,supportType:supportType,store_id:store_id};
+            $.ajax({
+                type: "post",
+                url: "process.php",
+                data:data,
+                async: false,
+                success: function (res) {
+                    if(res == 1){
+                        alert('Success!');
+                    }else {
+                        alert('Failed!');
+                    }
+                },
+                error:function(){
+                    alert('Failed!');
+                }
+            });
+        }
+    });
+    $(".selector.2").change(function(){
+        var ppcValue = this.value;
+        var store_id = $(this).data('id');
+        var programid = $(this).data('programid');
+        //alert(ppcValue+'---'+store_id+'---'+programid);
+        if(confirm("DO you really want to change PPC Status?"))
+        {
+            var data = {act:'update_ppc',program_id:programid,ppcValue:ppcValue,store_id:store_id};
+            $.ajax({
+                type: "post",
+                url: "process.php",
+                data:data,
+                async: false,
+                success: function (res) {
+                    if(res == 1){
+                        alert('Success!');
+                    }else {
+                        alert('Failed!');
+                    }
+                },
+                error:function(){
+                    alert('Failed!');
+                }
+            });
+        }
+    });
+</script>
+

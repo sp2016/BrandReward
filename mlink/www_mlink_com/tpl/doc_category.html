@@ -1,0 +1,150 @@
+<div class="page">
+  <h2 class="clearup">Category API</h2>
+  <h3><{$LANG.front.doc_transaction.a2}></h3>
+  <pre><{$smarty.const.API_URL}>?act=advertiser.category_list&key=[Site ID]&user=[Login User Name]</pre>
+  <h3><{$LANG.front.doc_transaction.a3}></h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><{$LANG.front.doc_transaction.a4}></th>
+        <th><{$LANG.front.doc_transaction.a5}></th>
+        <th><{$LANG.front.doc_transaction.a6}></th>
+        <th><{$LANG.front.doc_transaction.a7}></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a8}></td>
+        <td><{$LANG.front.doc_transaction.a9}></td>
+        <td><{$LANG.front.doc_transaction.a10}></td>
+        <td><{$LANG.front.doc_transaction.a11}></td>
+      </tr>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a20}></td>
+        <td><{$LANG.front.doc_transaction.a21}></td>
+        <td><{$LANG.front.doc_transaction.a22}></td>
+        <td><{$LANG.front.doc_transaction.a23}></td>
+      </tr>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a24}></td>
+        <td><{$LANG.front.doc_transaction.a25}></td>
+        <td><{$LANG.front.doc_transaction.a26}></td>
+        <td><{$LANG.front.doc_transaction.a27}></td>
+      </tr>
+      <tr>
+        <td>outformat</td>
+        <td>N</td>
+        <td>String</td>
+        <td>output content format (default:txt , option:'txt','json','xml')</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3><{$LANG.front.doc_transaction.a29}></h3>
+  <pre><{$smarty.const.API_URL}>?act=advertiser.category_list&key=eccbc87e4b5ce2fe28308fd9f2a7baf3&user=account1</pre>
+
+  <h3>Parameters Response</h3>
+  <h4>API info</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Parameters</th>
+        <th>Data Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>PageTotal</td>
+        <td>Int</td>
+        <td>Total number of pages</td>
+      </tr>
+      <tr>
+        <td>PageNow</td>
+        <td>Int</td>
+        <td>The current page</td>
+      </tr>
+      <tr>
+        <td>Num</td>
+        <td>Int</td>
+        <td>Total number of data</td>
+      </tr>
+      <tr>
+        <td>NumReturn</td>
+        <td>Int</td>
+        <td>Number of data on the current page</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>Data info</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Parameters</th>
+        <th>Data Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ID</td>
+        <td>Int</td>
+        <td>Unique ID per recorded category</td>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td>String</td>
+        <td>Category name</td>
+      </tr>
+    </tbody>
+  </table>
+
+<h3><{$LANG.front.doc_transaction.a30}></h3>
+  <pre>
+
+@NumReturn:41 @Num:41 @PageTotal:41 @PageNow:1  
+ID  Name
+32  Accomodation & Rentals & Vacation
+31  Air Travel
+38  Arts & Entertainment
+1 Automotive
+11  Banking & Financial Services
+18  Beauty & Hair
+16  Betting & Gaming
+36  Business Solutions
+34  Cameras & Photo
+35  Career & Employment
+2 Cell Phones & Mobile
+3 Computer & Software
+4 Consumer Electronics
+5 Education
+6 Family & Children
+15  Food & Spirits & Tobacco
+37  Green (All Verticals)
+14  Groceries & Flowers & Gifts
+17  Health & Pharmacy
+19  Home & Garden
+13  Insurance & Legal
+20  Jewelry & Watches
+12  Loan & Other Financial Services
+10  Men's Accessories
+8 Men's Fashion
+39  Military
+21  Motorcycle
+22  Music & TV
+23  News, Books & Magazines
+40  Non-Profit
+24  Online Services
+100 Other
+33  Outdoor Activities
+25  Pets
+26  Real Estate
+27  Self-Help & Dating
+28  Shopping Malls
+29  Sports & Fitness
+30  Toys & Hobbies
+9 Women's Accessories
+7 Women's Fashion
+  </pre>
+</div>

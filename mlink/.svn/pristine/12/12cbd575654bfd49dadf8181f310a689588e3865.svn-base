@@ -1,0 +1,231 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style>
+.panel>.table-bordered{
+    border-top:1px solid #ddd;
+    border-bottom:1px solid #ddd;
+}
+.reply_lable,th{
+    background-color: #edf3f4;
+}
+</style>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">Search</div>
+                <table class="table table-bordered">
+                    <tr>
+                        <th class="col-xs-4 col-sm-2">Reporter</th>
+                        <th class="col-xs-4 col-sm-2">Project</th>
+                        <th class="col-xs-4 col-sm-2">Category</th>
+                        <th class="col-xs-4 col-sm-2 hidden-xs">Assign AM</th>
+                        <th class="col-xs-4 col-sm-2 hidden-xs">Create Time</th>
+                        <th class="col-xs-4 col-sm-2 hidden-xs">LastUpdate Time</th>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-4 col-sm-2">
+                            <select name="networkid" class="sel_chosen" data-rel="chosen">
+                                    <option value="">All</option>
+                                <{foreach from=$userList item=user}>
+                                    <option value="<{$user.Value}>"><{$user.Name}></option>
+                                <{/foreach}>
+                            </select>
+                        </td>
+                        <td class="col-xs-4 col-sm-2">
+                            <select name="networkid" class="sel_chosen" data-rel="chosen">
+                                    <option value="">All</option>
+                                <{foreach from=$projectList item=project}>
+                                    <option value="<{$project.ID}>"><{$project.Name}></option>
+                                <{/foreach}>
+                            </select>
+                        </td>
+                        <td class="col-xs-4 col-sm-2">
+                            <select name="networkid" class="sel_chosen" data-rel="chosen">
+                                    <option value="">All</option>
+                                <{foreach from=$categoryList item=category}>
+                                    <option value="<{$category.ID}>"><{$category.Name}></option>
+                                <{/foreach}>
+                            </select>
+                        </td>
+                        <td class="col-xs-4 col-sm-2 hidden-xs">
+                            <select name="networkid" class="sel_chosen" data-rel="chosen">
+                                    <option value="">All</option>
+                                <{foreach from=$userList item=user}>
+                                    <option value="<{$user.Value}>"><{$user.Name}></option>
+                                <{/foreach}>
+                            </select>
+                        </td>
+                        <td class="col-xs-4 col-sm-2 hidden-xs">2017-12-12 12:12:12</td>
+                        <td class="col-xs-4 col-sm-2 hidden-xs">2017-12-12 12:12:12</td>
+                    </tr>
+                </table>
+                <!-- display in mobile -->
+                <table class="table table-bordered hidden-sm hidden-md hidden-lg" style="margin-top:10px;">
+                    <tr>
+                        <th class="col-xs-4">Assign to</th>
+                        <th class="col-xs-4">Create Time</th>
+                        <th class="col-xs-4">LastUpdate Time</th>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-4">
+                            <select name="networkid" class="sel_chosen" data-rel="chosen">
+                                    <option value="">All</option>
+                                <{foreach from=$userList item=user}>
+                                    <option value="<{$user.Value}>"><{$user.Name}></option>
+                                <{/foreach}>
+                            </select>
+                        </td>
+                        <td class="col-xs-4">2017-12-12 12:12:12</td>
+                        <td class="col-xs-4">2017-12-12 12:12:12</td>
+                    </tr>
+                </table>
+                <!-- over display in mobile -->
+                
+                <table class="table table-bordered hidden-xs" style="margin-top:10px;">
+                    <tr>
+                        <th class="col-xs-4">Network</th>
+                        <th class="col-xs-4">Publisher</th>
+                        <th class="col-xs-4">Reply By</th>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-4">
+                            <select name="networkid" class="sel_chosen" data-rel="chosen">
+                                    <option value="">All</option>
+                                <{foreach from=$networksList item=network}>
+                                    <option value="<{$network.ID}>"><{$network.Name}></option>
+                                <{/foreach}>
+                            </select>
+                        </td>
+                        <td class="col-xs-4">
+                            <select name="networkid" class="sel_chosen" data-rel="chosen">
+                                    <option value="">All</option>
+                                <{foreach from=$publisherList item=publisher}>
+                                    <option value="<{$publisher.ID}>"><{$publisher.Email}></option>
+                                <{/foreach}>
+                            </select>
+                        </td>
+                        <td class="col-xs-4">
+                            <select name="networkid" class="sel_chosen" data-rel="chosen">
+                                    <option value="">All</option>
+                                <{foreach from=$userList item=user}>
+                                    <option value="<{$user.Value}>"><{$user.Name}></option>
+                                <{/foreach}>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- display in mobile -->
+                <table class="table table-bordered hidden-sm hidden-md hidden-lg" style="margin-top:10px;">
+                    <tr>
+                        <th class="col-xs-4">Network</th>
+                        <td class="col-xs-8">
+                            <select name="networkid" class="sel_chosen">
+                                    <option value="">All</option>
+                                <{foreach from=$networksList item=network}>
+                                    <option value="<{$network.ID}>"><{$network.Name}></option>
+                                <{/foreach}>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="col-xs-4">Publisher</th>
+                        <td class="col-xs-8">
+                            <select name="networkid" class="sel_chosen" data-rel="chosen">
+                                    <option value="">All</option>
+                                <{foreach from=$publisherList item=publisher}>
+                                    <option value="<{$publisher.ID}>"><{$publisher.Email}></option>
+                                <{/foreach}>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="col-xs-4">Reply By</th>
+                        <td class="col-xs-8">Gordon</td>
+                    </tr>
+                </table>
+                <!-- over display in mobile -->
+
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="col-xs-4 col-sm-2">
+                            <select class="form-control">
+                              <option value="50">50 per page</option>
+                              <option value="100">100 per page</option>
+                              <option value="200">200 per page</option>
+                            </select>
+                        </td>
+                        <td class="col-xs-4 col-sm-2"><input type="text" class="form-control" value="" placeholder="search title and desc keywords" name="keywords"/></td>
+                        <td class="col-xs-4 col-sm-8"><button type="submit" class="btn btn-default">Search</button></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">list</span></div>
+                
+                <div style="overflow-x:scroll;">
+                <table class="table table-bordered">
+                    <tr>
+                        <th class="col-xs-1 col-sm-1">ID</th>
+                        <th class="col-xs-1 col-sm-1">Project</th>
+                        <th class="col-xs-1 col-sm-1">Category</th>
+                        <th class="col-xs-1 col-sm-1">Status</th>
+                        <th class="col-xs-1 col-sm-1">Reporter</th>
+                        <th class="col-xs-1 col-sm-1">LastUpdate Date</th>
+                        <th class="col-xs-6 col-sm-6">Title</th>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-1 col-sm-1">0008270</td>
+                        <td class="col-xs-1 col-sm-1">Publisher API</td>
+                        <td class="col-xs-1 col-sm-1">Transaction</td>
+                        <td class="col-xs-1 col-sm-1">New</td>
+                        <td class="col-xs-1 col-sm-1">Lillian</td>
+                        <td class="col-xs-1 col-sm-1">2017-12-13</td>
+                        <td class="col-xs-6 col-sm-6">mc_issue_add() function using custom fields generates "Violation of encoding rules error" message</td>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-1 col-sm-1">0008270</td>
+                        <td class="col-xs-1 col-sm-1">Publisher API</td>
+                        <td class="col-xs-1 col-sm-1">Transaction</td>
+                        <td class="col-xs-1 col-sm-1">New</td>
+                        <td class="col-xs-1 col-sm-1">Lillian</td>
+                        <td class="col-xs-1 col-sm-1">2017-12-13</td>
+                        <td class="col-xs-6 col-sm-6">mc_issue_add() function using custom fields generates "Violation of encoding rules error" message</td>
+                    </tr>
+                </table>
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">History</span></div>
+                <table class="table table-bordered">
+                    <tr>
+                        <th class="col-xs-3">Update Time</th>
+                        <th class="col-xs-3">User</th>
+                        <th class="col-xs-3">Field</th>
+                        <th class="col-xs-3">Change</th>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-3">2017-12-12 12:12:12</td>
+                        <td class="col-xs-3">Gordon</td>
+                        <td class="col-xs-3">Relay new 12122</td>
+                        <td class="col-xs-3"></td>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-3">2017-12-12 12:12:12</td>
+                        <td class="col-xs-3">Sol</td>
+                        <td class="col-xs-3">Status</td>
+                        <td class="col-xs-3">From New to Doing</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('.sel_chosen').chosen({width:'100%;'});
+</script>
+<{include file="b_block_footer.html"}>

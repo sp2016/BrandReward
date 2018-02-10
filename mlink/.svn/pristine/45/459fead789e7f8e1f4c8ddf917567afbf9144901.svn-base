@@ -1,0 +1,171 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<div class="ch-container">
+    <div class="row">
+        <div id="content" class="col-lg-12">
+            <!-- content starts -->
+            <div class="row">
+                <div class="box-content" style="text-align: center;font-size: 14px;">
+	                <select title="DateRange" id="date_range" style="height: 40px;width: 12%;">
+                        <{foreach from=$dataRange item=range}>
+                            <option><{$range.DateRange}></option>
+                        <{/foreach}>
+	                </select>
+	                <select title="Networks" id="networks" style="height: 40px;width: 10%;text-align: left">
+                        <option style="text-align: left;" value="0"><{$network.Name}>All</option>
+                        <{foreach from=$networks item=network}>
+                            <option style="text-align: left;" value=<{$network.ID}>><{$network.Name}></option>
+                        <{/foreach}>
+	                </select>
+                    <input  type="button" class="btn search" style="background-color: #627491;color:white;" value="Search">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="box col-md-12" style="min-height: 550px;">
+                <div class="box-inner homepage-box">
+                    <div class="box-content">
+                        <ul class="nav nav-tabs" id="myTab">
+                            <li class="active"><a href="#sub_network">Sub Network</a></li>
+                            <li><a href="#no_partnership">No Partnership</a></li>
+                            <li><a href="#no_commission">No Commission</a></li>
+                        </ul>
+                        <div id="myTabContent" class="tab-content">
+                            <div class="tab-pane active" id="sub_network">
+	                            <div class="box-inner" style="margin-top: 30px;">
+                                    <div id="tbzone_sub_network">
+                                        <table id="table_sub_network" class="ui celled table" cellspacing="0" width="100%"></table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="no_partnership">
+                                <div class="box-inner" style="margin-top: 30px;" >
+                                    <div id="tbzone_no_partnership">
+                                        <table id="table_no_partnership" class="ui celled table" cellspacing="0" width="100%"></table>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane" id="no_commission">
+                                <div class="box-inner" style="margin-top: 30px;">
+                                    <div id="tbzone_no_commission">
+                                        <table id="table_no_commission" class="ui celled table" cellspacing="0" width="100%"></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("#date_range").chosen();
+    $("#networks").chosen();
+    $("#myTab").find('a').click(function (e) {
+        e.preventDefault();
+        choose_tab($(this).attr("href"));
+        $(this).tab('show');
+    });
+
+    $('.search').on('click',function(){
+    	var tab = $("#myTab li.active a").attr("href");
+    	console.log(tab);
+		choose_tab(tab);
+    });
+
+    function choose_tab(id) {
+        var fun_name=id.substr(1);
+        console.log(fun_name)
+        eval(fun_name+"()");
+    }
+
+    function sub_network(){
+		$('#tbzone_sub_network').html('<table id="table_sub_network" class="ui celled table" cellspacing="0" width="100%"></table>');
+		var dateRange = $("#date_range").find("option:selected").text();
+		var networkId = $("#networks ").val();
+        $('#table_sub_network').DataTable({
+            "bServerSide": true,
+            "bProcessing": true,
+            "iDisplayLength": 20,
+            "bPaginage":true,
+            "aLengthMenu": [10, 20, 50, 100],
+            'bFilter': false,
+            'pagingType':'full_numbers',
+	        'bRetrieve': true,
+	        'order':[],
+            "ajax": {
+                "url": "b_store_weekly_report.php",
+                "type":'POST',
+                "data":{"table":"sub_network",'dateRange':dateRange,'network':networkId}
+            },
+            columns:[
+                { "data": "Advertiser","sClass":"t1","title":'Advertiser','bSortable':false},
+                { "data": "Domain","title":"Domain",'bSortable':false},
+                { "data": "Clicks","title":"Clicks"},
+                { "data": "Revenues","title":"Revenues"},
+                { "data": "Networks","title":"Networks",'bSortable':false}
+            ]
+        })
+
+
+    }
+
+    function no_partnership() {
+        $('#tbzone_no_partnership').html('<table id="table_no_partnership" class="ui celled table" cellspacing="0" width="100%"></table>');
+	    var dateRange = $("#date_range").find("option:selected").text();
+		var networkId = $("#networks ").val();
+        $('#table_no_partnership').DataTable({
+            "bServerSide": true,
+            "bProcessing": true,
+            "iDisplayLength": 20,
+            "bPaginage":true,
+	        "ordering":false,
+            "aLengthMenu": [10, 20, 50, 100],
+            'bFilter': false,
+            'pagingType':'full_numbers',
+	        'retrieve': true,
+            "ajax": {
+                "url": "b_store_weekly_report.php",
+                "type":'POST',
+                data:{"table":"no_partnership",'dateRange':dateRange,'network':networkId}
+            },
+            columns:[
+                { "data": "Advertiser","sClass":"t1","title":'Advertiser'},
+                { "data": "Clicks","title":"Clicks"},
+                { "data": "Networks","title":"Networks"}
+            ]
+        })
+    }
+
+    function no_commission() {
+		$('#tbzone_no_commission').html('<table id="table_no_commission" class="ui celled table" cellspacing="0" width="100%"></table>');
+	    var dateRange = $("#date_range").find("option:selected").text();
+		var networkId = $("#networks ").val();
+        $('#table_no_commission').DataTable({
+            "bServerSide": true,
+            "bProcessing": true,
+            "iDisplayLength": 20,
+	        "ordering":false,
+            "bPaginage":true,
+            "aLengthMenu": [10, 20, 50, 100],
+            'bFilter': false,
+            'pagingType':'full_numbers',
+	        'retrieve': true,
+	        'bInfo':true,
+            "ajax": {
+                "url": "b_store_weekly_report.php",
+                "type":'POST',
+                data:{"table":"no_commission",'dateRange':dateRange,'network':networkId}
+            },
+            columns:[
+                { "data": "Program","sClass":"t1","title":'Program'},
+                { "data": "Clicks","title":"Clicks"},
+                { "data": "Networks","title":"Networks"}
+            ]
+        })
+    }
+    sub_network();
+</script>
+<{include file="b_block_footer.html"}>

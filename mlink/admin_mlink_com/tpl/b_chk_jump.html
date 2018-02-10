@@ -1,0 +1,246 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style>
+td{word-break: break-all; word-wrap:break-word;}
+
+hr
+{
+  position:absolute;
+  float:left;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  width:100px;
+  border:1px solid;
+}
+
+</style>
+<div>
+  <div class="" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1>Out Going Log</h1></div>
+    <div class="row" style="padding:20px 0;">
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Search</div>
+          <div class="panel-body" >
+            <form id="form_tran_search">
+              <input type="hidden" name="p" value="1" />
+            <div class="col-lg-11 form-inline">
+              <div class="form-group">
+                URl is 200:
+                <select class="form-control" name="is200">
+                  <option value="3">ALL</option>
+                  <option value="1" <{if $search.is200=="1"}>selected<{/if}>>YES</option>
+                  <option value="0" <{if $search.is200=="0"}>selected<{/if}>>NO</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                URl is same:
+                <select class="form-control" name="issame">
+                  <option value="3">ALL</option>
+                  <option value="1" <{if $search.issame=="1"}>selected<{/if}>>YES</option>
+                  <option value="0" <{if $search.issame=="0"}>selected<{/if}>>NO</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                URl is contain:
+                <select class="form-control" name="issimilar">
+                  <option value="3">ALL</option>
+                  <option value="1" <{if $search.issimilar=="1"}>selected<{/if}>>YES</option>
+                  <option value="0" <{if $search.issimilar=="0"}>selected<{/if}>>NO</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                URL is same host name:
+                <select class="form-control" name="ishostname">
+                  <option value="3">ALL</option>
+                  <option value="1" <{if $search.ishostname=="1"}>selected<{/if}>>YES</option>
+                  <option value="0" <{if $search.ishostname=="0"}>selected<{/if}>>NO</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                Check result:
+                <select class="form-control" name="checkres">
+                  <option value="">ALL</option>
+                  <option value="unknown" <{if $search.checkres=='unknown'}>selected<{/if}>>UNKNOWN</option>
+                  <option value="yes" <{if $search.checkres=='yes'}>selected<{/if}>>YES</option>
+                  <option value="no" <{if $search.checkres=='no'}>selected<{/if}>>NO</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                Original Url:
+                <input type="text" name="pageUrl" class="form-control tip_domain" value="<{$search.pageUrl}>" placeholder="Original Url">
+              </div>
+
+            </div>
+
+
+            <div class="col-lg-1">
+              <div class="form-group">
+                <input type="submit" class="btn  btn-primary " value="Search">
+              </div>
+            </div>
+
+          </form>
+          </div>
+        </div>
+      </div>
+      <!-- background-color: #f9f9f9; -->
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">List</div>
+          <div class="panel-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:5%;">ID</th>
+                  <th style="width:30%;">Original Url<hr><br>Final Url</th>
+                  <th style="width:5%;">Site</th>
+                  <th style="width:5%;">AffId<hr><br>Program Id</th>
+                  <th style="width:5%;">MerId<hr><br>CouponId</th>
+                  <th style="width:5%;">status<hr><br>200/same/contain/hostname</th>
+                  <th style="width:5%;">CheckRes<hr><br>[docheck]</th>
+                  <th style="width:8%;">Option</th>
+                </tr>
+              </thead>
+              <{foreach from=$outLogList item=outLog}>
+                <tr>
+                  <td><{$outLog.id}></td>
+                  <td>[O] <a href="<{$outLog.pageUrl}>" target="_blank"><{$outLog.pageUrl}></a><hr><br>[F] <a href="<{$outLog.finalUrl}>" target="_blank"><{$outLog.finalUrl}></a></td>
+                  <td><{$outLog.site}></td>
+                  <td>[A] <{$outLog.affId}><hr><br>[P] <{$outLog.programId}></td>
+                  <td>[M] <{$outLog.merchantid}><hr><br>[C] <{$outLog.couponid}></td>
+                  <td>[2] <{$outLog.is200}> [S] <{$outLog.issame}> [C] <{$outLog.issimilar}> [H] <{$outLog.ishostname}></td>
+                  <td><f><{$outLog.checkres}></f><hr><br>
+                      <{if $outLog.checkres != 'yes'}>
+                      <a href="javascript:void(0);" data-click="check_yes">[YES]</a>
+                      <a href="javascript:void(0);" data-click="check_no">[NO]</a>
+                      <{/if}>
+                  </td>
+                  <td><{if $outLog.merchantid > 0 }>
+                        <{if $outLog.site == 'csus'}>
+                          <a target="_blank" href="http://www.promopro.com/front/merchant.php?mid=<{$outLog.merchantid}>">M-page</a>
+                        <{elseif $outLog.site == 'csuk'}>
+                          <a target="_blank" href="http://www.promopro.co.uk/front/merchant.php?mid=<{$outLog.merchantid}>">M-page</a>
+                        <{elseif $outLog.site == 'csde'}>
+                          <a target="_blank" href="http://www.allecodes.de/front/merchant.php?mid=<{$outLog.merchantid}>">M-page</a>
+                        <{elseif $outLog.site == 'csau'}>
+                          <a target="_blank" href="http://www.ozdiscount.com/front/merchant.php?mid=<{$outLog.merchantid}>">M-page</a>
+                        <{elseif $outLog.site == 'csfr'}>
+                          <a target="_blank" href="http://www.codespromofr.com/front/merchant.php?mid=<{$outLog.merchantid}>">M-page</a>
+                        <{/if}>
+                      <{/if}>
+                    </td>
+                </tr>
+                <tr>
+                  <th>Out Url</th>
+                  <td colspan="7"><a href="javascript:void(0);"><{$outLog.outUrl}></a></td>
+                </tr>
+              <{/foreach}>
+            </table>
+            <{$pageHtml}>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+
+$('table tr').each(function(i,e){
+  if(i > 2 && (i%4 ==0 || (i+1)%4 == 0) ){
+    $(e).css('background-color','#f9f9f9');
+  }
+});
+
+
+$('table a[data-click="check_yes"]').click(function(){
+  var id = $(this).parent().parent().find('td:first').html();
+  var f = $(this).prev().prev().prev();
+  var url = '<{$smarty.const.BASE_URL}>/process.php';
+  var ajaxdata = 'act=check_jump&id='+id+'&res=yes';
+  $.ajax({
+    type:"post",
+    url:"<{$smarty.const.BASE_URL}>/process.php",
+    data:ajaxdata,
+    success: function(req){
+      f.html('yes');
+    }
+  });
+});
+
+$('table a[data-click="check_no"]').click(function(){
+  var id = $(this).parent().parent().find('td:first').html();
+  var f = $(this).prev().prev().prev().prev();
+  var url = '<{$smarty.const.BASE_URL}>/process.php';
+  var ajaxdata = 'act=check_jump&id='+id+'&res=no';
+  $.ajax({
+    type:"post",
+    url:"<{$smarty.const.BASE_URL}>/process.php",
+    data:ajaxdata,
+    success: function(req){
+      f.html('no');
+    }
+  });
+});
+
+
+(function(){
+  $('.tip_site').keyup(function(){//keyup是jquery函数，表示松开键盘
+    var ipt = this;
+    var keywords = $(this).val();
+    var url = '<{$smarty.const.BASE_URL}>/process.php';
+    var ajaxdata = 'act=tip_site&keywords='+keywords;
+
+    if(!keywords.match(/[^\s]{1,}/)){
+      return;
+    }
+
+    $.ajax({
+      type:"post",
+      url:"<{$smarty.const.BASE_URL}>/process.php",
+      data:ajaxdata,
+      success: function(req){
+        var html_tip = '<ul class="dropdown-menu" >';
+        var arr = req.split('|');//split将字符串变成字符串数组
+        for(var i in arr){
+          html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+        }
+        var html_tip = html_tip+'</ul>';
+
+
+        if($(ipt).parent().find('ul')){
+          $(ipt).parent().find('ul').remove();
+        }
+
+        $(ipt).parent().append(html_tip);
+
+        load_tip($(ipt).parent().find('ul'));
+      }
+    });
+
+   
+  });
+
+})();
+
+function load_tip(obj){
+  $(obj).css('display','block');  //jquery的css()函数，相当于display:block
+  $(obj).find('a').click(function(){
+
+    $(obj).prev().val($(this).html());
+    $(obj).remove();
+  });
+}
+
+
+
+</script>
+
+<{include file="b_block_footer.html"}>

@@ -1,0 +1,1003 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div style="margin-top:30px;" class="container">
+  <div style="text-align:center;margin-bottom:30px;"><h1>Account</h1></div>
+
+  <!-- account info -->
+
+  <{if $type eq '1' or $type eq '3'}>
+  <textarea style="display: none" id="checkinfo"><{$info}></textarea>
+  <input type="hidden" id="edittype" value="1">
+  <input type="hidden" id="infonull" value="<{$infonull}>">
+  <div id="panel_account" class="panel panel-default">
+    <div class="panel-heading">Account Details<span style="float:right"><a id="a_edit_account" href="javascript:void(0)" style="display: none;">Edit Detail</a></span></div>
+    <div class="panel-body">
+      <div class="row">
+
+          <input type="hidden" name="act" value="edit_profile_account">
+          <div class="col-lg-6">
+            <dl class="dl-horizontal dt_Name"><dt><font><{$LANG.backend.account.a3}>:</font></dt><dd>
+              <{if $user_profile.Career == 'network'}>
+              <{$user_profile.Name}>
+              <{else}>
+              <div class="form-group">
+                <input type="text" name="pub_name" class="form-control input_Name" readonly="true" id="pub_name" value="<{$user_profile.base.Name}>" placeholder="<{$LANG.backend.account.a26}>">
+              </div>
+              <{/if}>
+            </dd></dl>
+            <dl class="dl-horizontal dt_Email"><dt><font><{$LANG.backend.account.a5}>:</font></dt><dd>
+              <div class="form-group">
+                <input type="text" name="pub_email" class="form-control input_Email" readonly="true" id="pub_email" value="<{$user_profile.base.Email}>" placeholder="<{$LANG.backend.account.a27}>">
+              </div>
+            </dd></dl>
+            <!-- <dl class="dl-horizontal dt_PayPal"><dt><font><{$LANG.backend.account.a7}>:</font></dt><dd>
+              <div class="form-group">
+                <input type="text" name="pub_paypal" class="form-control input_PayPal" readonly="true" id="pub_paypal" value="<{$user_profile.base.PayPal}>" placeholder="<{$LANG.backend.account.a28}>">
+              </div>
+            </dd></dl> -->
+            <dl class="dl-horizontal dt_Phone"><dt><font><{$LANG.backend.account.a9}>:</font></dt><dd>
+              <div class="form-group">
+                <input type="text" name="pub_phone" class="form-control input_Phone" readonly="true" id="pub_phone" value="<{$user_profile.base.Phone}>" placeholder="<{$LANG.backend.account.a29}>">
+              </div>
+            </dd></dl>
+            <dl class="dl-horizontal dt_ZipCode"><dt><font><{$LANG.front.signup.zipcode}>:</font></dt><dd>
+              <div class="form-group">
+                <input type="text" name="pub_phone" class="form-control input_ZipCode" readonly="true" id="ZipCode" value="<{$user_profile.base.ZipCode}>">
+              </div>
+            </dd></dl>
+              <input type="hidden" id="countryid" value="<{$user_profile.base.Country}>">
+            <!-- <dl class="dl-horizontal dt_GeoBreakdown"><dt><font><{$LANG.backend.account.a35}>:<br>Please select top 3</font></dt>
+              <input type="hidden" id="countryOption" value="<{$user_profile.base.GeoBreakdown}>">
+              <dd id="f_phone">
+                <table>
+                        <tr>
+                            <td><font size="3px;">1:</font>&nbsp;</td>
+                            <td>
+                              <select disabled="disabled" name="pub_traffic1" id="pub_traffic1" class="form-control pub_traffic0">
+                                <option value="">--Select--</option>
+                                <{foreach from=$countryOption item=c key=k}>
+                                <option value="<{$k}>"><{$c}></option>
+                                <{/foreach}>
+                              </select>
+                            </td>
+                        </tr>
+                    <tr>
+                      <td><font size="3px;" style="margin-top: 20px;">2:</font>&nbsp;</td>
+                      <td>
+                        <select disabled="disabled" name="pub_traffic2" class="form-control pub_traffic1" style="margin-top: 10px;">
+                          <option value="">--Select--</option>
+                          <{foreach from=$countryOption item=c key=k}>
+                          <option value="<{$k}>"><{$c}></option>
+                          <{/foreach}>
+                        </select>
+                      </td>
+                    </tr>
+                  <tr>
+                    <td><font size="3px;">3:</font>&nbsp;</td>
+                    <td>
+                      <select disabled="disabled" name="pub_traffic3" class="form-control pub_traffic2" style="margin-top: 10px;">
+                        <option value="">--Select--</option>
+                        <{foreach from=$countryOption item=c key=k}>
+                        <option value="<{$k}>"><{$c}></option>
+                        <{/foreach}>
+                      </select>
+                    </td>
+                  </tr>
+                </table>
+              </dd>
+            </dl> -->
+            <dl class="dl-horizontal">
+              <div class="earn_choose dt_StaffNumber">
+                <dt>
+                <p ><font><{$LANG.front.signup.l1}>:</font></p>
+                <input type="hidden" value="<{$user_profile.base.StaffNumber}>" id="StaffNumber">
+                <dd style="height: 22px;"><input disabled="disabled" class="p1" type="radio" name="pub_staffNumber" id="pub_staffNumber" value="1"><a disabled="disabled" style="text-decoration:none;color:black " data-type="radio" data-class="p1" class="clickparent " data-type="r" data-id="pub_staffNumber1" data-type="r" href="javascript:void(0);" style="color: black">&nbsp;<{$LANG.front.signup.l1a}></a></dd>
+                <dd><input class="p1" disabled="disabled" type="radio" name="pub_staffNumber" value="2-10"><a style="text-decoration:none;color:black " data-type="radio" data-class="p1" class="clickparent " data-type="r"  href="javascript:void(0);" style="color: black">&nbsp;2-10</a></dd>
+                <dd><input class="p1" disabled="disabled" type="radio" name="pub_staffNumber" value="11-25"><a style="text-decoration:none;color:black " data-type="radio" data-class="p1" class="clickparent " data-type="r"  href="javascript:void(0);" style="color: black">&nbsp;11-25</a></dd>
+                <dd><input class="p1" disabled="disabled" type="radio" name="pub_staffNumber" value="26+"><a style="text-decoration:none;color:black " data-type="radio" data-class="p1" class="clickparent " data-type="r"  href="javascript:void(0);" style="color: black">&nbsp;26+</a></dd>
+                </dt>
+              </div>
+            </dl>
+            <dl class="dl-horizontal">
+              <div class="earn_choose dt_WaysOfTraffic">
+                <dt>
+                <p><font class="fontways"><{$LANG.front.signup.r3}></font></p>
+                <input type="hidden" value="<{$user_profile.base.WaysOfTraffic}>" id="WaysOfTraffic">
+                <dd style="height: 22px;"><input class="p2" disabled="disabled" type="checkbox" name="pub_waysOfTraffic1" id="pub_waysOfTraffic" value="SEO"><a class="clickparent" style="text-decoration:none;color:black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a15}></a></dd>
+                <dd style="height: 22px;"><input class="p2" disabled="disabled" type="checkbox" name="pub_waysOfTraffic2" value="SEM"><a class="clickparent" style="text-decoration:none;color:black " data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a16}></a></dd>
+                <dd><input class="p2" type="checkbox" disabled="disabled" name="pub_waysOfTraffic3" value="Social Media"><a class="clickparent" style="text-decoration:none;color:black " data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a17}></a></dd>
+                <dd><input class="p2" type="checkbox" disabled="disabled" name="pub_waysOfTraffic4" value="EDM"><a class="clickparent" style="text-decoration:none;color:black " data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a18}></a></dd>
+                <dd><input style="margin-top: 10px;" readonly="readonly" class="p2 form-control" type="text"  placeholder="<{$LANG.front.signup.a8}>" name="pub_otherWaysOfTraffic" id="pub_otherWaysOfTraffic"></dd>
+                </dt>
+              </div>
+            </dl>
+           <dl class="dl-horizontal">
+              <div class="earn_choose dt_ProfitModel">
+                <dt>
+                <p><font class="htmlpro"><{$LANG.front.signup.l3}>(*required)</font></p>
+                <input type="hidden" value="<{$user_profile.base.ProfitModel}>" id="ProfitModel">
+                <dd style="height: 22px;"><input type="checkbox" disabled="disabled" name="pub_profitModel1" value="CPA/CPS" id="pub_profitModel"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a11}></a></dd>
+                <dd style="height: 22px;"><input type="checkbox" disabled="disabled" name="pub_profitModel2" value="CPI" id="pub_profitMode2"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a12}></a></dd>
+                <dd><input type="checkbox" disabled="disabled" name="pub_profitModel3" value="CPM" id="pub_profitMode3"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a13}></a></dd>
+                <dd><input type="checkbox" disabled="disabled" name="pub_profitModel4" value="CPC" id="pub_profitMode4"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a14}></a></dd>
+                </dt>
+              </div>
+            </dl>
+
+          </div>
+          <div class="col-lg-6">
+            <dl class="dl-horizontal dt_Domain"><dt><font><{$LANG.backend.account.a4}>:</font></dt><dd>
+              <div class="form-group">
+                <input type="text" readonly="readonly" name="pub_site" class="form-control input_Domain" id="pub_site" value="<{$user_profile.base.Domain}>" placeholder="http://">
+              </div>
+            </dd></dl>
+            <dl class="dl-horizontal dt_Company"><dt><font><{$LANG.backend.account.a6}>:</font></dt><dd>
+              <div class="form-group">
+                <input type="text" readonly="readonly" name="pub_company" class="form-control input_Company" id="pub_company" value="<{$user_profile.base.Company}>" placeholder="<{$LANG.backend.account.a31}>">
+              </div>
+            </dd></dl>
+            <dl class="dl-horizontal dt_CompanyAddr"><dt><font><{$LANG.front.signup.addr1}>:</font></dt><dd>
+              <div class="form-group">
+                <textarea readonly="readonly" name="pub_companyaddr" class="form-control input_CompanyAddr" id="pub_companyaddr" id="pub_address1"  placeholder="<{$LANG.backend.account.a32}>" style="border: 1px solid #60738d;color: black;width: 100%;"><{$user_profile.base.CompanyAddr}></textarea>
+              </div>
+            </dd></dl>
+            <dl class="dl-horizontal dt_Country"><dt><font><{$LANG.backend.account.a10}>:</font></dt><dd>
+              <select disabled="disabled"  name="pub_country" class="form-control" id="pub_country">
+                <option value="">--Select--</option>
+                <{foreach from=$countryOption item=c key=k}>
+                <option value="<{$k}>"><{$c}></option>
+                <{/foreach}>
+              </select>
+            </dd>
+            </dl>
+            <!-- <dl class="dl-horizontal dt_SiteType"><dt><font><{$LANG.backend.account.a33}>:<br>Please select top 3</font></dt>
+              <dd id="siteop">
+                <input type="hidden" id="pub_contentCategoryid" value="<{$user_profile.base.SiteType}>">
+                <table>
+                  <tr>
+                    <td><font size="3px;">1:</font>&nbsp;</td>
+                    <td>
+                      <select disabled="disabled"  name="pub_contentCategory1" class="form-control pub_contentCategory0">
+                        <option value="">--Select--</option>
+                        <{foreach from=$categoryiesOfContent key=k item=c}>
+                        <{assign var='num' value=$k|substr:0:1}>
+                        <optgroup label="<{$k}>">
+                          <{foreach from=$c key=subk item=subc}>
+                          <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+                          <{/foreach}>
+                          <{/foreach}>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><font size="3px;" style="margin-top: 20px;">2:</font>&nbsp;</td>
+                    <td>
+                      <select disabled="disabled"  name="pub_contentCategory2" class="form-control pub_contentCategory1" style="margin-top:10px;">
+                        <option value="">--Select--</option>
+                        <{foreach from=$categoryiesOfContent key=k item=c}>
+                        <{assign var='num' value=$k|substr:0:1}>
+                        <optgroup label="<{$k}>">
+                          <{foreach from=$c key=subk item=subc}>
+                          <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+                          <{/foreach}>
+                          <{/foreach}>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><font size="3px;">3:</font>&nbsp;</td>
+                    <td>
+                      <select disabled="disabled"  name="pub_contentCategory3" class="form-control pub_contentCategory2"  style="margin-top:10px;">
+                        <option value="">--Select--</option>
+                        <{foreach from=$categoryiesOfContent key=k item=c}>
+                        <{assign var='num' value=$k|substr:0:1}>
+                        <optgroup label="<{$k}>">
+                          <{foreach from=$c key=subk item=subc}>
+                          <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+                          <{/foreach}>
+                          <{/foreach}>
+                      </select>
+                    </td>
+                  </tr>
+                </table>
+              </dd>
+              <dd STYLE="margin-top: 10px;">
+                <input readonly="readonly" style="margin-left: 15px;width: 350px;" type="text" class="form-control" name="pub_otherTypeOfContent" id="pub_contentCategory4" placeholder="<{$LANG.front.signup.a9}>">
+              </dd>
+            </dl> -->
+            <dl class="dl-horizontal">
+              <div class="earn_choose dt_ContentProduction">
+                <dt>
+                <p><font><{$LANG.front.signup.r4}>:</font></p>
+                <input type="hidden" value="<{$user_profile.base.ContentProduction}>" id="ContentProduction">
+                <dd style="height: 22px;"><input type="radio" disabled="disabled" name="pub_contentProduction" value="in house" id="pub_contentProduction"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p6" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.r4a}></a></dd>
+                <dd><input type="radio" disabled="disabled" name="pub_contentProduction" value="user generated"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p6" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.r4b}></a></dd>
+                <dd><input type="radio" disabled="disabled" name="pub_contentProduction" value="both"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p6" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.r4c}></a></dd>
+                </dt>
+              </div>
+            </dl>
+            <dl class="dl-horizontal">
+              <div class="earn_choose dt_CurrentNetwork">
+                <dt>
+                <p><font class="htmlcurr"><{$LANG.front.signup.r5}></font></p>
+                <dd><input readonly="readonly" type="text" class="form-control" value="<{$user_profile.base.CurrentNetwork}>" name="pub_currentNetwork" id="pub_currentNetwork" placeholder="<{$LANG.front.signup.a10}>"></dd>
+                </dt>
+              </div>
+            </dl>
+            <dl class="dl-horizontal dt_CategoryId">
+              <dt><font><{$LANG.backend.account.a34}>:</font></dt>
+              <input type="hidden" id="CategoryId" value="<{$user_profile.base.CategoryId}>">
+              <div style="height: 300px;margin-top:15px;overflow-y:auto;overflow-x: hidden" id="setwidht">
+                <{foreach item=cate key=k from=$category}>
+                <div style="width: 100%;float: left;margin-top: 8px;margin-left: 20px;">
+                  <input  class="cate_<{$k}> cate" data-val="<{$k}>" type="checkbox" class="search_cate" style="margin: 0;" />
+                  <label for="cate_<{$k}>" style="margin: 0;font-weight: 300;font-size: 15px;"><{$cate}></label>
+                </div>
+                <{/foreach}>
+                </dt>
+              </div>
+            </dl>
+          </div>
+          <div class="col-lg-12" style="text-align:center;">
+            <{if $type eq '3'}>
+            <{else}>
+            <button type="button" class="btn btn-success" onclick="edit_profile_accountinfo()"> <{$LANG.backend.account.a20}> </button>
+            <{/if}>
+            <a href="b_account.php"><button type="button" class="btn btn-default"> <{$LANG.backend.account.a21}> </button></a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <{else}>
+  <input type="hidden" id="edittype" value="2">
+  <textarea style="display: none" id="checkarray"><{$checkarray}></textarea>
+  <div id="panel_account" class="panel panel-default">
+    <div class="panel-heading">Account Details<span style="float:right"><a id="a_edit_account" href="javascript:void(0)" style="display: none;">Edit Detail</a></span></div>
+    <div class="panel-body">
+      <div class="row">
+
+        <input type="hidden" name="act" value="edit_profile_account">
+        <div class="col-lg-6">
+          <dl class="dl-horizontal dt_Name"><dt><font><{$LANG.backend.account.a3}>:</font></dt><dd>
+            <{if $user_profile.Career == 'network'}>
+            <{$user_profile.Name}>
+            <{else}>
+            <div class="form-group">
+              <input type="text" name="pub_name" class="form-control"  id="pub_name" value="<{$user_profile.base.Name}>" placeholder="<{$LANG.backend.account.a26}>">
+            </div>
+            <{/if}>
+          </dd></dl>
+          <dl class="dl-horizontal dt_Email"><dt><font><{$LANG.backend.account.a5}>:</font></dt><dd>
+            <div class="form-group">
+              <input type="text" name="pub_email"  class="form-control"  id="pub_email" value="<{$user_profile.base.Email}>" placeholder="<{$LANG.backend.account.a27}>">
+            </div>
+          </dd></dl>
+          <!-- <dl class="dl-horizontal dt_PayPal"><dt><font><{$LANG.backend.account.a7}>:</font></dt><dd>
+            <div class="form-group">
+              <input type="text" name="pub_paypal" class="form-control"  id="pub_paypal" value="<{$user_profile.base.PayPal}>" placeholder="<{$LANG.backend.account.a28}>">
+            </div>
+          </dd></dl> -->
+          <dl class="dl-horizontal dt_Phone"><dt><font><{$LANG.backend.account.a9}>:</font></dt><dd>
+            <div class="form-group">
+              <input type="text" name="pub_phone" class="form-control"  id="pub_phone" value="<{$user_profile.base.Phone}>" placeholder="<{$LANG.backend.account.a29}>">
+            </div>
+          </dd></dl>
+
+          <dl class="dl-horizontal dt_ZipCode"><dt><font><{$LANG.front.signup.zipcode}>:</font></dt><dd>
+            <div class="form-group">
+              <input type="text" name="pub_phone" class="form-control input_ZipCode"  id="ZipCode" value="<{$user_profile.base.ZipCode}>">
+            </div>
+          </dd></dl>
+            <input type="hidden" id="countryid" value="<{$user_profile.base.Country}>">
+          <!-- <dl class="dl-horizontal dt_GeoBreakdown"><dt><font><{$LANG.backend.account.a35}>:<br>Please select top 3</font></dt>
+            <input type="hidden" id="countryOption" value="<{$user_profile.base.GeoBreakdown}>">
+            <dd id="f_phone">
+              <table>
+                <tr>
+                  <td><font size="3px;">1:</font>&nbsp;</td>
+                  <td>
+                    <select  name="pub_traffic1" id="pub_traffic1" class="form-control pub_traffic0">
+                      <option value="">--Select--</option>
+                      <{foreach from=$countryOption item=c key=k}>
+                      <option value="<{$k}>"><{$c}></option>
+                      <{/foreach}>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><font size="3px;" style="margin-top: 20px;">2:</font>&nbsp;</td>
+                  <td>
+                    <select  name="pub_traffic2" class="form-control pub_traffic1" style="margin-top: 10px;">
+                      <option value="">--Select--</option>
+                      <{foreach from=$countryOption item=c key=k}>
+                      <option value="<{$k}>"><{$c}></option>
+                      <{/foreach}>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><font size="3px;">3:</font>&nbsp;</td>
+                  <td>
+                    <select  name="pub_traffic3" class="form-control pub_traffic2" style="margin-top: 10px;">
+                      <option value="">--Select--</option>
+                      <{foreach from=$countryOption item=c key=k}>
+                      <option value="<{$k}>"><{$c}></option>
+                      <{/foreach}>
+                    </select>
+                  </td>
+                </tr>
+              </table>
+            </dd>
+          </dl> -->
+          <dl class="dl-horizontal">
+            <div class="earn_choose dt_StaffNumber">
+              <dt>
+              <p><font><{$LANG.front.signup.l1}></font>:</p>
+              <input type="hidden" value="<{$user_profile.base.StaffNumber}>" id="StaffNumber">
+              <dd style="height: 22px;"><input  class="p1" type="radio" name="pub_staffNumber" id="pub_staffNumber" value="1"><a  style="text-decoration:none;color:black " data-type="radio" data-class="p1" class="clickparent1 " data-type="r" data-id="pub_staffNumber1" data-type="r" href="javascript:void(0);" style="color: black">&nbsp;<{$LANG.front.signup.l1a}></a></dd>
+              <dd><input class="p1"  type="radio" name="pub_staffNumber" value="2-10"><a style="text-decoration:none;color:black " data-type="radio" data-class="p1" class="clickparent1 " data-type="r"  href="javascript:void(0);" style="color: black">&nbsp;2-10</a></dd>
+              <dd><input class="p1"  type="radio" name="pub_staffNumber" value="11-25"><a style="text-decoration:none;color:black " data-type="radio" data-class="p1" class="clickparent1 " data-type="r"  href="javascript:void(0);" style="color: black">&nbsp;11-25</a></dd>
+              <dd><input class="p1"  type="radio" name="pub_staffNumber" value="26+"><a style="text-decoration:none;color:black " data-type="radio" data-class="p1" class="clickparent1 " data-type="r"  href="javascript:void(0);" style="color: black">&nbsp;26+</a></dd>
+              </dt>
+            </div>
+          </dl>
+          <dl class="dl-horizontal">
+            <div class="earn_choose dt_WaysOfTraffic">
+              <dt>
+              <p><font class="fontways"><{$LANG.front.signup.r3}></font></p>
+              <input type="hidden" value="<{$user_profile.base.WaysOfTraffic}>" id="WaysOfTraffic">
+              <dd style="height: 22px;"><input class="p2"  type="checkbox" name="pub_waysOfTraffic1" id="pub_waysOfTraffic" value="SEO"><a class="clickparent1" style="text-decoration:none;color:black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a15}></a></dd>
+              <dd style="height: 22px;"><input class="p2"  type="checkbox" name="pub_waysOfTraffic2" value="SEM"><a class="clickparent1" style="text-decoration:none;color:black " data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a16}></a></dd>
+              <dd><input class="p2" type="checkbox"  name="pub_waysOfTraffic3" value="Social Media"><a class="clickparent1" style="text-decoration:none;color:black " data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a17}></a></dd>
+              <dd><input class="p2" type="checkbox"  name="pub_waysOfTraffic4" value="EDM"><a class="clickparent1" style="text-decoration:none;color:black " data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a18}></a></dd>
+              <dd><input style="margin-top: 10px;"  class="p2 form-control" type="text"  placeholder="<{$LANG.front.signup.a8}>" name="pub_otherWaysOfTraffic" id="pub_otherWaysOfTraffic"></dd>
+              </dt>
+            </div>
+          </dl>
+          <dl class="dl-horizontal">
+            <div class="earn_choose dt_ProfitModel">
+              <dt>
+              <p><font class="htmlpro"><{$LANG.front.signup.l3}> (*required)</font></p>
+              <input type="hidden" value="<{$user_profile.base.ProfitModel}>" id="ProfitModel">
+              <dd style="height: 22px;"><input type="checkbox"  name="pub_profitModel1" value="CPA/CPS" id="pub_profitModel"><a class="clickparent1" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a11}></a></dd>
+              <dd style="height: 22px;"><input type="checkbox"  name="pub_profitModel2" value="CPI" id="pub_profitMode2"><a class="clickparent1" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a12}></a></dd>
+              <dd><input type="checkbox"  name="pub_profitModel3" value="CPM" id="pub_profitMode3"><a class="clickparent1" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a13}></a></dd>
+              <dd><input type="checkbox"  name="pub_profitModel4" value="CPC" id="pub_profitMode4"><a class="clickparent1" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.a14}></a></dd>
+              </dt>
+            </div>
+          </dl>
+
+        </div>
+        <div class="col-lg-6">
+          <dl class="dl-horizontal dt_Domain"><dt><font><{$LANG.backend.account.a4}>:<font></dt><dd>
+            <div class="form-group">
+              <input type="text"  name="pub_site" class="form-control" id="pub_site" value="<{$user_profile.base.Domain}>" placeholder="http://">
+            </div>
+          </dd></dl>
+          <dl class="dl-horizontal dt_Company"><dt><font><{$LANG.backend.account.a6}>:</font></dt><dd>
+            <div class="form-group">
+              <input type="text"  name="pub_company" class="form-control" id="pub_company" value="<{$user_profile.base.Company}>" placeholder="<{$LANG.backend.account.a31}>">
+            </div>
+          </dd></dl>
+          <dl class="dl-horizontal dt_CompanyAddr"><dt><font><{$LANG.front.signup.addr1}>:</font></dt><dd>
+            <div class="form-group">
+              <textarea  name="pub_companyaddr" class="form-control input_CompanyAddr" id="pub_companyaddr" id="pub_address1"  placeholder="<{$LANG.backend.account.a32}>" style="border: 1px solid #60738d;color: black;width: 100%;"><{$user_profile.base.CompanyAddr}></textarea>
+            </div>
+          </dd></dl>
+          <dl class="dl-horizontal dt_Country"><dt><font><{$LANG.backend.account.a10}>:</font></dt><dd>
+            <select   name="pub_country" class="form-control" id="pub_country">
+              <option value="">--Select--</option>
+              <{foreach from=$countryOption item=c key=k}>
+              <option value="<{$k}>"><{$c}></option>
+              <{/foreach}>
+            </select>
+          </dd>
+          </dl>
+          <!-- <dl class="dl-horizontal dt_SiteType"><font><dt><{$LANG.backend.account.a33}>:<br>Please select top 3</font></dt>
+            <dd id="siteop">
+              <input type="hidden" id="pub_contentCategoryid" value="<{$user_profile.base.SiteType}>">
+              <table>
+                <tr>
+                  <td><font size="3px;">1:</font>&nbsp;</td>
+                  <td>
+                    <select   name="pub_contentCategory1" class="form-control pub_contentCategory0">
+                      <option value="">--Select--</option>
+                      <{foreach from=$categoryiesOfContent key=k item=c}>
+                      <{assign var='num' value=$k|substr:0:1}>
+                      <optgroup label="<{$k}>">
+                        <{foreach from=$c key=subk item=subc}>
+                        <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+                        <{/foreach}>
+                        <{/foreach}>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><font size="3px;" style="margin-top: 20px;">2:</font>&nbsp;</td>
+                  <td>
+                    <select   name="pub_contentCategory2" class="form-control pub_contentCategory1" style="margin-top:10px;">
+                      <option value="">--Select--</option>
+                      <{foreach from=$categoryiesOfContent key=k item=c}>
+                      <{assign var='num' value=$k|substr:0:1}>
+                      <optgroup label="<{$k}>">
+                        <{foreach from=$c key=subk item=subc}>
+                        <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+                        <{/foreach}>
+                        <{/foreach}>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><font size="3px;">3:</font>&nbsp;</td>
+                  <td>
+                    <select   name="pub_contentCategory3" class="form-control pub_contentCategory2"  style="margin-top:10px;">
+                      <option value="">--Select--</option>
+                      <{foreach from=$categoryiesOfContent key=k item=c}>
+                      <{assign var='num' value=$k|substr:0:1}>
+                      <optgroup label="<{$k}>">
+                        <{foreach from=$c key=subk item=subc}>
+                        <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+                        <{/foreach}>
+                        <{/foreach}>
+                    </select>
+                  </td>
+                </tr>
+              </table>
+            </dd>
+            <dd STYLE="margin-top: 10px;">
+              <input  style="margin-left: 15px;width: 350px;" type="text" class="form-control" name="pub_otherTypeOfContent" id="pub_contentCategory4" placeholder="<{$LANG.front.signup.a9}>">
+            </dd>
+          </dl> -->
+          <dl class="dl-horizontal">
+            <div class="earn_choose dt_ContentProduction">
+              <dt>
+              <p><font><{$LANG.front.signup.r4}>:</font></p>
+              <input type="hidden" value="<{$user_profile.base.ContentProduction}>" id="ContentProduction">
+              <dd style="height: 22px;"><input type="radio"  name="pub_contentProduction" value="in house" id="pub_contentProduction"><a class="clickparent1" style="text-decoration:none;color: black" data-type="checkbox" data-class="p6" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.r4a}></a></dd>
+              <dd><input type="radio"  name="pub_contentProduction" value="user generated"><a class="clickparent1" style="text-decoration:none;color: black" data-type="checkbox" data-class="p6" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.r4b}></a></dd>
+              <dd><input type="radio"  name="pub_contentProduction" value="both"><a class="clickparent1" style="text-decoration:none;color: black" data-type="checkbox" data-class="p6" href="javascript:void(0)">&nbsp;&nbsp;<{$LANG.front.signup.r4c}></a></dd>
+              </dt>
+            </div>
+          </dl>
+
+          <dl class="dl-horizontal">
+            <div class="earn_choose dt_CurrentNetwork">
+              <dt>
+              <p><font class="htmlcurr"><{$LANG.front.signup.r5}></font></p>
+              <dd><input  type="text" class="form-control" value="<{$user_profile.base.CurrentNetwork}>" name="pub_currentNetwork" id="pub_currentNetwork" placeholder="<{$LANG.front.signup.a10}>"></dd>
+              </dt>
+            </div>
+          </dl>
+          <dl class="dl-horizontal dt_CategoryId">
+            <input type="hidden" id="CategoryId" value="<{$user_profile.base.CategoryId}>">
+            <dt><font><{$LANG.backend.account.a34}>:</font></dt>
+            <div style="height: 300px;margin-top:15px;overflow-y:auto;overflow-x: hidden" id="setwidht" >
+              <{foreach item=cate key=k from=$category}>
+              <div style="width: 100%;float: left;margin-top: 8px;margin-left: 20px;">
+                <input id="cate_<{$k}>" class="cate_<{$k}> cate" data-val="<{$k}>" type="checkbox" class="search_cate" style="margin: 0;" />
+                <label for="cate_<{$k}>" style="margin: 0;font-weight: 300;font-size: 15px;"><{$cate}></label>
+              </div>
+              <{/foreach}>
+            </div>
+          </dl>
+
+        </div>
+        <div class="col-lg-12" style="text-align:center;">
+          <button type="button" class="btn btn-success" onclick="edit_profile_accountinfo()"> <{$LANG.backend.account.a20}> </button>
+          <a href="b_account.php"><button type="button" class="btn btn-default"> <{$LANG.backend.account.a21}> </button></a>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <input type="hidden" value="<{$checktype}>" id="checktype">
+  <{/if}>
+</div>
+</div>
+</div>
+<div class="modal fade in " id="dialog-site" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="dialog-site-title"><{$LANG.backend.account.a14}></h2>
+      </div>
+      <div class="modal-body">
+
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $(".cate").bind("click",function(){
+    var ck = 0;
+    $('.cate').each(function(i){
+      if($('.cate').eq(i).is(':checked')){
+        ck++;
+      }
+      if(ck>3){
+        alert('Only select 3');
+        $('.cate').eq(i).prop('checked',false);
+        return false;
+      }
+    });
+  });
+  //html换行
+  var myReg = /^[\u4e00-\u9fa5]+$/;
+  var htmlways = $('.fontways').html();
+  if(!myReg.test(htmlways)){
+    var waysarr =htmlways.split('traffic');
+    $('.fontways').html(waysarr[0]+'</br>traffic'+waysarr[1]+':');
+  }
+  var htmlcurr = $('.htmlcurr').html();
+  if(!myReg.test(htmlcurr)){
+    var currarr =htmlcurr.split('currently');
+    $('.htmlcurr').html(currarr[0]+'</br>currently'+currarr[1]+':');
+  }
+  var htmlpro = $('.htmlpro').html();
+  if(!myReg.test(htmlpro)){
+    var proarr =htmlpro.split('Model');
+    $('.htmlpro').html(proarr[0]+'</br> Model (Multi-choice):');
+  }
+ if($('#edittype').val() == 1){
+   var updateid = 0;
+   if($('#infonull').val() != ''){
+     var val = $('#infonull').val();
+     var nval = val.split(',');
+     for(var i = 0;i<nval.length;i++){
+       if(nval[i] == 'ID'){
+         var updateid = 1;
+       }
+       var nclass = '.dt_'+nval[i]+' dt';
+       var ntype = '.dt_'+nval[i]+' input';
+       var ntype2 = '.dt_'+nval[i]+' select';
+       var ntype3 = '.dt_'+nval[i]+' textarea';
+       var na = '.dt_'+nval[i]+' a';
+       var oldval = $(nclass).html();
+       $(nclass).html('<font color="red">'+oldval+'</font>');
+       $(ntype).removeAttr('disabled');
+       $(ntype2).removeAttr('disabled');
+       $(ntype3).removeAttr('readonly');
+       $(ntype).removeAttr('readonly');
+       $(na).addClass('clickparent1');
+     }
+     $('#informationdel').css('display','block');
+   }
+   $(document).keyup(function(e){
+     var key =  e.which;
+     if(key == 27){
+       $('#informationdel').css('display','none');
+     }
+   });
+ }
+  /* $('#pub_paypal').bind('blur',function(){
+    var text=$(this).val();
+    if(!text.match(/[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/)){
+      $(this).val('');
+      $('.dt_PayPal dt font').css('color','red');
+      if($('.dt_PayPal div span').length <= 0){
+        $('.dt_PayPal div').append('<span style="margin-top: 10px;"><font color="red">Please enter the correct format Such as 123456@a.com</font></span>')
+      }
+    }else{
+      $('.dt_PayPal dt font').css('color','#333333');
+      $('.dt_PayPal div span').remove();
+    }
+  }) */
+  $(' #pub_email').bind('blur',function(){
+    var text=$(this).val();
+    if(!text.match(/[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/)){
+      $(this).val('');
+      $('.dt_Email dt font').css('color','red');
+      if($('.dt_Email div span').length <= 0){
+        $('.dt_Email div').append('<span style="margin-top: 10px;"><font color="red">Please enter the correct format Such as 123456@a.com</font></span>')
+      }
+    }else{
+      $('.dt_Email dt font').css('color','#333333');
+      $('.dt_Email div span').remove();
+    }
+  })
+  //URL验证
+  $('#pub_site').bind('blur',function(){
+    var text=$(this).val();
+    var reg = /^https?:\/\/[a-zA-Z0-9]+\.[a-zA-Z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/;
+    if(!reg.test(text)){
+      $(this).val('');
+      $('.dt_Domain dt font').css('color','red');
+      if($('.dt_Domain div span').length <= 0){
+        $('.dt_Domain div').append('<span style="margin-top: 10px;"><font color="red">Please enter the correct format Such as http://www.brandreward.com</font></span>')
+      }
+    }else{
+      $('.dt_Domain dt font').css('color','#333333');
+      $('.dt_Domain div span').remove();
+    }
+  })
+
+  var coption = $("#pub_country option");
+  var id = $("#countryid").val();
+  //状态选中
+  for (var i = 0; i <coption.length; i++) {
+    if (coption[i].value == id) {
+      coption[i].selected=true;
+    }
+  }
+  
+  /* var id = $("#countryOption").val();
+  var fval = id.split('+');
+  for(var i = 0;i<fval.length;i++){
+    var newclass = '.pub_traffic'+i+' option';
+    var nval = fval[i];
+    $(newclass).each(function(){
+      if($(this).val() == nval){
+        $(this).attr("selected",true);
+      }
+    });
+  } */
+
+  var cateid = $("#CategoryId").val();
+  var cateval = cateid.split(',');
+  for(var i = 0;i<cateval.length;i++){
+    $('.cate_'+cateval[i]).prop('checked',true);
+  }
+  var id = $("#StaffNumber").val();
+  $('.dt_StaffNumber input').each(function(i){
+    if($('.dt_StaffNumber input').eq(i).val() == id){
+      $('.dt_StaffNumber input').eq(i).prop('checked',true);
+      return true;
+    }
+  });
+  var cval = $('#ProfitModel').val();
+  var arr = cval.split('+');
+  $(arr).each(function(i){
+    $('.dt_ProfitModel input').each(function(k){
+      if($('.dt_ProfitModel input').eq(k).val() == arr[i]){
+        $('.dt_ProfitModel input').eq(k).prop('checked',true);
+      }
+    });
+  });
+  
+  var cval = $('#WaysOfTraffic').val();
+  var arr = cval.split('+');
+  $(arr).each(function(i){
+    $('.dt_WaysOfTraffic input').each(function(k){
+      if($('.dt_WaysOfTraffic input').eq(k).val() == arr[i]){
+        $('.dt_WaysOfTraffic input').eq(k).prop('checked',true);
+      }
+    });
+  });
+  var type = arr.pop();
+    if($('.dt_WaysOfTraffic input').eq(1).val() != type && $('.dt_WaysOfTraffic input').eq(2).val() != type && $('.dt_WaysOfTraffic input').eq(3).val() != type && $('.dt_WaysOfTraffic input').eq(4).val() != type) {
+      $('#pub_otherWaysOfTraffic').val(type);
+    }
+  /* var pid = $("#pub_contentCategoryid").val();
+  var pval = pid.split('+');
+  for(var i = 0;i<pval.length;i++){
+    var newclass = '.pub_contentCategory'+i+' option';
+    var npval = pval[i];
+    $(newclass).each(function(){
+      if($(this).val() == npval){
+        $(this).attr("selected",true);
+      }
+    });
+  }
+ var type = pval.pop();
+   if($('.dt_SiteType select').eq(0).val() != type && $('.dt_SiteType select').eq(1).val() != type && $('.dt_SiteType select').eq(2).val() != type) {
+     $('#pub_contentCategory4').val(type);
+   } */
+  var id = $("#ContentProduction").val();
+  $('.dt_ContentProduction input').each(function(i){
+    if($('.dt_ContentProduction input').eq(i).val() == id){
+      $('.dt_ContentProduction input').eq(i).prop('checked',true);
+    }
+  });
+  //修改申请修改
+  function edit_profile_accountinfo(){
+      var type = $('#edittype').val();
+
+      var gid = '';
+      $(".cate").each(function(i){
+
+          if($(this).is(':checked')){
+              gid+=','+$(this).data('val');
+          }
+      });
+      /* var geoval = '';
+      $("#f_phone option").each(function(i){
+        if($(this).is(":selected")){
+          if($(this).val() != ''){
+           geoval+= '+'+$(this).val();
+          }
+        }
+      }); */
+
+    /* var siteval= '';
+    $("#siteop option").each(function(i){
+      if($(this).is(":selected")){
+        if($(this).val() != ''){
+          siteval+= '+'+$(this).val();
+        }
+      }
+    });
+    if($('#pub_contentCategory4').val() != ''){
+
+      siteval+='+'+$.trim($('#pub_contentCategory4').val());
+    } */
+    var WaysOfTraffic = ''
+    $(".dt_WaysOfTraffic input").each(function(i){
+      if($(this).is(':checked')){
+        WaysOfTraffic+='+'+$(this).val();
+      }
+    });
+    if($('#pub_otherWaysOfTraffic').val() != ''){
+      WaysOfTraffic+='+'+$.trim($('#pub_otherWaysOfTraffic').val());
+    }
+    var ProfitModel = ''
+    $(".dt_ProfitModel input").each(function(i){
+      if($(this).is(':checked')){
+        ProfitModel+='+'+$(this).val();
+      }
+    });
+    var checktype = $('#checktype').val();
+    var pubname = $('#pub_name').val();
+    var pub_email = $('#pub_email').val();
+    var pub_company = $('#pub_company').val();
+    var pub_site = $('#pub_site').val();
+    //var pub_paypal = $('#pub_paypal').val();
+    var pub_phone = $('#pub_phone').val();
+    var pub_companyaddr = $('#pub_companyaddr').val();
+    var pub_country = $('#pub_country').val();
+    var pub_staffNumber =  $('input:radio[name="pub_staffNumber"]:checked').val();
+    var pub_contentProduction =  $('input:radio[name="pub_contentProduction"]:checked').val();
+    var CurrentNetwork = $('#pub_currentNetwork').val();
+    var zipcode = $('#ZipCode').val();
+    if(type == 1){
+      var data = {
+        'act':'edit_profile_account',
+        'CategoryId':gid.substr(1,gid.length),
+     //   'SiteType':siteval.substr(1,siteval.length),
+     //   'GeoBreakdown':geoval.substr(1,geoval.length),
+        'StaffNumber':pub_staffNumber,
+        'ProfitModel':ProfitModel.substr(1,ProfitModel.length),
+        'WaysOfTraffic':WaysOfTraffic.substr(1,WaysOfTraffic.length),
+        'ContentProduction':pub_contentProduction,
+        'CurrentNetwork':CurrentNetwork,
+        'updateid':updateid,
+        'data':{ 'pubname':pubname,
+          'pub_email':pub_email,
+          'pub_company':pub_company,
+          'pub_site':pub_site,
+          'zipcode':zipcode,
+     //     'pub_paypal':pub_paypal,
+          'pub_phone':pub_phone,
+          'pub_companyaddr':pub_companyaddr,
+          'pub_country':pub_country,
+        }
+      }
+    }else{
+        var checkarray = $('#checkarray').val();
+        var data = {
+          'act':'apply_profile_account',
+          'checktype':checktype,
+          'checkarray':checkarray,
+          'check':{
+            'info': {
+              'Name': pubname,
+              'Email': pub_email,
+              'Company': pub_company,
+              'Domain': pub_site,
+    //          'PayPal': pub_paypal,
+              'Phone': pub_phone,
+              'ZipCode':zipcode,
+              'CompanyAddr': pub_companyaddr,
+              'Country': pub_country,
+            },
+            'detail':{
+              'CategoryId':gid.substr(1,gid.length),
+    //          'SiteType':siteval.substr(1,siteval.length),
+    //          'GeoBreakdown':geoval.substr(1,geoval.length),
+              'StaffNumber':pub_staffNumber,
+              'ProfitModel':ProfitModel.substr(1,ProfitModel.length),
+              'WaysOfTraffic':WaysOfTraffic.substr(1,WaysOfTraffic.length),
+              'ContentProduction':pub_contentProduction,
+              'CurrentNetwork':CurrentNetwork
+            }
+          }
+        }
+    }
+    var checkdata = {
+      'CategoryId':gid.substr(1,gid.length),
+   //   'SiteType':siteval.substr(1,siteval.length),
+   //   'GeoBreakdown':geoval.substr(1,geoval.length),
+      'StaffNumber':pub_staffNumber,
+      'ProfitModel':ProfitModel.substr(1,ProfitModel.length),
+      'WaysOfTraffic':WaysOfTraffic.substr(1,WaysOfTraffic.length),
+      'ContentProduction':pub_contentProduction,
+      'CurrentNetwork':CurrentNetwork,
+      'Name':pubname,
+      'Email':pub_email,
+      'ZipCode':zipcode,
+      'Company':pub_company,
+      'Domain':pub_site,
+  //    'PayPal':pub_paypal,
+      'Phone':pub_phone,
+      'CompanyAddr':pub_companyaddr,
+      'Country':pub_country,
+    }
+    var check = 0;
+    $.each(checkdata, function(i, item) {
+      if(item == '' || typeof(item) == 'undefined'){
+        check = 1;
+        $('.dt_'+i+' dt font').css('color','red');
+      }else{
+        $('.dt_'+i+' dt font').css('color','#333333');
+        $('.dt_'+i+' div span').remove();
+      }
+    });
+    if(check == 1){
+      alert('Something seems to be missing, please review your information.');
+      return false;
+    }
+     $.ajax({
+          type:"post",
+          url:CON_BASE_URL+"/process.php",
+          data:data,
+          async:false,
+          success: function(res){
+            if(res == 1){
+              alert('Your details have been successfully saved!');
+              location.href=CON_BASE_URL+'/b_account.php';
+            }else if(res == 0){
+              alert('Please fill in the information you want to have modified');
+            }else if(res == 11){
+              alert('Success');
+              location.href=CON_BASE_URL+'/b_account.php';
+            }
+            else{
+              alert('Error');
+            }
+          }
+    });
+  }
+
+
+
+  $('#dialog-password form').submit(function(){
+    return change_pwd();
+  });
+
+  $('#a_edit_account').click(function(){
+    show_profile_account(1);
+  });
+
+  $('#a_new_site').click(function(){
+    show_profile_site(0,'edit');
+  });
+</script>
+<{if $type eq '3'}>
+<script>
+  var info = $('#checkinfo').val();
+  var val = jQuery.parseJSON(info);
+  if(typeof(val['info']) != 'undefined'){
+    $.each(val['info'], function(i, item) {
+      if(i == 'Country'){
+        var coption = $("#pub_country option");
+        for (var i = 0; i <coption.length; i++) {
+          if (coption[i].value == item) {
+            coption[i].selected=true;
+          }
+        }
+        $('.dt_Country dt font').css('color','red');
+      }else{
+        $('.input_'+i).val(item);
+
+        $('.dt_'+i+' dt font').css('color','red');
+      }
+    });
+  }
+  if(typeof(val['detail']) != 'undefined'){
+    $.each(val['detail'], function(i, item) {
+      var name = i;
+      if(i == 'CategoryId'){
+        var arr = item.split(',');
+        for(var i = 0;i<arr.length;i++){
+          $('.cate_'+arr[i]).prop('checked',true);
+        }
+        $('.dt_'+name+' dt font').css('color','red');
+      }
+      else if(i == 'StaffNumber' || i == 'ContentProduction'){
+        $('.dt_'+name+' input').prop('checked',false);
+        $('.dt_'+name+' input').each(function(i){
+          if($('.dt_'+name+' input').eq(i).val() == item){
+            $('.dt_'+name+' input').eq(i).prop('checked',true);
+          }
+        });
+        $('.dt_'+name+' dt font').css('color','red');
+      }
+      /* else if(i == 'SiteType' || i == 'GeoBreakdown'){
+        if(i == 'GeoBreakdown'){
+          $(".dt_GeoBreakdown option").removeAttr("selected");
+          var fval = item.split('+');
+          for(var i = 0;i<fval.length;i++){
+            var newclass = '.pub_traffic'+i+' option';
+            var nval = fval[i];
+            $(newclass).each(function(){
+              if($(this).val() == nval){
+                $(this).prop("selected",true);
+              }
+            });
+          }
+        }else{
+          var fval = item.split('+');
+          $(".dt_SiteType option").removeAttr("selected");
+          for(var i = 0;i<fval.length;i++){
+            var newclass = '.pub_contentCategory'+i+' option';
+            var nval = fval[i];
+            $(newclass).each(function(){
+              if($(this).val() == nval){
+                $(this).prop("selected",true);
+              }
+            });
+          }
+          var type = fval.pop();
+          if($('.dt_SiteType select').eq(0).val() != type && $('.dt_SiteType select').eq(1).val() != type && $('.dt_SiteType select').eq(2).val() != type) {
+            $('#pub_contentCategory4').val(type);
+          }
+        }
+//        $('.dt_'+name+' input').each(function(i){
+//          if($('.dt_'+name+' input').eq(i).val() == item){
+//            $('.dt_'+name+' input').eq(i).prop('checked',true);
+//          }
+//        });
+        $('.dt_'+name+' dt font').css('color','red');
+      } */
+      else if(i == 'WaysOfTraffic'  || i == 'ProfitModel'){
+        $('.dt_'+name+' input').prop('checked',false);
+        if(i == 'WaysOfTraffic'){
+          $('#pub_otherWaysOfTraffic').val('');
+          var arr = item.split('+');
+          $(arr).each(function(i){
+            $('.dt_WaysOfTraffic input').each(function(k){
+              if($('.dt_WaysOfTraffic input').eq(k).val() == arr[i]){
+                $('.dt_WaysOfTraffic input').eq(k).prop('checked',true);
+              }
+            });
+          });
+          var type = arr.pop();
+          if($('.dt_WaysOfTraffic input').eq(1).val() != type && $('.dt_WaysOfTraffic input').eq(2).val() != type && $('.dt_WaysOfTraffic input').eq(3).val() != type && $('.dt_WaysOfTraffic input').eq(4).val() != type) {
+            $('#pub_otherWaysOfTraffic').val(type);
+          }
+        }else if(i == 'TypeOfContent'){
+          var arr = item.split('+');
+          $(arr).each(function(i){
+            $('.dt_TypeOfContent input').each(function(k){
+              if($('.dt_TypeOfContent input').eq(k).val() == arr[i]){
+                $('.dt_TypeOfContent input').eq(k).prop('checked',true);
+              }
+            });
+          });
+          var type = arr.pop();
+          if($('.dt_TypeOfContent input').eq(1).val() != type && $('.dt_TypeOfContent input').eq(2).val()!= type) {
+            $('#TypeOfContenttext').val(type);
+          }
+        }else{
+          var arr = item.split('+');
+          $(arr).each(function(i){
+            $('.dt_ProfitModel input').each(function(k){
+              if($('.dt_ProfitModel input').eq(k).val() == arr[i]){
+                $('.dt_ProfitModel input').eq(k).prop('checked',true);
+              }
+            });
+          });
+        }
+        $('.dt_'+name+' dt font').css('color','red');
+      }else {
+        $('#pub_currentNetwork').val('');
+        $('#pub_currentNetwork').val(item);
+        $('.dt_'+name+' dt font').css('color','red');
+      }
+    });
+  }
+</script>
+<{/if}>
+<{include file="b_block_footer.html"}>

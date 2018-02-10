@@ -1,0 +1,195 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container" style="margin-top:30px;">
+        <div style="text-align:center;"><h1>Authority Control</h1></div>
+        <div class="row" style="padding:20px 0;">
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="form-inline panel-heading"><h3 style="display: inline">Career Config</h3>
+                        <a style="float:right;cursor:pointer;display: inline" class="icon-plus icon-2x" data-toggle="modal" data-target="#careerModal"></a></div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Career</th>
+                                <th>Authority</th>
+                                <th>config</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <{foreach from=$career key=k item=v}>
+                            <tr>
+                                <td><{$v.ID}></td>
+                                <td><{$k}></td>
+                                <td><{"|"|@implode:$v.Auth}></td>
+                                <td><a class=" icon-cog icon-2x " style="cursor: pointer"></a></td>
+                            </tr>
+                            <{/foreach}>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id='top_page' class="col-lg-6" style="display: none">
+                <div class="panel panel-default">
+                    <form action="" method="post">
+                        <div class="panel-heading">
+
+
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <h3 style="display: inline" id="panelTitle">Choose Pages</h3>
+                                    <a style="cursor: pointer;display: inline" class="icon-wrench" onclick="show_careerChange(this)"></a>
+                                </div>
+                                <input type="text" style="display: none" id="careerChange" name="careerChange">
+                                <input type="text" style="display: none" id="careerOld" name="careeOld" value="">
+                                <input style="float: right" type="button" class="btn btn-primary" onclick="auth_submit()" value="Submit">
+                            </div>
+
+
+
+
+                        </div>
+
+
+                        <div class="panel-body">
+                            <div id='top_page_left' class="col-lg-6">
+                                <{foreach from=$menu key=k item=v}>
+                                <div class="form-inline">
+                                    <div class="form-group">
+                                        <label class="checkbox inline">
+                                            <input type="checkbox" id="<{$v.abb}>" name="<{$v.abb}>"><{$k}>
+                                        </label>
+                                        <{if $v.sub eq 'yes'}>
+                                        <li style="cursor: pointer" class="icon-cogs"></li>
+                                        <{/if}>
+                                    </div>
+                                </div>
+                                <{/foreach}>
+                            </div>
+
+                            <div id='sub_page' class="col-lg-6" style="display: none">
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<!-- 模态框（Modal） -->
+<form action="" method="post" id="addCareerForm">
+<div class="modal fade" id="careerModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                </button>
+                <h4 class="modal-title" id="careerModalLabel">
+                   Add A Career
+                </h4>
+            </div>
+            <div class="modal-body">
+               <input class="form-control" type="text" id="addCareer" name="addCareer">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="career_submit()">
+                    Submit
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    </form>
+<{assign var="Auth" value=$career|@json_encode}>
+<{assign var="jMenu" value=$menu|@json_encode}>
+<{assign var="jSubMenu" value=$subMenu|@json_encode}>
+<script type="text/javascript">
+    $(function () {
+        $.ajax({
+            type: "post",
+            url: "<{$smarty.const.BASE_URL}>/home_widget.php",
+            dataType: "json",
+            success: function (msg) {
+                var html = '<tr><td><a id="day3" href="b_aff_aff.php?idstr=' + encodeURIComponent(msg.str3) + '" style="cursor:pointer">' + msg.day3 + '</a></td><td>' + msg.count3 + '</td></tr><tr><td><a id="day2" href="b_aff_aff.php?idstr=' + encodeURIComponent(msg.str2) + '" style="cursor:pointer">' + msg.day2 + '</a></td><td>' + msg.count2 + '</td></tr> <tr><td><a id="day1" href="b_aff_aff.php?idstr=' + encodeURIComponent(msg.str1) + '" style="cursor:pointer">' + msg.day1 + '</a></td><td>' + msg.count1 + '</td></tr>';
+                $('#load').parent().append(html);
+                $('#load').remove();
+
+            }
+        });
+
+
+    });
+    $('.icon-cog').click(function () {
+        $('#sub_page').empty();
+        var auth = <{$Auth}>;
+            $('#top_page').slideUp('fast');
+            $('#top_page').slideDown('fast');
+            var career = $($(this).parent().prev().prev()).text();
+            $('#panelTitle').html(career);
+            $('#careerOld').attr('value',career);
+            var input = $('#top_page_left').find("input");
+            $.each(input,function(){
+                au = $(auth[career]['Auth']);
+                if($.inArray($(this).attr('id'), au) >= 0){
+                $(this).prop('checked','true');
+            }else{
+                $(this).removeProp('checked');
+            }
+            });
+
+
+
+
+
+            html = [];
+            var subMenu = <{$jSubMenu}>;
+
+                $.each(subMenu,function(index,item){
+
+                    $.each(item,function(key,value){
+                    if($.inArray(value['abb'],au) >= 0)
+                    html.push('<label class="checkbox inline"><input type="checkbox" checked="checked" id="' + value['abb'] + '" name="' + value['abb'] + '">' + key + '</label>');
+                    else
+                    html.push('<label class="checkbox inline"><input type="checkbox" id="' + value['abb'] + '" name="' + value['abb'] + '">' + key + '</label>');
+                });
+                    html.push('<hr>');
+
+                });
+
+                var addHtml = html.join('');
+                $('#sub_page').empty();
+                $('#sub_page').slideUp('fast');
+                $('#sub_page').slideDown('fast');
+                $('#sub_page').append(addHtml);
+
+            });
+
+
+
+    function show_careerChange() {
+        $('#careerChange').slideDown('fast');
+    }
+    function auth_submit(){
+        $('form:first').submit();
+    }
+    function career_submit(){
+        $('#addCareerForm').submit();//career_submit
+    }
+</script>
+<{include file="b_block_footer.html"}>

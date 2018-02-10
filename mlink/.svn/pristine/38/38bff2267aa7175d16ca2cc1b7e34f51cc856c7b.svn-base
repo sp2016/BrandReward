@@ -1,0 +1,62 @@
+<div class="container" style="margin-top:30px;">
+    <div class="row" style="border-bottom:1px solid #e5e5e5;padding:10px 0;">
+    <a href="javascript:void(0)" onclick="showinvoice()">back to invoice</a> | 
+    </div>
+    <div class="row" style="padding:10px 0;"><i>Invoice Nums:(<b><{$pageInfo.num_all}></b>)</i> | <i>Invoice Amount:(<b><{$list.0.Currency}> <{$pageInfo.commission_all}></b>)</i></div>
+    <div class="row" style="padding:10px 0;">
+        <table class="table table-bordered">
+        <thead>
+            <tr>
+              <th>Transaction ID</th>
+              <th>MatchKey</th>
+              <th>Key</th>
+              <th>Currency</th>
+              <th>Commission</th>
+              <th>OldCurrency</th>
+              <th>OldCommission</th>
+            </tr>
+        </thead>
+          <{foreach from=$list item=invoice}>
+          <{assign var="keyname" value=$invoice.MatchKey}>
+            <tr>
+                <td><{$invoice.ID}></td>
+                <td><{$invoice.MatchKey}></td>
+                <td><{$invoice.$keyname}></td>
+                <td>USD</td>
+                <td><{$invoice.Commission}></td>
+                <td><{$invoice.OldCur}></td>
+                <td><{$invoice.OldCommission}></td>
+            </tr>
+          <{/foreach}>
+        </table>
+        <{$pageHtml}>
+    </div>
+</div>
+
+<script>
+    function pageJump(page){
+        $.ajax({
+            type: "post",
+            url: "b_payments.php",
+            data: "type=ajax&act=viewtransactioninvoice&paymentsid=<{$paymentid}>&p="+page,
+            async: false,
+            success: function (html) {
+                $('#modal-body').html(html);
+            }
+        });
+       $('#myModal').modal({backdrop: 'static', keyboard: false});
+    }
+
+    function showinvoice(){
+        $.ajax({
+            type: "post",
+            url: "b_payments.php",
+            data: "type=ajax&act=invoice&paymentsid=<{$paymentid}>",
+            async: false,
+            success: function (html) {
+                $('#modal-body').html(html);
+            }
+        });
+         $('#myModal').modal({backdrop: 'static', keyboard: false});
+    }
+</script>

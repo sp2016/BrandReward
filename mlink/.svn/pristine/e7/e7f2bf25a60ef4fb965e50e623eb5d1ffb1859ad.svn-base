@@ -1,0 +1,586 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style type="text/css"> 
+
+hr
+{
+  position:absolute;
+  float:left;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  width:150px;
+ 
+}
+</style>
+  <div class="container" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1>Merchants-PDC</h1></div>
+    <div class="row" style="padding:20px 0;">
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Search</div>
+          <div class="panel-body" >
+            <form >
+              <input type="hidden" name="p" value="1" />
+                <div class="col-lg-10 form-inline">
+              <div class="form-group ">
+                Domain:<input type="text" name="Domain" class="form-control tip" id="Domain" value="<{$search.Domain}>" placeholder="Domain">
+                Program:<input type="text" name="Program" class="form-control tip2" id="Program" value="<{$search.Program}>" placeholder="Program">
+
+  			
+  			
+  			
+  				Status:<select name="Status" id="Status" value="<{$search.Status}>" class="form-control">
+                <option value="">ALL</option>
+               
+    			<option value="Inactive" <{if $search.Status eq "Inactive"}>selected<{/if}>>Inactive</option>
+    			<option value="Active" <{if $search.Status eq "Active"}>selected<{/if}>>Active</option>		
+  			</select> 
+  			
+  			
+  			
+  			   <div class="form-group" style="margin-left:20px">
+                <button type="submit" class="btn  btn-primary ">Search</button>
+              </div>
+              <div class="form-group" style="margin-left:20px">
+                <button  id="add" type="button"  data-toggle="modal" data-target="#myMotal" class="btn  btn-primary">Add</button>
+              </div>
+            
+  
+              </div>
+            </div>
+            
+           
+            
+          </form>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Result</div>
+          <div class="panel-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>DomainId<hr/></br>Domain</th>
+                  <th>ProgramId<hr/></br>Program</th>
+                  <th>Status</th>
+                  <th>AddUser</th>
+                  <th>Edit</th>
+                </tr>
+              </thead>
+              <{foreach from=$PDCList item=PDC}>
+                <tr>
+                  <td><{$PDC.ID}></td>
+                  <td noWrap="noWrap"><{$PDC.DomainId}><hr/></br><span><{$PDC.Domain}></span></td>
+                  <td noWrap="noWrap"><{$PDC.ProgramId}><hr/></br><span><{$PDC.Name}></span></td>
+                  <td><{$PDC.Status}></td>
+                  <td><{$PDC.AddUser}></td>
+                  <td>                 
+                   <a  class="edit" data-toggle="modal" data-target="#myMotal2" style="cursor: pointer"/>Edit</a>&nbsp;&nbsp;
+                  </td>
+                </tr>
+              <{/foreach}>
+            </table>
+            <{$pageHtml}>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+   <!-- add模态框 -->  
+   <form id="form_motal" action="" method="post">           
+  <div name="motaikuang" class="modal fade" id="myMotal" tabindex="-1" role="dialog" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" 
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="<{$aff.Id}>Label">
+               to add PDC!
+            </h4>
+         </div>
+         <div class="modal-body">
+        Domain:<input type="text" name="add_domain" class="form-control add_tip" id="add_domain"  value="" >
+        <div id="hide_domain" style="display:none"><font color="red" style="font-size:15px;">*cannot be null</font></div> <br/>
+        Program：<input type="text" name="add_program" class="form-control add_tip2" id="add_program"  value="" >
+        <div id="hide_program" style="display:none"><font color="red" style="font-size:15px;">*cannot be null</font></div><br/>
+      <input type="hidden" name="id" id="DomainId" value=""/>
+        
+        
+        Status：
+        
+   <select name="add_status" id="add_status" class="form-control">
+    <option value="Active">Active</option>
+    <option value="Inactive">InActive</option>
+  </select>
+
+  		
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" 
+               data-dismiss="modal">Close
+            </button>
+            <button id="sub" type="submit"  class="btn btn-primary" >
+               Save
+            </button>
+         </div>
+      </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+</div> 
+</form>
+
+   <!-- edit模态框 -->  
+   <form id="form_motal2" action="" method="post">           
+  <div name="motaikuang" class="modal fade" id="myMotal2" tabindex="-1" role="dialog"  aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" 
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="<{$aff.Id}>Label">
+               to edit PDC!
+            </h4>
+         </div>
+         <div class="modal-body">
+        Domain:<input type="text" name="edit_domain" class="form-control edit_tip" id="edit_domain"  value="" ><br/>
+        Program：<input type="text" name="edit_program" class="form-control edit_tip2" id="edit_program"  value="" ><br/>
+      
+        <input type="hidden" name="edit_id" class="form-control" id="edit_id"  value="" >
+        
+        Status：
+        
+   <select name="edit_status" id="edit_status" class="form-control">
+    <option value="Active">Active</option>
+    <option value="Inactive">Inactive</option>
+  </select>
+
+  		
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" 
+               data-dismiss="modal">Close
+            </button>
+            <button id="sub_edit" type="submit"  class="btn btn-primary" >
+               Save
+            </button>
+         </div>
+      </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+</div> 
+</form>
+
+<script type="text/javascript">
+//tip搜索菜单自动提示功能
+
+//------------------------------------------------------------------------Domain搜索提示功能------------------------------------------------------------
+	  $('.tip').keyup(function(){//keyup是jquery函数，表示松开键盘
+	    var ipt = this;
+	    var keywords = $(this).val();
+	    var url = '<{$smarty.const.BASE_URL}>/process.php';
+	    var ajaxdata = 'act=tip_PDC_Domain&keywords='+keywords;
+
+	    if(!keywords.match(/[^\s]{1,}/)){//排除空白符，即空白符不算字符
+	      return;
+	    }
+
+	    $.ajax({
+	      type:"post",
+	      url:"<{$smarty.const.BASE_URL}>/process.php",
+	      data:ajaxdata,
+	      success: function(req){
+	        var html_tip = '<ul class="dropdown-menu" >';
+	        var arr = req.split('|');
+	        for(var i in arr){
+	          html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+	        }
+	        var html_tip = html_tip+'</ul>';
+
+
+	        if($(ipt).parent().find('ul')){
+	          $(ipt).parent().find('ul').remove();
+	        }
+
+	        $(ipt).parent().append(html_tip);
+
+	        load_tip($(ipt).parent().find('ul'));
+	      }
+	    });
+
+	   
+	  });
+	  
+	  
+	  
+	  
+	  $('.add_tip').keyup(function(){//keyup是jquery函数，表示松开键盘
+		    var ipt = this;
+		    var domain = $(this).val();
+		   var status = $('#add_status').val();
+		 
+		    var url = '<{$smarty.const.BASE_URL}>/process.php';
+		    var ajaxdata = 'act=tip_PDC_Add&domain='+domain+'&status='+status;
+
+		    if(!domain.match(/[^\s]{1,}/)){//排除空白符，即空白符不算字符
+		      return;
+		    }
+	
+
+
+		    $.ajax({
+		      type:"post",
+		      url:"<{$smarty.const.BASE_URL}>/process.php",
+		      data:ajaxdata,
+		      success: function(req){
+		    	  
+		    	
+		    	  
+		    	  
+		        var html_tip = '<ul class="dropdown-menu" >';
+		        var arr = req.split('|');
+		        for(var i in arr){
+		          html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+		        }
+		        var html_tip = html_tip+'</ul>';
+
+
+		        if($(ipt).parent().find('ul')){
+		          $(ipt).parent().find('ul').remove();
+		        }
+
+		        $(ipt).parent().append(html_tip);
+
+		        load_tip($(ipt).parent().find('ul'));
+		        if($.trim(req) =="Cannot add for this Domain already exists and its status is active"){
+		      	  $("#sub").attr("type","button");
+		      	  $("#sub").addClass("btn-warning");
+		        }else{
+		      	  $("#sub").attr("type","submit");
+		      	  $("#sub").removeClass("btn-warning");
+		        }
+		    
+		      }
+		    });
+		  
+		   
+		  });
+	  
+
+	  $('.edit_tip').keyup(function(){//keyup是jquery函数，表示松开键盘
+		    var ipt = this;
+		    var domain = $(this).val();
+		    
+		    var status = $('#edit_status').val();
+		 
+		    var url = '<{$smarty.const.BASE_URL}>/process.php';
+		    var ajaxdata = 'act=tip_PDC_edit&domain='+domain+'&status='+status+'&id='+id;
+
+		    if(!domain.match(/[^\s]{1,}/)){//排除空白符，即空白符不算字符
+		      return;
+		    }
+	
+
+
+		    $.ajax({
+		      type:"post",
+		      url:"<{$smarty.const.BASE_URL}>/process.php",
+		      data:ajaxdata,
+		      success: function(req){
+		    	  
+		    	
+		    	  
+		    	  
+		        var html_tip = '<ul class="dropdown-menu" >';
+		        var arr = req.split('|');
+		        for(var i in arr){
+		          html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+		        }
+		        var html_tip = html_tip+'</ul>';
+
+
+		        if($(ipt).parent().find('ul')){
+		          $(ipt).parent().find('ul').remove();
+		        }
+
+		        $(ipt).parent().append(html_tip);
+
+		        load_tip($(ipt).parent().find('ul'));
+		        if($.trim(req) =="Cannot edit for this Domain already exists and its status is active"){
+		      	  $("#sub_edit").attr("type","button");
+		      	  $("#sub_edit").addClass("btn-warning");
+		        }else{
+		      	  $("#sub_edit").attr("type","submit");
+		      	  $("#sub_edit").removeClass("btn-warning");
+		        }
+		    
+		      }
+		    });
+		  
+		   
+		  });
+
+	
+	
+
+	function load_tip(obj){
+	  $(obj).css('display','block');  //jquery的css()函数，相当于display:block
+	  $(obj).find('a').click(function(){
+		 //console.info($($(obj).parent().find("input")[0]));
+		 
+		 $($(obj).parent().find("input")[0]).val($(this).html());	    
+		  $(obj).remove();
+	  });
+	}
+	
+	
+	  
+
+	
+	
+//------------------------------------------------------------Program搜索提示功能-------------------------------------------------------------------------------------	
+	
+$('.tip2,.add_tip2,.edit_tip2').keyup(function(){//keyup是jquery函数，表示松开键盘
+    var ipt = this;
+    var keywords = $(this).val();
+    var url = '<{$smarty.const.BASE_URL}>/process.php';
+    var ajaxdata = 'act=tip_PDC_Program&keywords='+keywords;
+
+    if(!keywords.match(/[^\s]{1,}/)){//排除空白符，即空白符不算字符
+      return;
+    }
+
+    $.ajax({
+      type:"post",
+      url:"<{$smarty.const.BASE_URL}>/process.php",
+      data:ajaxdata,
+      success: function(req){
+    	 
+    		   var html_tip = '<ul style="margin-left:300px" class="dropdown-menu" >';
+    	        var arr = req.split('|');
+    	        for(var i in arr){
+    	          html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+    	        }
+    	        var html_tip = html_tip+'</ul>';
+
+
+    	        if($(ipt).parent().find('ul')){
+    	          $(ipt).parent().find('ul').remove();
+    	        }
+    	     
+    	        $(ipt).parent().append(html_tip);
+
+    	        load_tip2($(ipt).parent().find('ul'));
+    	  
+     
+      }
+    });
+
+   
+  });
+
+
+	
+
+	function load_tip2(obj){
+	  $(obj).css('display','block');  //jquery的css()函数，相当于display:block
+	  $(obj).find('a').click(function(){
+		 //console.info($($(obj).parent().find("input")[0]));
+		 
+		 $($(obj).parent().find("input")[1]).val($(this).html());	    
+		  $(obj).remove();
+	  });
+	}
+//------------------------------------------------------------------------提示cannot be null功能------------------------------------------------------------
+$("#sub").click(function(){
+	if($("#add_domain").val()==""){
+		$("#hide_domain").show();
+		$("#sub").attr("type","button");
+	}
+	if($("#add_domain").val()!==""){
+		$("#hide_domain").hide();
+		$("#sub").attr("type","submit");
+	}
+	
+	
+	
+	if($("#add_program").val()==""){
+		$("#hide_program").show();
+		$("#sub").attr("type","button");
+	}
+	if($("#add_program").val()!==""){
+		$("#hide_program").hide();
+		$("#sub").attr("type","submit");
+	}
+	
+
+
+});
+
+//----------------------------------------------------------------让edit模态框中的下拉菜单默认显示td中的各项值-------------------------------------------------------
+$(".edit").click(function(){
+	
+	var ipt = this;
+	var domain = $($(ipt).parent().parent().find("span")[0]).html(); 
+	var program = $($(ipt).parent().parent().find("span")[1]).html(); 
+	var status = $($(ipt).parent().parent().find("td")[3]).html();
+	id = $($(ipt).parent().parent().find("td")[0]).html()
+	$("#DomainId").val(id);
+	$("#edit_domain").val(domain);
+	$("#edit_program").val(program);
+	$("#edit_status").val(status);
+	$("#edit_id").val(id);
+
+	
+	
+	
+	
+	
+});
+//---------------------------------------------------如果add模态框中status为inactive，可以加；如果为active，必须联合domain名再次判断---------------------------------------------------------------------
+$("#add_status").change(function(){
+	var status = $('#add_status').val();
+	  if(status=="Inactive"){
+     	 $("#sub").attr("type","submit");
+	      	  $("#sub").removeClass("btn-warning");
+     }else{
+    	 
+    	 
+    	 
+    	 
+    	 
+    	 
+    	 
+    	//-------------------------------------------- 
+ 	    var ipt = this;
+	    var domain = $('#add_domain').val();
+	 
+	    var url = '<{$smarty.const.BASE_URL}>/process.php';
+	    var ajaxdata = 'act=tip_PDC_Add&domain='+domain+'&status='+status;
+
+	    if(!domain.match(/[^\s]{1,}/)){//排除空白符，即空白符不算字符
+	      return;
+	    }
+
+
+
+	    $.ajax({
+	      type:"post",
+	      url:"<{$smarty.const.BASE_URL}>/process.php",
+	      data:ajaxdata,
+	      success: function(req){
+	    	  
+	    	
+	    	  
+	    	  
+	        var html_tip = '<ul class="dropdown-menu" >';
+	        var arr = req.split('|');
+	        for(var i in arr){
+	          html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+	        }
+	        var html_tip = html_tip+'</ul>';
+
+
+	        if($(ipt).parent().find('ul')){
+	          $(ipt).parent().find('ul').remove();
+	        }
+
+	        $(ipt).parent().append(html_tip);
+
+	        load_tip($(ipt).parent().find('ul'));
+	        if($.trim(req) =="Cannot add for this Domain already exists and its status is active"){
+	      	  $("#sub").attr("type","button");
+	      	  $("#sub").addClass("btn-warning");
+	        }else{
+	      	  $("#sub").attr("type","submit");
+	      	  $("#sub").removeClass("btn-warning");
+	        }
+	    
+	      }
+    	 
+    	 
+    	 
+    	 
+    });
+     }
+	  
+});
+
+//---------------------------------------------------如果edit模态框中status为inactive，可以加；如果为active，必须联合domain名再次判断---------------------------------------------------------------------
+
+$("#edit_status").change(function(){
+	var status = $('#edit_status').val();
+	  if(status=="Inactive"){
+     	 $("#sub_edit").attr("type","submit");
+	      	  $("#sub_edit").removeClass("btn-warning");
+     }else{
+    	 
+
+		    var ipt = this;
+		    var domain = $('#edit_domain').val();
+
+		 
+		    var url = '<{$smarty.const.BASE_URL}>/process.php';
+		    var ajaxdata = 'act=tip_PDC_edit&domain='+domain+'&status='+status+'&id='+id;
+
+		    if(!domain.match(/[^\s]{1,}/)){//排除空白符，即空白符不算字符
+		      return;
+		    }
+	
+
+
+		    $.ajax({
+		      type:"post",
+		      url:"<{$smarty.const.BASE_URL}>/process.php",
+		      data:ajaxdata,
+		      success: function(req){
+		    	  
+		    	
+		    	  
+		    	  
+		        var html_tip = '<ul class="dropdown-menu" >';
+		        var arr = req.split('|');
+		        for(var i in arr){
+		          html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+		        }
+		        var html_tip = html_tip+'</ul>';
+
+
+		        if($(ipt).parent().find('ul')){
+		          $(ipt).parent().find('ul').remove();
+		        }
+
+		        $(ipt).parent().append(html_tip);
+
+		        load_tip($(ipt).parent().find('ul'));
+		        if($.trim(req) =="Cannot edit for this Domain already exists and its status is active"){
+		      	  $("#sub_edit").attr("type","button");
+		      	  $("#sub_edit").addClass("btn-warning");
+		        }else{
+		      	  $("#sub_edit").attr("type","submit");
+		      	  $("#sub_edit").removeClass("btn-warning");
+		        }
+		    
+		      }
+		    });
+
+     }
+	  
+});
+
+</script>
+
+
+<{include file="b_block_footer.html"}>

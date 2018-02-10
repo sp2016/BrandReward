@@ -1,0 +1,161 @@
+<?php
+namespace App\Http\Logic;
+
+use App\Http\Entity\Store\StoreEntity;
+use App\Model\Store;
+use Illuminate\Database\Eloquent\Builder;
+
+/**
+ * Class StoreLogic
+ * @package App\Http\Logic
+ */
+class StoreLogic extends BasicLogic
+{
+    private function prefixQuery($query,$entity)
+    {
+        if ($entity instanceof StoreEntity && $query instanceof Builder) {
+            if (!$entity->isEmpty('name'))
+            {
+                $name = $entity->name;
+                $query->where(
+                    function ($query) use ($name) {
+                        $query->orWhere('Name','LIKE', '%' . $name . '%');
+                        $query->orWhere('Domains','LIKE', '%' . $name . '%');
+                        $query->orWhere('NameOptimized','LIKE', '%' . $name . '%');
+
+                    }
+                );
+            }
+
+            if (!$entity->isEmpty('categories'))
+            {
+                $categories = $entity->categories;
+                $query->where(
+                    function ($query) use ($categories) {
+                        $rawSql = array();
+                        foreach ($categories as $category) {
+                            !empty($category) && array_push($rawSql, ' FIND_IN_SET(' . $category . ',CategoryId) ');
+                        }
+                        !empty($rawSql) && $query->whereRaw(implode(' OR ', $rawSql));
+                    }
+                );
+
+            }
+
+            if (!$entity->isEmpty('categoryStatus'))
+            {
+                $categoryStatus = $entity->categoryStatus;
+                switch ($categoryStatus) {
+                    case 'YES' :
+                        $query->whereNotNull('CategoryId')->where('CategoryId','<>','');
+                        break;
+                    case 'NO' :
+                        $query->whereRaw("( CategoryId IS NULL OR NameOptimized = '')");
+                        break;
+                }
+            }
+
+            if (!$entity->isEmpty('ppcStatus'))
+            {
+                $ppcStatus = $entity->ppcStatus;
+                $query->where('PPCStatus','=',$ppcStatus);
+            }
+            if (!$entity->isEmpty('nameStatus')) {
+                $nameStatus = $entity->nameStatus;
+
+                switch ($nameStatus) {
+                    case 'YES' :
+                        $query->where('NameOptimized','<>','');
+                        break;
+                    case 'NO' :
+                        $query->whereRaw("( NameOptimized IS NULL OR NameOptimized = '')");
+                        break;
+                }
+
+            }
+
+            if (!$entity->isEmpty('logoStatus'))
+            {
+                $logoStatus = $entity->logoStatus;
+                switch ($logoStatus) {
+                    case 'YES' :
+                        $query->where('LogoName','LIKE','%,%');
+                        break;
+                    case 'NO' :
+                        $query->whereRaw("( LogoName = '' OR LogoName IS NULL)");
+                        break;
+                }
+            }
+
+            if (!$entity->isEmpty('shippingCountry'))
+            {
+                $shippingCountry = $entity->shippingCountry;
+                $query->where(
+                    function ($query) use ($shippingCountry) {
+                        $rawSql = array();
+                        foreach ($shippingCountry as $country) {
+                            !empty($country) && array_push($rawSql, " FIND_IN_SET('" . $country . "',CountryCode) ");
+                        }
+                        !empty($rawSql) && $query->whereRaw(implode(' OR ', $rawSql));
+                    }
+                );
+            }
+
+            if (!$entity->isEmpty('currentStatus'))
+            {
+                $currentStatus = $entity->currentStatus;
+                $query->where('SupportType',$currentStatus);
+            }
+
+            if (!$entity->isEmpty('network'))
+            {
+                $networks = $entity->network;
+                $query->where(
+                    function ($query) use ($networks) {
+                        $rawSql = array();
+                        foreach ($networks as $network) {
+                            !empty($network) && array_push($rawSql, ' FIND_IN_SET(' . $network . ',Affids) ');
+                        }
+                        !empty($rawSql) && $query->whereRaw(implode(' OR ', $rawSql));
+                    }
+                );
+            }
+
+            if (!$entity->isEmpty('cooperationStatus'))
+            {
+                $cooperationStatus = $entity->cooperationStatus;
+                $query->where('StoreAffSupport','=',$cooperationStatus);
+            }
+        }
+
+        return $query;
+    }
+
+    public function getStores($entity)
+    {
+        if ($entity instanceof StoreEntity) 
+        {
+            $model = new Store();
+            $query = $model::query();
+            $query = $this->prefixQuery($query, $entity);
+            if (!$entity->isEmpty('paginate')) {
+                $query->take($entity->limit)->skip(($entity->offset-1)* $entity->limit);
+            }
+            $rs = $query->get(array('*'));
+            
+            return $rs;
+        }
+    }
+
+    public function countStores($entity)
+    {
+        if ($entity instanceof StoreEntity)
+        {
+            $model = new Store();
+            $query = $model::query();
+            $query = $this->prefixQuery($query, $entity);
+
+            return $query->count();
+        }
+    }
+}

@@ -1,0 +1,589 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: sdiao
+ * Date: 2017/11/6
+ * Time: 10:51
+ */
+class Calculation extends LibFactory
+{
+    private $dataType;
+    private $dateType = 'createddate';
+    private $startDate;
+    private $endDate;
+    private $network;
+    private $country;
+    //特殊KEY:na类型
+    private $filterKeyword;
+
+    private $publisherSite;
+    //publisher query section
+    private $publisherManager;
+    private $publisherSiteType;
+    //advertiser query section
+    private $advertiserId;
+    private $advertiserKeyword;
+    private $advertiserPPCStatus;
+    private $advertiserStatus;
+    private $advertiserCategoryStatus;
+    private $advertiserLogoStatus;
+    private $advertiserNameStatus;
+    private $advertiserCategory;
+    private $advertiserCooperationStatus;
+    //transaction query section
+    private $transactionCommissionStatus;
+    private $transactionStatus;
+    private $transactionLinkId;
+    private $queryArray = array();
+    
+    public function __set($name, $value)
+    {
+        if (!is_null($value)) {
+            $this->$name = $value;
+        }
+    }
+
+
+    public function __get($name)
+    {
+        return $this->isEmpty($name) ? null :$this->$name;
+    }
+
+    public function isEmpty($name)
+    {
+        $value = $this->$name;
+        return !isset($value) || empty($value);
+    }
+
+    /**
+     * 为statistics_br生成查询条件
+     */
+    private function generateQuery()
+    {
+        if (!$this->isEmpty('dataType')) {
+            $aKeyQueryArray = $this->processDataType($this->dataType);
+            !empty($aKeyQueryArray) && array_push($this->queryArray, "a.site NOT IN(".implode(',',$aKeyQueryArray).")");
+        }
+        if (!$this->isEmpty('filterKeyword')) {
+            $aKeyFilterDomainIds = $this->processFilterKeyword();
+            !empty($aKeyFilterDomainIds) && array_push($this->queryArray, "a.domainid NOT IN(".$aKeyFilterDomainIds.")");
+        }
+        if (!$this->isEmpty('startDate')) {
+            array_push($this->queryArray, "a.createddate >= '$this->startDate'");
+        }
+        if (!$this->isEmpty('endDate')) {
+            array_push($this->queryArray, "a.createddate <= '$this->endDate'");
+        }
+        $aKeyPublisherSql = $this->doPublisherQuery();
+        if (!empty($aKeyPublisherSql)) {
+            array_push($this->queryArray, "a.site IN(".$aKeyPublisherSql.")");
+        }
+        if (!$this->isEmpty('country')) {
+            $this->processCountry($this->country);
+        }
+        if (!$this->isEmpty('network')) {
+            $this->processNetwork($this->network);
+        }
+    }
+
+
+    public function processFilterKeyword()
+    {
+        $aSql = "SELECT AffiliateUrlKeywords FROM wf_aff where IsActive = 'YES'";
+        $aRows = $this->getRows($aSql);
+        $domain = '';
+        foreach ($aRows as $aRow) {
+            if (strstr($aRow['AffiliateUrlKeywords'], "\r\n")) {
+                $keywords = explode("\r\n", $aRow['AffiliateUrlKeywords']);
+                foreach ($keywords as $keyword) {
+                    $domain .= "'" . $keyword . "',";
+                }
+            } else {
+                $domain .= "'" . $aRow['AffiliateUrlKeywords'] . "',";
+            }
+        }
+        $domain = rtrim($domain, ',');
+        $dSql = "SELECT 1,GROUP_CONCAT(id) AS `ids` FROM domain WHERE domain in($domain) GROUP BY 1";
+        $dRow = $this->getRow($dSql);
+        if (!empty($dRow)) {
+            return isset($dRow['ids']) ? $dRow['ids'] : '';
+        }
+        
+        return false;
+    }
+    
+    private function processDataType($dataType = null)
+    {
+        $aKeyQueryArray = null;
+        if ($dataType == 'publisher') {
+            $sql = "SELECT b.`ApiKey` FROM publisher AS a LEFT JOIN publisher_account AS b ON a.`ID` = b.`PublisherId` WHERE a.Tax = 0 AND b.ApiKey IS NOT NULL";
+            $res = $this->getRows($sql);
+            $aKeyQueryArray  = array();
+            foreach ($res as $apiKey) {
+                $aKey = isset($apiKey['ApiKey']) ? $apiKey['ApiKey'] : null;
+                if (empty($aKey)) {
+                    continue;
+                }
+                array_push($aKeyQueryArray, "'". $aKey . "'");
+            }
+        }
+
+        return $aKeyQueryArray;
+    }
+
+    public function doAdvertiserQuery($type = 'program')
+    {
+        $allowType = array('program' => 'PID','store' => 'StoreId','domain' => 'domainId');
+        $allowTypeKeys = array_keys($allowType);
+        if (!in_array($type, $allowTypeKeys)) {
+            return false;
+        }
+        $subQueryWhere = array();
+        if (!$this->isEmpty('advertiserId')) {
+            $storeId = $this->advertiserId;
+            if (!is_array($storeId)) {
+                array_push($subQueryWhere, "b.`ID` = " . $storeId);
+            } else {
+                $subArray = array_chunk($storeId, 100);
+                $subFields = array();
+                foreach ($subArray as $subA) {
+                    array_push($subFields, "b.`ID` IN ( " . implode(',', $subA) . ' ) ');
+                }
+                !empty($subFields) && array_push($subQueryWhere, implode(' OR ', $subFields));
+            }
+        }
+        if (!$this->isEmpty('advertiserKeyword')) {
+            $keyword = addslashes(trim($this->advertiserKeyword));
+            array_push($subQueryWhere, "(b.`Name` LIKE '%$keyword%' OR b.`NameOptimized` LIKE '%$keyword%')");
+        }
+        if (!$this->isEmpty('advertiserPPCStatus')) {
+            $ppcStatus = $this->advertiserPPCStatus;
+            array_push($subQueryWhere, "b.`PPC` = '$ppcStatus' ");
+        }
+        if (!$this->isEmpty('advertiserStatus')) {
+            $supportType = $this->advertiserStatus;
+            array_push($subQueryWhere, "b.`SupportType` = '$supportType' ");
+        }
+        if (!$this->isEmpty('advertiserCategoryStatus')) {
+            $categoryStatus = $this->advertiserCategoryStatus;
+            switch ($categoryStatus) {
+                case 'YES' :
+                    array_push($subQueryWhere, "(b.CategoryId IS NOT NULL AND b.CategoryId != '')");
+                    break;
+                case 'NO' :
+                    array_push($subQueryWhere, "(b.CategoryId IS NULL OR b.CategoryId = '')");
+                    break;
+            }
+        }
+        if (!$this->isEmpty('advertiserLogoStatus')) {
+            $logoStatus = $this->advertiserLogoStatus;
+            switch ($logoStatus) {
+                case '1' :
+                    array_push($subQueryWhere, " b.LogoName like '%,%'");
+                    break;
+                case '2' :
+                    array_push($subQueryWhere, "(b.LogoName = '' OR b.LogoName IS NULL)");
+                    break;
+            }
+        }
+        if (!$this->isEmpty('advertiserNameStatus')) {
+            $nameStatus = $this->advertiserNameStatus;
+            switch ($nameStatus) {
+                case '1' :
+                    array_push($subQueryWhere, " b.NameOptimized != ''");
+                    break;
+                case '2' :
+                    array_push($subQueryWhere, "(b.NameOptimized IS NULL OR b.NameOptimized = '')");
+                    break;
+            }
+        }
+        if (!$this->isEmpty('advertiserCategory')) {
+            $categoryQueryArray = array();
+            $categories = $this->advertiserCategory;
+
+            $categoryArray = explode(',', $categories);
+            if (!empty($categoryArray)) {
+                foreach ($categoryArray as $category) {
+                    array_push($categoryQueryArray, "FIND_IN_SET ($category,b.CategoryId)");
+                }
+                array_push($subQueryWhere, '(' .implode(' OR ', $categoryQueryArray) .')');
+            }
+        }
+        if (!$this->isEmpty('advertiserCooperationStatus')) {
+            $operationStatus = $this->advertiserCooperationStatus;
+            switch ($operationStatus) {
+                case 'YES' :
+                    array_push($subQueryWhere, "b.StoreAffSupport = 'YES'");
+                    break;
+                case 'NO' :
+                    array_push($subQueryWhere, "b.StoreAffSupport = 'NO'");
+                    break;
+            }
+        }
+        $aProgramKeyAdvertiserSql =  null;
+        $key = isset($allowType[$type]) ? $allowType[$type] : 'PID';
+        if (!empty($subQueryWhere)) {
+            array_push($subQueryWhere, "`$key` IS NOT NULL");
+            $subQuerySql =  implode(' AND ', $subQueryWhere);
+
+            if ($type != 'domain' ){
+                $aProgramKeyAdvertiserSql = "SELECT DISTINCT `$key` FROM r_store_domain a LEFT JOIN  r_domain_program c ON c.`DID` = a.`DomainId` LEFT JOIN `store` b ON a.`StoreId` = b.`ID` WHERE c.Status = 'Active' AND $subQuerySql";
+            } else {
+                $aProgramKeyAdvertiserSql = "SELECT DISTINCT `$key` FROM r_store_domain a   LEFT JOIN `store` b ON a.`StoreId` = b.`ID` WHERE $subQuerySql";
+            }
+        }
+
+        return $aProgramKeyAdvertiserSql;
+    }
+
+
+
+    public function doAdvertiserIdQuery()
+    {
+        $subQueryWhere = array();
+        if (!$this->isEmpty('advertiserKeyword')) {
+            $keyword = $this->advertiserKeyword;
+            array_push($subQueryWhere, "(b.`Name` LIKE '%$keyword%' OR b.`NameOptimized` LIKE '%$keyword%')");
+        }
+        if (!$this->isEmpty('advertiserPPCStatus')) {
+            $ppcStatus = $this->advertiserPPCStatus;
+            array_push($subQueryWhere, "b.`PPC` = '$ppcStatus' ");
+        }
+        if (!$this->isEmpty('advertiserStatus')) {
+            $supportType = $this->advertiserStatus;
+            array_push($subQueryWhere, "b.`SupportType` = '$supportType' ");
+        }
+        if (!$this->isEmpty('advertiserCategoryStatus')) {
+            $categoryStatus = $this->advertiserCategoryStatus;
+            switch ($categoryStatus) {
+                case 'YES' :
+                    array_push($subQueryWhere, "(b.CategoryId IS NOT NULL AND b.CategoryId != '')");
+                    break;
+                case 'NO' :
+                    array_push($subQueryWhere, "(b.CategoryId IS NULL OR b.CategoryId = '')");
+                    break;
+            }
+        }
+        if (!$this->isEmpty('advertiserLogoStatus')) {
+            $logoStatus = $this->advertiserLogoStatus;
+            switch ($logoStatus) {
+                case '1' :
+                    array_push($subQueryWhere, " b.LogoName like '%,%'");
+                    break;
+                case '2' :
+                    array_push($subQueryWhere, "(b.LogoName = '' OR b.LogoName IS NULL)");
+                    break;
+            }
+        }
+        if (!$this->isEmpty('advertiserNameStatus')) {
+            $nameStatus = $this->advertiserNameStatus;
+            switch ($nameStatus) {
+                case '1' :
+                    array_push($subQueryWhere, " b.NameOptimized != ''");
+                    break;
+                case '2' :
+                    array_push($subQueryWhere, "(b.NameOptimized IS NULL OR b.NameOptimized = '')");
+                    break;
+            }
+        }
+        if (!$this->isEmpty('advertiserCategory')) {
+            $categoryQueryArray = array();
+            $categories = $this->advertiserCategory;
+
+            $categoryArray = explode(',', $categories);
+            if (!empty($categoryArray)) {
+                foreach ($categoryArray as $category) {
+                    array_push($categoryQueryArray, "FIND_IN_SET ($category,b.CategoryId)");
+                }
+                array_push($subQueryWhere, '(' .implode(' OR ', $categoryQueryArray) .')');
+            }
+        }
+        if (!$this->isEmpty('advertiserCooperationStatus')) {
+            $operationStatus = $this->advertiserCooperationStatus;
+            switch ($operationStatus) {
+                case 'YES' :
+                    array_push($subQueryWhere, "b.StoreAffSupport = 'YES'");
+                    break;
+                case 'NO' :
+                    array_push($subQueryWhere, "b.StoreAffSupport = 'NO'");
+                    break;
+            }
+        }
+        $aKeyAdvertiserIdSql =  null;
+        if (!empty($subQueryWhere)) {
+            array_push($subQueryWhere, "c.Status = 'Active'");
+            $subQuerySql =  implode(' AND ', $subQueryWhere);
+            $aKeyAdvertiserIdSql = "SELECT a.`StoreId` FROM r_store_domain a LEFT JOIN  r_domain_program c ON c.`DID` = a.`DomainId` LEFT JOIN `store` b ON a.`StoreId` = b.`ID` WHERE  c.`PID` IS NOT NULL AND $subQuerySql";
+
+        }
+
+        return $aKeyAdvertiserIdSql;
+    }
+
+
+    public function doPublisherQuery()
+    {
+        $subQueryWhere = array();
+        if (!$this->isEmpty('publisherManager')) {
+            $manager = $this->publisherManager;
+            array_push($subQueryWhere, "a.Manager LIKE '%$manager%' AND b.ApiKey IS NOT NULL");
+
+        }
+        if (!$this->isEmpty('publisherSite')) {
+            $site = $this->publisherSite;
+            array_push($subQueryWhere, "(b.Alias = '$site' OR b.`Name` = '$site' OR a.`Name` = '$site' OR a.`Domain` = '$site' OR a.`Email` = '$site' OR a.`UserName` = '$site' OR b.`Domain` = '$site' OR b.`Apikey` = '$site')");
+
+        }
+        if (!$this->isEmpty('publisherSiteType')) {
+            $siteType = $this->publisherSiteType;
+            array_push($subQueryWhere, "a.SiteOption = '$siteType'");
+
+        }
+        $aKeyQuerySql = null;
+        if (!empty($subQueryWhere)) {
+            $subQuerySql = implode(' AND ', $subQueryWhere);
+            $aKeyQuerySql = "SELECT b.`ApiKey` FROM publisher AS a INNER JOIN publisher_account AS b ON a.ID=b.PublisherId WHERE $subQuerySql";
+        }
+
+        return $aKeyQuerySql;
+    }
+
+    public function processCountry($country = null)
+    {
+        if (!empty($country)) {
+
+            if (is_array($country)) {
+                $ctyQueryArray  = array();
+                foreach ($country as $country) {
+                    if (empty($country)) {
+                        continue;
+                    }
+                    array_push($ctyQueryArray, "'". $country . "'");
+                }
+                !empty($ctyQueryArray) && array_push($this->queryArray, "a.country IN(".implode(',',$ctyQueryArray).")");
+            } else if (is_string($country)) {
+                array_push($this->queryArray, "a.country IN(".$country.")");
+            }
+
+        }
+    }
+
+    public function processNetwork($network = null) {
+        if (!empty($network)) {
+            if (is_array($network)) {
+                array_push($this->queryArray, 'a.affid IN('.implode(',', $network) . ')');
+            }
+            if (is_string($network)) {
+                array_push($this->queryArray, 'a.affid IN(' . $network . ')');
+            }
+        }
+    }
+    
+
+    /**
+     * @description  statistics_br 不分组
+     * @return array
+     */
+    public function calTransactionTotal()
+    {
+        !$this->isEmpty('queryArray') && $this->queryArray = array();
+        $this->generateQuery();
+        $aKeyAdvertiserSql = $this->doAdvertiserQuery('domain');
+        if (!empty($aKeyAdvertiserSql)) {
+            array_push($this->queryArray, 'a.domainid  IN(' . $aKeyAdvertiserSql .')');
+        }
+        $queryString = !empty($this->queryArray) ? ' WHERE ' . implode(' AND ', $this->queryArray) : '';
+        $sql = "SELECT SUM(a.`clicks`) AS `click`, SUM(a.`clicks_robot`) AS `rob`, SUM(a.`clicks_robot_p`) AS `robp`, SUM(a.`orders`) AS `order`, SUM(a.`sales`) as `sales` , SUM(a.`revenues`) AS `commission` FROM `statis_br` AS a ".$queryString;
+        if ($this->dateType != 'createddate') {
+            $sql = "SELECT SUM(a.`clicks`) AS `click`, SUM(a.`clicks_robot`) AS `rob`, SUM(a.`clicks_robot_p`) AS `robp`, SUM(a.`c_orders`) AS `order`, SUM(a.`c_sales`) as `sales` , SUM(a.`c_revenues`) AS `commission` FROM `statis_br` AS a ".$queryString;
+        }
+        $cal = $this->getRow($sql);
+
+        return $cal;
+    }
+
+
+    /**
+     * @description  statistics_br 统计以Site分组
+     * @return array
+     */
+    public function calTransactionSite($offset = null,$limit = null,$order = array())
+    {
+        !$this->isEmpty('queryArray') && $this->queryArray = array();
+        $this->generateQuery();
+        $aKeyAdvertiserSql = $this->doAdvertiserQuery('domain');
+        if (!empty($aKeyAdvertiserSql)) {
+            array_push($this->queryArray, 'a.domainid  IN(' . $aKeyAdvertiserSql .')');
+        }
+        $queryString = !empty($this->queryArray) ? ' WHERE ' . implode(' AND ', $this->queryArray) : '';
+        $sql = "SELECT SUM(a.`clicks`) AS `click`, SUM(a.`clicks_robot`) AS `rob`, SUM(a.`clicks_robot_p`) AS `robp`, SUM(a.`orders`) AS `order`, SUM(a.`sales`) as `sales` , SUM(a.`revenues`) AS `commission`, SUM(a.`showrevenues`) AS `showrevenue`, a.`site` FROM `statis_br` AS a ".$queryString."  GROUP BY a.`site`";
+        if ($this->dateType != 'createddate') {
+            $sql = "SELECT SUM(a.`clicks`) AS `click`, SUM(a.`clicks_robot`) AS `rob`, SUM(a.`clicks_robot_p`) AS `robp`, SUM(a.`c_orders`) AS `order`, SUM(a.`c_sales`) as `sales` , SUM(a.`c_revenues`) AS `commission`, SUM(a.`c_showrevenues`) AS `showrevenue`, a.`site`  FROM `statis_br` AS a ".$queryString."  GROUP BY  a.`site`";
+        }
+        if (!empty($order)) {
+            $sql .= ' ORDER BY '.implode(',', $order);
+        }
+        if (!is_null($offset) && !is_null($limit)) {
+            $startIndex = $limit * $offset;
+            $sql .= ' LIMIT '.$startIndex . ',' . $limit;
+        }
+        $cal = $this->getRows($sql);
+        return $cal;
+    }
+
+
+    public function calTransactionStore($offset = null,$limit = null,$order = array())
+    {
+        !$this->isEmpty('queryArray') && $this->queryArray = array();
+        $this->generateQuery();
+        $aKeyAdvertiserSql = $this->doAdvertiserQuery('domain');
+        if (!empty($aKeyAdvertiserSql)) {
+            array_push($this->queryArray, 'a.domainid  IN(' . $aKeyAdvertiserSql .')');
+        }
+        $queryString = !empty($this->queryArray) ? ' WHERE ' . implode(' AND ', $this->queryArray) : '';
+        $sql = "SELECT SUM(a.`clicks`) AS `click`, SUM(a.`clicks_robot`) AS `rob`, (SUM(a.`clicks`)-SUM(a.`clicks_robot`)) AS `rclick`,SUM(a.`clicks_robot_p`) AS `robp`, SUM(a.`orders`) AS `order`, SUM(a.`sales`) as `sales` , SUM(a.`revenues`) AS `commission`, SUM(a.`showrevenues`) AS `showrevenue`, b.`StoreId` AS  `storeId` FROM `statis_br` AS a LEFT JOIN r_store_domain AS b ON a.domainId = b.domainId ".$queryString."  GROUP BY b.`StoreId`";
+        if ($this->dateType != 'createddate') {
+            $sql = "SELECT SUM(a.`clicks`) AS `click`, SUM(a.`clicks_robot`) AS `rob`,(SUM(a.`clicks`)-SUM(a.`clicks_robot`)) AS `rclick`, SUM(a.`clicks_robot_p`) AS `robp`, SUM(a.`c_orders`) AS `order`, SUM(a.`c_sales`) as `sales` , SUM(a.`c_revenues`) AS `commission`, SUM(a.`c_showrevenues`) AS `showrevenue`, b.`StoreId` AS  `storeId`  FROM `statis_br` AS a  LEFT JOIN r_store_domain AS b ON a.domainId = b.domainId ".$queryString."  GROUP BY  b.`StoreId`";
+        }
+        if (!empty($order)) {
+            $sql .= ' ORDER BY '.implode(',', $order);
+        }
+        if (!is_null($offset) && !is_null($limit)) {
+            $startIndex = $limit * $offset;
+            $sql .= ' LIMIT '.$startIndex . ',' . $limit;
+        }
+
+        $cal = $this->getRows($sql);
+        return $cal;
+    }
+
+
+    public function calTransactionAffiliate($offset = null,$limit = null,$order = array())
+    {
+        !$this->isEmpty('queryArray') && $this->queryArray = array();
+        $this->generateQuery();
+        $aKeyAdvertiserSql = $this->doAdvertiserQuery('program');
+        if (!empty($aKeyAdvertiserSql)) {
+            array_push($this->queryArray, 'a.programid  IN(' . $aKeyAdvertiserSql .')');
+        }
+        $queryString = !empty($this->queryArray) ? ' WHERE ' . implode(' AND ', $this->queryArray) . " AND a.`affid` IS NOT NULL " : ' WHERE a.`affid` IS NOT NULL ';
+        $sql = "SELECT SUM(a.`clicks`) AS `click`, SUM(a.`clicks_robot`) AS `rob`, (SUM(a.`clicks`)-SUM(a.`clicks_robot`)) AS `rclick`,SUM(a.`clicks_robot_p`) AS `robp`, SUM(a.`orders`) AS `order`, SUM(a.`sales`) as `sales` , SUM(a.`revenues`) AS `commission`, SUM(a.`showrevenues`) AS `showrevenue`, a.`affid` AS  `affid` FROM `statis_br` AS a  ".$queryString."  GROUP BY a.`affid`";
+        if ($this->dateType != 'createddate') {
+            $sql = "SELECT SUM(a.`clicks`) AS `click`, SUM(a.`clicks_robot`) AS `rob`,(SUM(a.`clicks`)-SUM(a.`clicks_robot`)) AS `rclick`, SUM(a.`clicks_robot_p`) AS `robp`, SUM(a.`c_orders`) AS `order`, SUM(a.`c_sales`) as `sales` , SUM(a.`c_revenues`) AS `commission`, SUM(a.`c_showrevenues`) AS `showrevenue`, a.`affid` AS  `affid`  FROM `statis_br` AS a ".$queryString."  GROUP BY  a.`affid`";
+        }
+        if (!empty($order)) {
+            $sql .= ' ORDER BY '.implode(',', $order);
+        }
+        if (!is_null($offset) && !is_null($limit)) {
+            $startIndex = $limit * $offset;
+            $sql .= ' LIMIT '.$startIndex . ',' . $limit;
+        }
+
+        $cal = $this->getRows($sql);
+        return $cal;
+    }
+    
+
+    /**
+     *  为rpt_transaction_unique生成查询条件
+     */
+    public function generateTransactionQuery()
+    {
+        if (!empty($this->transactionCommissionStatus)) {
+            if($this->transactionCommissionStatus == 2){
+                array_push($this->queryArray, 'a.CommissionStatus =1') ;
+            }
+        }
+        if (!empty($this->transactionStatus)) {
+            $state = $this->transactionStatus;
+            if (in_array('PAID', $state)) {
+                array_push($this->queryArray, 'a.PaidDate != "0000-00-00"') ;
+                foreach ($state as $key => $value)
+                {
+                    if ($value != 'PAID') {
+                        continue;
+                    }
+                    unset($state[$key]);
+                }
+            }
+            !empty($state) && array_push($this->queryArray, 'a.State IN ("'.join('","',$state).'")');
+        }
+        
+        if (!$this->isEmpty('transactionLinkId')) {
+            $linkid = $this->transactionLinkId;
+            array_push($this->queryArray, 'a.linkId ='.$linkid) ;
+        }
+
+        if (!$this->isEmpty('filterKeyword')) {
+            $aKeyFilterDomainIds = $this->processFilterKeyword();
+            !empty($aKeyFilterDomainIds) && array_push($this->queryArray, "a.domainId NOT IN(".$aKeyFilterDomainIds.")");
+        }
+
+        if (!$this->isEmpty('dataType')) {
+            $aKeyQueryArray = $this->processDataType($this->dataType);
+            !empty($aKeyQueryArray) && array_push($this->queryArray, "a.Site NOT IN(".implode(',',$aKeyQueryArray).")");
+        }
+
+        if (!$this->isEmpty('startDate')) {
+            $queryKey = $this->dateType != 'createddate' ? 'Visited' : 'CreatedDate';
+            array_push($this->queryArray, "a.".$queryKey ." >= '$this->startDate'");
+        }
+
+        if (!$this->isEmpty('endDate')) {
+            $queryKey = $this->dateType != 'createddate' ? 'Visited' : 'CreatedDate';
+            array_push($this->queryArray, "a.".$queryKey ." <= '$this->endDate'");
+        }
+
+
+        if (!$this->isEmpty('country')) {
+            $country = $this->country;
+            !empty($country) && array_push($this->queryArray, "a.country IN(".$country.")");
+        }
+
+        if (!$this->isEmpty('network')) {
+            $this->processNetwork($this->network);
+        }
+
+        $aKeyAdvertiserSql = $this->doAdvertiserQuery('domain');
+        if (!empty($aKeyAdvertiserSql)) {
+            array_push($this->queryArray, 'a.domainid  IN(' . $aKeyAdvertiserSql .')');
+        }
+
+        $aKeyPublisherSql = $this->doPublisherQuery();
+        if (!empty($aKeyPublisherSql)) {
+            array_push($this->queryArray, "a.site IN(".$aKeyPublisherSql.")");
+        }
+    }
+    
+    
+    public function calTransactionUnique()
+    {
+        !$this->isEmpty('queryArray') && $this->queryArray = array();
+        $this->generateTransactionQuery();
+        array_push($this->queryArray, "a.af NOT IN ('bdg','mk','mega')");
+        $queryString = !empty($this->queryArray) ? ' WHERE ' . implode(' AND ', $this->queryArray) : '';
+        $sql = "SELECT SUM(a.`Sales`) AS sales,SUM(a.`Commission`) AS com,SUM(a.TaxCommission) AS  tax,SUM(a.ShowCommission) AS `show`,SUM(a.RefCommission) AS ref FROM rpt_transaction_unique a  $queryString";
+
+        $cal = $this->getRow($sql);
+        return $cal;
+    }
+    
+    
+    public function calTransactionUniqueCountry($offset = null,$limit = null,$order = array())
+    {
+        !$this->isEmpty('queryArray') && $this->queryArray = array();
+        $this->generateTransactionQuery();
+        $queryString = !empty($this->queryArray) ? ' WHERE ' . implode(' AND ', $this->queryArray) . " AND a.`country` !='' " : ' WHERE and a.`country` != "" ';
+        $sql = "SELECT SUM(a.`Sales`) AS `sales`,SUM(a.`commission`) AS com,a.`country` AS `name` FROM rpt_transaction_unique AS a $queryString GROUP BY country";
+        if (!empty($order)) {
+            $sql .= ' ORDER BY '.implode(',', $order);
+        }
+        if (!is_null($offset) && !is_null($limit)) {
+            $startIndex = $limit * $offset;
+            $sql .= ' LIMIT '.$startIndex . ',' . $limit;
+        }
+        $cal = $this->getRows($sql);
+        return $cal;
+    }
+    
+}

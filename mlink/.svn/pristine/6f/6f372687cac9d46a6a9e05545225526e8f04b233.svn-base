@@ -1,0 +1,300 @@
+<?php
+
+/**
+ * Created by PhpStorm.
+ * User: sdiao
+ * Date: 2017/11/23
+ * Time: 16:43
+ */
+class DataCalculation extends LibFactory
+{
+    protected $table;
+    protected $startDate;
+    protected $endDate;
+    //包含Site列表
+    protected $site = array();
+    //包含Site查询SQL
+    protected $siteSql;
+    //非包含Site列表
+    protected $exceptSite = array();
+
+
+    protected $dateType = 1;//1:createDate;2:clickDate
+    protected $calPreKey = '';
+    protected $cal1Keys = array(
+        'click' => 'clicks',
+        'rob' => 'clicks_robot',
+        'robp' => 'clicks_robot_p',
+    );
+    protected $cal2Keys = array(
+        'order' => 'orders',
+        'sales' => 'sales',
+        'commission' => 'revenues',
+        'showrevenue' => 'showrevenues',
+    );
+    protected $calKeyFields;
+    
+    //按照日期统计主键
+    protected $calByDateKey = 'createddate';
+
+    //按照site统计主键
+    protected $calBySiteKey = 'site';
+    //按照affiliate统计主键
+    protected $calByAffiliateKey = 'affId';
+    //按照Store统计主键
+    protected $calByStoreKey = 'storeId';
+    //按照Domain统计主键
+    protected $calByDomainKey = 'domainId';
+    //按照Program统计主键
+    protected $calByProgramKey = 'programId';
+    //按照Country统计主键
+    protected $calByCountryKey = 'country';
+    //按照Publisher统计主键
+    protected $calByPublisherKey = 'publisherId';
+
+    //查询filter
+    protected $filter = array();
+    
+    /**
+     * @return int
+     */
+    public function getDateType()
+    {
+        return $this->dateType;
+    }
+
+    /**
+     * @param int $dateType
+     */
+    public function setDateType($dateType)
+    {
+        $this->dateType = $dateType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSite()
+    {
+        return $this->site;
+    }
+
+    /**
+     * @param mixed $site
+     */
+    public function setSite($site = array())
+    {
+        if (is_array($site)) {
+            $this->site = $site;
+        }
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getSiteSql()
+    {
+        return $this->siteSql;
+    }
+
+    /**
+     * @param mixed $siteSql
+     */
+    public function setSiteSql($siteSql)
+    {
+        $this->siteSql = $siteSql;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getEndDate()
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExceptSite()
+    {
+        return $this->exceptSite;
+    }
+
+    /**
+     * @param array $exceptSite
+     */
+    public function setExceptSite($exceptSite = array())
+    {
+        if (is_array($exceptSite)) {
+            $this->exceptSite = $exceptSite;
+        }
+    }
+
+    /**
+     * @param mixed $endDate
+     */
+    public function setEndDate($endDate)
+    {
+        $this->endDate = $endDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStartDate()
+    {
+        return $this->startDate;
+    }
+
+    /**
+     * @param mixed $startDate
+     */
+    public function setStartDate($startDate)
+    {
+        $this->startDate = $startDate;
+    }
+
+    private function doInitCalPreKey()
+    {
+        $this->calPreKey = $this->dateType != 2 ? '' : 'c_';
+    }
+    
+    private function doInitCalKeyFields()
+    {
+        $calKeyFieldsArray = array();
+        foreach ($this->cal1Keys as $calKey => $calValue) {
+            array_push($calKeyFieldsArray, 'SUM(`' . $calValue . '`) AS `' . $calKey . '`');
+        }
+        foreach ($this->cal2Keys as $calKey => $calValue) {
+            array_push($calKeyFieldsArray, 'SUM(`' . $this->calPreKey . $calValue . '`) AS `' . $calKey . '`');
+        }
+        if (empty($calKeyFieldsArray)) {
+            return false;
+        }
+        $this->calKeyFields = implode(',', $calKeyFieldsArray);
+
+        return true;
+    }
+
+    public function doCalculate($type = '', $page = true, $offset = 0, $limit = 10, $order = '')
+    {
+        if (method_exists($this, 'doCalculateBy' . ucfirst(strtolower($type)))) {
+            $this->doInitCalPreKey();
+            $initCalKeyFieldsStatus = $this->doInitCalKeyFields();
+            if (empty($initCalKeyFieldsStatus)) {
+                return false;
+            }
+            $this->doInitFilterCondition();
+            $method = 'doCalculateBy' . ucfirst(strtolower($type));
+
+            $sql =  $this->$method();
+            !empty($order) && $sql .= ' ORDER BY ' . implode(',', $order);
+            if (!empty($page)) {
+                $sql .= ' LIMIT ' . $offset * $limit . ',' . $limit;
+            }
+
+            return $this->getRows($sql);
+        }
+
+        return false;
+    }
+
+    protected function doInitFilterCondition()
+    {
+        $startDate = $this->getStartDate();
+        if (!empty($startDate)) {
+            array_push($this->filter, $this->calByDateKey . " >= '" . $startDate . "'" );
+        }
+        $endDate = $this->getEndDate();
+        if (!empty($endDate)) {
+            array_push($this->filter, $this->calByDateKey . " <= '" . $endDate . "'" );
+        }
+        $sites = $this->getSite();
+        if (!empty($sites)) {
+            $siteProcessedArray = array();
+            foreach ($sites as $site) {
+                array_push($siteProcessedArray, "'" . $site . "'");
+            }
+            !empty($siteProcessedArray) && array_push($this->filter, " site IN (" .implode(',', $siteProcessedArray) .")" );
+        }
+        $siteSql = $this->getSiteSql();
+        if (!empty($siteSql)) {
+            array_push($this->filter, ' site IN (' . $siteSql . ')');
+        }
+        $exceptSites = $this->getExceptSite();
+        if (!empty($exceptSites)) {
+            $siteProcessedArray = array();
+            foreach ($exceptSites as $site) {
+                array_push($siteProcessedArray, "'" . $site . "'");
+            }
+            !empty($siteProcessedArray) && array_push($this->filter, " site NOT IN (" .implode(',', $siteProcessedArray) .")" );
+        }
+    }
+
+    private function doSqlCommon($calByKey = null)
+    {
+        if (!empty($calByKey)) {
+            $sql = 'SELECT ' . $calByKey . ',' . $this->calKeyFields . ' FROM ' . $this->table;
+            if (!empty($this->filter)) {
+                $sql .= ' WHERE ' . implode(' AND ', $this->filter);
+            }
+            $sql .= ' GROUP BY ' . $calByKey;
+
+            return $sql;
+        }
+
+        return false;
+    }
+
+    protected function doCalculateByDate()
+    {
+        return $this->doSqlCommon($this->calByDateKey);
+    }
+
+     function doCalculateBySite()
+     {
+         return $this->doSqlCommon($this->calBySiteKey);
+     }
+
+     function doCalculateByStore()
+     {
+         return $this->doSqlCommon($this->calByStoreKey);
+     }
+
+     function doCalculateByDomain()
+     {
+         return $this->doSqlCommon($this->calByDomainKey);
+     }
+
+     function doCalculateByProgram()
+     {
+         return $this->doSqlCommon($this->calByProgramKey);
+     }
+
+     function doCalculateByAffiliate()
+     {
+         return $this->doSqlCommon($this->calByAffiliateKey);
+     }
+
+     function doCalculateByCountry()
+     {
+         return $this->doSqlCommon($this->calByCountryKey);
+     }
+
+    function doCalculateByPublisher()
+    {
+        $sql = 'SELECT c.`Name` AS `name`,c.`ID` AS ' . $this->calByPublisherKey . ',' . $this->calKeyFields . ' FROM ' . $this->table;
+        $sql .= ' LEFT JOIN publisher_account AS `b` ON ' . $this->table . '.site = b.apikey ';
+        $sql .= ' LEFT JOIN publisher `c` ON b.`PublisherId` = c.`ID` ';
+        if (!empty($this->filter)) {
+            $sql .= ' WHERE ' . implode(' AND ', $this->filter) . ' AND c.id IS NOT NULL AND c.`Name` IS NOT NULL';
+        } else {
+            $sql .= ' WHERE  c.id IS NOT NULL AND c.`Name` IS NOT NULL';
+        }
+        $sql .= ' GROUP BY ' . $this->calByPublisherKey;
+
+        return $sql;
+    }
+}

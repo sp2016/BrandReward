@@ -1,0 +1,216 @@
+<?php
+class Statis extends LibFactory
+{
+    function getCommission($data,$page,$pageSize){
+        $calObj = new Calculation();
+        switch ($data['datatype']) {
+            case '1' :
+                $calObj->dataType = 'publisher';
+                break;
+            case '2' :
+                $calObj->dataType = 'all';
+                break;
+        }
+        $calObj->startDate = $data['stime'];
+        $calObj->endDate = $data['etime'];
+        $offset = ceil($page / $pageSize);
+        $calRows = $calObj->calTranslationDate(null,null,array('createddate ASC'));
+        $dType = isset($data['dtype']) ? $data['dtype'] : '';
+	    $return['count'] = count($calRows);
+        switch ($dType) {
+            case 'sc' :
+                $calRows = $calObj->calTranslationDate($offset,$pageSize,array('createddate ASC'));
+                foreach ($calRows as &$row) {
+                    $row['epc'] = $row['rate'] = '-';
+                    if ($row['click'] > 0 && $row['commission'] > 0 && $row['sales'] > 0) {
+                        $epc = $row['commission'] / ($row['click'] - $row['rob']);
+                        $row['epc'] = '$' . number_format($epc, 2, '.', ',');
+                        $rate = $row['commission'] / $row['sales'] * 100;
+                        $row['rate'] = number_format($rate, 2, '.', ',') . "%";
+                    }
+                    $row['clicks'] = number_format($row['click'] - $row['rob']);
+	                $row['commission'] = '$' . number_format($row['commission'], 2);
+                    $row['sales'] = '$' . number_format($row['sales'], 2);
+                    $row['order'] = number_format($row['order']);
+                    $row['rob'] = number_format($row['rob']);
+                    $row['robp'] = number_format($row['robp']);
+                    $row['date'] = $row['createddate'];
+                    unset($row['createddate']);
+                }
+                $return['data'] = $calRows;
+                return $return;
+                break;
+	        case 'na' :
+                $calObj->advertiserCooperationStatus = 'NO';
+                $calObj->filterKeyword = true;
+                $naRows = $calObj->calTransactionStore();
+                $return['count'] = count($naRows);
+                $naData = $calObj->calTransactionStore($offset,$pageSize,array('click DESC'));
+                foreach ($naData as &$naValue) {
+                    $naValue['clicks'] = $naValue['click'];
+                    $storeId = isset($naValue['storeId']) ? $naValue['storeId'] : 0;
+                    if (empty($storeId)) {
+                        $naValue['name'] = '';
+                        continue;
+                    }
+                    $subSql = "SELECT IF(NameOptimized = '' OR NameOptimized IS NULL, `Name`, NameOptimized) AS `name` FROM store WHERE ID = $storeId";
+                    $storeRow = $this->getRow($subSql);
+                    if (!empty($storeRow) && isset($storeRow['name'])) {
+                        $naValue['name'] = $storeRow['name'];
+                    }
+                }
+                $return['data'] = $naData;
+                return $return;
+                break;
+        }
+
+        $calAdvObj = new Calculation();
+        switch ($data['datatype']) {
+            case '1' :
+                $calAdvObj->dataType = 'publisher';
+                break;
+            case '2' :
+                $calAdvObj->dataType = 'all';
+                break;
+        }
+        $calAdvObj->startDate = $data['stime'];
+        $calAdvObj->endDate = $data['etime'];
+        $calAdvObj->advertiserCooperationStatus = 'YES';
+        $calAdv = $calAdvObj->calTransactionStore(0,10,array('commission DESC'));
+        foreach ($calAdv as &$adv) {
+            $storeId = isset($adv['storeId']) ? $adv['storeId'] : 0;
+            if (empty($storeId)) {
+                continue;
+            }
+            $subSql = "SELECT IF(NameOptimized = '' OR NameOptimized IS NULL, `Name`, NameOptimized) AS `name` FROM store WHERE ID = $storeId";
+            $storeRow = $this->getRow($subSql);
+            if (!empty($storeRow) && isset($storeRow['name'])) {
+                $adv['name'] = $storeRow['name'];
+            }
+        }
+        $calPubObj = new Calculation();
+        switch ($data['datatype']) {
+            case '1' :
+                $calPubObj->dataType = 'publisher';
+                break;
+            case '2' :
+                $calPubObj->dataType = 'all';
+                break;
+        }
+        $calPubObj->startDate = $data['stime'];
+        $calPubObj->endDate = $data['etime'];
+        $calPub = $calPubObj->calTransactionPublisher(0,10,array('commission DESC','click DESC'));
+        //查询publisher数量
+        $sql = "SELECT count(1) AS count FROM publisher WHERE AddTime>='{$data['stime']}' AND Addtime<='{$data['etime']}'";
+        $pubTotal = $this->getRow($sql);
+        $return['publisher'] = $pubTotal['count'];
+        $return['sum'] = $calRows;
+        $return['adv'] = $calAdv;
+        $return['toppub'] = $calPub;
+        return $return;
+
+    }
+    function getpub($data,$page,$pagesize){
+        $return  = array();
+        $calObj = new Calculation();
+        switch ($data['datatype']) {
+            case '1' :
+                $calObj->dataType = 'publisher';
+                break;
+            case '2' :
+                $calObj->dataType = 'all';
+                break;
+        }
+        $calObj->startDate = $data['stime'];
+        $calObj->endDate = $data['etime'];
+        $total = $calObj->calTransactionPublisher();
+        $return['count'] = count($total);
+        $offset = ceil($page / $pagesize);
+        $res = $calObj->calTransactionPublisher($offset,$pagesize,array('commission DESC'));
+        foreach($res as &$k){
+            if(($k['click'] - $k['rob']) >0 && $k['commission'] >0){
+                $k['epc'] = '$'.number_format(($k['commission']/($k['click']-$k['rob'])),2,'.',',');
+            }else{
+                $k['epc'] = '-';
+            }
+            if($k['sales'] >0 && $k['commission'] >0){
+                $k['rate'] = number_format(($k['commission']/$k['sales']*100),2,'.',',')."%";
+            }else{
+                $k['rate'] = '-';
+            }
+            $k['date'] = $k['name'];
+            $k['clicks'] = number_format($k['click']-$k['rob']);
+            $k['commission'] = '$'.number_format($k['commission'],2);
+            $k['sales'] = '$'.number_format($k['sales'],2);
+            $k['order'] = number_format($k['order']);
+            $k['rob'] = number_format($k['rob']);
+            $k['robp'] = number_format($k['robp']);
+        }
+        $return['data'] = $res;
+        return $return;
+    }
+    function download($data){
+        print(chr(0xEF).chr(0xBB).chr(0xBF)); //add utf8 bom in csv file
+        header('Pragma:public');
+        header('Expires:0');
+        header("Content-type:text/csv");
+        header("Content-type:  application/octet-stream;");
+        header('Content-Transfer-Encoding: binary');
+        if($data['dtype'] == 'sc' || $data['dtype'] == 'na'){
+            $info = $this->getCommission($data,0,1000);
+            if($data['dtype'] == 'sc'){
+                header("Content-Disposition: attachment; filename= Daily.csv");
+                $dataHead = array('Date','Sales','Commission','Order','Clicks','Robot','May Be Robot','Epc','Commission Rate');
+            }else{
+                header("Content-Disposition: attachment; filename= Daily.csv");
+                $dataHead = array('Advertiser','Clicks');
+            }
+            echo implode(',',$dataHead)."\n";
+        }else{
+            header("Content-Disposition: attachment; filename=Publisher Daily.csv");
+            $info = $this->getpub($data,0,1000);
+            $dataHead = array('Publisher','Sales','Commission','Order','Clicks','Robot','May Be Robot','Epc','Commission Rate');
+            echo implode(',',$dataHead)."\n";
+        }
+        if($data['dtype'] == 'na'){
+            $count = $info['count']['count'];
+        }else{
+            $count = $info['count'];
+        }
+        $page_total = ceil($count/1000);
+        $page = 0;
+        do{
+            if($data['type'] == 'sc'){
+                $datares = $this->getCommission($data,$page*1000,1000);
+            }else{
+                $datares = $this->getpub($data,0,1000);
+            }
+            $content = $datares['data'];
+            if($data['dtype'] == 'na'){
+                foreach ($content as &$v){
+                    $datares = array($v['name'], $v['clicks']);
+                    echo '"'.implode('","',$datares).'"'."\n";
+                }
+            }else{
+                foreach ($content as &$v){
+                    $datares = array($v['date'], $v['sales'], $v['commission'], $v['order'], $v['clicks'], $v['rob'], $v['robp'], $v['epc'], $v['rate']);
+                    echo '"'.implode('","',$datares).'"'."\n";
+                }
+            }
+            $page++;
+        }while($page < $page_total);
+        exit();
+    }
+    function getCategory(){
+        $category = array();
+        $sql = "SELECT * from category_std ORDER BY `Name` ASC;";
+        $rs = $this->getRows($sql);
+        foreach($rs as $item)
+        {
+            $category[$item['ID']] = $item['Name'];
+        }
+        return $category;
+    }
+
+
+}

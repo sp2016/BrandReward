@@ -1,0 +1,216 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style>
+	.s{
+		max-width: 30%;
+		word-wrap:break-word;word-break:break-all;
+	}
+</style>
+<div class="ch-container" style="margin-top: 20px;">
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+            <div class="sidebar-nav" style="background-color:#f6f6f6;">
+                <a href="javascript:void(0)" class="sh"><i style="margin-top: 10px;color:#627491;margin-left: 10px;font-size: 18px;" class="glyphicon glyphicon-search"></i></a>
+	            <div style="margin-left: 2.5%;" class="controls">
+                    <label class="control-label" style="margin-left: 3px;">Network:</label>
+                    <select id="network"  data-rel="chosen" style="width: 10%">
+                        <option value="All">ALL</option>
+                        <{foreach from=$networks item=network}>
+                        <option value="<{$network.ID}>" class="networks"><{$network.Name}></option>
+                        <{/foreach}>
+                    </select>
+		            <label class="control-label" style="margin-left: 3px;">Correct:</label>
+		            <select id="status"  data-rel="chosen" style="width: 8%">
+			            <option value="All">ALL</option>
+			            <{foreach from=$corrects item=corrects}>
+                        <option value="<{$corrects.Correct}>" class="error-type"><{$corrects.Correct}></option>
+                        <{/foreach}>
+		            </select>
+		            <label class="control-label" style="margin-left: 3px;">Error type:</label>
+                    <select id="type"  data-rel="chosen" style="width: 10%">
+                        <option value="All">ALL</option>
+	                    <{foreach from=$error_types item=error_type}>
+                        <option value="<{$error_type.ErrorType}>" class="error-type"><{$error_type.ErrorType}></option>
+                        <{/foreach}>
+                    </select>
+                    <input type="button" class="btn search" style="margin-left:2.5%;margin-top:10px;margin-bottom:10px;background-color: #627491;color:white;" value="Search">
+                </div>
+            </div>
+        </div>
+        <div id="content" class="col-lg-12 col-sm-12">
+            <div>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="<{$smarty.const.BASE_URL}>/b_home.php">Home</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" style="text-decoration:none;">OutboundLog</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="box col-md-12" style="padding-left:0;padding-right:0;">
+                <div class="box-inner">
+                    <div class="box-header well" data-original-title="">
+                    </div>
+                    <div id="tbzone">
+                        <table id="example" class="ui celled table" cellspacing="0" width="100%">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#network').chosen();
+    $('#status').chosen();
+    $('#type').chosen();
+
+    function tab(){
+        var network = $('#network').val();
+        var status = $('#status').val();
+        var type = $('#type').val();
+        $('#example').dataTable({
+            "bServerSide": true,
+            "bProcessing": true,
+	        "scrollX": true,
+            "iDisplayLength": 20,
+            "bPaginage":true,
+            "aLengthMenu": [10, 20, 50, 100],
+            'bFilter': false,
+	        "ordering": false,
+            'pagingType':'full_numbers',
+            "ajax": {
+                "url": "b_check_outbound.php",
+                "type":'POST',
+                "data": {
+                    "table":1,
+	                'network':network,
+	                'status':status,
+	                'type':type
+                }
+            },
+            columns: [
+                { "data": null,"title":'Network',"width": "10%","render":function(data, type, full, meta){
+                    return full.Network;
+                }},
+	            { "data": null,"bSortable": false,"sClass":'s',"title":'Program',"render":function(data,type,full,meta){
+                	return full.Program + '(' + full.PID + ')<br />' + full.Homepage ;
+                }},
+	            { "data": null,"bSortable": false,"title":'ErrorType',"render":function(data,type,full,meta){
+                	return full.ErrorType;
+                }},
+	            { "data": null,"bSortable": false,"title":'Http Code',"render":function(data,type,full,meta){
+                	return full.HttpCode;
+                }},
+                { "data": null,"bSortable": false,"sClass":'s',"title":'UrlOrTpl',"width": "20%","render":function(data,type,full,meta){
+                	return '<a target="_blank" href="'+ full.UrlOrTpl + '">' + full.UrlOrTpl + '</a>';
+                }},
+	            { "data": null,"bSortable": false,"title":'Origin',"sClass":'s',"width": "20%","render":function(data,type,full,meta){
+                	return full.Origin;
+                }},
+	            { "data": null,"bSortable": false,"title":'Dealt',"sClass":'s',"render":function(data,type,full,meta){
+                	return full.Dealt;
+                }},
+	            { "data": null,"bSortable": false,"title":'Correct',"width": "10%","render":function(data,type,full,meta){
+	            	if(full.Correct != 'Auto')
+		            {
+		            	if(full.ErrorType.indexOf('OK') == -1)
+			            {
+			            	return '<button class="btn btn-info'+(full.Correct=='YES'?' disabled" disabled="disabled"':"\"") +' onclick=check(' + full.ID +',1)>YES</button> <button class="btn btn-info'+(full.Correct=='NO'?' disabled" disabled="disabled"':"\"") +' onclick=check(' + full.ID +',0)>NO</button>';
+			            }
+			            else
+	            		    return '';
+		            }
+		            else
+		                return '<button class="btn btn-info disabled" disabled="disabled">Auto</button>';
+                }},
+                { "data": null,"bSortable": false,"title":'Offline',"sClass":'s',"render":function(data,type,full,meta){
+                	return '<button class="btn btn-info" onclick=offlineProgram(' + full.PID +')>Offline</button>';
+                }},
+	            { "data": null,"bSortable": false,"title":'Choice',"sClass":'s',"render":function(data,type,full,meta){
+                	return full.Alternative;
+                }},
+	            { "data": null,"bSortable": false,"title":'Replace?',"width": "10%","render":function(data,type,full,meta){
+	            	if(full.ErrorType.indexOf('OK') == -1 )
+                        return '<button class="btn btn-info'+(full.Confirmed=='YES'?' disabled" disabled="disabled"':"\"") +' onclick=replace(' + full.ID +')>YES</button>';
+	            	else
+	            		return '';
+                }}
+            ]
+        })}
+    tab();
+    function check(id,checked) {
+    	if(checked)
+	    {
+	    	status = 'right';
+	    	checked = 'YES';
+	    }
+    	else
+	    {
+	    	status = 'wrong';
+	    	checked = 'NO';
+	    }
+
+        $.ajax({
+            type:"post",
+            url:"process.php",
+            data:'act=outbound_check&id='+id+'&check='+checked,
+            success: function(res){
+                console.log(res);
+                if(res){
+                }
+                else{
+                    alert('Error');
+                }
+            }
+        });
+    }
+
+    function replace(id) {
+        $.ajax({
+            type:"post",
+            url:"process.php",
+            data:'act=outbound_replace&id='+id+'&check='+checked,
+            success: function(res){
+                console.log(res);
+                if(res){
+//                        alert('Success');
+                }
+                else{
+                    alert('Error');
+                }
+            }
+        });
+    }
+
+    function offlineProgram(pid) {
+        if(confirm("Are you sure you want to offline this program?"))
+        {
+        	$.ajax({
+                type:"post",
+                url:"process.php",
+                data:'act=outbound_program_offline&pid='+pid,
+                success: function(res){
+                	console.log(res);
+                    if(res){
+                        alert('Success');
+                    }
+                    else{
+                        alert('Error');
+                    }
+                }
+            });
+        }
+        else
+        	alert('Operation cancelled!');
+    }
+
+    $('.search').bind("click",function(){
+        $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+        tab();
+    })
+</script>
+<{include file="b_block_footer.html"}>

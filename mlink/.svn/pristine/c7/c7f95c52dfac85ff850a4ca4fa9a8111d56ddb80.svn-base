@@ -1,0 +1,124 @@
+<?php
+include_once('conf_ini.php');
+include_once(INCLUDE_ROOT.'init.php');
+    //Deal with Post data
+    if(isset($_POST['url'])){
+        $affiliate = $_POST['affiliate'];
+        $program = $_POST['program'];
+        $sql = "SELECT a.ID FROM program a INNER JOIN `wf_aff` b ON b.`ID` = a.`AffId` WHERE a.`Name`='$program' AND b.`Name` = '$affiliate';";
+
+        $arr = $db->getFirstRow($sql);
+        if(count($arr) == 0){
+            $data = array(
+                'flag' => 2,
+                'msg' => 'Invalid affiliate and program',
+            );
+            echo json_encode($data);
+            die;
+        } else {
+            $pid = $arr['ID'];
+            $user = $_SERVER['PHP_AUTH_USER'];
+            $couponCode = addslashes($_POST['couponCode']);
+            $startDate = $_POST['startDate'];
+            $endDate = $_POST['endDate'];
+            $title = addslashes($_POST['title']);
+            $desc = addslashes($_POST['desc']);
+            $url = addslashes($_POST['url']);
+            $type = $_POST['type'];
+            $affLinkId = "9999".date("YmdHis").rand(1000,9999);
+            $currentTime = date("Y-m-d H:i:s");
+            $sql = "insert into content_feed (`ProgramId`,`AffLinkId`,`CouponCode`,`Title`,`Desc`,`AffUrl`,`StartDate`,`EndDate`,`AddTime`,`Status`,`Type`,`AddUser`) VALUES ('$pid','$affLinkId','$couponCode','$title','$desc','$url','$startDate','$endDate','$currentTime','Active','$type','$user')";
+            if($db->query($sql)){
+                $data = array(
+                    'flag' => 1,
+                    'msg' => 'Success'
+                );
+                echo json_encode($data);
+            } else {
+                $data = array(
+                    'flag' => 2,
+                    'msg' => 'Insert Error!'
+                );
+                echo json_encode($data);
+            }
+        }
+        die;
+    }
+	else if(isset($_POST['delete_content']))
+	{
+		$currentTime = date("Y-m-d H:i:s");
+		$sql = "INSERT INTO content_feed_delete_report (content_feed_id,delete_time,delete_user) VALUES ('{$_POST['id']}','$currentTime','{$_SERVER['PHP_AUTH_USER']}')";
+		$db->query($sql);
+		$sql = "Update content_feed Set `Status`= 'InActive' WHERE ID = '{$_POST['id']}'";
+		if($db->query($sql)){
+			$data = array(
+				'flag' => 1,
+				'msg' => 'Success'
+			);
+			echo json_encode($data);
+		} else {
+			$data = array(
+				'flag' => 2,
+				'msg' => 'Delete Error!'
+			);
+			echo json_encode($data);
+		}
+		die;
+	}
+//category
+	$statis = new Statis();
+	$category = $statis->getCategory();
+
+//country
+$sql = 'SELECT CountryName,CountryCode FROM country_codes';
+$arr = $db->getRows($sql);
+foreach($arr as $v){
+    $countryArr[$v['CountryName']] = $v['CountryCode'];
+}
+$countryArr['global'] = 'Global';
+$countryArr['United Kingdom'] = 'UK';
+	$merchant = new MerchantExt();
+
+$p = isset($_GET['p']) ? $_GET['p'] : 1;
+$return = $merchant->GetContent($_GET,$p);
+
+$page_html = get_page_html($return);
+
+if(is_array($return['content']) && count($return['content'])){
+    foreach ($return['content'] as $k => &$v){
+        $v['StartTime'] = date('Y-m-d',strtotime($v['StartDate']));
+        if($v['EndDate'] == '0000-00-00 00:00:00'){
+        	$v['ExpireTime'] = 'N/A';
+        }else{
+        	$v['ExpireTime'] = date('Y-m-d',strtotime($v['EndDate']));
+        }
+        /*if($v['ImgIsDownload'] == 'NO')
+            $v['ImgFile'] = 'http://api.brandreward.com/data/linksIMG/BDG/no_image.png';
+        else{
+            $v['ImgFile'] = json_decode($v['ImgFile'],TRUE);
+            $v['ImgFile'] = "http://api.brandreward.com/data/linksIMG" . $v['ImgFile']['advertiser'];
+        }*/
+        $v['LinkUrl'] = $v['AffUrl'];
+    }
+}
+
+$sel_cate = array();
+if(isset($_GET['categories'])){
+    $sel_cate = explode(',',$_GET['categories']);
+}
+
+$objTpl->assign('sel_cate', $sel_cate);
+
+$objTpl->assign('pageHtml', $page_html);
+$objTpl->assign('search', $_GET);
+$objTpl->assign('category', $category);
+$objTpl->assign('countryArr', $countryArr);
+$objTpl->assign('content', $return['content']);
+$sys_header['css'][] = BASE_URL.'/css/front.css';
+$sys_header['css'][] = BASE_URL.'/css/DateTimePicker.css';
+$sys_footer['js'][] = BASE_URL.'/js/DateTimePicker.js';
+$sys_footer['js'][] = BASE_URL.'/js/b_tran.js';
+$sys_footer['js'][] = BASE_URL.'/js/back.js';
+$objTpl->assign('sys_header', $sys_header);
+$objTpl->assign('sys_footer', $sys_footer);
+$objTpl->display('b_content.html');

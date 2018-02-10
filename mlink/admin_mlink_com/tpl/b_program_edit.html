@@ -1,0 +1,140 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style type="text/css">
+.table>tbody>tr>td,.table>tbody>tr>th,.table>tfoot>tr>td,.table>tfoot>tr>th,.table>thead>tr>td,.table>thead>tr>th
+{
+ vertical-align:middle;
+}
+xmp
+{
+	  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+label
+{
+	font-weight:100;
+}
+</style>
+
+<h1 style="text-align:center">Edit Program</h1>
+
+<div class="container" style="margin-top:30px;">
+<form action="<{$smarty.const.BASE_URL}>/b_program.php" method="post">
+<input type="hidden" name="act" value="save_program" />
+<input type="hidden" name="id" value="<{$program.ID}>" />
+<table class="table table-bordered">
+
+
+   <tbody>
+   <tr>
+         <td colspan="2" style="text-align:left;font-weight: bold;background-color:#1A3958"><font color="white">Basic</font></td>
+         
+         
+      </tr>
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Name</td>
+         <td><{$program.Name}> &nbsp;<a href="../old_tools/front/program_store_edit.php?ProgramId=<{$program.ID}>" target="_blank">##Program Domain Tracking Link Config</a></td>
+      </tr>
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Program ID in Affiliate</td>
+         <td><{$program.IdInAff}></td>
+      </tr>
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Affiliate</td>
+         <td><{$aff.Name}></td>
+      </tr>
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Homepage</td>
+         <td><{$program.Homepage}></td>
+      </tr>
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">ShippingCountry</td>
+         <td><{$program.ShippingCountry}></td>
+      </tr>
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Domain</td>
+         <td><{$program.Domain}></td>
+      </tr>
+       <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Real Domain</td>
+         <td><textarea class="form-control" name="RealDomain"><{$pm.RealDomain}></textarea></td>
+      </tr>
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">CommissionTxt</td>
+         <td><{$program.CommissionExt}></td>
+      </tr>
+
+       <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Commission</td>
+         <td><{$program.CommissionUsed}>(<{if $program.CommissionType == 'value'}><{$program.Commission}><{else}>%<{/if}>)</td>
+      </tr>
+
+       <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Real Commission</td>
+         <td>
+         	<div class="form-inline">
+         		<div class="form-group">
+         			<input type="text" id="f_CommissionUsed"  class="form-control" value="<{$pm.CommissionUsed}>" name="CommissionUsed" />
+         		</div>
+         		<div  class="form-group">
+         			<select id="CommissionType" class="form-control" name="CommissionType">
+         				<option value="Value" <{if $pm.CommissionType == 'Value'}>selected<{/if}>>Value</option>
+         				<option value="Percent" <{if $pm.CommissionType == 'Percent'}>selected<{/if}>>Percent</option>
+         			</select>
+         		</div>
+         		<div id="CommissionCurrency" class="form-group">
+         			<select class="form-control" name="CommissionCurrency">
+         			<option value='' selected>CommissionCurrency</option>
+         				<{foreach from=$currency item=c}>
+         					<option value=<{$c}> <{if $pm.CommissionCurrency == $c}>selected<{/if}>><{$c}></option>
+         				<{/foreach}>
+         			</select>
+         		</div>
+         		<div class="form-group">
+         			<input type="button" class="btn  btn-primary " value="Clear" onclick="clearComm()">
+         		</div>
+         	</div>
+         </td>
+      </tr>
+
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Program Status In Affiliate</td>
+         <td><{$program.StatusInAff}></td>
+      </tr>
+
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Partnership Status</td>
+         <td><{$program.Partnership}></td>
+      </tr>
+
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Status In BDG</td>
+         <td>
+         	<select class="form-control" name="StatusInBdg">
+         		<option value="">Unknown</option>
+         		<option value="Active" <{if $pm.StatusInBdg == 'Active'}>selected<{/if}>>Active</option>
+         		<option value="Inactive" <{if $pm.StatusInBdg == 'Inactive'}>selected<{/if}>>Inactive</option>
+         	</select>
+         </td>
+      </tr>
+      
+   </tbody>
+</table>
+
+</form>
+</div>
+
+<script>
+function clearComm(){
+	$('#f_CommissionUsed').val('0.00');
+}
+$('#CommissionType').change(function(){
+	if($(this).val() == 'Value'){
+		$('#CommissionCurrency').css('display','');
+	}else{
+		$('#CommissionCurrency').css('display','none');
+	}
+});
+</script>
+
+
+<{include file="b_block_footer.html"}>

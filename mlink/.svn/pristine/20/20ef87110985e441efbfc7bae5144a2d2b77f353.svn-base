@@ -1,0 +1,72 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container" style="margin-top:30px;width:90%">
+        <div style="text-align:center;margin-bottom:30px;"><h1>
+            Traffic
+        </h1></div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><{$LANG.front.b_ad_traffic.a1}></div>
+                    <div class="panel-body">
+                        <form id="form_tran_search">
+                            <div class="col-lg-8 form-inline">
+                                <div class="form-group">
+                                    <input type="text" name="tran_from" class="form-control datepicker" id="tran_from" value="<{$search.tran_from}>">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="tran_to" class="form-control datepicker" id="tran_to" value="<{$search.tran_to}>">
+                                </div>
+                                <input class="btn btn-default" type="button" value="Last 7 Days">
+                                <input class="btn btn-default" type="button" value="Last 30 Days">
+                                <div class="form-group">
+                                    <input type="submit" class="btn  b-primary " value="Search">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <{$LANG.front.b_aff_traffic.a2}>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th><{$LANG.front.b_aff_traffic.a3}></th>
+                                <th><{$LANG.front.b_aff_traffic.a6}></th>
+                                <th width="33%"><{$LANG.front.b_aff_traffic.a7}></th>
+                                <th><{$LANG.front.b_aff_traffic.a8}></th>
+
+                            </tr>
+                            </thead>
+                            <{foreach from=$tranData.tran item=Tran}>
+                            <tr>
+                                <td><{$Tran.created}></td>
+                                <td><{$Tran.Domain}></td>
+                                <td><{$Tran.pageUrl}></td>
+                                <td><{$Tran.sessionId}></td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                        <{$pageHtml}>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <{include file="b_block_footer.html"}>

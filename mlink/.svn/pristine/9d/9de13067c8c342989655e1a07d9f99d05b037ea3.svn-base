@@ -1,0 +1,126 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style>
+table td{border:1px solid rgb(187,187,187) !important;background-color:rgb(255,255,255)}
+table th{border:1px solid rgb(187,187,187) !important;text-align:center;background-color:rgb(227,227,227)}
+.paymentlist .paymentdate{text-align:center;vertical-align: middle;background-color:rgb(241,241,241)}
+</style>
+<div>
+    <div class="container" style="margin-top:30px;width:90%">
+        <div style="text-align:center;margin-bottom:30px;"><h1>
+            Payment
+        </h1></div>
+        <div class="row" style="padding:20px 0;">
+
+            <!-- <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><{$LANG.front.b_aff_traffic.a1}></div>
+                    <div class="panel-body">
+                        <form id="form_tran_search">
+                            <div class="col-lg-8 form-inline">
+                                <div class="form-group">
+                                    <input type="text" name="tran_from" class="form-control datepicker" id="tran_from" value="<{$search.tran_from}>">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="tran_to" class="form-control datepicker" id="tran_to" value="<{$search.tran_to}>">
+                                </div>
+                                <input class="btn btn-default" type="button" value="Last 7 Days">
+                                <input class="btn btn-default" type="button" value="Last 30 Days">
+                                <div class="form-group">
+                                    <input type="submit" class="btn  b-primary " value="Search">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-inline">
+                                    <div class="form-group" style="float: right">
+                                        <input type="button" class="btn  b-primary " onclick="outLogExport()" value="Export CSV">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div> -->
+
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <table class="table table-striped paymentlist">
+                        <thead>
+                         <tr>
+                             <th width="10%">Date</th>
+                             <th width="25%">Domain</th>
+                             <th width="15%">Amount</th>
+                             <th width="10%">Currency</th>
+                             <th width="15%">Type Of Payment</th>
+                             <th width="10%">Payment Status</th>
+                             <th width="15%">Operation</th>
+                         </tr>
+                        </thead>
+                        <tbody>
+						<{foreach from=$paymentList item=Temp}>
+                         <tr data-id="<{$Temp.ID}>">
+                             <td class="paymentdate" rowspan=2><{$Temp.PaidDate}></td>
+                             <td><{$Temp.Domain}></td>
+                             <td><{$Temp.Amount}></td>
+                             <td><{$Temp.Currency}></td>
+                             <td><{$Temp.Paymenttype}></td>
+                             <td><{$Temp.Status}></td>
+                             <td><{if $Temp.FileExist eq '1'}><a data-file="<{$Temp.FileExist}>" href="javascript:void(0)" class="downloadInvoice">Download</a><{/if}></td>
+                         </tr>
+                         <tr>
+                             <td colspan=20><{$Temp.PaymentDetail}></td>
+                         </tr>
+                         <{/foreach}>
+                        </tbody>
+                    </table>
+                    <!-- <{$pageHtml}> -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function(){
+        	
+        	/* jQuery.download = function(url, data, method){ // 获得url和data
+        	    if( url && data ){ 
+        	        // data 是 string 或者 array/object
+        	        data = typeof data == 'string' ? data : jQuery.param(data); // 把参数组装成 form的 input
+        	        var inputs = '';
+        	        jQuery.each(data.split('&'), function(){ 
+        	            var pair = this.split('=');
+        	            inputs+='<input type="hidden" name="'+ pair[0] +'" value="'+ pair[1] +'" />'; 
+        	        }); // request发送请求
+        	        jQuery('<form action="'+ url +'" method="'+ (method||'post') +'">'+inputs+'</form>').appendTo('body').submit().remove();
+        	    };
+        	}; */
+        	
+        	$(document).delegate(".downloadInvoice","click",function(){
+        		var fileExist = $(this).data('file');
+        		if(fileExist != 1){
+        			alert("File Not Found.");
+        			return false;
+        		}
+        		var id = $(this).closest('tr').data('id');
+        		//$.download(CON_BASE_URL+'/b_payment.php','act=downloadInvoice&id='+id,'post' );
+        	    
+        	    var _form = $("<form></form>");
+                _form.attr('action',CON_BASE_URL+"/b_payment.php");
+                _form.attr('method','post');
+                var _input1 = $("<input type='hidden' name='act' />");
+                var _input2 = $("<input type='hidden' name='id' />");
+                _input1.attr('value','downloadInvoice');
+                _input2.attr('value',id);
+                _form.append(_input1);
+                _form.append(_input2);
+                _form.appendTo("body");
+                _form.submit();
+                _form.remove();
+        		return false;
+        	})
+        	
+        })
+    </script>
+    <{include file="b_block_footer.html"}>

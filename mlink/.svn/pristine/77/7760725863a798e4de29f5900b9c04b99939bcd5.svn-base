@@ -1,0 +1,181 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style>
+    table{word-break:break-all}
+    .form_search .form-inline{margin-bottom:15px;}
+    .form_search .form-inline .form-group{margin-right:15px;}
+    hr
+    {
+        position:absolute;
+        float:left;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        width:150px;
+        border:1px solid;
+    }
+</style>
+<div>
+    <div class="" style="margin-top:30px;">
+        <div class="row" style="padding:20px 0;">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    <div class="panel-body" >
+                        <form id="form_tran_search" class="form_search">
+
+                            <input type="hidden" name="p" value="1" />
+
+                            <div class="form-inline">
+
+                                <div class="form-group" style="position:relative;">
+                                    <div class="checkbox">
+                                        Affiliate:
+                                    </div>
+                                    <input type="text" name="Affiliate" id="f_affiliate" class="form-control tip_affiliate" value="<{$Affiliate}>" placeholder="Affiliate Name" />
+                                </div>
+
+                                <div class="form-group" style="position:relative;">
+                                    <div class="checkbox">
+                                        Operator:
+                                    </div>
+                                    <input type="text" name="BatchOperator" id="f_operator" class="form-control tip_batchoperator" value="<{$BatchOperator}>" placeholder="Operator Name" />
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="submit" class="btn  btn-primary " value="Search">
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">List</div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th style="width:20%">Id</th>
+                                <th style="width:20%">AffiliateName</th>
+                                <th style="width:20%">Operator</th>
+                                <th style="width:20%">CreationTime</th>
+                                <th style="width:20%">FiledName</th>
+                                <!--<th style="width:15%">PrimaryKeyValue</th>-->
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=p}>
+                            <tr class="open-close" id="<{$p.BatchId}>">
+                                <td><{$p.BatchId}> </td>
+                                <td><{$p.Name}> </td>
+                                <td><{$p.BatchOperator}> </td>
+                                <td><{$p.BatchCreationTime}> </td>
+                                <td><{foreach from=$p.detail item=q}><{$q.FiledName}><br><{/foreach}></td>
+                            </tr>
+
+                            <{foreach from=$p.detail item=q}>
+                            <tr style="display: none;background-color: #EBFFEF" state="close" class="File_<{$p.BatchId}>">
+                                <th style="text-align: center"><{$q.FiledName}></th>
+                                <th style="text-align: right">From:</td>
+                                <td><{$q.FiledValueFrom}></td>
+                                <th style="text-align: right">To:</td>
+                                <td><{$q.FiledValueTo}></td>
+                            </tr>
+                            <{/foreach}>
+
+                            <{/foreach}>
+                        </table>
+                        <div class="form-inline">
+                            <div class="form-group" style="position:relative;">
+                                <{$pageHtml}>
+                            </div>
+                            <div class="form-group" style="position:relative;">
+                                Page Size: <input  id="size" class="form-control" name="page_size" placeholder="<{if $search.page_size}><{$search.page_size}><{/if}>" >
+                            </div>
+                            <div class="form-group" style="position:relative;">
+                                <input  type="button" class="btn btn-primary btn-sm go" name="page_size" value="Go">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="dialog-commissiontxt" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title" id="exampleModalLabel">CommissionTxt</h2>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $('.tip_affiliate').keyup(function(){
+        var ipt = this;
+        var keywords = $('#f_affiliate').val();
+        var url = '<{$smarty.const.BASE_URL}>/process.php';
+        var ajaxdata = 'act=tip_affiliate&keywords='+keywords;
+        $.ajax({
+            type:"post",
+            url:"<{$smarty.const.BASE_URL}>/process.php",
+            data:ajaxdata,
+            success: function(req){
+                if(req) {
+                    var html_tip = '<ul class="dropdown-menu" >';
+                    var arr = req.split('|');
+                    for (var i in arr) {
+                        html_tip = html_tip + '<li><a href="javascript:void(0);">' + arr[i] + '</a></li>';
+                    }
+                    var html_tip = html_tip + '</ul>';
+                }
+                if($(ipt).parent().find('ul')){
+                    $(ipt).parent().find('ul').remove();
+                }
+                $(ipt).parent().append(html_tip);
+                load_tip($(ipt).parent().find('ul'));
+            }
+        });
+    });
+
+    $('.tip_batchoperator').keyup(function(){
+        var ipt = this;
+        var keywords = $('#f_operator').val();
+        var url = '<{$smarty.const.BASE_URL}>/process.php';
+        var ajaxdata = 'act=tip_batchoperator&keywords='+keywords;
+        $.ajax({
+            type:"post",
+            url:"<{$smarty.const.BASE_URL}>/process.php",
+            data:ajaxdata,
+            success: function(req){
+                if(req) {
+                    var html_tip = '<ul class="dropdown-menu" >';
+                    var arr = req.split('|');
+                    for (var i in arr) {
+                        html_tip = html_tip + '<li><a href="javascript:void(0);">' + arr[i] + '</a></li>';
+                    }
+                    var html_tip = html_tip + '</ul>';
+                }
+                if($(ipt).parent().find('ul')){
+                    $(ipt).parent().find('ul').remove();
+                }
+                $(ipt).parent().append(html_tip);
+                load_tip($(ipt).parent().find('ul'));
+            }
+        });
+    });
+
+</script>
+
+<{include file="b_block_footer.html"}>

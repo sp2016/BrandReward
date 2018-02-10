@@ -1,0 +1,343 @@
+@CHARSET "UTF-8";
+
+@font-face {
+    font-family: 'MyriadPro';
+    src: url('../fonts/myriadproregular.eot');
+    src: url('../fonts/myriadproregular.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/myriadproregular.woff') format('woff'),
+    url('../fonts/myriadproregular.ttf') format('truetype'),
+    url('../fonts/myriadproregular.svg#MyriadPro') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+/* html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, dl, dt, dd, ol, ul, li, fieldset, form, label, input, button, select, textarea, img, table, th, td, article, aside, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video, p{ padding:0; margin:0; border: 0 none; color:#ffffff; font-family: 'MyriadPro',sans-serif; font-size: 14px; font-weight:normal; list-style:none;} */
+html{font-size:100%;}
+body{font-size:1em;line-height:1.25;}
+a{color: #ffffff;text-decoration: none;}
+.clr{clear: both;}
+body{background: #f0f0f0;}
+header{display:block;}
+
+.header{width: 100%;height: 100px;border-bottom: 16px solid #60738d;}
+.header .main{width:100%;margin: 0 auto;border-bottom: 16px solid #60738d;max-width: 1269px; position: relative;text-align: center;padding-right: 30px;box-sizing: border-box;}
+.header .main .logo{width: 208px;height: 56px;margin: 24px 0 20px;float: left;}
+.header .main ul.menu{float: left;margin-top: 36px;margin-left: 4%;display: block}
+.header .main ul.menu li{display: inline-block;font-size: 1.5em;}
+.header .main ul.menu li a{color: #333333;display: block;background: #f0f0f0;padding: 0 15px;height: 64px;line-height: 64px;}
+.header .main ul.menu li a:hover, .header .main ul.menu li a.hover{color: #ffffff;background: #60738d;}
+.header .main .btn_sl{float: left;}
+.header .main .btn_sl a{ margin: 50px 0 0 15px;width: 64px; height: 32px; line-height: 32px; text-align: center;font-size: 14px; display: inline-block;}
+.header .main .btn_sl a.su{border: 1px solid #f79646;background: #f79646;color: #ffffff; letter-spacing: -.2px;}
+.header .main .btn_sl a.lg{border: 1px solid #60738d;background: #f0f0f0;color: #333333;}
+
+.container{width: 100%; }
+.container .banner{width: 100%; position:relative}
+.container .banner img{ width:100%; min-height: 200px;}
+.banner_text{ position:absolute; width:100%; z-index:2; top:0}
+.container .banner h1{font-size: 9em;font-weight: bold;text-align: center;  padding: 150px 0 0;}
+.container .banner h2{font-size: 3em;text-align: center; padding: 10px 0 0;}
+.container .banner .txt{width: 580px;margin: 0 auto;font-size: 24px;text-align: center;}
+.container .banner .btn{width: 450px;margin: 0 auto;padding: 50px 0;}
+.container .banner .btn a{font-size: 20px;display: block;width: 186px;height: 48px;line-height: 48px;text-align: center;}
+.container .banner .btn a.s{border: 1px solid #f79646;float: left;margin: 0 66px 0 0;background: #f79646;color: #ffffff;}
+.container .banner .btn a.l{border: 1px solid #ffffff;float: left;background: none;color: #ffffff;}
+.container .int,.container .pub_con, .ref_con, .part_con,.container .contact,.layer .content{width: 100%;margin: 0 auto;padding: 40px 0; max-width: 1200px}
+.part_con{ padding: 80px 0;}
+.container .int .block{width:31%;float: left; padding: 0 20px 0 0}
+.container .int .p_n{ padding: 0}
+.container .int .block i.icon_s{width: 64px;display: block;margin: 0 auto;height: 64px;background: url(../img/icon.png) 5px 0 no-repeat;}
+.container .int .block h3{padding: 10px 0;height: 90px;color: #333333;font-size: 36px;font-weight: bold;text-align: center;}
+.container .int .block p{font-size: 24px;color: #666666;text-align: center;}
+.container .int .block i.icon_i{width: 64px;display: block;margin: 0 auto;height: 64px;background: url(../img/icon.png) -134px 2px no-repeat;}
+.container .int .block i.icon_r{width: 66px;display: block;margin: 0 auto;height: 64px;background: url(../img/icon.png) -268px 2px no-repeat;}
+.container .pub_banner,.ref_banner{width: 100%;}
+.container .pub_banner img,.ref_banner img{ width:100%; min-height: 80px}
+.ref_banner{background: url(../img/banner_pub02.png) no-repeat;}
+.container .pub_con h4, .ref_con h4,.part_con h4{font-size: 40px;color: #333333; line-height: 2em}
+.container .pub_con p,.ref_con p,.part_con p{font-size: 24px;color: #666666;padding: 0 0 50px;}
+.container .pub_con p span{font-size: 28px;color: #333333;}
+.container .pub_con p a,.part_con p a{color: #f79646;text-decoration: underline; cursor: pointer; }
+.container .team_banner{ background-color: #fff; position: relative;max-height: 620px; overflow: hidden;}
+.container .team_banner img{ width: 70%; max-width: 1170px; display: block; margin: 0 auto; }
+.container .team_banner h1{ position: absolute; font-size: 32px; top:44%; z-index: 2; text-align: center; width: 100%}
+.container .team_banner p{ display: block; width: 100%;background-color: rgba(0,0,0,0.1);position: absolute;z-index: 1;top: 0;left: 0;height: 100%;}
+.container ul.team_text, .container .team_touch{width:100%;margin: 0 auto;padding: 30px 0; display: block; overflow: hidden; max-width: 1200px}
+.container .contact{ padding-top: 40px; min-height: 590px}
+.container ul.team_text li{ width:49%; float: left; background-color: #fff; padding: 30px 25px; line-height: 28px;box-sizing: border-box;}
+.container ul.team_text li.team_con{ margin-right: 2%}
+.container ul.team_text li h2{     font-size: 40px; color: #333333; margin: 27px 0}
+.container ul.team_text li p{    color: #999999; font-size: 20px;text-align:justify}
+.container .team_touch{ border: 2px solid #60738d; margin: 30px auto }
+.container .team_touch p{ font-size: 40px; color: #333333; margin-bottom: 27px; text-align: center; }
+.container .team_touch input,.contact .send .btn-email,.ref_link{border: 1px solid #f79646;margin: 0 66px 0 0;background: #f79646;color: #ffffff;font-size: 16px;display: block; width: 80px;height: 40px;line-height: 40px;text-align: center; margin: 0 auto}
+.container .contact h2,.ref_link{ cursor: pointer;}
+.ref_link{ margin-bottom: 40px}
+.container .contact h2 a{ font-size: 30px; color: #f79646;}
+.container .contact h2:hover{    }
+.container .contact h4{ margin-top: 10px;margin-bottom: 10px; font-size: 18px; color: #333;}
+.container .contact .send{ width: 650px; margin-top: 30px;}
+.contact .send .email{ width: 650px;border: 1px solid #dadce6;font-size: 15px;height: 44px;-webkit-appearance: none; margin-bottom: 10px;padding: 6px 12px;border-radius: 4px;color: #333}
+.contact .send textarea.email{    height: auto;}
+.contact .send .btn-email{border-radius: 4px; cursor: pointer; background-color: #60738d; border: none; float: left;}
+.contact .address span{  border-bottom: 2px solid #60738d; width: 460px; height: 2px; display: block; display: block;margin-top: 30px;}
+.contact .address h2{ font-size: 24px; color: #333; }
+.container ul.fea,.container .fea_word{width: 100%;margin: 40px auto; max-width: 1200px;background: #ffffff; overflow: hidden;}
+.container .fea_word{ position: relative;box-sizing: border-box; padding: 30px 20px ;padding-left: 220px;}
+.container .fea_word::before,.container .fea_word::after{ width: 40px; height: 40px; content: "";background: url(../img/icon.png) 0 0 no-repeat; position: absolute;}
+.container .fea_word::before{    background-position: -381px -10px;left: 30px; top: 0px;}
+.container .fea_word::after{    background-position: -487px -10px;right: 30px; bottom: 0px;}
+.container .fea_word .pic{ width:151px; border: 1px solid #60738d; height: 151px; border-radius: 100%; position: absolute;  left: 30px;}
+.container .fea_word .pic img{ width:120px; border: 1px solid #60738d; height: 120px; border-radius: 100%;margin: 15px; }
+.container .fea_word p{ display: inline-block; color: #60738d; font-size: 28px;    line-height: 50px;}
+.container ul.fea li{margin: 15px auto; width: 96%; padding-left: 160px; position: relative;box-sizing: border-box;padding-right: 100px; border-bottom: 1px dashed #60738d;}
+.container ul.fea li:nth-child(6n){ border: none;}
+.container ul.fea li .round{width:150px; position: absolute; left: 0}
+.container ul.fea li .round i{display: block;width: 90px;margin: 40px 0px 0px 30px;height: 90px;border-radius: 100%;}
+.container ul.fea li .round i.o_4{background: #f79646 url(../img/icon.png) 28px -86px no-repeat;}
+.container ul.fea li .round i.b_t{background: #60738d url(../img/icon.png) -52px -86px no-repeat;}
+.container ul.fea li .round i.b_r{background: #60738d url(../img/icon.png) -131px -86px no-repeat;}
+.container ul.fea li .round i.b_n{background: #60738d url(../img/icon.png) -211px -86px no-repeat;}
+.container ul.fea li .round i.b_8{background: #60738d url(../img/icon.png) -291px -86px no-repeat;}
+.container ul.fea li .round i.b_m{background: #60738d url(../img/icon.png) -369px -86px no-repeat;}
+.container ul.fea li .round i.b_9{background: #60738d url(../img/icon.png) -449px -86px no-repeat;}
+.container ul.fea li .box{ width: 100%;display: inline-block;padding-top: 30px; margin-bottom: 40px;}
+.container ul.fea li .box .tit{ color: #666666;font-size: 32px;font-weight: bold; text-align: left;}
+.container ul.fea li .box .tit::before{ content: ""; width: 4px; height: 24px; background-color: #f79646; display:inline-block; margin-right: 20px; vertical-align: middle;}
+.container ul.fea li .box .txt{color: #999999;font-size: 20px;margin-left: 24px; margin-top: 20px;}
+.footer{width: 100%;background: #60738d;}
+.footer .link{margin: 0 auto;padding: 35px 0 15px;font-size: 16px;text-align: center; color: #f0f0f0}
+.footer .link a{ padding: 0 5px; color: #fff}
+.footer .icon_link{width: 152px;margin: 0 auto;padding: 0 0 35px;}
+.footer .icon_link a{width: 28px;height: 28px;float: left;display: block;margin: 0 5px;}
+.footer .icon_link a.t{background: url(../img/icon.png) 3px -196px no-repeat;}
+.footer .icon_link a.f{background: url(../img/icon.png) -47px -196px no-repeat;}
+.footer .icon_link a.p{background: url(../img/icon.png) -98px -196px no-repeat;}
+.footer .icon_link a.i{background: url(../img/icon.png) -148px -196px no-repeat;}
+.shadow{ width: 100%;height: 100%; left: 0;position: fixed;top: 0;z-index: 100; background-color: rgba(0,0,0,0.26);}
+.layer {width: 100%;height: 100%;  position: absolute; top: 100px;}
+.sign{ position: inherit;}
+#login.layer,#whiteListLogin.layer{z-index:3}
+.layer .login{ position: relative; padding: 40px 20px 20px; text-align: center; background: #fff; box-shadow: 0 12px 24px rgba(0,0,0,0.47); width: 700px; z-index: 100; top: 10%;left: 0;
+    right: 0; margin: 0 auto 10%;border-radius: 5px; }
+.layer .content{ padding: 40px 0}
+.layer .content .x, .layer .content h2,.layer .content ul li,.layer .content ul li span,.layer .content ul p,.layer .login,.layer .login ul li p span a,.layer .login ul li p span,.layer .login .x{ color: #333}
+.layer .content .x , .layer .login .x{  float: right; height: 30px; width: 30px; margin: 10px 0 0 0;cursor: pointer; position: absolute; right: 0; top: 0; z-index: 999;}
+.layer .content h2,.layer .login h2{ font-size: 30px; color: #f79646}
+.layer .content h2{ text-align: center; background: #fff;margin-bottom: 20px; border-radius: 5px 5px 0 0;height: 80px;line-height: 80px; box-shadow: 0 2px 1px #c4c4c4;}
+.layer .content ul,.layer .login ul{ margin: 30px 0; width: 100%}
+.layer .content ul li,.layer .login ul li{ margin: 10px 0px}
+.layer .content dt p{ font-size: 18px; color: #333}
+.layer .content dd, select option,select{ font-size: 16px; color: #333; line-height: 24px}
+.layer .content dd input{ margin-right: 10px}
+.layer .content ul li span{ width:146px; text-align: right; font-size: 18px; display: block; height: 34px; line-height: 34px; position: absolute; left: 0}
+.layer .content .sign_con{width: 100%;}
+.layer .content ul li input,.layer .content ul li select,.layer .login ul li input{width:100%; min-width: 200px; height: 32px; font-size: 14px; line-height: 1.42857143;color: #555; background-color: #fff; border: 1px solid #60738d; border-radius: 4px; }
+.layer .content ul li input{ text-indent: 10px;}
+.layer .content .imfor_con ul li.pre input{ height: 64px}
+.layer .content ul li.sign_btn,dt.btn,.layer .content .imfor_con ul li.btn{ text-align: center;}
+.layer .content ul p{ margin: 20px auto; text-align: center;}
+.layer .content ul p input{ margin-top: 2px; margin-right: 8px}
+.layer .content ul li button,.layer .login ul li button,.layer .content .imfor_con button{ font-size: 1.2em;height: 40px; line-height: 40px; width: 150px;border-radius: 6px; background-color: #f79646; cursor: pointer;}
+.layer .login{ width:450px; position: relative;}
+.layer .login::before{ width: 100%; height: 1px; background-color:#60738d; position: absolute; content: ""; display: block;top: 100px; left: 0;}
+.layer .login ul{ margin-top: 60px}
+.layer .login ul li input{ text-indent: 14px; width: 350px; height: 40px}
+/* .layer .login ul li button{ width: 120px;padding: 6px 16px; margin: 15px auto;} */
+.layer .login ul li p span{ margin: 5px 5px}
+.layer .login ul li p{ margin: 10px auto}
+.layer .login ul li p span a{ font-size: 18px}
+.layer .login ul li p span:hover a{ color: #60738d}
+.imfor_con{ background-color: #fff; border-radius: 5px; padding: 30px; min-height: 490px}
+.imfor_con p{ width: 80%;text-align: center;; margin: 30px auto}
+.earn p{ text-align: left; margin: 0; width: inherit; margin-bottom: 10px}
+.layer .content .imfor_con ul{ width: 80%; margin:0 auto}
+.layer .content .imfor_con ul li{ width: 100%; padding-left: 160px;position: relative;box-sizing: border-box;}
+.layer .content .basic ul li{ margin-bottom: 20px}
+.layer .content .basic ul li input{ background-color: #f8f8f8}
+.layer .content .imfor_con h2{ height: inherit;box-shadow: none;line-height: inherit; width: 80%; margin: 20px auto;}
+.layer .content .earn{ padding-left: 100px}
+.layer .content .earn h2{ width: 100%}
+.layer .content .basic button{ margin-top: 30px}
+.earn_choose{ width: 49%; float: left; height: 195px; border: 1px solid #60738d; padding: 15px 0 0 20px; box-sizing:border-box;}
+.earn_choose dt select,.earn_choose dd input{border: 1px solid #60738d; border-radius: 4px; color: #555}
+.earn_choose dd input.form-control{ height: 24px;line-height: 24px; color: #555; text-indent: 5px; width: 150px}
+.earn dl dt.btn{ margin-top: 30px; display: inline-block;width: 100%;}
+
+.country ul li a{ display:block;    margin: 2px 0 4px 4px;}
+.country ul li{ width:23%;line-height:30px;}
+.country ul li span{ text-align:center; margin-left:4%; display:inline; font-size:0.9em;color: #333;}
+.country ul li img{vertical-align:middle;}
+.country{ position:relative;width:130px;  float: right; margin-top: 48px}
+.country_chioce{border:1px solid #e0e0e0; position:relative; background-color:#FFF; line-height:36px;cursor: pointer;border-radius: 3px;}
+.country_chioce span{color: #333333}
+.country_chioce i{ float:left; margin:4px}
+.country_chioce .three{position:absolute; top:5px; right:4%}
+.country_chioce .three span{border:6px solid transparent; border-top:8px solid #60738d; display:inline-block; }
+.country ul{ background-color:#fff; position:absolute; top:38px;/*padding-right:5px;*/display:block; z-index: 10; width: 100%; box-shadow: 0 1px 4px #c4c4c4;}
+.country ul li{ float:left; width:100%; padding: 0;  box-sizing: border-box;}
+.country ul li:hover{ background-color: #e5e5e5}
+.country ul li i,.country_chioce i{display:inline-block; width: 18px; height: 12px; float:left;    margin-top: 9px; background:url(../img/icons.png) 0 0 no-repeat}
+.country_chioce i{ margin-top: 11px;}
+/*.country ul li i.c_01{ background-position:-171px 0}!* -147px -280px *!
+.country ul li i.c_02{ background-position:-171px -13px}!* -193px -280px *!
+.country ul li i.c_03{ background-position:-171px -26px}!* -238px -280px *!
+.country ul li i.c_04{ background-position:-190px 0}!* -147px -310px *!
+.country ul li i.c_05{ background-position:-190px -13px}!* -193px -310px *!
+.country ul li i.c_06{ background-position:-190px -26px}!* -238px -310px *!
+.country ul li i.c_07{ background-position:-209px -26px}!* -283px -310px *!
+.country ul li i.c_08{ background-position:-209px -13px}!* -147px -340px *!
+.country ul li i.c_09{ background-position:-209px 0}!* -193px -340px *!
+.country ul li i.c_10{ background-position:-228px 0}!* -238px -340px *!
+.country ul li i.c_11{ background-position:-228px -13px}!* -283px -340px *!
+.country ul li i.c_12{ background-position:-228px -26px}!* -147px -370px *!
+.country ul li i.c_13{ background-position:-247px 0}!* -193px -370px *!
+.country ul li i.c_14{ background-position:-247px -13px}!* -238px -370px *!
+.country ul li i.c_15,.country_chioce i.c_15{ background-position:-247px -26px}!* -283px -370px *!
+.country ul li i.c_16,.country_chioce i.c_16{ background-position:-266px 0}!* -283px -280px *!*/
+.country i.c_01{ background-position:-171px 0}/* -147px -280px */
+.country i.c_02{ background-position:-171px -13px}/* -193px -280px */
+.country i.c_03{ background-position:-171px -26px}/* -238px -280px */
+.country i.c_04{ background-position:-190px 0}/* -147px -310px */
+.country i.c_05{ background-position:-190px -13px}/* -193px -310px */
+.country i.c_06{ background-position:-190px -26px}/* -238px -310px */
+.country i.c_07{ background-position:-209px -26px}/* -283px -310px */
+.country i.c_08{ background-position:-209px -13px}/* -147px -340px */
+.country i.c_09{ background-position:-209px 0}/* -193px -340px */
+.country i.c_10{ background-position:-228px 0}/* -238px -340px */
+.country i.c_11{ background-position:-228px -13px}/* -283px -340px */
+.country i.c_12{ background-position:-228px -26px}/* -147px -370px */
+.country i.c_13{ background-position:-247px 0}/* -193px -370px */
+.country i.c_14{ background-position:-247px -13px}/* -238px -370px */
+.country i.c_15{ background-position:-247px -26px}/* -283px -370px */
+.country i.c_16{ background-position:-266px 0}/* -283px -280px */
+.country ul li:hover i{ box-shadow: 0 1px 6px  rgba(0,0,0,.3);}
+.country ul li:hover img {box-shadow: 0 1px 6px  rgba(0,0,0,.3);}
+@media screen and (max-width: 1700px){ .container .banner h1{ padding-top:120px }}
+@media screen and (max-width: 1600px){ .container .banner h1{ padding-top:100px }}
+@media screen and (max-width: 1500px){ .container .banner h1{ padding-top:80px }}
+@media screen and (max-width: 1400px){ .container .banner h1{ padding-top:60px } }
+@media screen and (max-width: 1300px){
+    .container .banner h1{ padding-top:60px; font-size:7em}
+    .container .banner h2{ padding: 0; font-size: 2.4em}
+    .container .banner .txt{ font-size: 1.5em}
+    .container .banner .btn a{ width: 160px}
+}
+@media screen and (max-width: 1240px){
+    .header .main,.container .int,.container ul.fea,.container .pub_con, .ref_con, .part_con,.container .contact,.layer .content,.container .fea_word,.container ul.team_text, .container .team_touch{width: 96%; margin: 0 1em;}
+    .header .main ul.menu{ position: absolute; width: 180px; background-color: #fff; border: 1px solid #60738d; padding: 2px 2px; margin: 0; right: 0;
+        top: 100px;z-index: 99;display: none}
+    .header .main ul.menu li{ width: 100%; text-align: center; margin-bottom: 1px;margin: 0}
+    .phone_menu_btn{ background: url(../img/icon.png) -560px -129px no-repeat; }
+    .header .main .btn_sl {margin-right: 40px; float: right;}
+    .country{ float: left; margin-left: 30px}
+    i.nav_d{ display: inline-block; float: left; width: 32px ; height: 32px; background: url(../img/icon.png) no-repeat -546px -114px; float: right;  margin: 50px 0 0 0; cursor: pointer;}
+    .container .fea_word{margin: 20px auto;}
+    .container .team_touch{ margin: 0 auto 30px}
+}
+@media screen and (max-width: 1200px){
+    .container .banner h1{ font-size:4em}
+    .container .banner h2{ font-size: 1.5em; margin-top: 10px}
+    .container .banner .txt{ margin-top: 10px; font-size: 1.2em}
+    .container .banner .btn{ width: 270px}
+    .header .main ul.menu li { font-size: 1.2em; border-bottom: 1px solid #fff}
+    .header .main ul.menu li a{ height: 48px; line-height: 48px}
+    .container .banner .btn a{ font-size: 1.2em; width: 100px; height: 32px; line-height: 32px}
+    .container .int .block h3{ font-size: 1.75em; height: 70px}
+    .container .int .block p{ font-size: 1.2em}
+    /* .container .int,.container .pub_con, .ref_con, .part_con{ padding: 80px 0} */
+    .container ul.fea li .box .tit{ font-size: 1.75em;}
+    .container ul.fea li{ padding-right: 60px}
+    .container .pub_con h4, .ref_con h4, .part_con h4{ font-size: 1.75em; font-weight: bold; line-height: 3em}
+    .container .pub_con p, .ref_con p, .part_con p{ font-size: 1.5em; padding-bottom: 2em}
+    .container .pub_con p span{ font-size: 1.2em}
+    .container .contact h2 a,.contact .address h2,.layer .content h2, .layer .login h2{ font-size: 1.75em}
+    .contact .address h2 a{ font-size: 1em}
+    .container .team_touch input, .contact .send .btn-email, .ref_link{ font-size: 1em; height: 40px; line-height: 40px; width: 150px}
+    .contact .send .email{ height: 32px}
+    .layer .login ul li p span a,.container ul.team_text li p{ font-size: 1.2em}
+    .container .fea_word p,.container ul.team_text li h2,.container .team_touch p,.container .team_banner h1{ font-size: 1.75em;    line-height: 1.75em;}
+    .container ul.team_text li h2{ margin: 10px 0}
+}
+
+@media(max-width:940px){ .container .banner h1 {padding-top: 30px;}.container .banner .btn {padding-top: 40px;}}
+@media(max-width:800px){ .container .banner h1 {font-size: 3em;} .container .banner h2{ font-size: 1.4em} .container .banner .txt{  font-size: 1em} .container .banner .btn {padding-top: 30px;} .header .main .btn_sl a{ font-size: 1em; width: 60px; height: 24px; line-height: 24px}}
+@media(max-width:750px){
+    .container .banner h1{ font-size: 1.75em; padding-top: 40px;}
+    .container .banner h2,.container .pub_con p, .ref_con p, .part_con p{ font-size: 1.2em}
+    .container .banner .btn a{ width: 80px;font-size: 1em}
+    .container .banner .txt{ width: 90%}
+    .container .int .block{ width: 100%; padding: 0; padding: 30px 0 30px 0; border-bottom: 1px solid #fbfafa}
+    .container .int .p_n{ border-bottom: none;}
+    .container .int{ padding: 30px 0}
+    .container .pub_con, .ref_con, .part_con{ padding: 1em 0}
+    .container .int .block h3{ height: 1.5em; font-size: 1.5em}
+    .footer .link a{ font-size: 1em}
+    .container ul.fea li .box .tit,.container .pub_con h4, .ref_con h4, .part_con h4,.contact .address h2{ font-size: 1.5em}
+    .container .contact h2 a, .contact .address h2,.layer .content h2, .layer .login h2{ font-size: 1.5em}
+    .contact .address h2 a{ font-size: 1em}
+    .container .contact h4,.layer .content ul li span{ font-size: 1em}
+    .layer .content ul li span{ width: 120px}
+    .container .pub_con p, .ref_con p, .part_con p{ padding-bottom: 1.5em}
+    .container .team_touch input, .contact .send .btn-email, .ref_link,.layer .content ul li button, .layer .login ul li button{ font-size: 1em; height: 32px; line-height: 32px; width: 120px}
+    .container .contact .send{ width: 90%; min-width: 240px}
+    .contact .send .email{ width: 100%; height: 20px; font-size: .8em}
+    .container .contact,.layer .content{ padding: 30px 0}
+    .layer .login{ padding: 30px 20px; width: 80%; max-width: 450px}
+    .layer .login::before{ top: 80px}
+    .layer .login ul li input{ width: 90%}
+    .layer .login ul li p span a{ font-size: 1em}
+    .container ul.fea li{ padding-right: 20px; padding-left: 80px}
+    .container ul.fea li .box{ margin-bottom: 30px}
+    .container ul.fea li .box .txt{ font-size: 1em; margin-top: 10px}
+    .container ul.fea li .round{ width: 80px}
+    .container ul.fea li .round i{    margin: 32px 0px 0px 0px; width: 60px; height: 60px}
+    .container ul.fea li .round i.b_t{ background-position: -66px -100px}
+    .container ul.fea li .round i.b_r{ background-position: -146px -100px}
+    .container ul.fea li .round i.b_n{  background-position: -226px -100px}
+    .container ul.fea li .round i.b_8{  background-position:-310px -100px}
+    .container ul.fea li .round i.b_m{  background-position: -384px -100px}
+    .container ul.fea li .round i.b_9{  background-position: -464px -100px}
+    .container .fea_word p{ font-size: 1.2em}
+    .container .fea_word .pic img{ width: 80px; height: 80px; margin: 10px}
+    .container .fea_word .pic{ width: 101px; height: 101px; left: 20px ;left: 10px;top: 40px;}
+    .container .fea_word{padding-left: 130px;}
+    .container ul.team_text li{ width: 100%; margin-right: 0; margin-bottom: 20px; padding:20px 25px}
+    .container ul.team_text li h2,.container .team_touch p,.container .team_banner h1{ font-size: 1.5em}
+    .layer .login ul li p span a, .container ul.team_text li p{ font-size: 1em;    line-height: 1.5em;}
+    .container .team_banner h1{ top: 30%}
+    .earn_choose{ width: 99%; height: inherit; padding-bottom: 20px}
+    .layer .content .earn{ padding-left: 20px}
+    .layer .content .sign_con{ width: inherit;}
+    .country_chioce span,.country ul li span,.country_chioce .three span{ display: none;}
+    .country{ width: 30px;background-color: #fff;  margin-top: 56px; margin-left: 15px;}
+    .country ul{ top: 24px;}
+    .country_chioce i{ margin-top: 6px}
+}
+@media(max-width:620px){ .container .banner h1{ padding-top: 30px;} .container .banner .btn {padding-top: 15px;}}
+@media(max-width:600px){ .container .banner h1{ padding-top: 20px;} .container .banner .btn {padding-top: 15px;} .container .banner .txt{ margin-top: 5px; font-size:.8em} .container .banner .btn a{ height: 24px; line-height: 24px} .container .banner .btn {
+                                                                                                                                                                                                                                           padding-top: 25px;
+                                                                                                                                                                                                                                       }}
+@media(max-width:544px){body{font-size:.8em;} }
+@media(max-width:500px){
+    .mon_con{ display: block; width:180px; height: 32px; margin: 0 auto}
+    .header .main .btn_sl{display: block; margin-right: 0; float: left;margin-left: 4px;}
+    .country { margin-top: 6px}
+    .header .main .logo{ width: 100%; margin: 6px 0 0 }
+    .header .main .logo img{ display: block; width:178px; height: 48px;margin: 0 auto}
+    i.nav_d{ float: left; margin: 5px 0 0 0;}
+    .header .main .btn_sl a{ margin: 5px 0 0 0px; width: 60px}
+    .header .main .btn_sl a.su,.header .main .btn_sl a.lg{ color:#60738d; background-color:#f0f0f0; border: none; width: 50px }
+    .header .main .btn_sl a.su{ width: 60px}
+    .header .main .btn_sl a.su::after{ content: ""; width: 1px; height: 16px; background-color:#60738d; display: inline-block; float: right; margin: 4px 4px }
+    .header .main ul.menu{ left: 0; display: none;}
+    .header .main{ border-bottom: none;}
+    .container .banner .btn a.s{ margin: 0 20px 0 0}
+    .container .banner .btn{ width: 190px; padding: 30px 0 0}
+    .layer .content ul li span {width: 60px; line-height: 1.2em;}
+    .container .fea_word .pic,.container .fea_word::before, .container .fea_word::after{ display: none;}
+    .container .fea_word{ padding-left: 10px; height:inherit;}
+    .container ul.fea li .box .txt{ margin-left: 0}
+    .layer .content .imfor_con ul li{ padding-left: 80px}
+    .layer .content .imfor_con ul{ width: 100%}
+    .layer .content .basic button{ margin-top: 0}
+}

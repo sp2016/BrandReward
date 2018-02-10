@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Brandreward - Your Complete Monetization Solution</title>
+        <link rel="stylesheet" href="css/bootstrap.min.css" />
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <style>
+		body {
+		    background:url(img/advertiser_login_bg.jpg) #f8f6e9;
+		}
+		.mycenter{
+		    margin-top: 100px;
+		    margin-left: auto;
+		    margin-right: auto;
+		    height: 350px;
+		    width:650px;
+		    padding: 5%;
+		    padding-left: 5%;
+		    padding-right: 5%;
+		}
+		.mycenter mysign{
+		    width: 440px;
+		}
+		.mycenter input,checkbox,button{
+		    margin-top:2%;
+		    margin-left: 10%;
+		    margin-right: 10%;
+		}
+		.mycheckbox{
+		    margin-top:10px;
+		    margin-left: 40px;
+		    margin-bottom: 10px;
+		    height: 10px;
+		}
+    </style>
+    </head>
+    <body>
+        <form id='advLogin' action="<{$smarty.const.BASE_URL}>/process.php" method="post">
+        	<input type="hidden" name="act" value='advertiser_login' />
+            <div class="mycenter">
+            <div class="mysign">
+                <div class="col-lg-11 text-center text-info">
+                    <h2>Advertiser Login</h2>
+                </div>
+                <div class="col-lg-10">
+                	<input type="text" class="form-control" id="whitelist-account" name="advertiser_account" placeholder="Username" >
+                </div>
+                <div class="col-lg-10"></div>
+                <div class="col-lg-10">
+                	<input type="password" class="form-control" id="whitelist-password" name="advertiser_pwd" placeholder="Password" >
+                </div>
+                <div class="col-lg-10"></div>
+                <!-- <div class="col-lg-10 mycheckbox checkbox">
+                    <input type="checkbox" class="col-lg-1">remember me</input>
+                </div> -->
+                <div class="col-lg-10" id="errorMsg" style="margin-left: 10%;"></div>
+                <div class="col-lg-10"></div>
+                <div class="col-lg-10">
+                    <button id="advLoginbtn" type="button" class="btn btn-success col-lg-12">Log In</button>
+                </div>
+            </div>
+        </div>
+        </form>
+    </body>
+    <script>
+    	$(function(){
+    		$(document).delegate("#advLoginbtn","click",function(){
+    			$("#errorMsg").html('');
+    			$.ajax({
+    	            type:"post",
+    	            url:"<{$smarty.const.BASE_URL}>/process.php",
+    	            data:$('#advLogin').serialize(),
+    	            dataType:'json',
+    	            async:false,
+    	            success: function(data){
+    	            	if(data.code == '1'){
+    	            		window.location.href = "<{$smarty.const.BASE_URL}>/b_white_listing.php";
+    	            	}else{
+    	            		$("#errorMsg").html(data.msg);
+    	            	}
+    	            }
+    	        });
+    		})
+    		
+    		$('input').on('keydown',function(){
+	   			  if (event.keyCode == "13"){
+	   			      $("#advLoginbtn").trigger("click");
+	   			  }
+   			});
+    	})
+    </script>
+</html>

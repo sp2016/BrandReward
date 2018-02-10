@@ -1,0 +1,102 @@
+<div class="container" style="margin-top:30px;width:98%">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Edit Form
+                </h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="alias" class="col-sm-3 control-label">Merge To Store</label>
+                        <div class="col-sm-9">
+                            <input type="text" readonly="readonly" class="form-control" id="alias" name="alias" placeholder="Store Name" value="<{$info.alias}>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="merged" class="col-sm-3 control-label">Merged Stores</label>
+                        <div class="col-sm-9">
+                            <input type="hidden" id="omerged" value="<{$info.Stores}>">
+                            <input type="text" class="form-control" id="merged" name="merged" placeholder="Store Name" value="<{$info.Stores}>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-3">
+                            <button type="button" class="btn btn-default merge">Merge</button>
+                        </div>
+                        <div class="col-sm-3">
+                            <{if $info.IsActive != 'Active' }>
+                            <button type="button" class="btn btn-default restore">Restore</button>
+                            <{else}>
+                            <button type="button" class="btn btn-default delete">Delete</button>
+                            <{/if}>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="application/javascript">
+    $('.merge').on('click', function () {
+        var alias = $('#alias').val();
+        var merged = $('#merged').val();
+        var omerged = $('#omerged').val();
+        var data = {act: 'doEdit', alias: alias, merged: merged, omerged: omerged}
+        $.ajax({
+            type: "post",
+            url: "b_store_merge.php",
+            data: data,
+            async: false,
+            success: function (response) {
+                if (response != 0) {
+                    alert('EDIT SUCCESS!')
+                    location = '/b_store_merge.php';
+                } else {
+                    alert('Edit Failed!')
+                }
+            }
+        });
+    });
+    $('.delete').on('click', function () {
+        var alias = $('#alias').val();
+        var merged = $('#merged').val();
+        var data = {act: 'doDelete', alias: alias, merged: merged}
+        $.ajax({
+            type: "post",
+            url: "b_store_merge.php",
+            data: data,
+            async: false,
+            success: function (response) {
+                if (response != 0) {
+                    alert('Delete Success!')
+                    location = '/b_store_merge.php';
+                } else {
+                    alert('Delete Failed!')
+                }
+            }
+        });
+    });
+
+    $('.restore').on('click', function () {
+        var alias = $('#alias').val();
+        var merged = $('#merged').val();
+        var data = {act: 'doRestore', alias: alias, merged: merged}
+        $.ajax({
+            type: "post",
+            url: "b_store_merge.php",
+            data: data,
+            async: false,
+            success: function (response) {
+                if (response != 0) {
+                    alert('Restore Success!')
+                    location = '/b_store_merge.php';
+                } else {
+                    alert('Restore Failed!')
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,142 @@
+<{include file="front_block_header.html"}>
+<{include file="front_block_banner.html"}>
+<div class="banner index_banner">
+  <img src="img/index_banner.jpg">
+  <div class="banner_text">
+    <div class="main">
+      <h2>Your Complete Content Monetization Solution</h2>
+      <h5>Brandreward is a full service platform for high-quality content providers to instantly find, connect and integrate with the world's most coveted brands.</h5>
+      <div class="btn">
+        <a href="<{$smarty.const.BASE_URL}>/signup.php" class="s">Sign Up</a>
+        <a href="javascript: void(0);" class="l" onclick="remodal_login()">Login</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!--banner end-->
+<!--features start-->
+<div class="features">
+  <!-- <img src="img/index_features.gif"> -->
+  <div class="main">
+    <div class="fea_display">
+      <a href="javascript:void(0)">
+        <i class="fia"></i>
+        <p>Access to 30,000 Brands</p>
+      </a>
+    </div>
+    <div class="fea_display">
+      <a href="javascript:void(0)">
+        <i class="iec"></i>
+        <p>Instantly Earn Commissions</p>
+      </a>
+    </div>
+    <div class="fea_display">
+      <a href="javascript:void(0)">
+        <i class="rtr"></i>
+        <p>Dedicated Support Team</p>
+      </a>
+    </div>
+  </div>
+</div>
+<!--features end-->
+<!--fea_add start-->
+<div class="fea_add">
+  <div class="main">
+    <div class="fea_l">
+      <div class="fea_pic">
+        <img src="img/fea_pic_01.gif"/>
+      </div>
+        <div>
+          <h4>Real-Time Reporting</h4>
+          <p>Useful data to improve overall traffic and conversion performance</p>
+        </div>
+    </div>
+    <div class="fea_r">
+      <div class="fea_pic">
+        <div class="m1" >
+          <ul class="bxslider1">
+            <li>
+               <a  target="_blank" href="http://r.brandreward.com?key=072b030ba126b2f4b2374f342be9ed44&url=http%3A%2F%2Fwww.dpbolvw.net%2Fclick-8262595-12832035">
+                    <div style="background-color:white;,max-height:280px;width: 445px;"><img style="margin-bottom: 0px;" src="img/homep3.png"/></div>
+                    <div style="min-height:50px;text-align: center;margin:0 auto;background-color:#f0f6fe;"><h4 style="padding-left: 0px;padding-top: 3px;">Lucky Brand -- Summer 2017</h4></div>
+               </a>
+            </li>
+            <li>
+              <a target="_blank" href="http://r.brandreward.com?key=072b030ba126b2f4b2374f342be9ed44&url=https%3A%2F%2Fclick.linksynergy.com%2Ffs-bin%2Fclick%3Fid%3DpITOEqOhvpQ%26offerid%3D422019.15%26subid%3D0%26type%3D4">
+                <div style="background-color:white;max-height:280px;width: 445px;"><img style="margin-bottom: 0px;" src="img/homep1.png"/></div>
+                <div style="min-height:50px;text-align: center;margin:0 auto;background-color:#f0f6fe;"><h4 style="padding-left: 0px;padding-top: 3px;">AmorePacific -- Shipping & Gifts</h4></div>
+              </a>
+            </li>
+            <li>
+              <a target="_blank" href="http://r.brandreward.com?key=072b030ba126b2f4b2374f342be9ed44&url=http%3A%2F%2Fwww.anrdoezrs.net%2Fclick-8262595-12915966">
+                <div style="background-color:white;max-height:280px;width: 445px;"><img style="margin-bottom: 0px;" src="img/homep2.png"/></div>
+                <div style="min-height:60px;text-align: center;margin:0 auto;background-color:#f0f6fe;"><h4 style="padding-left: 0px;padding-top: 3px;">CandyLipz -- Plump It Up! One-Of-A-Kind Lip Enhancer Works For 5 Hours</h4></div>
+              </a>
+            </li>
+            <li>
+              <a target="_blank" href="http://r.brandreward.com?key=072b030ba126b2f4b2374f342be9ed44&url=https%3A%2F%2Fclick.linksynergy.com%2Ffs-bin%2Fclick%3Fid%3DpITOEqOhvpQ%26offerid%3D376771.62%26subid%3D0%26type%3D">
+                <div style="background-color:white;max-height:280px;width: 445px;"><img style="margin-bottom: 0px;" src="img/homep4.png"/></div>
+                <div style="min-height:50px;text-align: center;margin:0 auto;background-color:#f0f6fe;"><h4 style="padding-left: 0px;padding-top: 3px;">Joes New Balance Outlet -- Daily Deal</h4></div>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div style="margin-left: 58px;" class="fea_new">
+          <h4>Exclusive Deals &amp; Offers</h4>
+          <p>Browse the latest exclusive promotions from brands.</p>
+        </div>
+      </div>
+    </div>
+    <div class="fea_button">
+      <a class="fea_nadd" href="<{$smarty.const.BASE_URL}>/features.php">Find out more</a>
+    </div>
+  </div>
+</div>
+<!-- brand_logo start -->
+<div class="brand_logo">
+  <div class="m" style="margin-top: 30px;">
+    <ul class="bxslider">
+      <li><img src="img/als-img/logo1.png"/></li>
+      <li><img src="img/als-img/logo2.png"/></li>
+      <li><img src="img/als-img/logo3.png"/></li>
+      <li><img src="img/als-img/logo4.png"/></li>
+      <li><img src="img/als-img/logo5.png"></li>
+      <li><img src="img/als-img/logo6.png"/></li>
+      <li><img src="img/als-img/logo7.png"/></li>
+      <li><img src="img/als-img/logo8.png"/></li>
+      <li><img src="img/als-img/logo9.png"/></li>
+      <li><img src="img/als-img/logo10.png"/></li>
+      <li><img src="img/als-img/logo11.png"/></li>
+      <li><img src="img/als-img/logo12.png"/></li>
+      <li><img src="img/als-img/logo13.png"/></li>
+      <li><img src="img/als-img/logo14.png"/></li>
+      <li><img src="img/als-img/logo15.png"/></li>
+      <li><img src="img/als-img/logo16.png"/></li>
+      <li><img src="img/als-img/logo17.png"/></li>
+      <li><img src="img/als-img/logo18.png"/></li>
+      <li><img src="img/als-img/logo19.png"/></li>
+      <li><img src="img/als-img/logo20.png"/></li>
+    </ul>
+  </div>
+</div>
+<script src="js/jquery.bxslider.min.js"></script>
+<link href="css/jquery.bxslider.css" rel="stylesheet" />
+<script>
+  $(document).ready(function(){
+    $('.bxslider').bxSlider({
+      minSlides: 3,
+      maxSlides: 5,
+      slideWidth: 160,
+    });
+    if($(document).width() <= 1100){
+      $('.fea_new').css('margin-left','0px');
+    }
+    $('.bxslider1').bxSlider({
+      minSlides: 1,
+      maxSlides: 1,
+      slideWidth: 440,
+    });
+    $('.m1 .bx-viewport').css('height','330px');
+  });
+</script>
+<{include file="front_block_footer.html"}>

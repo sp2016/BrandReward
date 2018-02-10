@@ -1,0 +1,547 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<div class="ch-container">
+    <div class="row">
+        <div id="content" class="col-lg-12">
+            <div>
+                <ul class="breadcrumb">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Dashboard</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div id="from" class="col-lg-12">
+            <form class="form-horizontal" action="index.php" role="form">
+                <div class="form-group">
+                    <label class="col-sm-2 col-xs-4 control-label">Start Date:</label>
+                    <div class="col-sm-10 col-xs-12">
+                        <input type="date" class="form-control" id="startdate" name="startDate" placeholder="Start Date">
+                        <input type="hidden" id="sd" value="<{$data.startDate}>">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 col-xs-4 control-label">End Date:</label>
+                    <div class="col-sm-10 col-xs-12">
+                        <input type="date" class="form-control" id="enddate" name="endDate" placeholder="End Date">
+                        <input type="hidden" id="ed" value="<{$data.endDate}>">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 col-xs-4 control-label">Data Type:</label>
+                    <div class="col-sm-10 col-xs-12">
+                        <select id="datatype" name="datatype" class="selectpicker show-tick form-control"  data-live-search="false">
+                            <option value="1">Publisher</option>
+                            <option value="2">All</option>
+                        </select>
+                        <input type="hidden" id="dt" value="<{$data.datatype}>">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-sm-4 col-xs-6">
+            <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+                <div>Total Sales</div>
+                <div id="sumsales"></div>
+            </a>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-6">
+            <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="$34 new sales.">
+                <div>Total Robot</div>
+                <div id="sumrob"></div>
+            </a>
+        </div>
+
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="4 new pro members.">
+                <div>Total Commission</div>
+                <div id="sumcommission"></div>
+            </a>
+        </div>
+
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="$34 new sales.">
+                <div>Total Clicks -- Real Clicks<span style="margin-left:3px;" class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Total Clicks - Total Robot"></span></div>
+                <div id="sumclick"></div>
+            </a>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-6">
+            <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="$34 new sales.">
+                <div>Total Publisher</div>
+                <div id="sumpublisher"></div>
+            </a>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-6">
+            <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="$34 new sales.">
+                <div>Total May Be Robot</div>
+                <div id="sumrobp"></div>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+
+    </div>
+    <div class="row">
+        <div class="box col-md-12">
+            <div class="box-inner homepage-box">
+                <div class="box-header well">
+                    <h2><i class="glyphicon glyphicon-th"></i>Tabs</h2>
+                </div>
+                <div class="box-content">
+                    <ul class="nav nav-tabs" id="dataTab">
+                        <li class="active"><a href="#info">Chart</a></li>
+                        <li><a href="#custom">Detail</a></li>
+                    </ul>
+                    <div id="myTabContent" class="tab-content">
+                        <div class="tab-pane active" id="info">
+                            <div id="sc_container" style="height:100%;width: 100%;"></div>
+                            <div id="rc_container" style="height:100%;width: 100%;"></div>
+                            <div id="ta_container" style="height:100%;width: 100%;"></div>
+                            <div id="tp_container" style="height:100%;width: 100%;"></div>
+                        </div>
+                        <div class="tab-pane" id="custom">
+                            <div class="box-inner" >
+                                <div class="box-header well" data-original-title="">
+                                    Daily Detail
+                                    <span style="float: right;"><a href="javascript:void(0)" class="download" data-id="sc">DownLoad</a></span>
+                                </div>
+                                <div id="dd">
+                                    <table id="ddtb" class="ui celled table" cellspacing="0" width="100%">
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="box-inner">
+                                <div class="box-header well" data-original-title="">
+                                    Publisher Detail
+                                    <span style="float: right;"><a href="javascript:void(0)" class="download" data-id="pub">DownLoad</a></span>
+                                </div>
+                                <div id="pd">
+                                    <table id="pdtb" class="ui celled table" cellspacing="0" width="100%">
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="box-inner">
+                                <div class="box-header well" data-original-title="">
+                                    None Advertiser
+                                    <span style="float: right;"><a href="javascript:void(0)" class="download" data-id="na">DownLoad</a></span>
+                                </div>
+                                <div id="na">
+                                    <table id="natb" class="ui celled table" cellspacing="0" width="100%">
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<{include file="b_block_footer.html"}>
+<script>
+    $(function () {
+        $(window).on('load', function() {
+            var dt = $('#dt').val() != '' ? $('#dt').val() : '1';
+            $('#datatype').selectpicker('val',dt);
+        });
+        $('#datatype').selectpicker('refresh');
+        $('#dataTab a:first').tab('show');
+        $('#dataTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        var start = moment().subtract(30, 'days');
+        var end = moment().subtract(1, 'days');
+        if ($('#sd').val() != ''){
+            $("#startdate").val($('#sd').val());
+        } else {
+            $("#startdate").val(start.format("YYYY-MM-DD"));
+        }
+        if ($('#ed').val() != ''){
+            $("#enddate").val($('#ed').val());
+        } else {
+            $("#enddate").val(end.format("YYYY-MM-DD"));
+        }
+        var type = $('#dt').val() != '' ? $('#dt').val() : '1';
+        var sd = $("#startdate").val();
+        var ed = $("#enddate").val();
+        var scOptions = {
+            chart: {
+                renderTo: 'sc_container',
+                defaultSeriesType: 'column',
+                inverted: false
+            },
+            title: {
+                text: 'Sales & Commission'
+            },
+            xAxis: {
+                categories: [],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                lineColor:'#404040',
+                lineWidth: 1,
+                gridLineColor: '#D3D3D3',
+                title: ''
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            credits: {
+                enabled:false
+            },
+            series: []
+        };
+
+        var crOptions = {
+            chart: {
+                renderTo: 'rc_container',
+                defaultSeriesType: 'column',
+                inverted: false
+            },
+            title: {
+                text: 'Click & Robot'
+            },
+            xAxis: {
+                categories: [],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                lineColor:'#404040',
+                lineWidth: 1,
+                gridLineColor: '#D3D3D3',
+                title: ''
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            credits: {
+                enabled:false
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: []
+        };
+
+
+        var taOptions = {
+            chart: {
+                renderTo: 'ta_container',
+                defaultSeriesType: 'bar',
+                inverted: false
+            },
+            title: {
+                text: 'Top 10 Advertiser'
+            },
+            xAxis: {
+                categories: [],
+                crosshair: true,
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: '',
+                lineColor:'#404040',
+                lineWidth: 1,
+                gridLineColor: '#D3D3D3',
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            credits: {
+                enabled:false
+            },
+            legend: {
+                enabled:false,
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: []
+        };
+
+
+        var tpOptions = {
+            chart: {
+                alignTicks:true,
+                renderTo: 'tp_container',
+                defaultSeriesType: 'bar',
+                inverted: false
+            },
+            title: {
+                text: 'Top 10 Publisher'
+            },
+            xAxis: {
+                categories: [],
+                crosshair: true,
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: '',
+                lineColor:'#404040',
+                lineWidth: 1,
+                gridLineColor: '#D3D3D3',
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            legend: {
+                enabled:false,
+            },
+            credits: {
+                enabled:false
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: []
+        };
+
+        function getchart(){
+            $.ajax({
+                type: "post",
+                url: "index.php",
+                data:{
+                    "startDate":sd,
+                    "endDate":ed,
+                    "changeMark":"1",
+                    "datatype":type
+                },
+                async: false,
+                success: function (data){
+                    var rows = ($.parseJSON(data));
+                    //统计栏目
+                    var total = rows.total;
+                    $.each(total,function(i,val){
+                        $('#'+i).html(val);
+                    });
+                    //sale&commission报表
+                    $.each(rows.cday,function (i,val) {
+                        scOptions.xAxis.categories.push(val);
+                    });
+                    var sales = {name:'Sales',data:[]};
+                    $.each(rows.Sales,function (i,val) {
+                        sales.data.push(parseFloat(val));
+                    });
+                    var commission = {name:'Commission',data:[]};
+                    $.each(rows.Commission,function (i,val) {
+                        commission.data.push(parseFloat(val));
+                    });
+                    scOptions.series.push(sales);
+                    scOptions.series.push(commission);
+                    var scChart = new Highcharts.Chart(scOptions);
+
+                    //click&robot报表
+                    $.each(rows.cday,function (i,val) {
+                        crOptions.xAxis.categories.push(val);
+                    });
+                    var clicks = {name:'Click',data:[]};
+                    $.each(rows.click,function (i,val) {
+                        clicks.data.push(parseFloat(val));
+                    });
+                    crOptions.series.push(clicks);
+                    var robots = {name:'Robot',data:[]};
+                    $.each(rows.rob,function (i,val) {
+                        robots.data.push(parseFloat(val));
+                    });
+                    crOptions.series.push(robots);
+
+                    var mbRobots = {name:'May Be Robot',data:[]};
+                    $.each(rows.robp,function (i,val) {
+                        mbRobots.data.push(parseFloat(val));
+                    });
+                    crOptions.series.push(mbRobots);
+
+                    var rcChart = new Highcharts.Chart(crOptions);
+
+                    //top 10 advertiser
+                    $.each(rows.newname,function (i,val) {
+                        taOptions.xAxis.categories.push(val);
+                    });
+                    var revenues = {name:'Commission',data:[]};
+                    $.each(rows.newrevenues,function (i,val) {
+                        revenues.data.push(parseFloat(val));
+                    });
+                    revenues.data.sort(function (a,b) {
+                        return a-b;
+                    });
+                    taOptions.series.push(revenues);
+                    var taChart = new Highcharts.Chart(taOptions);
+
+
+                    //Top 10 Publisher
+                    $.each(rows.pub_name,function (i,val) {
+                        tpOptions.xAxis.categories.push(val);
+                    });
+                    var pubRevenues = {name:'Commission',data:[]};
+                    $.each(rows.pub_revenues,function (i,val) {
+                        pubRevenues.data.push(parseFloat(val));
+                    });
+                    pubRevenues.data.sort(function (a,b) {
+                        return a-b;
+                    });
+                    tpOptions.series.push(pubRevenues);
+                    var tpChart = new Highcharts.Chart(tpOptions);
+                }
+            });
+        }
+        getchart();
+
+
+
+        function tab(){
+            var type = $('#dt').val() != '' ? $('#dt').val() : '1';
+            var sd = $("#startdate").val();
+            var ed = $("#enddate").val();
+            $('#ddtb').DataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "iDisplayLength": 20,
+                "bPaginage":true,
+                "aLengthMenu": [10, 20, 50, 100],
+                'bFilter': false,
+                'pagingType':'simple',
+                "bInfo":false,
+                "ajax": {
+                    "url": "index.php",
+                    "type":'POST',
+                    data:{"startDate":sd,"endDate":ed,"table":"1","datatype":type,'type':'sc'},
+                },
+                "aaSorting":[
+                    [1, "desc"],
+                ],
+                columns:[
+                    { "data": "date","sClass":"t1","title":'Date',"bSortable": false },
+                    { "data": "sales","title":"Sales"},
+                    { "data": "commission","title":"Commission","bSortable": false},
+                    { "data": "order","title":"Order","bSortable": false},
+                    { "data": "clicks","title":"Clicks","bSortable": false},
+                    { "data": "rob","title":"Robot","bSortable": false},
+                    { "data": "robp","title":"May Be Robot","bSortable": false},
+                    { "data": "epc","title":"EPC","bSortable": false},
+                    { "data": "rate","title":'<a href="javascript:void(0)" title="(commission/sales*100)">Commission.Rate</a>',"bSortable": false},
+                ]
+            })
+            $('#pdtb').DataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "iDisplayLength": 20,
+                "bPaginage":true,
+                "aLengthMenu": [10, 20, 50, 100],
+                'bFilter': false,
+                'pagingType':'simple',
+                "bInfo":false,
+                "ajax": {
+                    "url": "index.php",
+                    "type":'POST',
+                    data:{"startDate":sd,"endDate":ed,"table":"1","datatype":type,'type':'pub'},
+                },
+                "aaSorting":[
+                    [1, "desc"],
+                ],
+                columns:[
+                    { "data": "name","sClass":"t1","title":'Publisher',"bSortable": false },
+                    { "data": "sales","title":"Sales"},
+                    { "data": "commission","title":"Commission","bSortable": false},
+                    { "data": "order","title":"Order","bSortable": false},
+                    { "data": "clicks","title":"Clicks","bSortable": false},
+                    { "data": "rob","title":"Robot","bSortable": false},
+                    { "data": "robp","title":"May Be Robot","bSortable": false},
+                    { "data": "epc","title":"EPC","bSortable": false},
+                    { "data": "rate","title":'<a href="javascript:void(0)" title="(commission/sales*100)">Commission.Rate</a>',"bSortable": false},
+                ]
+            })
+            $('#natb').DataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "iDisplayLength": 20,
+                "bPaginage":true,
+                "aLengthMenu": [10, 20, 50, 100],
+                'bFilter': false,
+                'pagingType':'simple',
+                "bInfo":false,
+                "ajax": {
+                    "url": "index.php",
+                    "type":'POST',
+                    data:{"startDate":sd,"endDate":ed,"table":"1","datatype":type,'type':'na'},
+                },
+                "aaSorting":[
+                    [1, "desc"],
+                ],
+                columns:[
+                    { "data": "name","sClass":"t1","title":'Advertiser',"bSortable": false },
+                    { "data": "clicks","title":"Clicks","bSortable": false},
+                ]
+            })
+        }
+        tab();
+        $('.download').on('click',function(){
+            var datatype = $('#dt').val() != '' ? $('#dt').val() : '1';
+            var sd = $("#startdate").val();
+            var ed = $("#enddate").val();
+            var type = $(this).data('id');
+            window.location.href = 'index.php?&type='+type+'&act=download&startDate='+sd+'&endDate='+ed+'&datatype='+datatype;
+        })
+    });
+
+
+</script>

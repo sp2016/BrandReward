@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Sign up success</title>
+</head>
+<body>
+<div style="width: 100%;height: 100%;text-align: left;">
+    Hallo <{$publisher_name}>,
+    <br><br>
+    willkommen bei Brandreward! Mit dieser E-Mail bestätigen wir den Erhalt deiner Anmeldung auf unserer Plattform. Unsere Community gewährt dir Zugriff zu vielen internationalen Top Marken und vernetzt dich mit unseren Monetarisierungsexperten, welche dir helfen mit deinem einzigartigen Webinhalt Geld zu verdienen.
+    <br><br>
+    Einer unserer Account Manager wird dich binnen maximal 48 Stunden kontaktieren. Unser Team wird dir in Zukunft dabei helfen die passendste Lösung für die Monetisierung deiner Inhalte zu finden und steht dir für allerlei Fragen zu Verfügung.  Solltest du innerhalb 48 Stunden (ausser am Wochenende) noch keine E-Mail erhalten haben, melde dich bitte bei <font color="blue"><a href="mailto:support@brandreward.com" style="text-decoration:underline;">support@brandreward.com</a></font>
+    <br><br>
+    Liebe Grüsse
+    <br><br>
+    Dein Brandreward Team
+    
+    <br> <br>
+    <div style="width: 400px;">
+        <div style="float: left;width: 30%;"><img src="<{$smarty.const.BASE_URL}>/img/blogo.jpg"></div>
+        <div style="float: right;width: 70%;">
+            <font style="font-weight:bold;font-style:italic;">Email</font> : <font color="blue"><a href="mailto:support@brandreward.com" style="text-decoration:underline;">support@brandreward.com</a></font>
+            <br>
+            <font style="font-weight:bold;font-style:italic;">Skype</font> : brandreward
+            <br>
+            <font style="font-weight:bold;font-style:italic;">Web</font> :<font color="blue"> <a href="<{$smarty.const.BASE_URL}>/" style="text-decoration:underline;" target="_blank"><{$smarty.const.BASE_URL}></a></font>
+            <div style="clear: both;margin-top: 5px;"></div>
+            <a href="https://www.facebook.com/Brand-Reward-1085710124813271/?view_public_for=1085710124813271" target="_blank"><img src="<{$smarty.const.BASE_URL}>/img/t1.png"></a>
+            <a href="https://twitter.com/Brand_Reward" target="_blank"><img src="<{$smarty.const.BASE_URL}>/img/t2.jpg" style="margin-left: 8px;"></a>
+            <a href="https://www.pinterest.com/brandreward/" target="_blank"><img src="<{$smarty.const.BASE_URL}>/img/t3.png" style="margin-left: 8px;"></a>
+            <a href="https://www.linkedin.com/company/brand-reward-hong-kong-limited" target="_blank"><img src="<{$smarty.const.BASE_URL}>/img/t4.png" style="margin-left: 8px;"></a>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,349 @@
+<{include file="front_block_header.html"}>
+<{include file="front_block_banner.html"}>
+
+<div class="layer container sign">
+    <div class="content">
+        <h2><{$LANG.front.signup.suba}></h2>
+        <!-- <ul>
+            <form action="" method="post" id="form_publish_signup" >
+                <input type="hidden" name="act" value="publish_sign_up">
+            <li><span><{$LANG.front.signup.site}>:</span><div class=" sign_con"><input type="text" class="form-control" name="pub_site" id="pub_site"></div></li>
+            <li><span><{$LANG.front.signup.ce}>:</span><div class=" sign_con"><input type="text" class="form-control" name="pub_email" id="pub_email"></div></li>
+            <li><span><{$LANG.front.signup.pe}>:</span><div class=" sign_con"><input type="text" class="form-control" name="pub_paypal" id="pub_paypal"></div></li>
+            <li><span><{$LANG.front.signup.fn}>:</span><div class=" sign_con"><input type="text" class="form-control" name="pub_name" id="pub_name"></div></li>
+            <li><span><{$LANG.front.signup.cn}>:</span><div class=" sign_con"><input type="text" class="form-control" name="pub_phone" id="pub_phone"></div></li>
+            <li><span><{$LANG.front.signup.cname}>:</span><div class=" sign_con"><input type="text" class="form-control" name="pub_company" id="pub_company"></div></li>
+            <li><span><{$LANG.front.signup.ca}>:</span><div class=" sign_con"><input type="text" class="form-control" name="pub_companyaddress" id="pub_companyaddress"></div></li>
+            <li><span><{$LANG.front.signup.c}>:</span><div class=" sign_con"><select name="pub_country" class="form-control">
+                <{foreach from=$countryOption item=c key=k}>
+                <option value="<{$k}>"><{$c}></option>
+                <{/foreach}>
+            </select></div></li>
+            <li><span><{$LANG.front.signup.su}>:</span><div class=" sign_con"><input type="text" class="form-control" name="pub_account" id="pub_account" placeholder="length exceeds 8 and special characters are not allowed except _ . @"></div></li>
+            <li><span><{$LANG.front.signup.cp}>:</span><div class=" sign_con"><input type="text" class="form-control" name="pub_pwd" id="pub_pwd" placeholder="length exceeds 8"></div></li>
+            <li><span><{$LANG.front.signup.rp}>:</span><div class=" sign_con"><input type="text" class="form-control"  name="pub_pwd_ag" id="pub_pwd_ag"></div></li>
+                <div>
+        
+            <p ><input name="pub_isc" id="pub_isc" type="checkbox" class="agree"><{$LANG.front.signup.i}></p>
+                    </div>
+            <li class="sign_btn"><button type="submit" class="btn  btn-primary btn-lg btn-block"><{$LANG.front.signup.sa}></button></li>
+                </form>
+        </ul> -->
+        <!-- 1 -->
+        <div class="imfor_con basic"  style=" display:none">
+        <h2>The Basic Profile</h2>
+        <ul>
+            <li><span>Contact Email:</span><div class="sign_con"><input type="text" class="form-control"></div></li>
+            <li><span>Create Password:</span><div class="sign_con"><input type="text" class="form-control"></div></li>
+            <li><span>Re-type Password:</span><div class="sign_con"><input type="text" class="form-control"></div></li>      
+        </ul>
+        <p class="btn"><button id="submitModal">Next</button></p>
+        </div>
+        <!-- 2 -->
+        <div class="imfor_con" ><!-- style=" display:none" -->
+        <h2>Tell Us More!</h2>
+        <ul>
+            <li><span>Site Name:</span><div class="sign_con"><input type="text" class="form-control"></div></li>
+            <li><span><{$LANG.front.signup.site}>:</span><div class=" sign_con"><input type="text" class="form-control" name="pub_site" id="pub_site" placeholder="Please include the http:// or https://"></div></li>
+            <li><span>First Name:</span><div class="sign_con"><input type="text" class="form-control"></div></li>
+            <li><span>Last Name:</span><div class="sign_con"><input type="text" class="form-control"></div></li>
+            <li><span>Address 1:</span><div class="sign_con"><input type="text" class="form-control"></div></li>
+            <li><span>Address 2:</span><div class="sign_con"><input type="text" class="form-control"></div></li>
+            <li><span>City:</span><div class="sign_con"><input type="text" class="form-control"></div></li>
+            <li><span>Zip code:</span><div class="sign_con"><input type="text" class="form-control"></div></li>
+            <li><span>Country:</span><div class="sign_con"><input type="text" class="form-control" placeholder="Geographic Regions"></div></li>
+            <li><span>Contact Number:</span><div class="sign_con"><input type="text" class="form-control" placeholder="Must have country code
+"></div></li>
+            <li class="pre"><span>Preferred Payment Option:</span><div class="sign_con"><input type="text" class="form-control" placeholder="Valid Paypal email"
+></div></li>
+            <div><p ><input name="pub_isc" id="pub_isc" type="checkbox" class="agree">I agree to Brand Reward (Hong Kong) Limited Privacy Policy, Terms of Use and Terms & Conditions.</p></div>
+            <li class="btn"><button id="submitModal">Next</button></li>
+        </ul>
+    </div>
+        <!-- 3 -->
+        <div class="imfor_con earn"  style=" display:none">
+        <h2>Let’s Earn You Money</h2>
+        <dl>
+            <div class="earn_choose">
+            <dt>
+                    <p>Number of Employees</p>
+                    <dd><input type="checkbox">Only Me (1)</dd>
+                    <dd><input type="checkbox">2-10</dd>
+                    <dd><input type="checkbox">11-25</dd>
+                    <dd><input type="checkbox">26+</dd>
+            </dt>
+            </div>
+            <div class="earn_choose">
+             <dt>
+                    <p>Geographic breakdown of audience:</p>
+                    <select name="Top traffic country">
+                        <option>Top traffic country</option>
+                        <option value="2nd top traffic country">2nd top traffic country</option>
+                        <option value="3rd top traffic country">3rd top traffic country</option>
+                    </select>
+            </dt>
+            </div>
+            <div class="earn_choose">
+            <dt>
+                    <p>Dev Knowledge</p>
+                    <dd><input type="checkbox">I can turn on a computer</dd>
+                    <dd><input type="checkbox">I prefer wordpress templates</dd>
+                    <dd><input type="checkbox">I can get by with coding</dd>
+                    <dd><input type="checkbox">I’m a developing wizard</dd>
+            </dt>
+            </div>
+            <div class="earn_choose">
+            <dt>
+                    <p>Platforms that you Operate</p>
+                    <dd><input type="checkbox">Desktop (web-based)</dd>
+                    <dd><input type="checkbox">Mobile (app-based)</dd>
+                    <dd><input type="checkbox">Mobile (web-based)</dd>
+                    <dd><input type="checkbox">All (web & app)</dd>
+                    <dd><input type="checkbox">All web-based options</dd>
+            </dt>
+            </div>
+            <div class="earn_choose">
+            <dt>
+                    <p>Ideal Profit Model</p>
+                    <dd><input type="checkbox">CPA/CPS</dd>
+                    <dd><input type="checkbox">CPI</dd>
+                    <dd><input type="checkbox">CPM</dd>
+                    <dd><input type="checkbox">CPC</dd>
+            </dt>
+            </div>
+            <div class="earn_choose">
+            <dt>
+                    <p>Ways you generate traffic:</p>
+                    <dd><input type="checkbox">SEO</dd>
+                    <dd><input type="checkbox">SEM</dd>
+                    <dd><input type="checkbox">Social Media</dd>
+                    <dd><input type="checkbox">EDM</dd>
+                    <dd><input type="text" class="form-control" placeholder="other"></dd>
+            </dt>
+            </div>
+            <div class="earn_choose">
+            <dt>
+                    <p>My traffic would love these categorys:</p>
+                    <select name="Gucci, Sephora, ">
+                        <option>Gucci, Sephora, </option>
+                        <option value="Target, Best Buy, ">Target, Best Buy, </option>
+                        <option value="Hilton, American Express, ">Hilton, American Express, </option>
+                        <option value="Microsoft, Samsung, ">Microsoft, Samsung, </option>
+                        <option value="Hilton, American Express, ">Hilton, American Express, </option>
+                        <option value="All the above">All the above</option>
+                    </select>
+            </dt>
+        </div>
+        <div class="earn_choose">
+            <dt>
+                    <p>Content Production</p>
+                    <dd><input type="checkbox">In-house</dd>
+                    <dd><input type="checkbox">User Generated Content</dd>
+                    <dd><input type="checkbox">Both</dd>
+            </dt>
+        </div>
+        <div class="earn_choose">
+            <dt>
+                    <p>Type of Content</p>
+                    <dd><input type="checkbox">Images</dd>
+                    <dd><input type="checkbox">Text</dd>
+                    <dd><input type="text" class="form-control" placeholder="other"></dd>
+            </dt>
+        </div>
+        <div class="earn_choose">
+            <dt>
+                    <p>Type of Content</p>
+                    <dd><input type="text" class="form-control" placeholder="Other (Please specify)"></dd>
+            </dt>
+        </div>
+            <dt class="btn">
+            <button id="submitModal">Submit</button></dt>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    $('#form_publish_signup').submit(function () {
+        // check account
+        var checkaccount = 0;
+
+        var pub_account = $('#pub_account').val();
+        if (pub_account == '') {
+            checkaccount = 1;
+            set_msg('pub_account', 0, 'account can not be empty');
+        }
+        var preg = /[0-9a-zA-Z@_\.]+/;
+        if (checkaccount == 0 && !pub_account.match(preg)) {
+            checkaccount = 1;
+            set_msg('pub_account', 0, 'account only be 0-9a-zA-Z@_.');
+        }
+
+        if (checkaccount == 0 && !pub_account.match(/.{8,}/)) {
+            checkaccount = 1;
+            set_msg('pub_account', 0, 'Username must contain at least 8 characters');
+        }
+
+
+        if (checkaccount == 0) {
+            $.ajax({
+                type: "post",
+                url: "<{$smarty.const.BASE_URL}>/process.php",
+                data: "act=check_publish_account&account=" + pub_account,
+                async: false,
+                success: function (data) {
+                    if (data == '1') {
+                        checkaccount = 1;
+                        set_msg('pub_account', 0, 'account can not be empty');
+                    } else if (data == '2') {
+                        checkaccount = 1;
+                        set_msg('pub_account', 0, 'account only be 0-9a-zA-Z@_');
+                    } else if (data == '3') {
+                        checkaccount = 1;
+                        set_msg('pub_account', 0, 'account already exists');
+                    } else if (data == '0') {
+                    } else {
+                        checkaccount = 1;
+                        set_msg('pub_account', 0, 'system error');
+                    }
+                }
+            });
+        }
+
+
+        if (checkaccount == 0) {
+            set_msg('pub_account', 1, '');
+        }
+
+        // check password
+
+        var checkpwd = 0;
+        var pub_pwd = $('#pub_pwd').val();
+        if (pub_pwd == '') {
+            checkpwd = 1;
+            set_msg('pub_pwd', 0, 'password can not be empty');
+        }
+
+        if (checkpwd == 0 && !pub_pwd.match(/^.{8,}$/)) {
+            checkpwd = 1;
+            set_msg('pub_pwd', 0, 'password must contain at least 8 characters');
+        }
+
+        if (checkpwd == 0) {
+            set_msg('pub_pwd', 1, '');
+        }
+
+        // check password again
+        var checkpwdag = 0;
+        var pub_pwd_ag = $('#pub_pwd_ag').val();
+        if (pub_pwd_ag != pub_pwd) {
+            checkpwdag = 1;
+            set_msg('pub_pwd_ag', 0, 'password input is wrong');
+        }
+
+        if (checkpwdag == 0) {
+            set_msg('pub_pwd_ag', 1, '');
+        }
+
+
+//check protocol
+        var checkpro = 0;
+        var pub_isc = $('#pub_isc').is(':checked');
+        if(!pub_isc){
+            checkpro = 1;
+            set_msg('pub_isc',0 , "we can only process appliction that agree to our T&Cs,policies and conditions");
+        }
+        if (checkpro == 0) {
+            set_msg('pub_isc', 1, '');
+        }
+
+
+
+        // check email
+
+        var checkemail = 0;
+        var pub_email = $('#pub_email').val();
+        if (pub_email == '') {
+            checkemail= 1;
+            set_msg('pub_email', 0, 'company email can not be empty');
+        }
+
+        if (checkemail == 0 && !pub_email.match(/^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/)) {
+            checkemail = 1;
+            set_msg('pub_email', 0, 'check your email format');
+        }
+
+        if (checkemail == 0) {
+            set_msg('pub_email', 1, '');
+        }
+
+        var res = checkaccount + checkpwd + checkpwdag+checkpro+checkemail;
+        if (res > 0) {
+            return false;
+        } else {
+            //submit form
+            $.ajax({
+                type: "post",
+                url: "<{$smarty.const.BASE_URL}>/process.php",
+                data: $('#form_publish_signup').serialize(),
+                async: false,
+                success: function (data) {
+                    if (data == '1') {
+                        set_msg('pub_account', 0, 'account can not be empty');
+                    } else if (data == '2') {
+                        set_msg('pub_account', 0, 'account only be 0-9a-zA-Z@_');
+                    } else if (data == '3') {
+                        set_msg('pub_account', 0, 'account already exists');
+                    } else if (data == '4') {
+                        set_msg('pub_pwd', 0, 'password can not be empty');
+                    } else if (data == '5') {
+                        set_msg('pub_pwd', 0, 'password must contain at least 8 characters');
+                    } else if (data == '6') {
+                        set_msg('pub_pwd_ag', 0, 'password input is wrong');
+                    } else if (data == '0') {
+                       alert('success');
+                    } else {
+                        set_msg('pub_account', 0, 'system error');
+                    }
+                }
+            });
+            $('#ok').click(function(){
+                window.location.href = '<{$smarty.const.BASE_URL}>';
+                return false;
+            });
+            return false;//one necessary step to prevent <form> from redirecting
+
+        }
+
+
+
+    });
+
+
+    function set_msg(id, res, msg) {
+        var fgroup = $('#' + id).parent().parent();
+
+        if (res == 0) {
+            fgroup.removeClass('has-error has-success');
+            fgroup.addClass('has-error');
+            if (fgroup.find('label')[0]) {
+                fgroup.find('label').html(msg);
+            } else {
+                if(id != 'login-account'){
+                    fgroup.prepend('<label class="control-label" style="padding:0 30%">' + msg + '</label>');
+                }else{
+                    fgroup.prepend('<label class="control-label" style="padding:0 1%">' + msg + '</label>');
+                }
+
+            }
+        }else {
+            fgroup.removeClass('has-error has-success');
+            fgroup.addClass('has-success');
+            if (fgroup.find('label')[0]) {
+                fgroup.find('label').remove();
+            }
+        }
+    }
+</script>
+<{include file="front_block_footer.html"}>

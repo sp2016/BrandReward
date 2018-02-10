@@ -1,0 +1,119 @@
+<{include file="block_header.html"}>
+<{include file="block_banner.html"}> 
+
+
+<div class="container-fluid">
+<form class="form-inline">
+  
+  <div class="form-group">
+  <label for="sel_aff"><{$LANG.front.tran_month.a1}></label><br>
+  <select multiple class="form-control" id="sel_aff" name="sel_aff[]">
+    <option val=""><{$LANG.front.tran_month.a2}></option>
+    <{foreach from=$AffNameIdMap item=v key=k}>
+    <option val="<{$k}>" <{if $S_GET.sel_aff && $k|in_array:$S_GET.sel_aff}>selected<{/if}>><{$k}></option>
+    <{/foreach}>
+  </select>
+  </div>
+  <div class="form-group">
+  <label for="sel_site"><{$LANG.front.tran_month.a3}></label><br>
+  <select multiple class="form-control" id="sel_site" name="sel_site[]">
+    <option val=""><{$LANG.front.tran_month.a4}></option>
+    <{foreach from=$site_tracking_code item=v key=k}>
+    <option val="<{$v}>" <{if $S_GET.sel_site && $v|in_array:$S_GET.sel_site}>selected<{/if}>><{$v}></option>
+    <{/foreach}>
+  </select>
+  </div>
+  <div class="form-group">
+  <label for="sel_start"><{$LANG.front.tran_month.a5}></label><br>
+  <select class="form-control" id="sel_start" name="sel_start">
+    <{foreach from=$date_list item=v key=k}>
+    <option val="<{$v}>" <{if $v == $S_GET.sel_start}>selected<{/if}>><{$v}></option>
+    <{/foreach}>
+  </select><br>
+  
+  <label for="sel_end"><{$LANG.front.tran_month.a6}></label><br>
+  <select class="form-control" id="sel_end" name="sel_end">
+    <{foreach from=$date_list item=v key=k}>
+    <option val="<{$v}>" <{if $v == $S_GET.sel_end}>selected<{/if}> ><{$v}></option>
+    <{/foreach}>
+  </select>
+  </div>
+
+  <div class="form-group">
+    <label>
+      <input type="radio" name="sel_mode" id="sel_mode" value="Af" <{if $S_GET.sel_mode != 'Site'}>checked<{/if}>>
+      <{$LANG.front.tran_month.a7}>
+    </label>
+    <label>
+      <input type="radio" name="sel_mode" id="sel_mode" value="Site" <{if $S_GET.sel_mode != 'Af'}>checked<{/if}>>
+      <{$LANG.front.tran_month.a8}>
+    </label><br><br><br>
+    <button type="submit" class="btn btn-default"><{$LANG.front.tran_month.a9}></button>
+  </div>
+  
+</form>
+</div>
+
+<div class="container-fluid" style="margin-top:20px;">
+
+<{if $S_GET.sel_mode != 'Site'}>
+
+<table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th rowspan="2"><{$LANG.front.tran_month.a10}></th>
+      <th colspan="<{$AffNameIdMap|@count}>" style="text-align:center"><{$LANG.front.tran_month.a11}></th>
+      <th rowspan="2"><{$LANG.front.tran_month.a12}></th>
+    </tr>
+    <tr>
+      <{foreach from=$AffNameIdMap item=v key=k}>
+        <th><{$k}></th>
+      <{/foreach}>
+    </tr>
+  </thead>
+  <{foreach from=$tran_data item=data key=m}>
+  <tr>
+    <{assign var="total" value=0}>
+    <th><{$m}></th>
+    <{foreach from=$AffNameIdMap item=v key=k}>
+      <{assign var="total" value=$total+$data.$k.commission}>
+      <th><{$data.$k.commission|number_format:'2':'.':','}></th>
+    <{/foreach}>
+    <th><{$total|number_format:'2':'.':','}></th>
+  </tr>  
+  <{/foreach}>
+</table>
+
+<{else}>
+
+<table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th rowspan="2"><{$LANG.front.tran_month.a13}></th>
+      <th colspan="<{$site_tracking_code|@count }>" style="text-align:center"><{$LANG.front.tran_month.a14}></th>
+      <th rowspan="2"><{$LANG.front.tran_month.a15}></th>
+    </tr>
+    <tr>
+      <{foreach from=$site_tracking_code item=v key=k}>
+        <th><{$v}></th>
+      <{/foreach}>
+    </tr>
+  </thead>
+  <{foreach from=$tran_data item=data key=m}>
+  <tr>
+    <{assign var="total" value=0}>
+    <th><{$m}></th>
+    <{foreach from=$site_tracking_code item=v key=k}>
+      <{assign var="total" value=$total+$data.$v.commission}>
+      <th><{$data.$v.commission|number_format:'2':'.':','}></th>
+    <{/foreach}>
+    <th><{$total|number_format:'2':'.':','}></th>
+  </tr>  
+  <{/foreach}>
+</table>
+
+
+<{/if}>
+
+</div>
+<{include file="block_footer.html"}>

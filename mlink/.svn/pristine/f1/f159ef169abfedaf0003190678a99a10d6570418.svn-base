@@ -1,0 +1,143 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+  <div class="container" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1>Upload Tranasction File</h1></div>
+
+    <!-- account info -->
+    <div class="panel panel-default" id="panel_account">
+      <div class="panel-heading">Upload</div>
+      <div class="panel-body" >
+        <form method="post" action="<{$smarty.const.BASE_URL}>/b_tools_upload_transaction.php" enctype='multipart/form-data' id="form_upload">
+        
+        <div class="row form-inline">
+          <div class="form-group">
+            <input type="hidden" value="file_name" name="upload_transaction" />
+            <input type="file" name="upload_transaction" />
+          </div>
+          <div class="form-group">
+            <input type="submit" class="form-control" value="submit for check" id="btn_upload"/>
+            <input type="hidden" value="show_info" name="act" />
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- detail info -->
+    <div id="upload_details" class="panel panel-default">
+      <div class="panel-heading">Details</div>
+      <div class="panel-body" >
+
+        <{if $up_result}>
+
+        <{foreach from=$up_result item=upload key=fname}>
+        <div class="row">
+          <div class="col-lg-3" style="background-color:#EEE;padding:8px;text-align:right;border:1px solid #ddd;">file upload status:</div><div class="col-lg-9" style="padding:8px;border:1px solid #ddd;"><{if $upload.res > 0}>succeed<{else}>failed<{/if}></div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-3" style="background-color:#EEE;padding:8px;text-align:right;border:1px solid #ddd;">check result</div><div class="col-lg-9" style="padding:8px;border:1px solid #ddd;"><{if $upload.infomation.res > 0}>succeed<{else}>failed<{/if}></div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-3" style="background-color:#EEE;padding:8px;text-align:right;border:1px solid #ddd;">check info</div><div class="col-lg-9" style="padding:8px;border:1px solid #ddd;"><{$upload.infomation.msg}></div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12" style="padding:8px;border:1px solid #ddd;">
+            <table class="table table-striped">
+               <thead>
+                  <tr>
+                    <{foreach from=$upload.infomation.info.0 item=v key=column}>
+                      <th><{$column}></th>
+                    <{/foreach}>
+                  </tr>
+                  </thead>
+
+                  <{foreach from=$upload.infomation.info item=af}>
+                    <tr>
+                    <{foreach from=$af item=val key=col}>
+                    <td <{if ($col == 'MatchAffiliate' && $val == 'not found !') || ($col == 'NoSource' && $val > 0)}>class="danger"<{/if}>>
+                    <{if $col == 'Number' || $col == 'NoSource'}>
+                      <{$val|number_format:'0':'.':',' }>
+                    <{elseif $col != 'Number' && $col != 'NoSource' && $col != 'AffName' && $col != 'MatchAffiliate'}>
+                      <{$val|number_format:'2':'.':',' }>
+                    <{else}>
+                      <{$val}>
+                    <{/if}>
+                    </td>
+                    <{/foreach}>
+                    </tr>
+                  <{/foreach}>
+                
+            </table>
+          </div>
+        </div>
+
+        <{/foreach}>
+
+        <div class="row">
+          <form method="post" action="<{$smarty.const.BASE_URL}>/b_tools_upload_transaction.php" >
+            <input type="hidden" value="go_db" name="act" />
+          <div class="col-lg-12" style="padding:8px;border:1px solid #ddd;">
+            <{if $upload.infomation.res > 0}><input type="submit" class="form-control btn btn-success" value="submit to database" /><{/if}>
+          </div>
+          </form> 
+        </div>
+
+        <{/if}>
+
+        <{if $go_result}>
+          <div class="row">
+            <div class="col-lg-3" style="background-color:#EEE;padding:8px;text-align:right;border:1px solid #ddd;">submit result:</div><div class="col-lg-9" style="padding:8px;border:1px solid #ddd;"><{if $go_result.res > 0}>succeed<{else}>failed<{/if}></div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-3" style="background-color:#EEE;padding:8px;text-align:right;border:1px solid #ddd;">submit info</div><div class="col-lg-9" style="padding:8px;border:1px solid #ddd;"><{$go_result.msg}></div>
+          </div>
+        <{/if}>
+
+
+      </div>
+    </div>
+
+
+    <div id="upload_details" class="panel panel-default">
+      <div class="panel-heading">History<span style="float:right;"><a href="javascript:void(0)" id="clear_tmp">clear tmp</a></span></div>
+      <div class="panel-body" >
+            <{if $history}>
+            <table class="table table-striped">
+              <thead>
+                <th>ID</th>
+                <th>FileName</th>
+                <th>Created</th>
+                <th>Status</th>
+              </thead>
+            <{foreach from=$history item=data}>
+              <tr>
+                <td><{$data.id}></td>
+                <td><{$data.old_file_name}></td>
+                <td><{$data.created}></td>
+                <td><{if $data.status == 'info'}>tmp<{elseif $data.status == 'go'}>done<{/if}></td>
+              </tr>
+            <{/foreach}>
+            </table>
+            <{/if}>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<script>
+$('#clear_tmp').click(function(){
+   window.location.href="<{$smarty.const.BASE_URL}>/b_tools_upload_transaction.php?act=clear";
+});
+
+</script>
+
+<{include file="b_block_footer.html"}>

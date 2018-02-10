@@ -1,0 +1,271 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+        <div class="row" style="padding:20px 0;">
+            <div class="col-lg-3">
+                <p style="background-color: black; color: white; padding: 10px;">
+                <span><b>Count: </b></span><br>
+                <span style="font-size: xx-large;"><b><{$list_statis.count|number_format:0:'.':','}></b></span>
+                </p>
+            </div>
+            <div class="col-lg-3">
+                <p style="background-color: black; color: white; padding: 10px;">
+                <span><b>Sum: </b></span><br>
+                <span style="font-size: xx-large;"><b>USD <{$list_statis.sum|number_format:2:'.':','}></b></span>
+                </p>
+            </div>
+            <div class="col-lg-3"></div>
+            <div class="col-lg-3"></div>
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    
+                    <div class="panel-body" >
+                        <form id="form_search">
+                            <div class="row">
+                                    <div class="form-group col-lg-2">
+                                    <b>Publisher</b><input type="text" Name="publisher" class="form-control" value="<{$search.publisher}>" placeholder="Name/Alias/Domain/ApiKey">
+                                    </div>
+
+                                    <div class="form-group col-lg-2">
+                                    <b>TransactionID</b><input type="text" Name="transactionid" class="form-control" value="<{$search.transactionid}>" placeholder="TransactionID">
+                                    </div>
+
+                                    <div class="form-group col-lg-2">
+                                    <b>PaidMonth</b><select class="form-control" name="paidmonth">
+                                    <option value="">All</option>
+                                    <{foreach from=$paidMonth_list item=m}>
+                                        <option value="<{$m}>" <{if $m==$search.paidmonth}>selected<{/if}>><{$m}></option>
+                                    <{/foreach}>
+                                    </select>
+                                    </div>
+
+                                    <div class="form-group col-lg-1">
+                                    <b>Publisher Type</b><select class="form-control" name="ptype">
+                                    <option value="">All</option>
+                                    <option value="br" <{if $search.ptype == 'br'}>selected<{/if}>>BR Publisher</option>
+                                    <option value="mk" <{if $search.ptype == 'mk'}>selected<{/if}>>MK Website</option>
+                                    </select>
+                                    </div>
+
+                                    <div class="form-group col-lg-1">
+                                    <b>Sort By</b><select class="form-control" name="orderby">
+                                    <option value=""> Paid Date ↓</option>
+                                        <option value="Amount-DESC" <{if $search.orderby=='Amount-DESC'}>selected<{/if}>>Amount ↓</option>
+                                        <option value="Amount-ASC" <{if $search.orderby=='Amount-ASC'}>selected<{/if}>>Amount ↑</option>
+                                    </select>
+                                    </div>
+
+                                    <div class="form-group col-lg-1">
+                                    <b>Page Size</b><select class="form-control" name="pagesize">
+                                        <option value="50" <{if $search.pagesize == '50'}>selected<{/if}>>50</option>
+                                        <option value="100" <{if $search.pagesize == '100'}>selected<{/if}>>100</option>
+                                        <option value="200" <{if $search.pagesize == '200'}>selected<{/if}>>200</option>
+                                    </select>
+                                    </div>
+
+                                    <div class="form-group col-lg-3">
+                                        <br>
+                                        <a href="javascript:void(0);" onclick="submit_form()" class="btn btn-primary" role="button">Search</a>
+                                        <a href="b_payments_publisher_remit.php?type=group&paiddate=<{$paymentDate_this}>" class="btn btn-primary" role="button">Remit</a>
+                                        <a href="b_payments_publisher_pending.php" class="btn btn-primary" role="button">Pending</a>
+                                        <a href="b_payments_publisher_statis.php?paidmonth=<{$search.paidmonth}>" class="btn btn-primary" role="button">Statis</a>
+                                    </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-12" style="text-align: center;display: none;" id="checkboxall_process"><a href="javascript:void(0);" onclick="choose_all(this)"><span class="label label-primary">Page</span> click here to choose all recode</a></div>
+
+            <div class="col-lg-12">
+                <table class="table table-hover" id="tbl_pp">
+                            <thead>
+                            <tr>
+                                <th class="col-lg-1">ID</th>
+                                <th class="col-lg-1">Amount</th>
+                                <th class="col-lg-1">Pay month</th>
+                                <th class="col-lg-1">Publisher Account<br>Name (ID)</th>
+                                <th class="col-lg-2">Publisher Site</th>
+                                <th class="col-lg-3">Payment Info</th>
+                                <th class="col-lg-1">Transaction ID<br><i>PaidTime</i></th>
+                                <th class="col-lg-2">Operation</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=payment}>
+                            <tr data-id="<{$payment.ID}>">
+                                <td><{$payment.ID}> </td>
+                                <td><b><{$payment.Currency}> <{$payment.Amount|number_format:2:'.':','}></b></td>
+                                <td><{$payment.PaidDate|substr:0:7}></td>
+                                <td><{$payment.publisher.UserName}><br><{$payment.publisher.Name}> (<b><{$payment.publisher.ID}></b>)</td>
+                                <td><{$payment.account.Domain}></td>
+                                <td><{if $payment.PaymentType == 'paypal'}><b>Paypal</b>: <{$payment.PaymentDetail}><{else}><b>Bank</b>: <a href="javascript:void(0);" onclick="triggerDetail(this)">Detail</a><{/if}><div style="display:none;"><{$payment.PaymentDetail}></div></td>
+                                <td><{$payment.TransactionId}><br><i><{$payment.PaidTime}></i></td>
+                                <td>
+                                    [ <a href="javascript:void(0);" onclick="editpayments('<{$payment.ID}>')">EDIT</a> ]<br>
+                                    [ <a href="<{$smarty.const.BASE_URL}>/data/payments/<{$payment.InvoiceFile}>">DOWNLOAD INVOICE</a> ]
+                                </td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                        <{$pageHtml}>
+
+            </div>
+        </div>
+    </div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width: 70%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Publisher Potential</h4>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <table class="table table-hover">
+                    <tr>
+                        <td class="col-lg-2">Sum:</td>
+                        <td class="col-lg-10">
+                            <div class="input-group">
+                              <div class="input-group-addon">USD $</div>
+                              <input type="text" class="form-control" name="amount" placeholder="Amount">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Count:</td>
+                        <td data-name="count"></td>
+                    </tr>
+                    <tr>
+                        <td>Domain:</td>
+                        <td data-name="domain"></td>
+                    </tr>
+                    <tr>
+                        <td>Payment Type</td>
+                        <td>
+                            <label class="radio-inline">
+                              <input type="radio" name="paytype" id="inlineRadio1" value="paypal"> paypal
+                            </label>
+                            <label class="radio-inline">
+                              <input type="radio" name="paytype" id="inlineRadio2" value="bank"> bank
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Info:</td>
+                        <td><textarea name="PaymentDetail" cols="50" rows="8"></textarea></td>   
+                    </tr>
+                    <tr>
+                        <td>Operate time:</td>
+                        <td><input type="text" class="form-control dtpicker" id="paidtime" name="paidtime" placeholder="Pay time"></td>
+                    </tr>
+                    <tr>
+                        <td>Transaction ID:</td>
+                        <td><input type="text" class="form-control" id="transactionid" name="transactionid" placeholder="Transaction ID"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><a href="javascript:void(0)" class="btn btn-primary" onclick="save_pay()">Save</a>
+                        <input type="hidden" name="PaymentID" value="">
+                        </td>
+                    </tr>
+                </table>
+                <div id="save_res"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function triggerDetail(obj){
+    if($(obj).next().css('display') == 'none'){
+        $(obj).html('Close');
+        $(obj).next().css('display','');
+    }else{
+        $(obj).html('Detail');
+        $(obj).next().css('display','none');
+    }
+}
+function submit_form(){
+    $('#form_search input[name=action]').val('search');
+    $('#form_search').submit();
+}
+
+$(".dtpicker").datetimepicker({
+        minView: "month",//设置只显示到月份
+        format : "yyyy-mm-dd",//日期格式
+        autoclose:true,//选中关闭
+        todayBtn: true//今日按钮
+    });
+
+function editpayments(PaymentID){
+    $.ajax({
+        type: "post",
+        url: "b_payments_publisher.php",
+        data: "type=ajax&act=get_remit_info&paymentid="+PaymentID,
+        async: false,
+        success: function (html) {
+            var data = eval('(' + html + ')');
+            var domain = "";
+            for(i in data.detail){
+                domain += data.detail[i].Domain+"<br>";
+            }
+
+            $('#myModalLabel').html('payment info');
+            $('#modal-body table input[name="amount"]').val(data.Amount);
+            $('#modal-body table td[data-name="count"]').html(data.detail.length);
+            $('#modal-body table td[data-name="domain"]').html(domain);
+            if(data.PaymentType == 'paypal'){
+                $('#modal-body input[name="paytype"]').first().attr('checked','1');
+            }else{
+                $('#modal-body input[name="paytype"]').last().attr('checked','1');
+            }
+            $('#modal-body textarea[name="PaymentDetail"]').html(data.PaymentDetail);
+            $('#modal-body table input[name="paidtime"]').val(data.PaidTime);
+            $('#modal-body table input[name="transactionid"]').val(data.TransactionId);
+            $('#modal-body table input[name="PaymentID"]').val(PaymentID);
+
+            $('#save_res').html('');
+            $('#save_res').removeClass('bg-success');
+            $('#save_res').removeClass('bg-warning');
+            $('#myModal').modal({backdrop: 'static', keyboard: false});
+        }
+    });
+}
+
+function save_pay(){
+    var paymentid = $('#modal-body table input[name="PaymentID"]').val();
+    var transactionid = $('#modal-body table input[name="transactionid"]').val();
+    var paytype = $('#modal-body table input[name="paytype"]:checked').val();
+    var paidtime = $('#modal-body table input[name="paidtime"]').val();
+    var amount = $('#modal-body table input[name="amount"]').val();
+    var paymentdetail = $('#modal-body textarea[name="PaymentDetail"]').val();
+    
+    $.ajax({
+        type: "post",
+        url: "b_payments_publisher.php",
+        data: "act=edit_payments&paymentid="+paymentid+"&transactionid="+transactionid+"&paytype="+paytype+"&amount="+amount+"&paidtime="+paidtime+"&paymentdetail="+paymentdetail,
+        async: false,
+        success: function (res) {
+            var data = eval('(' + res + ')');
+            if(data.rs == 1){
+                $('#save_res').addClass('bg-success');
+                $('#save_res').html('Success');
+            }else{
+                $('#save_res').addClass('bg-warning');
+                $('#save_res').html(data.msg);
+            }
+        }
+    });
+}
+</script>
+
+<{include file="b_block_footer.html"}>

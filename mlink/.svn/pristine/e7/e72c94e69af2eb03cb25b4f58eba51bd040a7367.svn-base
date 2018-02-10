@@ -1,0 +1,341 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+        <div class="row" style="padding:20px 0;">
+           
+            <div class="col-lg-3">
+                <p style="background-color: black; color: white; padding: 10px;">
+                <span><b>Count: </b></span><br>
+                <span style="font-size: xx-large;"><b><{$total_count|number_format:0:'.':','}></b></span>
+                </p>
+            </div>
+            <div class="col-lg-3">
+                <p style="background-color: black; color: white; padding: 10px;">
+                <span><b>Sum: </b></span><br>
+                <span style="font-size: xx-large;"><b>USD <{$total_sum|number_format:2:'.':','}></b></span>
+                </p>
+            </div>
+            <div class="col-lg-3"></div>
+            <div class="col-lg-3"></div>
+            
+           <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    
+                    <div class="panel-body" >
+                        <form id="form_search">
+                            <div class="row">
+                                    <div class="form-group col-lg-3">
+                                    <b>Amount</b>
+                                    <div class="form-inline">
+                                    <input type="text" Name="amountfrom" class="form-control" value="<{$search.amountfrom}>" placeholder="$"> - 
+                                    <input type="text" Name="amountto" class="form-control" value="<{$search.amountto}>" placeholder="$">
+                                    </div>
+                                    </div>
+                                    <div class="form-group col-lg-3">
+                                    <b>Hasbank</b><select class="form-control" name="hasbank">
+                                    <option value="">All</option>
+                                    <option value="YES" <{if $search.hasbank == 'YES'}>selected<{/if}>>YES</option>
+                                    <option value="NO" <{if $search.hasbank == 'NO'}>selected<{/if}>>NO</option>
+                                    </select>
+                                    </div>
+
+                                    <div class="form-group col-lg-3">
+                                        <input type="hidden" name="type" value="<{$search.type}>"/>
+                                        <br>
+                                        <a href="javascript:void(0);" onclick="submit_form()" class="btn btn-primary" role="button">Search</a>
+                                        <{if $search.type == 'group'}>
+                                            <a href="b_payments_publisher_remit.php?paiddate=<{$search.paiddate}>&amountfrom=<{$search.amountfrom}>&amountto=<{$search.amountto}>&hasbank=<{$search.hasbank}>" class="btn btn-success" role="button">Personal</a>
+                                        <{else}>
+                                            <a href="b_payments_publisher_remit.php?type=group&paiddate=<{$search.paiddate}>&amountfrom=<{$search.amountfrom}>&amountto=<{$search.amountto}>&hasbank=<{$search.hasbank}>" class="btn btn-success" role="button">Group</a>
+                                        <{/if}> 
+                                        <a href="b_payments_publisher.php" class="btn btn-primary" role="button">List</a>
+                                    </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <table class="table table-hover" id="tbl_pp">
+                            <thead>
+                            <tr>
+                                <th class="col-lg-1">Amount</th>
+                                <th class="col-lg-1">Name</th>
+                                <th class="col-lg-2">Domain</th>
+                                <th class="col-lg-1">Email</th>
+                                <th class="col-lg-1">Manager</th>
+                                <th class="col-lg-2">Detail</th>
+                                <th class="col-lg-1">Paypal</th>
+                                <th class="col-lg-3">Bank</th>
+                            </tr>
+                            </thead>
+                            <{if $search.type == 'group'}>
+                            <{foreach from=$list_group item=group key=gkey}>
+                            <{if $group.count > 1}>
+                                <tr style="background-color: black; color: white;" data-group-id="<{$gkey}>">
+                                    <td colspan="2"><b>COUNT: <{$group.count}></b></td>
+                                    <td colspan="2"><b>SUM: USD <{$group.sum|number_format:2:'.':','}></b></td>
+                                    <td colspan="4"><a href="javascript:void(0)" class="btn btn-primary" onclick="pay_group(this)" data-btn="pay">Pay it</a></td>
+                                </tr>
+                            <{/if}>
+                                <{foreach from=$group.detail item=payment key=k}>
+                                <tr <{if $group.sum > 1000 && !$payment.AccountNumber}>style="background-color: gold;"<{/if}> data-site="<{$payment.Site}>">
+                                    <td><b>USD <{$payment.commission|number_format:2:'.':','}></b></td>
+                                    <td><{$payment.Name}></td>
+                                    <td><{$payment.Domain}></td>
+                                    <td><{$payment.Email}></td>
+                                    <td><{$payment.Manager}></td>
+                                    <td><a href="<{$smarty.const.BASE_URL}>/b_payments_preview.php?" class="btn btn-primary">Invoice</a> 
+                                        <a href="javascript:void(0)" class="btn btn-primary" onclick="pay_one(this)" data-btn="pay">Pay it</a>
+                                    </td>
+                                    <td><{$payment.PayPal}></td>
+                                    <{if $group.count == 1}>
+                                        <td><{if $payment.AccountNumber}>
+                                        <b>Account Name:</b><{$payment.AccountName}><br/>
+                                        <b>Account Number:</b><{$payment.AccountNumber}><br/>
+                                        <b>Account Address:</b><{$payment.AccountAddress}><br/>
+                                        <b>Swift Code:</b><{$payment.SwiftCode}><br/>
+                                        <b>Bank Name:</b><{$payment.BankName}><br/>
+                                        <b>Branch Name:</b><{$payment.BranchName}><br/>
+                                        <{/if}></td>
+                                     <{elseif $k==0 }>
+                                        <td rowspan="<{$group.count}>"><{if $payment.AccountNumber}>
+                                        <b>Account Name:</b><{$payment.AccountName}><br/>
+                                        <b>Account Number:</b><{$payment.AccountNumber}><br/>
+                                        <b>Account Address:</b><{$payment.AccountAddress}><br/>
+                                        <b>Swift Code:</b><{$payment.SwiftCode}><br/>
+                                        <b>Bank Name:</b><{$payment.BankName}><br/>
+                                        <b>Branch Name:</b><{$payment.BranchName}><br/>
+                                        <{/if}></td>
+                                     <{/if}>
+                                </tr>
+                                <{/foreach}>
+                                <{if $group.count > 1}><tr style="background-color: cadetblue; color: white;"><td colspan="8"></td></tr><{/if}>
+                            <{/foreach}>
+                            <{else}>
+                            <{foreach from=$list item=payment key=k}>
+                            <tr data-site="<{$k}>">
+                                <td><b>USD <{$payment.commission|number_format:2:'.':','}></b></td>
+                                <td><{$payment.Name}></td>
+                                <td><{$payment.Domain}></td>
+                                <td><{$payment.Email}></td>
+                                <td><{$payment.Manager}></td>
+                                <td><a href="<{$smarty.const.BASE_URL}>/b_payments_preview.php?" class="btn btn-primary">Invoice</a> <a href="javascript:void(0)" class="btn btn-primary" onclick="pay_one(this)" data-btn="pay">Pay it</a></td>
+                                <td><{$payment.PayPal}></td>
+                                <td><{if $payment.AccountNumber}>
+                                     <b>Account Name:</b><{$payment.AccountName}><br/>
+                                     <b>Account Number:</b><{$payment.AccountNumber}><br/>
+                                     <b>Account Address:</b><{$payment.AccountAddress}><br/>
+                                     <b>Swift Code:</b><{$payment.SwiftCode}><br/>
+                                     <b>Bank Name:</b><{$payment.BankName}><br/>
+                                     <b>Branch Name:</b><{$payment.BranchName}><br/>
+                                     <{/if}></td>
+                            </tr>
+                            <{/foreach}>
+                            <{/if}>
+                        </table>
+            </div>
+        </div>
+    </div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width: 70%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Publisher Potential</h4>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <table class="table table-hover">
+                    <tr>
+                        <td class="col-lg-2">Sum:</td>
+                        <td class="col-lg-10" data-name="sum"></td>
+                    </tr>
+                    <tr>
+                        <td>Count:</td>
+                        <td data-name="count"></td>
+                    </tr>
+                    <tr>
+                        <td>Domain:</td>
+                        <td data-name="domain"></td>
+                    </tr>
+                    <tr>
+                        <td>Paypal:</td>
+                        <td data-name="paypal"></td>
+                    </tr>
+                    <tr>
+                        <td>Bank:</td>
+                        <td data-name="bank"></td>
+                    </tr>
+                    <tr>
+                        <td>Operate time:</td>
+                        <td><input type="text" class="form-control dtpicker" id="paidtime" name="paidtime" placeholder="Pay time"></td>
+                    </tr>
+                    <tr>
+                        <td>Transaction ID:</td>
+                        <td><input type="text" class="form-control" id="transactionid" name="transactionid" placeholder="Transaction ID"></td>
+                    </tr>
+                    <tr>
+                        <td>Payment Type</td>
+                        <td>
+<label class="radio-inline">
+  <input type="radio" name="paytype" id="inlineRadio1" value="paypal"> paypal
+</label>
+<label class="radio-inline">
+  <input type="radio" name="paytype" id="inlineRadio2" value="bank"> bank
+</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><a href="javascript:void(0)" class="btn btn-primary" onclick="save_pay()">Save</a>
+                        <input type="hidden" name="paiddate" value="<{$next_payment_date}>" id="pay_time">
+                        <input type="hidden" name="sites" value="" id="pay_sites">
+                        <input type="hidden" name="groupid" value="" id="pay_groupid">
+                        <input type="hidden" name="remittype" value="" id="pay_remittype">
+                        </td>
+                    </tr>
+                </table>
+                <div id="save_res"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+var myDate = new Date();
+var toDay = myDate.getFullYear()+'-'+(myDate.getMonth()+1)+'-'+myDate.getDate();
+
+function submit_form(){
+    $('#form_search input[name=action]').val('search');
+    $('#form_search').submit();
+}
+
+    var list_data = <{$list_json}>;
+    var list_group_data = <{$list_group_json}>;
+
+    function pay_one(obj){
+        var site = $(obj).parent().parent().attr('data-site');
+        var domain = list_data[site]['Domain'];
+        var paypal = list_data[site]['PayPal'];
+        var sum = list_data[site]['commission'];
+        var count = 1;
+        if(list_data[site]['AccountNumber']){
+            var bank = 'Account Name: '+list_data[site]['AccountName']+'<br>'+'Account Number: '+list_data[site]['AccountNumber']+'<br>'+'Account Address: '+list_data[site]['AccountAddress']+'<br>'+'Swift Code: '+list_data[site]['SwiftCode']+'<br>'+'Bank Name: '+list_data[site]['BankName']+'<br>'+'Branch Name: '+list_data[site]['BranchName'];
+        }else{
+            var bank = '';
+        }
+        $('#myModalLabel').html('payment info');
+        $('#modal-body table td[data-name="sum"]').html('USD '+sum);
+        $('#modal-body table td[data-name="count"]').html('1');
+        $('#modal-body table td[data-name="domain"]').html(domain);
+        $('#modal-body table td[data-name="paypal"]').html(paypal);
+        $('#modal-body table td[data-name="bank"]').html(bank);
+        $('#modal-body table input[name="sites"]').val(site);
+        $('#modal-body table input[name="groupid"]').val('');
+        $('#modal-body table input[name="remittype"]').val('one');
+        $('#modal-body table input[name="paidtime"]').val(toDay);
+        $('#save_res').html('');
+        $('#save_res').removeClass('bg-success');
+        $('#save_res').removeClass('bg-warning');
+        
+        $('#myModal').modal({backdrop: 'static', keyboard: false});
+    }
+
+    function pay_group(obj){
+        var groupid = $(obj).parent().parent().attr('data-group-id');
+        var count = list_group_data[groupid]['count'];
+        var sum = list_group_data[groupid]['sum'];
+        var domain = '';
+        var site = '';
+        for(d in list_group_data[groupid]['detail']){
+            domain = domain+list_group_data[groupid]['detail'][d]['Domain']+'<br>';
+            site = site+list_group_data[groupid]['detail'][d]['Site']+',';
+        }
+        if(list_group_data[groupid]['detail']['0']['AccountNumber']){
+            var bank = 'Account Name: '+list_group_data[groupid]['detail']['0']['AccountName']+'<br>'+'Account Number: '+list_group_data[groupid]['detail']['0']['AccountNumber']+'<br>'+'Account Address: '+list_group_data[groupid]['detail']['0']['AccountAddress']+'<br>'+'Swift Code: '+list_group_data[groupid]['detail']['0']['SwiftCode']+'<br>'+'Bank Name: '+list_group_data[groupid]['detail']['0']['BankName']+'<br>'+'Branch Name: '+list_group_data[groupid]['detail']['0']['BranchName'];
+            var paypal = '';
+        }else{
+            var bank = '';
+            var paypal = list_group_data[groupid]['detail']['0']['PayPal'];
+        }
+
+        $('#myModalLabel').html('payment info');
+        $('#modal-body table td[data-name="sum"]').html('USD '+sum);
+        $('#modal-body table td[data-name="count"]').html(count);
+        $('#modal-body table td[data-name="domain"]').html(domain);
+        $('#modal-body table td[data-name="paypal"]').html(paypal);
+        $('#modal-body table td[data-name="bank"]').html(bank);
+        $('#modal-body table input[name="sites"]').val(site);
+        $('#modal-body table input[name="groupid"]').val(groupid);
+        $('#modal-body table input[name="paidtime"]').val(toDay);
+        $('#save_res').html('');
+        $('#save_res').removeClass('bg-success');
+        $('#save_res').removeClass('bg-warning');
+        $('#myModal').modal({backdrop: 'static', keyboard: false});
+    }
+
+    function save_pay(){
+        var site = $('#modal-body table input[name="sites"]').val();
+        var groupid = $('#modal-body table input[name="groupid"]').val();
+        var paytype = $('#modal-body table input[name="paytype"]:checked').val();
+        var paiddate = $('#modal-body table input[name="paiddate"]').val();
+        var transactionid = $('#modal-body table input[name="transactionid"]').val();
+        var paidtime = $('#modal-body table input[name="paidtime"]').val();
+        
+        if(paytype == 'paypal'){
+            var paydetail = $('#modal-body table td[data-name="paypal"]').html();
+        }else{
+            var paydetail = $('#modal-body table td[data-name="bank"]').html();
+        }
+        $.ajax({
+            type: "post",
+            url: "b_payments_preview.php",
+            data: "act=save_next_invoice&site="+site+"&paiddate="+paiddate+"&groupid="+groupid+"&paytype="+paytype+"&transactionid="+transactionid+"&paidtime="+paidtime,
+            async: false,
+            success: function (rs) {
+                $('#tbl_pp tr[data-group-id="'+groupid+'"] a[data-btn="pay"]').remove();
+                if(rs == 1){
+                    $('#save_res').addClass('bg-success');
+                    $('#save_res').html('Success');
+                }else{
+                    $('#save_res').addClass('bg-warning');
+                    $('#save_res').html('Error');
+                }
+            }
+        });
+    }
+    function show_next_invoice(obj){
+        var Objtd = $(obj).parent().parent().children();
+        var alias = $(Objtd[2]).html();
+        $('#myModalLabel').html(alias+' Invoice list');
+            $.ajax({
+                type: "post",
+                url: "b_payments_preview.php",
+                data: "type=ajax&act=next_invoice&site="+site,
+                async: false,
+                success: function (html) {
+                    $('#modal-body').append(html);
+                }
+            });
+        $('#myModal').modal({backdrop: 'static', keyboard: false});
+    }
+
+    $(".dtpicker").datetimepicker({
+        minView: "month",//设置只显示到月份
+        format : "yyyy-mm-dd",//日期格式
+        autoclose:true,//选中关闭
+        todayBtn: true//今日按钮
+    });
+</script>
+
+    
+    <{include file="b_block_footer.html"}>

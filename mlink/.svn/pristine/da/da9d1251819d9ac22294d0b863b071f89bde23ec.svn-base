@@ -1,0 +1,9 @@
+<?php
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'bdg_go_base');
+define('DB_USER', 'bdg_go');
+define('DB_PASS', 'shY12Nbd8J');
+
+global $db;
+$db = new Mysql(DB_NAME, DB_HOST, DB_USER, DB_PASS);
+?>

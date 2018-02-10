@@ -1,0 +1,143 @@
+<header>
+<link href="css/select2.min.css" rel="stylesheet" />
+<link href="css/select2-bootstrap.min.css" rel="stylesheet" />
+<script src="js/select2.min.js"></script>
+<style>
+.select2-container {
+    display: inline-block;
+}
+.select2-container--bootstrap .select2-results__group {
+    color: #555;
+    font-weight: 400;
+	font-size: 18px;
+}
+.select2-container--bootstrap .select2-results__option .select2-results__option {
+    padding: 6px 12px 6px 30px;
+	font-weight: 250
+}
+.select2-container--bootstrap .select2-results__option {
+    font-weight: 250;
+}
+.head .btn_sl select > optgroup{font-weight:400;color:#333}
+.head .btn_sl select > option{font-weight:250;}
+</style>
+</header>
+<body>
+<div class="head">
+    <div class="main">
+        <a href="<{$smarty.const.BASE_URL}>/index.php" class="logo">
+            <img src="img/logo.png" />
+        </a>
+        <div class="min_menu">
+            <span class="show_menu"></span>
+        </div>
+        <ul class="menu" style="<{if $smarty.server.PHP_SELF|basename == 'index.php' && 'us,uk,oceania,zh,sg'|strpos:$smarty.cookies.area === false}>visibility:hidden<{/if}>">
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>"<{if $title eq 'Brandreward - Your Complete Monetization Solution'}>class="hover"<{/if}> >Homepage</a>
+            </li>
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>/features.php"<{if $title eq 'Features'}>class="hover"<{/if}> >Features</a>
+            </li>
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>/publisher.php"<{if $title eq 'Publisher'}>class="hover"<{/if}> ><{$LANG.front.public.publishers}></a>
+            </li>
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>/advertiser.php"<{if $title eq 'Advertiser'}>class="hover"<{/if}>><{$LANG.front.public.advertiser}></a>
+            </li>
+            <li>
+                <a href="<{$smarty.const.BASE_URL}>/ourTeam.php"<{if $title eq 'Our Team'}>class="hover"<{/if}> ><{$LANG.front.public.ourteam}></a>
+            </li>
+        </ul>
+        <div class="btn_sl">
+            <a href="<{$smarty.const.BASE_URL}>/signup.php" class="su"><{$LANG.front.public.signup}></a>
+            <a href="javascript:void(0)" id="head-top-login" class="lg" onclick="remodal_login()"><{$LANG.front.public.login}></a>
+            <select class="form-control lang" name="Status" style="width: 150px;margin-left: 10px;">
+                <option value="us">North America</option>
+                <optgroup label="Europe">
+				  <option value="fr">France</option>
+				  <option value="de">German</option>
+				  <option value="uk">UK</option>
+				</optgroup>
+                <optgroup label="APAC">
+				  <option value="zh">China</option>
+				  <option value="sg">Singapore</option>
+				</optgroup>
+                <option value="oceania">Oceania</option>
+            </select>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+
+	var areaCookie = getCookie('area');
+	var str ="zh,us,fr,de,uk,sg,oceania";
+	var strdisplaymenu ="zh,us,uk,sg,oceania";
+	if(str.indexOf(areaCookie)>-1){
+		$('.lang').val(areaCookie);
+	}
+	if(strdisplaymenu.indexOf(areaCookie)>-1){
+		$('.menu').css("visibility","inherit");
+	}
+	
+	function getCookie(c_name){
+		if (document.cookie.length>0){
+		  c_start=document.cookie.indexOf(c_name + "=")
+		  if (c_start!=-1){ 
+		    c_start=c_start + c_name.length+1 
+		    c_end=document.cookie.indexOf(";",c_start)
+		    if (c_end==-1) c_end=document.cookie.length
+		    return unescape(document.cookie.substring(c_start,c_end))
+	      } 
+		}
+		return ""
+	}
+
+    $('.lang').on('change',function(){
+        var val = $(this).val();
+    	$.ajax({
+			type: "post",
+			url: "index.php",
+			data:{"changeArea":"1","area":val},
+			dataType:'json',
+			async: false,
+			success: function (res) {
+				if(val != 'us' && val != 'uk' && val != 'oceania'){
+					var url = "<{$smarty.const.BASE_URL}>/index.php";
+			        window.location.href=url;
+				}else{
+					window.location.reload();
+				}
+			}
+		});
+    })
+    
+    if($(document).width() <= 1100){
+        $('.menu').css('display','none');
+        $('.menu').attr('data-show',0);
+    }
+        var _this = this;
+        var resizeTimer = null;
+        $(window).bind('resize', function () {
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function(){
+            if($(document).width() <= 1100){
+                    $('.menu').css('display','none');
+                    $('.menu').attr('data-show',0);
+            }else{
+                $('.menu').removeAttr('style');
+                $('.menu').removeAttr('data-show');
+            }
+            } , 500);
+        });
+        $('.show_menu').click(function(){
+            if($('.menu').attr('data-show') == 0){
+                $('.menu').css('display','block');
+                $('.menu').attr('data-show',1);
+            }else{
+                $('.menu').css('display','none');
+                $('.menu').attr('data-show',0);
+            }
+        })
+</script>
+</header>

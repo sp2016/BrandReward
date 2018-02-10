@@ -1,0 +1,211 @@
+<{include file="front_block_header.html"}>
+<{include file="front_block_banner.html"}>
+<div class="about_br">
+    <div class="main">
+        <h3>About Brandreward</h3>
+
+        <p><i></i>Brandreward is a full service platform for high-quality content providers to instantly find, connect and integrate with the world's most coveted  brands
+            through customized monetization solutions.</p>
+        <p>Brandreward was created to help content networks, apps and websites realize the “real value” of their content by easily and effortlessly monetizing
+            through a complete platform solution. This belief is intrinsically tied to our company culture and is a big part of why we work hard to get feedback and rollout
+            new features every quarter.</p>
+        <p>Our team is always open to discuss collaboration opportunities and ideas with like-minded companies; it's some of the most exciting part of our work! These
+            creative discussions can make the impossible turn possible.</p>
+    </div>
+</div>
+<!-- About Brandreward end -->
+<!-- Meet Our Team start -->
+<div class="meet_team" style="background-color: white;">
+    <div class="main">
+        <h3>Meet Our Team</h3>
+        <ul>
+            <li>
+                <img src="img/team_pic/Monica.jpg" alt="Monica" />
+                <div class="topic">
+                    <h6>How I shop:</h6>
+                    <span>Digital Shopping Apps</span>
+                    <h6>Dream vacation:</h6>
+                    <span>Hidden cities in Andalusia</span>
+                    <h6>Brands I love:</h6>
+                    <div class="b_pic">
+                        <p><img src="img/love_logo/1.png" alt="" /></p>
+                        <p><img src="img/love_logo/2.png" alt="" /></p>
+                        <p><img src="img/love_logo/3.png" alt="" /></p>
+                    </div>
+                </div>
+                <p class="name">
+                    <span>MONICA TAM</span>
+                    Global Director
+                </p>
+            </li>
+            <li>
+                <img src="img/team_pic/Nico.jpg" alt="" />
+                <div class="topic">
+                    <h6>How I shop:</h6>
+                    <span>Most of the time shopping in-store.</span>
+                    <h6>Dream vacation:</h6>
+                    <span>Phillipines and Indonesia</span>
+                    <h6>Brands I love:</h6>
+                    <div class="b_pic">
+                        <p><img src="img/love_logo/4.png" alt="" /></p>
+                        <p><img src="img/love_logo/5.png" alt="" /></p>
+                        <p><img src="img/love_logo/6.png" alt="" /></p>
+                    </div>
+                </div>
+                <p class="name">
+                    <span>NICOLAS THOMASSIN</span>
+                    Account Specialist | W Europe
+                </p>
+            </li>
+            <li>
+                <img src="img/team_pic/Senait.jpg" alt="" />
+                <div class="topic">
+                    <h6>How I shop:</h6>
+                    <span>In-store</span>
+                    <h6>Dream vacation:</h6>
+                    <span>Cuba</span>
+                    <h6>Brands I love:</h6>
+                    <div class="b_pic">
+                        <p><img src="img/love_logo/7.png" alt="" /></p>
+                        <p><img src="img/love_logo/8.png" alt="" /></p>
+                        <p><img src="img/love_logo/9.png" alt="" /></p>
+                    </div>
+                </div>
+                <p class="name">
+                    <span>SENAIT</span>
+                    Account Specialist | Australia
+                </p>
+            </li>
+            <li>
+                <img src="img/team_pic/Gordon.jpg" alt="" />
+                <div class="topic">
+                    <h6>How I shop:</h6>
+                    <span> Shopping online</span>
+                    <h6>Dream vacation:</h6>
+                    <span>New Zealand</span>
+                    <h6>Brands I love:</h6>
+                    <div class="b_pic">
+                        <p><img src="img/love_logo/10.png" alt="" /></p>
+                        <p><img src="img/love_logo/11.png" alt="" /></p>
+                        <p><img src="img/love_logo/12.png" alt="" /></p>
+                    </div>
+                </div>
+                <p class="name">
+                    <span>GORDON PAN</span>
+                    Account Specialist | Greater China
+                </p>
+            </li>
+            <li class="us">
+                <img src="img/team_pic/us01.jpg" alt="" />
+                <p class="name">
+                    <span>Brand</span>
+                    Chief Reward Fetcher | Global
+                </p>
+            </li>
+            <li>
+                <img src="img/team_pic/Stan.jpg" alt="" />
+                <div class="topic">
+                    <h6>How I shop:</h6>
+                    <span>Both online and in-store</span>
+                    <h6>Dream vacation:</h6>
+                    <span>Tibet</span>
+                    <h6>Brands I love:</h6>
+                    <div class="b_pic">
+                        <p><img src="img/love_logo/13.png" alt="" /></p>
+                        <p><img src="img/love_logo/12.png" alt="" /></p>
+                        <p><img src="img/love_logo/15.png" alt="" /></p>
+                    </div>
+                </div>
+                <p class="name">
+                    <span>Stan Guan</span>
+                    Tech Team Lead
+                </p>
+            </li>
+            <li>
+                <img src="img/team_pic/Lilian.jpg" alt="" />
+                <div class="topic">
+                    <h6>How I shop:</h6>
+                    <span>Online, outlet , special sales</span>
+                    <h6>Dream vacation:</h6>
+                    <span>Island hopping in Malaysia</span>
+                    <h6>Brands I love:</h6>
+                    <div class="b_pic">
+                        <p><img src="img/love_logo/16.png" alt="" /></p>
+                        <p><img src="img/love_logo/17.png" alt="" /></p>
+                        <p><img src="img/love_logo/18.png" alt="" /></p>
+                    </div>
+                </div>
+                <p class="name">
+                    <span>LILLIAN GUO</span>
+                    Account Specialist | N America
+                </p>
+            </li>
+            <li>
+                <img src="img/team_pic/Sarah.jpg" alt="" />
+                <div class="topic">
+                    <h6>How I shop:</h6>
+                    <span>Shopping both online and in-store</span>
+                    <h6>Dream vacation:</h6>
+                    <span>Yunnan Province in China</span>
+                    <h6>Brands I love:</h6>
+                    <div class="b_pic">
+                        <p><img src="img/love_logo/19.png" alt="" /></p>
+                        <p><img src="img/love_logo/2.png" alt="" /></p>
+                        <p><img src="img/love_logo/21.png" alt="" /></p>
+                    </div>
+                </div>
+                <p class="name">
+                    <span>SARAH LI</span>
+                    Account Specialist | SE Asia
+                </p>
+            </li>
+            <li>
+                <img src="img/team_pic/Alain.jpg" alt="" />
+                <div class="topic">
+                    <h6>How I shop:</h6>
+                    <span>Shopping online most of the time</span>
+                    <h6>Dream vacation:</h6>
+                    <span>Travel round Asia</span>
+                    <h6>Brands I love:</h6>
+                    <div class="b_pic">
+                        <p><img src="img/love_logo/2.png" alt="" /></p>
+                        <p><img src="img/love_logo/23.png" alt="" /></p>
+                        <p><img src="img/love_logo/24.png" alt="" /></p>
+                    </div>
+                </div>
+                <p class="name">
+                    <span>ALAIN ARCHIBALD</span>
+                    Account Specialist | N Europe
+                </p>
+            </li>
+        </ul>
+
+    </div>
+
+</div>
+<!-- Meet Our Team end -->
+<!-- The Brandreward Team&Why Work With Us? -->
+<div class="team_text">
+    <div class="main">
+        <div class="br_team">
+            <!-- <img src="img/pic03.jpg" /> --><video src="img/our_team.mp4"  loop="loop" autoplay="autoplay" ></video>
+            <h3>The Brandreward Team</h3>
+            <p>
+                Brandreward has been in the making since 2008, when two IT whiz kids quit their high-paying engineering jobs to develop technologies to help consumers. Brandreward is their 3rd startup and has evolved into a tight-knit team of 20+ IT geeks and monetization experts with over 8 years of international experience in the content and performance marketing industries.
+            </p>
+        </div>
+        <div class="work_with">
+            <img src="img/pic02.jpg" />
+            <h3>Why Work With Us?</h3>
+            <p>
+                Pure and simple, we focus on results. Our company has one strong belief, that everything digital can be monetized. Our team loves to help publishers analyze, understand and generate the “real value” of their content. Unlike other companies, we pass on 85% of each sale and take pride in commission transparency. We don’t earn unless you earn as well.</p>
+        </div>
+    </div>
+</div>
+<!--  footer_banner start  -->
+<div class="footer_banner">
+    <img src="img/footer_banner.jpg" />
+    <p>Send us your monetization issue, we would love to help you solve it!</p>
+    <a href="<{$smarty.const.BASE_URL}>/contactUs.php">Get In Touch</a>
+</div>
+<{include file="front_block_footer.html"}>

@@ -1,0 +1,386 @@
+<{include file="block_header.html"}>
+<{include file="block_banner.html"}> 
+
+
+<div class="container-fluid">
+  <div class="col-sm-2 col-md-2" >
+    <form class="">
+
+      <div class="form-group">
+      <label for="sel_site">Site:</label><br>
+      <select class="form-control" id="sel_site" name="sel_site">
+        <{foreach from=$site_tracking_code item=v key=k}>
+        <option val="<{$v}>" <{if $S_GET.sel_site && $v == $S_GET.sel_site}>selected<{/if}>><{$v}></option>
+        <{/foreach}>
+      </select>
+      </div>
+
+      <div class="form-group">
+      <label for="sel_aff">Aff:</label><br>
+      <select multiple class="form-control" id="sel_aff" name="sel_aff[]" size="5">
+        <option val="">All</option>
+        <{foreach from=$AffNameIdMap item=v key=k}>
+        <option val="<{$k}>" <{if $S_GET.sel_aff && $k|in_array:$S_GET.sel_aff}>selected<{/if}>><{$k}></option>
+        <{/foreach}>
+      </select>
+      </div>
+
+
+      <div class="form-group">
+        <label for="sel_createddate_start">Created From</label>
+        <select id="select_createddate_quick">
+          <option value="">quick select</option>
+          <option value="t">Today</option>
+          <option value="y">Yesterday</option>
+          <option value="l7d">Last 7 days</option>
+          <option value="l14d">Last 14 days</option>
+          <option value="l30d">Last 30 days</option>
+          <option value="l60d">Last 60 days</option>
+          <option value="mtd">Month to date</option>
+          <option value="ytd">Year to date</option>
+        </select><br>
+        <input type="text" name="sel_createddate_start" class="form-control" id="sel_createddate_start" value="<{$S_GET.sel_createddate_start}>">
+
+      </div>
+
+      <div class="form-group">
+        <label for="sel_createddate_end">Created To</label><br>
+        <input type="text" name="sel_createddate_end" class="form-control" id="sel_createddate_end" value="<{$S_GET.sel_createddate_end}>">
+      </div>
+      
+      <!-- <div class="form-group">
+        <label for="sel_updateddate_start">Updated From</label>
+        <select id="select_updateddate_quick">
+          <option value="">quick select</option>
+          <option value="t">Today</option>
+          <option value="y">Yesterday</option>
+          <option value="l7d">Last 7 days</option>
+          <option value="l14d">Last 14 days</option>
+          <option value="l30d">Last 30 days</option>
+          <option value="l60d">Last 60 days</option>
+          <option value="mtd">Month to date</option>
+          <option value="ytd">Year to date</option>
+        </select><br>
+        <input type="text" name="sel_updateddate_start" class="form-control" id="sel_updateddate_start" value="<{$S_GET.sel_updateddate_start}>">
+      </div>
+      
+      <div class="form-group">
+        <label for="sel_updateddate_end">Updated To</label><br>
+        <input type="text" name="sel_updateddate_end" class="form-control" id="sel_updateddate_end" value="<{$S_GET.sel_updateddate_end}>">
+      </div> -->
+
+
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-default">load report</button>
+      </div>
+
+    </form>
+  </div>
+  <div class="col-sm-10 col-md-10" >
+    <h2 style="border-bottom:1px solid #eee;padding-bottom: 10px;">Transaction Data</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Createddate</th>
+          <th>Click</th>
+          <th>OrderNum</th>
+          <th>Sales</th>
+          <th>Commission</th>
+          <th>CommissionRate</th>
+          <th>EPC</th>
+        </tr>
+        <tr>
+          <th>total</th>
+          <th><{$total_data.total_click|number_format:'0':'.':','}></th>
+          <th><{$total_data.total_ordernum|number_format:'0':'.':','}></th>
+          <th><{$total_data.total_sales|number_format:'2':'.':','}></th>
+          <th><{$total_data.total_commission|number_format:'2':'.':','}></th>
+          <th><{if $total_data.total_sales > 0 || $total_data.total_sales < 0}>
+              <{assign var='commrate' value=$total_data.total_commission/$total_data.total_sales*100|number_format:'2':'.':','}>
+              <{$commrate}>%
+              <{/if}>
+          </th>
+          <th><{if $total_data.total_click > 0}>
+              <{assign var='total_epc' value=$total_data.total_commission/$total_data.total_click*100|number_format:'2':'.':','}>
+              <{$total_epc}>%
+              <{/if}>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <{foreach from=$tran_data item=d}>
+        <tr>
+          <{assign var="cd" value=$d.Createddate}>
+          <td><{$d.Createddate}></td>
+          <td><{$out_data.$cd|number_format:'0':'.':','}></td>
+          <td><{$d.c|number_format:'0':'.':','}></td>
+          <td><{$d.Sales|number_format:'2':'.':','}></td>
+          <td><{$d.Commission|number_format:'2':'.':','}></td>
+          <td><{if $d.Sales > 0 || $d.Sales < 0}>
+              <{assign var='commrate' value=$d.Commission/$d.Sales*100|number_format:'2':'.':','}>
+              <{$commrate}>%
+              <{/if}>
+          </td>
+          <td><{if $out_data.$cd > 0 }>
+              <{assign var='avgepc' value=$d.Commission/$out_data.$cd*100|number_format:'2':'.':','}>
+              <{$avgepc}>%
+              <{else}>
+              0
+              <{/if}>
+          </td>
+        </tr>
+        <{/foreach}>
+      </tbody>
+    </table>
+
+    <{$page_html}>
+  </div>
+</div>
+
+
+
+<script>
+    $('#sel_createddate_end').datetimepicker({
+        format:'yyyy-mm-dd',
+        todayBtn: true,
+        autoclose: 1,
+        viewSelect: 2
+    });
+    $('#sel_createddate_start').datetimepicker({
+        format:'yyyy-mm-dd',
+        todayBtn: true,
+        autoclose: 1,
+        viewSelect: 2
+    });
+    $('#sel_updateddate_end').datetimepicker({
+        format:'yyyy-mm-dd',
+        todayBtn: true,
+        autoclose: 1,
+        viewSelect: 2
+    });
+    $('#sel_updateddate_start').datetimepicker({
+        format:'yyyy-mm-dd',
+        todayBtn: true,
+        autoclose: 1,
+        viewSelect: 2
+    });
+    $('#select_createddate_quick').change(function(){
+      var mydate = new Date();
+      var y = mydate.getFullYear();
+      var m = parseInt(mydate.getMonth()) + 1;
+      var d = mydate.getDate();
+      if(m < 10)
+        m = '0'+m;
+      if(d < 10)
+        d = '0'+d;
+
+      var today = y+'-'+m+'-'+d;
+      var tar = $(this).val();
+      switch(tar){
+        case '':
+          $('#sel_createddate_start').val('');
+          $('#sel_createddate_end').val('');
+        break;
+        case 't':
+          $('#sel_createddate_start').val(today);
+          $('#sel_createddate_end').val(today);
+        break;
+        case 'y':
+          var mydate = new Date();
+          mydate.setDate(mydate.getDate() - 1);
+          var y = mydate.getFullYear();
+          var m = parseInt(mydate.getMonth()) + 1;
+          var d = mydate.getDate();
+          if(m < 10)
+            m = '0'+m;
+          if(d < 10)
+            d = '0'+d;
+
+          var yesterday = y+'-'+m+'-'+d;
+          $('#sel_createddate_start').val(yesterday);
+          $('#sel_createddate_end').val(yesterday);
+        break;
+        case 'l7d':
+          var mydate = new Date();
+          mydate.setDate(mydate.getDate() - 7);
+          var y = mydate.getFullYear();
+          var m = parseInt(mydate.getMonth()) + 1;
+          var d = mydate.getDate();
+          if(m < 10)
+            m = '0'+m;
+          if(d < 10)
+            d = '0'+d;
+
+          var lastday = y+'-'+m+'-'+d;
+          $('#sel_createddate_start').val(lastday);
+          $('#sel_createddate_end').val(today);
+        break;
+        case 'l14d':
+          var mydate = new Date();
+          mydate.setDate(mydate.getDate() - 14);
+          var y = mydate.getFullYear();
+          var m = parseInt(mydate.getMonth()) + 1;
+          var d = mydate.getDate();
+          if(m < 10)
+            m = '0'+m;
+          if(d < 10)
+            d = '0'+d;
+
+          var lastday = y+'-'+m+'-'+d;
+          $('#sel_createddate_start').val(lastday);
+          $('#sel_createddate_end').val(today);
+        break;
+        case 'l30d':
+          var mydate = new Date();
+          mydate.setDate(mydate.getDate() - 30);
+          var y = mydate.getFullYear();
+          var m = parseInt(mydate.getMonth()) + 1;
+          var d = mydate.getDate();
+          if(m < 10)
+            m = '0'+m;
+          if(d < 10)
+            d = '0'+d;
+
+          var lastday = y+'-'+m+'-'+d;
+          $('#sel_createddate_start').val(lastday);
+          $('#sel_createddate_end').val(today);
+        break;
+        case 'l60d':
+          var mydate = new Date();
+          mydate.setDate(mydate.getDate() - 60);
+          var y = mydate.getFullYear();
+          var m = parseInt(mydate.getMonth()) + 1;
+          var d = mydate.getDate();
+          if(m < 10)
+            m = '0'+m;
+          if(d < 10)
+            d = '0'+d;
+
+          var lastday = y+'-'+m+'-'+d;
+          $('#sel_createddate_start').val(lastday);
+          $('#sel_createddate_end').val(today);
+        break;
+        case 'mtd':
+          var lastday = y+'-'+m+'-01';
+          $('#sel_createddate_start').val(lastday);
+          $('#sel_createddate_end').val(today);
+        break;
+        case 'ytd':
+          var lastday = y+'-01-01';
+          $('#sel_createddate_start').val(lastday);
+          $('#sel_createddate_end').val(today);
+        break;
+      }
+    });
+
+    // $('#select_updateddate_quick').change(function(){
+    //   var mydate = new Date();
+    //   var y = mydate.getFullYear();
+    //   var m = parseInt(mydate.getMonth()) + 1;
+    //   var d = mydate.getDate();
+    //   if(m < 10)
+    //     m = '0'+m;
+    //   if(d < 10)
+    //     d = '0'+d;
+
+    //   var today = y+'-'+m+'-'+d;
+    //   var tar = $(this).val();
+    //   switch(tar){
+    //     case '':
+    //       $('#sel_updateddate_start').val('');
+    //       $('#sel_updateddate_end').val('');
+    //     break;
+    //     case 't':
+    //       $('#sel_updateddate_start').val(today);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //     case 'y':
+    //       var mydate = new Date();
+    //       mydate.setDate(mydate.getDate() - 1);
+    //       var y = mydate.getFullYear();
+    //       var m = parseInt(mydate.getMonth()) + 1;
+    //       var d = mydate.getDate();
+    //       if(m < 10)
+    //         m = '0'+m;
+    //       if(d < 10)
+    //         d = '0'+d;
+
+    //       var yesterday = y+'-'+m+'-'+d;
+    //       $('#sel_updateddate_start').val(yesterday);
+    //       $('#sel_updateddate_end').val(yesterday);
+    //     break;
+    //     case 'l7d':
+    //       var mydate = new Date();
+    //       mydate.setDate(mydate.getDate() - 7);
+    //       var y = mydate.getFullYear();
+    //       var m = parseInt(mydate.getMonth()) + 1;
+    //       var d = mydate.getDate();
+    //       if(m < 10)
+    //         m = '0'+m;
+    //       if(d < 10)
+    //         d = '0'+d;
+
+    //       var lastday = y+'-'+m+'-'+d;
+    //       $('#sel_updateddate_start').val(lastday);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //     case 'l14d':
+    //       var mydate = new Date();
+    //       mydate.setDate(mydate.getDate() - 14);
+    //       var y = mydate.getFullYear();
+    //       var m = parseInt(mydate.getMonth()) + 1;
+    //       var d = mydate.getDate();
+    //       if(m < 10)
+    //         m = '0'+m;
+    //       if(d < 10)
+    //         d = '0'+d;
+
+    //       var lastday = y+'-'+m+'-'+d;
+    //       $('#sel_updateddate_start').val(lastday);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //     case 'l30d':
+    //       var mydate = new Date();
+    //       mydate.setDate(mydate.getDate() - 30);
+    //       var y = mydate.getFullYear();
+    //       var m = parseInt(mydate.getMonth()) + 1;
+    //       var d = mydate.getDate();
+    //       if(m < 10)
+    //         m = '0'+m;
+    //       if(d < 10)
+    //         d = '0'+d;
+
+    //       var lastday = y+'-'+m+'-'+d;
+    //       $('#sel_updateddate_start').val(lastday);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //     case 'l60d':
+    //       var mydate = new Date();
+    //       mydate.setDate(mydate.getDate() - 60);
+    //       var y = mydate.getFullYear();
+    //       var m = parseInt(mydate.getMonth()) + 1;
+    //       var d = mydate.getDate();
+    //       if(m < 10)
+    //         m = '0'+m;
+    //       if(d < 10)
+    //         d = '0'+d;
+
+    //       var lastday = y+'-'+m+'-'+d;
+    //       $('#sel_updateddate_start').val(lastday);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //     case 'mtd':
+    //       var lastday = y+'-'+m+'-01';
+    //       $('#sel_updateddate_start').val(lastday);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //     case 'ytd':
+    //       var lastday = y+'-01-01';
+    //       $('#sel_updateddate_start').val(lastday);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //   }
+    // });
+</script>
+<{include file="block_footer.html"}>

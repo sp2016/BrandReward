@@ -1,0 +1,690 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+
+
+<h1 style="text-align:center"><{$title}></h1>
+<div class="col-lg-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">Result</div>
+        <div class="panel-body">
+            <table class="table table-bordered" style="margin-top: 10px;width: 100%;">
+                <th style="text-align: center">Nember</th>
+                <th style="text-align: center">Update User</th>
+                <th style="text-align: center">Update time</th>
+                <th style="text-align: center">detail</th>
+                <tbody id="uphtml">
+                <{foreach from=$info item=publisher}>
+                <tr  class="open-logs">
+                    <td style="text-align: center"><{$publisher.Number}></td>
+                    <td style="text-align: center"><{$publisher.update_user}></td>
+                    <td style="text-align: center"><{$publisher.time}></td>
+                    <td style="text-align: center">
+                        <a href="javascript:void(0);" class="checklog" data-id="<{$publisher.ID}>">detail</a>
+                    </td>
+                </tr>
+                <{/foreach}>
+                </tbody>
+            </table>
+            <{$pageHtml}>
+        </div>
+    </div>
+
+</div>
+<div id="pinfo" class="modal fade" id="dialog-site" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1400px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-label="Close" data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span></button>
+                <h2 style="text-align: center;" id="exampleModalLabel" class="modal-title">information</h2>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div style="text-align:center;">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th style="text-align: center;width:230px;">Info</th>
+                                    <th style="text-align: center">Old</th>
+                                    <th style="text-align: center">New</th>
+                                </tr>
+                                </thead>
+                                <tbody id="chkphtml">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display: none">
+    <table class="table table-bordered">
+        <tbody>
+        <!-- basic info start -->
+        <tr>
+            <td colspan="2" style="text-align:left;font-weight: bold;background-color:#1A3958"><font color="white">Basic</font></td>
+        </tr>
+        <tr>
+            <input type="hidden" id="ID" value="<{$id}>">
+            <td width="20%" style="text-align:right;background-color:#EEE">Name</td>
+            <td><input type="text" id="name" class="form-control Name" value="<{$info.0.Name}>" class="form-control"/></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Domain</td>
+            <td><input type="text"  class="form-control Domain" value="<{$info.0.Domain}>" class="form-control"/></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">country</td>
+            <td>
+                <input type="hidden" id="countryid" class="Country" value="<{$info.0.Country}>">
+                <select name="pub_country" class="form-control" id="pub_country">
+                    <{foreach from=$countryOption item=c key=k}>
+                    <option value="<{$k}>"><{$c}></option>
+                    <{/foreach}>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Traffic Demographics</td>
+            <td id="f_phone">
+                <input type="hidden" id="countryOption" class="GeoBreakdown" value="<{$info.0.GeoBreakdown}>">
+                <select name="pub_country" class="form-control pub_traffic0 GeoBreakdown0">
+                    <option value="">--Select--</option>
+                    <{foreach from=$countryOption item=c key=k}>
+                    <option value="<{$k}>"><{$c}></option>
+                    <{/foreach}>
+                </select>
+
+                <select name="pub_country" class="form-control pub_traffic1 GeoBreakdown1" style="margin-top: 10px;">
+                    <option value="">--Select--</option>
+                    <{foreach from=$countryOption item=c key=k}>
+                    <option value="<{$k}>"><{$c}></option>
+                    <{/foreach}>
+                </select>
+
+                <select name="pub_country" class="form-control pub_traffic2 GeoBreakdown2"  style="margin-top: 10px;">
+                    <option value="">--Select--</option>
+                    <{foreach from=$countryOption item=c key=k}>
+                    <option value="<{$k}>"><{$c}></option>
+                    <{/foreach}>
+                </select>
+            </td>
+        </tr>
+        <tr class="pub_contentCategoryiddiv">
+            <td style="text-align:right;background-color:#EEE">core business</td>
+            <td id="siteop">
+                <input type="hidden" class="SiteType" id="pub_contentCategoryid" value="<{$info.0.SiteType}>">
+                <select name="pub_contentCategory1" class="form-control pub_contentCategory0 SiteType0">
+                    <option value="">--Select--</option>
+                    <{foreach from=$categoryiesOfContent key=k item=c}>
+                    <{assign var='num' value=$k|substr:0:1}>
+                    <optgroup label="<{$k}>">
+                        <{foreach from=$c key=subk item=subc}>
+                        <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+                        <{/foreach}>
+                        <{/foreach}>
+                </select>
+                <select name="pub_contentCategory2" class="form-control pub_contentCategory1 SiteType1" style="margin-top:10px;">
+                    <option value="">--Select--</option>
+                    <{foreach from=$categoryiesOfContent key=k item=c}>
+                    <{assign var='num' value=$k|substr:0:1}>
+                    <optgroup label="<{$k}>">
+                        <{foreach from=$c key=subk item=subc}>
+                        <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+                        <{/foreach}>
+                        <{/foreach}>
+                </select>
+                <select name="pub_contentCategory3" class="form-control pub_contentCategory2 SiteType2"  style="margin-top:10px;">
+                    <option value="">--Select--</option>
+                    <{foreach from=$categoryiesOfContent key=k item=c}>
+                    <{assign var='num' value=$k|substr:0:1}>
+                    <optgroup label="<{$k}>">
+                        <{foreach from=$c key=subk item=subc}>
+                        <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+                        <{/foreach}>
+                        <{/foreach}>
+                </select>
+                <dd style="margin-top: 10px;width: 300px;"><input type="text" id="pub_contentCategory4" name="pub_contentCategory4" placeholder="other" class="form-control"></dd>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:skyblue">Career</td>
+            <td>
+                <select name="Career" class="form-control" id="Career">
+                    <{foreach from=$career item=v}>
+                    <option value=<{$v.Career}> <{if $info[0].Career eq $v.Career}> selected="selected" <{/if}> ><{$v.Career}></option>
+                    <{/foreach}>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:skyblue">Commission Rate</td>
+            <td>
+                <input type="number" id="Tax" name="Tax" value="<{$info.0.Tax}>" class="form-control checkinfo"/>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:skyblue">Status</td>
+            <td>
+                <select name="Status" class="form-control" id="Status">
+                    <option value="Active" <{if $info.0.Status == "Active"}> selected="selected" <{/if}> >Active</option>
+                    <option value="Inactive" <{if $info.0.Status == "Inactive"}> selected="selected" <{/if}> >Inactive</option>
+                    <option value="Unaudited" <{if $info.0.Status == "Unaudited"}> selected="selected" <{/if}> >Unaudited</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:skyblue">Manager</td>
+            <td>
+                <select name="Manager" class="form-control" id="Manager">
+                    <option value="public">public</option>
+                    <{foreach from=$managers item=manager}>
+                    <option value="<{$manager}>" <{if $info.0.Manager eq $manager}> selected="selected" <{/if}> ><{$manager}></option>
+                    <{/foreach}>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:skyblue">Remark</td>
+            <td>
+                <input type="text" id="Remark" class="form-control" name="Remark" value="<{$info.0.Remark}>">
+            </td>
+
+        </tr>
+        <!-- basic info end -->
+
+        <!-- account info start -->
+        <tr>
+            <td colspan="2" style="text-align:left;font-weight: bold;background-color:#1A3958"><font color="white">Account</font></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Account</td>
+            <td><{$info.0.UserName}></td>
+        </tr>
+
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Password</td>
+            <td><{$info.0.UserPass}></td>
+        </tr>
+        <!-- account info end -->
+
+        <!-- API info start -->
+        <tr>
+            <td colspan="2" style="text-align:left;font-weight: bold;background-color:#1A3958"><font color="white">API</font></td>
+        </tr>
+        <{foreach from=$info item=api}>
+        <tr>
+            <td style="text-align:right;background-color:#EEE"><{$api.Alias}></td>
+            <td><{$api.ApiKey}></td>
+        </tr>
+        <{/foreach}>
+        <!-- API info end -->
+
+
+        <!-- extend info start -->
+        <tr>
+            <td colspan="2" style="text-align:left;font-weight: bold;background-color:#1A3958"><font color="white">Extend</font></td>
+        </tr>
+        <tr>
+            <td width="20%" style="text-align:right;background-color:#EEE">Alias</td>
+            <td><input type="text" id="Alias" value="<{$info.0.Alias}>" class="form-control"/></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Phone</td>
+            <td><input type="text" id="Phone"  value="<{$info.0.Phone}>" class="form-control Phone"/></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Email</td>
+            <td><input type="text" id="Email"  value="<{$info.0.Email}>" class="form-control Email"/></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Company</td>
+            <td><input type="text" id="Company"  value="<{$info.0.Company}>" class="form-control Company"/></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Company Address</td>
+            <td><input type="text" id="CompanyAddr"  value="<{$info.0.CompanyAddr}>" class="form-control CompanyAddr"/></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Address2</td>
+            <td><input type="text" id="Address2"  value="<{$info.0.Address2}>" class="form-control Address2"/></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">PayPal</td>
+            <td><input type="text" id="PayPal"  value="<{$info.0.PayPal}>" class="form-control PayPal"/></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Number of Employees</td>
+            <td>
+                <input type="hidden" value="<{$info.0.StaffNumber}>" class="StaffNumber" id="StaffNumber">
+                <div style="margin-left:5px;" class="StaffNumberdiv">
+                    <dd><input class="p1" type="radio" name="pub_staffNumber" id="pub_staffNumber" value="1"><a data-type="radio" data-class="p1" class="clickparent " data-type="r" data-id="pub_staffNumber1" data-type="r" href="javascript:void(0);" style="text-decoration:none;color: black">&nbsp;&nbsp;Only Me (1)</a></dd>
+                    <dd><input class="p1" type="radio" name="pub_staffNumber" value="2-10"><a data-type="radio" data-class="p1" class="clickparent " data-type="r"  href="javascript:void(0);" style="text-decoration:none;color:black">&nbsp;&nbsp;2-10</a></dd>
+                    <dd><input class="p1" type="radio" name="pub_staffNumber" value="11-25"><a data-type="radio" data-class="p1" class="clickparent " data-type="r"  href="javascript:void(0);" style="text-decoration:none;color: black">&nbsp;&nbsp;11-25</a></dd>
+                    <dd><input class="p1" type="radio" name="pub_staffNumber" value="26+"><a data-type="radio" data-class="p1" class="clickparent " data-type="r"  href="javascript:void(0);" style="text-decoration:none;color: black">&nbsp;&nbsp;26+</a></dd>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Dev Knowledge</td>
+            <td>
+                <input type="hidden" value="<{$info.0.DevKnowledge}>" class="DevKnowledge" id="DevKnowledge">
+                <div class="DevKnowledgediv" style="margin-left:5px;">
+                    <dd><input type="radio" name="pub_devKnowledge" id="pub_devKnowledge" value="turn on a computer"><a class="clickparent" style="text-decoration:none;color: black" data-type="radio" data-class="p4" href="javascript:void(0)">&nbsp;&nbsp;I can turn on a computer</a></dd>
+                    <dd><input type="radio" name="pub_devKnowledge" value="wordpress templates"><a class="clickparent" style="text-decoration:none;color: black" data-type="radio" data-class="p4" href="javascript:void(0)">&nbsp;&nbsp;I prefer wordpress templates</a></dd>
+                    <dd><input type="radio" name="pub_devKnowledge" value="get by with coding"><a class="clickparent" style="text-decoration:none;color: black" data-type="radio" data-class="p4" href="javascript:void(0)">&nbsp;&nbsp;I can get by with coding</a></dd>
+                    <dd><input type="radio" name="pub_devKnowledge" value="developing wizard"><a class="clickparent" style="text-decoration:none;color: black" data-type="radio" data-class="p4" href="javascript:void(0)">&nbsp;&nbsp;I’m a developing wizard</a></dd>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Ideal Profit Model </td>
+            <td>
+                <input type="hidden" value="<{$info.0.ProfitModel}>" id="ProfitModel" class="ProfitModel">
+                <div class="ProfitModeldiv"  style="margin-left:5px;">
+                    <dd><input  type="checkbox" class="" value="CPA/CPS"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;CPA/CPS</a></dd>
+                    <dd><input type="checkbox" value="CPI"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;CPI</a></dd>
+                    <dd><input type="checkbox"  value="CPM"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;CPM</a></dd>
+                    <dd><input type="checkbox"  value="CPC"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;CPC</a></dd>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Ways you generate traffic </td>
+            <td>
+                <input type="hidden" value="<{$info.0.WaysOfTraffic}>" class="WaysOfTraffic" id="WaysOfTraffic">
+                <div class="WaysOfTrafficdiv" style="margin-left:5px;">
+                    <dd><input class="p2" type="checkbox" name="pub_waysOfTraffic1" id="pub_waysOfTraffic" value="SEO"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;SEO</a></dd>
+                    <dd><input class="p2" type="checkbox" name="pub_waysOfTraffic2" value="SEM"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;SEM</a></dd>
+                    <dd><input class="p2" type="checkbox" name="pub_waysOfTraffic3" value="Social Media"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;Social Media</a></dd>
+                    <dd><input class="p2" type="checkbox" name="pub_waysOfTraffic4" value="EDM"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">&nbsp;&nbsp;EDM</a></dd>
+                    <dd style="margin-top: 5px;"><input style="width: 300px;" class="p2  form-control" type="text"  placeholder="other" name="pub_otherWaysOfTraffic" id="pub_otherWaysOfTraffic"></dd>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Type of Content </td>
+            <td>
+                <input type="hidden" value="<{$info.0.TypeOfContent}>" class="TypeOfContent" id="TypeOfContent">
+                <div class="TypeOfContentdiv" style="margin-left:5px;">
+                    <dd><input type="checkbox" name="pub_typeOfContent1" id="pub_typeOfContent" value="images"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p22" href="javascript:void(0)">&nbsp;&nbsp;Images</a></dd>
+                    <dd><input type="checkbox" name="pub_typeOfContent2" value="text"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p22" href="javascript:void(0)">&nbsp;&nbsp;Text</a></dd>
+                    <dd style="margin-top: 5px;"><input style="width: 300px;" class="p22 form-control" type="text"  placeholder="other" id="TypeOfContenttext"></dd>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Ad Networks you currently use </td>
+            <td>
+                <div class="earn_choose" style="margin-left:5px;">
+                    <dd style="margin-top: 5px;"><input class="p2 form-control CurrentNetwork" type="text"  value="<{$info.0.CurrentNetwork}>" placeholder="other" c id="CurrentNetwork"></dd>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Content Production </td>
+            <td>
+                <input type="hidden" value="<{$info.0.ContentProduction}>" class="ContentProduction" id="ContentProduction">
+                <div class="ContentProductiondiv" style="margin-left:5px;">
+                    <dd><input type="radio" name="pub_contentProduction" value="in house" id="pub_contentProduction"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p6" href="javascript:void(0)">&nbsp;&nbsp;In-house</a></dd>
+                    <dd><input type="radio" name="pub_contentProduction" value="user generated"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p6" href="javascript:void(0)">&nbsp;&nbsp;User Generated Content</a></dd>
+                    <dd><input type="radio" name="pub_contentProduction" value="both"><a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p6" href="javascript:void(0)">&nbsp;&nbsp;Both</a></dd>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Content Categories</td>
+            <td>
+                <input type="hidden" id="CategoryId" class="CategoryId" value="<{$info.0.CategoryId}>">
+                <div style="height: 300px;margin-left:5px;overflow-y:auto" id="setwidht">
+                    <{foreach from=$catArr.allCat key=k item=v}>
+                    <dd style="font-weight: bold"><input data-id="<{$k}>" type="checkbox" data-text="<{$catArr.idToName.$k}>" class="checkmin checkmin<{$k}>"  type="checkbox" name="priCat_<{$k}>" value="priCat_<{$k}>" id="priCat_<{$k}>" click="0" onclick="saveClickNum(this)">&nbsp;&nbsp;<a style="cursor:pointer;color: #333" onclick="showSubCat(this)"><{$catArr.idToName.$k}></a></dd>
+                    <sub>
+                        <{foreach from=$v item=value}>
+                        <dd style="margin-left:20px;display: none" class="min<{$k}>">
+                            <input class="min<{$k}> min" data-class=".min<{$k}>" data-text="<{$catArr.idToName.$value}>"  data-id="<{$k}>" data-type="0" data-val="<{$value}>" type="checkbox" name="subCat_<{$value}>" value="<{$value}>" id="subCat_<{$value}>">
+                            <a class="clickparent" style="text-decoration:none;color: black" data-type="checkbox" data-class="p2" href="javascript:void(0)">
+                                &nbsp;&nbsp;<font size="2px;"><{$catArr.idToName.$value}></font>
+                            </a>
+                        </dd>
+                        <{/foreach}>
+                    </sub>
+                    <{/foreach}>
+                    </dt>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;background-color:#EEE">Login Log</td>
+            <td><a style="cursor: pointer" href="<{$smarty.const.BASE_URL}>/b_publisher_login_log.php?pid=<{$pid}>">Login Log</a>
+                <span style="float: right;color:#87CEEB;font-weight: bold">Last Login Time : <{$lastLoginTime}></span>
+            </td>
+        </tr>
+        <!-- extend info end -->
+        </tbody>
+    </table>
+</div>
+<script>
+        $('.checklog').bind('click',function(){
+            var id = $(this).data('id');
+            var data = {'check':id};
+            $.ajax({
+                type:"post",
+                url:"b_publisher_changelog.php",
+                data:data,
+                async:false,
+                success: function(res){
+
+                    var data = JSON.parse(res);
+                    var html = '';
+                    var html1 = '';
+                    if(data['old']['info'] != ''){
+                        html+='<tr>';
+                        $.each(data['old']['info'], function(i, item) {
+                            if(i == 'Country'){
+                                var name = $('.Country').parent().prev().html();
+                                var oval = $("#pub_country option[value="+item+"]").text();
+                                html+='<td   style="text-align:center;><font color="white">'+name+'</font></td>';
+                                html+='<td class="old'+i+'" style="text-align:center;><font color="white">'+oval+'</font></td>';
+                                html+=' </tr>';
+                            }else{
+                                var name = $('.'+i).parent().prev().html();
+                                html+='<td  style="text-align:center;><font color="white">'+name+'</font></td>';
+                                html+='<td  class="old'+i+'" style="text-align:center;><font color="white">'+item+'</font></td>';
+                                html+=' </tr>';
+                            }
+                        })
+                    }
+                    if(data['old']['detail'] != ''){
+                        html+='<tr>';
+                        $.each(data['old']['detail'], function(i, item) {
+                            var nval = item;
+                            if(i == 'CategoryId'){
+                                var arr = nval.split(',');
+                                var text = '';
+                                var accext = '';
+                                var arttext = '';
+                                var autext = '';
+                                var beatext = '';
+                                var boktext = '';
+                                var bustext = '';
+                                var buytext = '';
+                                $.each(arr, function(i, item) {
+                                    var oval = $("#subCat_"+item).data('text');
+                                    var pval = $("#subCat_"+item).data('id');
+                                    var p = $('#priCat_'+pval).data('text');
+                                    if(p == 'Accessories'){
+                                        var aval = '';
+                                        aval+=oval+' , ';
+                                        accext+=aval;
+                                    }
+                                    else if(p == 'Art/Photo/Music'){
+                                        var aval = '';
+                                        aval+=oval+' , ';
+                                        arttext+=aval;
+                                    }else if(p == 'Automotive'){
+                                        var aval = '';
+                                        aval+=oval+' , ';
+                                        autext+=aval;
+                                    }else if(p == 'Beauty'){
+                                        var aval = '';
+                                        aval+=oval+' , ';
+                                        beatext+=aval;
+                                    }else if(p == 'Books/Media'){
+                                        var aval = '';
+                                        aval+=oval+' , ';
+                                        boktext+=aval;
+                                    }else if(p == 'Business'){
+                                        var aval = '';
+                                        aval+=oval+' , ';
+                                        bustext+=aval;
+                                    }else{
+                                        var aval = '';
+                                        aval+=oval+' , ';
+                                        buytext+=aval;
+                                    }
+                                });
+                                if(accext != ''){
+                                    accext = 'Accessories: '+accext.substr(0,accext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                }
+                                if(arttext != ''){
+                                    arttext = 'Art/Photo/Music: '+arttext.substr(0,arttext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                }
+                                if(autext != ''){
+                                    autext = 'Automotive: '+autext.substr(0,autext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                }
+                                if(beatext != ''){
+                                    beatext = 'Beauty: '+beatext.substr(0,beatext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                }
+                                if(boktext != ''){
+                                    boktext = 'Books/Media: '+boktext.substr(0,boktext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                }
+                                if(bustext != ''){
+                                    bustext = 'Business: '+bustext.substr(0,bustext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                }
+                                if(buytext != ''){
+                                    buytext = 'Buying and Selling: '+buytext.substr(0,buytext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                }
+                                text+=accext+arttext+autext+beatext+boktext+bustext+buytext;
+                                html1+='<td  style="text-align:center;width: 200px;><font color="white">Content Categories</font></td>';
+                                html1+='<td class="old'+i+'"  style="text-align:center;><font color="white">'+text+'</font></td>';
+                                html1+=' </tr>';
+                            }
+                            else if(i == 'SiteType'){
+                                var name = $('.'+i).parent().prev().html();
+                                var val = item.split("+");
+                                var nval = '';
+                                $.each(val, function(i, item) {
+                                    var s = $(".SiteType0 option[value="+item+"]").text();
+                                    if(s == ''){
+                                        s=item;
+                                    }
+                                    nval+= s+'</br>';
+                                });
+                                html1+='<td  style="text-align:center;><font color="white">'+name+'</font></td>';
+                                html1+='<td class="old'+i+'" style="text-align:center;><font color="white">'+nval.substr(0,nval.length-3)+'</font></td>';
+                                html1+=' </tr>';
+                            }
+                            else if(i == 'GeoBreakdown'){
+                                var val = item.split("+");
+                                var nval = '';
+                                $.each(val, function(i, item) {
+                                    var s = $(".GeoBreakdown0 option[value=" + item + "]").text();
+                                    nval += s + '</br>';
+                                });
+                                html1 += '<td  style="text-align:center;><font color="white">Traffic Demographics</font></td>';
+                                html1 += '<td class="old'+i+'" style="text-align:center;><font color="white">' + nval + '</font></td>';
+                                html1 += ' </tr>';
+                            }
+                            else if(i == 'CurrentNetwork'){
+                                html1+='<td  style="text-align:center;><font color="white">Ad Networks you currently use</font></td>';
+                                html1+='<td  style="text-align:center;><font color="white">'+item+'</font></td>';
+                                html1+=' </tr>';
+                            }
+                            else {
+                                var name = $('.'+i).parent().prev().html();
+                                var nval = '';
+                                var val = item.split("+");
+                                $.each(val, function(i, item) {
+                                    if(item == '1'){
+                                        nval= 'Only Me (1)';
+                                    }else if(item == 'turn on a computer'){
+                                        nval= 'I can turn on a computer';
+                                    }else if(item == 'wordpress templates'){
+                                        nval= 'I prefer wordpress templates' ;
+                                    }else if(item == 'get by with coding'){
+                                        nval= 'I can get by with coding';
+                                    }else if(item == 'developing wizard'){
+                                        nval= 'I’m a developing wizard';
+                                    }else if(item == 'user generated'){
+                                        nval= 'User Generated Content';
+                                    }else {
+                                        nval+= item+'<br>';
+                                    }
+                                });
+                                var name = $('.'+i).parent().prev().html();
+                                html1+='<td  style="text-align:center;><font color="white">'+name+'</font></td>';
+                                html1+='<td class="old'+i+'"  style="text-align:center;><font color="white">'+nval+'</font></td>';
+                                html1+=' </tr>';
+                            }
+                        });
+                    }
+                    $('#chkphtml').html(html+html1);
+                    if(html != ''){
+                        $.each(data['new']['info'], function(i, item) {
+                            if(i == 'Country'){
+                                var oval = $("#pub_country option[value="+item+"]").text();
+                                var append = '';
+                                append ='<td style="text-align:center;><font color="white">'+oval+'</font></td>';
+                                $('.old'+i).after(append);
+                            }else{
+                                var append = '';
+                                append ='<td  style="text-align:center;><font color="white">'+item+'</font></td>';
+                                $('.old'+i).after(append);
+                            }
+                        })
+                    }
+                    if(html1 != ''){
+                        if(html1 != ''){
+                            $.each(data['new']['detail'], function(i, item) {
+                                var nval = item;
+                                if(i == 'CategoryId'){
+                                    var arr = nval.split(',');
+                                    var text = '';
+                                    var accext = '';
+                                    var arttext = '';
+                                    var autext = '';
+                                    var beatext = '';
+                                    var boktext = '';
+                                    var bustext = '';
+                                    var buytext = '';
+                                    $.each(arr, function(i, item) {
+                                        var oval = $("#subCat_"+item).data('text');
+                                        var pval = $("#subCat_"+item).data('id');
+                                        var p = $('#priCat_'+pval).data('text');
+                                        if(p == 'Accessories'){
+                                            var aval = '';
+                                            aval+=oval+' , ';
+                                            accext+=aval;
+                                        }
+                                        else if(p == 'Art/Photo/Music'){
+                                            var aval = '';
+                                            aval+=oval+' , ';
+                                            arttext+=aval;
+                                        }else if(p == 'Automotive'){
+                                            var aval = '';
+                                            aval+=oval+' , ';
+                                            autext+=aval;
+                                        }else if(p == 'Beauty'){
+                                            var aval = '';
+                                            aval+=oval+' , ';
+                                            beatext+=aval;
+                                        }else if(p == 'Books/Media'){
+                                            var aval = '';
+                                            aval+=oval+' , ';
+                                            boktext+=aval;
+                                        }else if(p == 'Business'){
+                                            var aval = '';
+                                            aval+=oval+' , ';
+                                            bustext+=aval;
+                                        }else{
+                                            var aval = '';
+                                            aval+=oval+' , ';
+                                            buytext+=aval;
+                                        }
+                                    });
+                                    if(accext != ''){
+                                        accext = 'Accessories: '+accext.substr(0,accext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                    }
+                                    if(arttext != ''){
+                                        arttext = 'Art/Photo/Music: '+arttext.substr(0,arttext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                    }
+                                    if(autext != ''){
+                                        autext = 'Automotive: '+autext.substr(0,autext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                    }
+                                    if(beatext != ''){
+                                        beatext = 'Beauty: '+beatext.substr(0,beatext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                    }
+                                    if(boktext != ''){
+                                        boktext = 'Books/Media: '+boktext.substr(0,boktext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                    }
+                                    if(bustext != ''){
+                                        bustext = 'Business: '+bustext.substr(0,bustext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                    }
+                                    if(buytext != ''){
+                                        buytext = 'Buying and Selling: '+buytext.substr(0,buytext.length-3)+'<br>'+'<hr style="height:1px;border:none;border-top:1px solid #555555;" />';
+                                    }
+                                    text+=accext+arttext+autext+beatext+boktext+bustext+buytext;
+                                    var append = '';
+                                    append ='<td style="text-align:center;><font color="white">'+text+'</font></td>';
+                                    $('.old'+i).after(append);
+                                }
+                                else if(i == 'SiteType'){
+                                    var name = $('.'+i).parent().prev().html();
+                                    var val = item.split("+");
+                                    var nval = '';
+                                    $.each(val, function(i, item) {
+                                        var s = $(".SiteType0 option[value="+item+"]").text();
+                                        if(s == ''){
+                                            s=item;
+                                        }
+                                        nval+= s+'</br>';
+                                    });
+                                    var append = '';
+                                    append ='<td style="text-align:center;><font color="white">'+nval+'</font></td>';
+                                    $('.old'+i).after(append);
+                                }
+                                else if(i == 'GeoBreakdown'){
+                                    var val = item.split("+");
+                                    var nval = '';
+                                    $.each(val, function(i, item) {
+                                        var s = $(".GeoBreakdown0 option[value=" + item + "]").text();
+                                        nval += s + '</br>';
+                                    });
+                                    var append = '';
+                                    append ='<td style="text-align:center;><font color="white">'+nval+'</font></td>';
+                                    $('.old'+i).after(append);
+                                }
+                                else if(i == 'CurrentNetwork'){
+                                    var append = '';
+                                    append ='<td style="text-align:center;><font color="white">'+item+'</font></td>';
+                                    $('.old'+i).after(append);
+                                }
+                                else {
+                                    var name = $('.'+i).parent().prev().html();
+                                    var nval = '';
+                                    var val = item.split("+");
+                                    $.each(val, function(i, item) {
+                                        if(item == '1'){
+                                            nval= 'Only Me (1)';
+                                        }else if(item == 'turn on a computer'){
+                                            nval= 'I can turn on a computer';
+                                        }else if(item == 'wordpress templates'){
+                                            nval= 'I prefer wordpress templates' ;
+                                        }else if(item == 'get by with coding'){
+                                            nval= 'I can get by with coding';
+                                        }else if(item == 'developing wizard'){
+                                            nval= 'I’m a developing wizard';
+                                        }else if(item == 'user generated'){
+                                            nval= 'User Generated Content';
+                                        }else {
+                                            nval+= item+'<br>';
+                                        }
+                                    });
+                                    var append = '';
+                                    append ='<td style="text-align:center;><font color="white">'+nval+'</font></td>';
+                                    $('.old'+i).after(append);
+                                }
+                            });
+                        }
+                    }
+                    $('#pinfo').modal();
+                }
+            });
+        });
+</script>
+
+<{include file="b_block_footer.html"}>

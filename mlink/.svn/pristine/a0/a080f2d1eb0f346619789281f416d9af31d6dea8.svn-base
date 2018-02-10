@@ -1,0 +1,59 @@
+<?php
+
+function getBatchInsertSql($updateData,$tableName,$replace=false){
+    $column = array();
+    $sql = '';
+    if(!empty($updateData)){
+        foreach($updateData[0] as $k=>$v){
+            $column[] = $k;
+        }
+
+        $columnStr = join(',',$column);
+        $sql = ($replace?'REPLACE':'INSERT').' INTO '.$tableName.' ('.$columnStr.') VALUES ';
+        foreach($updateData as $k=>$row){
+            foreach($row as $key=>$value){
+                $row[$key] = addslashes($value);
+            }
+
+            $sql .= '("'.join('","',$row).'"),';
+        }
+        $sql = substr($sql,0,-1);
+    }
+    
+    return $sql; 
+}
+
+function getBatchUpdateSql($updateData,$tableName,$primary=''){
+    $column = array();
+    $sql = '';
+    if(!empty($updateData)){
+        foreach($updateData[0] as $k=>$v){
+            $column[] = $k;
+        }
+
+        $columnStr = join(',',$column);
+        $sql = 'INSERT INTO '.$tableName.' ('.$columnStr.') VALUES ';
+        foreach($updateData as $k=>$row){
+            foreach($row as $key=>$value){
+                $row[$key] = addslashes($value);
+            }
+
+            $sql .= '("'.join('","',$row).'"),';
+        }
+        $sql = substr($sql,0,-1);
+        $sql .= 'ON DUPLICATE KEY UPDATE ';
+
+        $primaryArr = array();
+        if(!empty($primary)){
+            $primaryArr = explode(',',$primary);
+        }
+        foreach($column as $c){
+            if(!in_array($c,$primaryArr))
+                $sql .= $c.'=VALUES('.$c.'),';
+        }
+        $sql = substr($sql,0,-1);    
+    }
+    
+    return $sql; 
+}
+?>

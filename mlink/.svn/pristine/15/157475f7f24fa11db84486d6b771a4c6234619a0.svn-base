@@ -1,0 +1,72 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+  <div class="container-fluid" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1>Quick Link upload</h1></div>
+
+    <!-- account info -->
+    <div class="panel panel-default" id="panel_account">
+      <div class="panel-heading">Upload</div>
+      <div class="panel-body" >
+        <form method="post" action="b_quicklink.php" enctype='multipart/form-data' id="form_upload">
+        
+        <div class="row form-inline">
+          <div class="form-group">
+            <input type="hidden" value="file_name" name="upload_transaction" />
+            <input type="file" name="upload_transaction" />
+          </div>
+          
+          <div class="form-group">
+            <button type="submit" class="btn  btn-primary ">Upload</button>
+            <input type="hidden" value="upfile" name="act" />
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- detail info -->
+    <div id="upload_details" class="panel panel-default">
+      <div class="panel-heading">Details</div>
+      <div class="panel-body" >
+        <{if $res}>
+        <div class="row">
+          <div class="col-lg-3" style="background-color:#EEE;padding:8px;text-align:right;border:1px solid #ddd;">file upload status:</div>
+          <div class="col-lg-9" style="padding:8px;border:1px solid #ddd;"><i style="color:green;">succeed</i></div>
+        </div>
+            
+        <div class="row">
+          <table class="table table-striped">
+              <thead>
+              <tr>
+                  <th>TITLE</th>
+                  <th>CODE</th>
+                  <th>LINK</th>
+                  <th>EXPIRES</th>
+                  <th>APIKEY</th>
+              </tr>
+              </thead>
+              <{foreach from=$csv item=list}>
+              <tr>
+                  <td><{$list.0}></td>
+                  <td><{$list.1}></td>
+                  <td><{$list.2}></td>
+                  <td><{$list.3}></td>
+                  <td><{$list.4}></td>
+              </tr>
+              <{/foreach}>
+          </table>
+        </div>
+
+        <{elseif  $msg}>
+        <div class="row">
+          <div class="col-lg-3" style="background-color:#EEE;padding:8px;text-align:right;border:1px solid #ddd;">result:</div>
+          <div class="col-lg-9" style="padding:8px;border:1px solid #ddd;"><i style="color:red;"><{$msg}></i>
+          </div>
+        </div>
+        <{/if}>
+      </div>
+    </div>
+
+<{include file="b_block_footer.html"}>

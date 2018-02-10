@@ -1,0 +1,190 @@
+<div class="page">
+  <h2 class="clearup">Product Feed API</h2>
+  <h3><{$LANG.front.doc_transaction.a2}></h3>
+  <pre><{$smarty.const.API_URL}>?act=links.product_feed&key=[Site ID]&user=[Login User Name]</pre>
+  <h3><{$LANG.front.doc_transaction.a3}></h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><{$LANG.front.doc_transaction.a4}></th>
+        <th><{$LANG.front.doc_transaction.a5}></th>
+        <th><{$LANG.front.doc_transaction.a6}></th>
+        <th><{$LANG.front.doc_transaction.a7}></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a8}></td>
+        <td><{$LANG.front.doc_transaction.a9}></td>
+        <td><{$LANG.front.doc_transaction.a10}></td>
+        <td><{$LANG.front.doc_transaction.a11}></td>
+      </tr>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a20}></td>
+        <td><{$LANG.front.doc_transaction.a21}></td>
+        <td><{$LANG.front.doc_transaction.a22}></td>
+        <td><{$LANG.front.doc_transaction.a23}></td>
+      </tr>
+      <tr>
+        <td><{$LANG.front.doc_transaction.a24}></td>
+        <td><{$LANG.front.doc_transaction.a25}></td>
+        <td><{$LANG.front.doc_transaction.a26}></td>
+        <td><{$LANG.front.doc_transaction.a27}></td>
+      </tr>
+      <tr>
+        <td>page</td>
+        <td>N</td>
+        <td>Int</td>
+        <td>Specifies the page of the results set that is currently being viewed.(default:1)</td>
+      </tr>
+      <tr>
+        <td>pagesize</td>
+        <td>N</td>
+        <td>Int</td>
+        <td>Specifies the number of records to be viewed per page.(default:100)</td>
+      </tr>
+      <tr>
+        <td>outformat</td>
+        <td>N</td>
+        <td>String</td>
+        <td>output product format (default:txt , option:'txt','json','xml','csv')</td>
+      </tr>
+      <tr>
+        <td>favor</td>
+        <td>N</td>
+        <td>Int</td>
+        <td>Only show your favorite advertiser</td>
+      </tr>
+      <tr>
+        <td>country</td>
+        <td>N</td>
+        <td>String</td>
+        <td>only show the product feed can be used in the country,use country code include 'ISO 3166-1'</td>
+      </tr>
+      <tr>
+        <td>category</td>
+        <td>N</td>
+        <td>Int</td>
+        <td>categroy id , list in api: advertiser-category (multi id: 1,3,4)</td>
+      </tr>
+      <tr>
+        <td>language</td>
+        <td>N</td>
+        <td>String</td>
+        <td>product text language (default:all, option:'en'(English) , 'fr'(French) , 'de'(German) , 'it'(Italian) , 'nl'(Dutch) , 'es'(Spanish) , 'pt'(Portuguese) , 'se'(Swedish) , 'no'(Norwegian) )</td>
+      </tr>
+      <{*<tr>
+        <td>lastupdated</td>
+        <td>N</td>
+        <td>String</td>
+        <td>Updated products after this date</td>
+      </tr>*}>
+    </tbody>
+  </table>
+
+  <h3><{$LANG.front.doc_transaction.a29}></h3>
+  <pre><{$smarty.const.API_URL}>?act=links.product_feed&key=eccbc87e4b5ce2fe28308fd9f2a7baf3&user=account1</pre>
+
+  <h3>Parameters Response</h3>
+  <h4>API info</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Parameters</th>
+        <th>Data Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>PageTotal</td>
+        <td>Int</td>
+        <td>Total number of pages</td>
+      </tr>
+      <tr>
+        <td>PageNow</td>
+        <td>Int</td>
+        <td>The current page</td>
+      </tr>
+      <tr>
+        <td>Num</td>
+        <td>Int</td>
+        <td>Total number of data</td>
+      </tr>
+      <tr>
+        <td>NumReturn</td>
+        <td>Int</td>
+        <td>Number of data on the current page</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>Data info</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Parameters</th>
+        <th>Data Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Advertiser</td>
+        <td>String</td>
+        <td>product advertiser</td>
+      </tr>
+      <tr>
+        <td>Logo</td>
+        <td>String</td>
+        <td>product advertiser logo url address</td>
+      </tr>
+      <tr>
+        <td>Category</td>
+        <td>String</td>
+        <td>product advertiser categories splited by (,)</td>
+      </tr>
+      <tr>
+        <td>Title</td>
+        <td>String</td>
+        <td>product title</td>
+      </tr>
+      <tr>
+        <td>Description</td>
+        <td>String</td>
+        <td>product description</td>
+      </tr>
+      <tr>
+        <td>Price</td>
+        <td>String</td>
+        <td>product price</td>
+      </tr>
+      <tr>
+        <td>Image</td>
+        <td>String</td>
+        <td>product image</td>
+      </tr>
+      <tr>
+        <td>ShippingCountry</td>
+        <td>String</td>
+        <td>product support country</td>
+      </tr>
+      <tr>
+        <td>LinkUrl</td>
+        <td>String</td>
+        <td>product link</td>
+      </tr>
+    </tbody>
+  </table>
+
+<h3><{$LANG.front.doc_transaction.a30}></h3>
+  <pre>
+@PageTotal:598	@PageNow:1	@Num:59707	@NumReturn:100	
+Advertiser	        Logo                                                        Category                Title	                                            Description                                                                                                 Price       Image                                                                 ShippingCountry     LinkUrl
+Scrubs and Beyond	http://www.brandreward.com/img/adv_logo/us-16988904930.jpg  Consumer Electronics    3M Littmann 3100 Electronic 27 Inch Stethoscopes        GET RID OF THE NOISE Banish background noise by up to 85 percent with the 3M Littmann 3100 ......           $354.99     https://www.brandreward.com/img/12/product/142862_468044_150px.png    global              http://r.brandreward.com/?key=c74d97b01eae257e44aa9d5bade97baf&linkid=25412374
+Scrubs and Beyond	http://www.brandreward.com/img/adv_logo/us-16988904930.jpg  Consumer Electronics    3M Littmann 3200 Electronic 27 Inch Stethoscopes        The innovative Electronic Stethoscope from 3M Littmann takes stethoscopes to the next level .....           $369.99     https://www.brandreward.com/img/12/product/142862_468622_150px.png    global              http://r.brandreward.com/?key=c74d97b01eae257e44aa9d5bade97baf&linkid=36777974
+Scrubs and Beyond	http://www.brandreward.com/img/adv_logo/us-16988904930.jpg  Consumer Electronics    3M Littmann Cardiology IV 27 Inch Breast......          SHOW YOU CARE The revolutionary 3M Littmann Cardiology IV stethoscope is an extensive enhancement ......    $169.99     https://www.brandreward.com/img/12/product/142862_504926_150px.png    global              http://r.brandreward.com/?key=c74d97b01eae257e44aa9d5bade97baf&linkid=74933972
+Scrubs and Beyond	http://www.brandreward.com/img/adv_logo/us-16988904930.jpg  Consumer Electronics    3M Littmann Cardiology IV 27 Inch Stethoscopes          The revolutionary 3M Littmann Cardiology IV stethoscope is an extensive enhancement over the 3M ......      $199.99     https://www.brandreward.com/img/12/product/142862_532375_150px.png    global              http://r.brandreward.com/?key=c74d97b01eae257e44aa9d5bade97baf&linkid=39596899
+Scrubs and Beyond	http://www.brandreward.com/img/adv_logo/us-16988904930.jpg  Consumer Electronics    3M Littmann Classic II Infant 28 ......                 The Littmann brand name is your assurance of precision acoustical superiority innovative design ......      $89.99      https://www.brandreward.com/img/12/product/142862_467438_150px.png    global              http://r.brandreward.com/?key=c74d97b01eae257e44aa9d5bade97baf&linkid=92725610
+  </pre>
+</div>

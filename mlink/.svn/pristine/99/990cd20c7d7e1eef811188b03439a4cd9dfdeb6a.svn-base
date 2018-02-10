@@ -1,0 +1,268 @@
+<?php
+
+class StoreEpc extends LibFactory
+{
+    /*
+     * @description 获取商家列表
+     */
+    public function getStore($storeIds = array())
+    {
+        if (empty($storeIds)) {
+            return false;
+        }
+        $sql = 'SELECT * FROM store WHERE ID IN (' . implode(',', $storeIds) . ')';
+        $sql .= " ORDER BY Name ASC";
+        $stores = $this->getRows($sql);
+        $subSql = ' SELECT D.`StoreId`,P.PID FROM r_store_domain D LEFT JOIN r_domain_program P ON P.DID = D.DomainId WHERE D.`StoreId` IN (' . implode(',', $storeIds) . ')';
+        $programs = $this->getRows($subSql);
+        $programIds = array();
+        foreach ($stores as &$store) {
+            $store['program'] = array();
+            foreach ($programs as $program) {
+                $PID = isset($program['PID']) ? $program['PID'] : NULL;
+                if (is_null($PID) || $program['StoreId'] != $store['ID']) {
+                    continue;
+                }
+                array_push($store['program'], $PID);
+            }
+            $programIds = array_merge($programIds,$store['program']);
+        }
+
+        return array('s' => $stores, 'p' => $programIds);
+    }
+
+
+    /**
+     * @param $query
+     *
+     * @description 获取Store EPC数据
+     * @return array|void
+     */
+    public function getStoreEpcData($query)
+    {
+        $type = isset($query['type']) ? $query['type'] : 0;
+        if (!isset($query['type'])) {
+            return false;
+        }
+        unset($query['type']);
+        $groupDate = '';
+        $data = array();
+        switch ($type) {
+            case 1:
+                $groupDate = '%Y-%m-%d';
+                break;
+            case 2:
+                $groupDate = '%Y_%u';
+                break;
+            case 3:
+                $groupDate = '%Y-%m';
+                break;
+        }
+        $data = $this->getStoreEpc($query,$groupDate);
+        $data = $this->formatData($data);
+
+        return $data;
+    }
+
+    /**
+     * @param $query
+     */
+    public function getStoreEpc($query, $groupDate = '%Y-%m-%d')
+    {
+        $dateSql = '';
+        $program = isset($query['program_id']) ? $query['program_id'] : '';
+        $dateSql .= empty($program) ? '' : "AND S.`programId` IN (".implode(',', $program).")";
+        $sDate = isset($query['start_date']) ? $query['start_date'] : '';
+        $eDate = isset($query['end_date']) ? $query['end_date'] : '';
+        if (!empty($sDate)) {
+            $dateSql .= " AND S.createddate >= '$sDate' ";
+        }
+        if (!empty($eDate)) {
+            $dateSql .= " AND S.createddate < '$eDate' ";
+        }
+        $sql = "
+          SELECT S.programId AS `ID`,DATE_FORMAT(S.createddate,'$groupDate') AS DKey,
+          SUM(S.revenues) AS `rv`,SUM(S.clicks-S.clicks_robot) AS `ck`
+          FROM statis_program_br S 
+          WHERE S.programId IS NOT NULL $dateSql GROUP BY S.programId,DATE_FORMAT(S.createddate,'$groupDate') HAVING `ck` > 0";
+        $data = $this->getRows($sql);
+
+        return $data;
+
+    }
+
+
+    /**
+     * @description 获取统计表中有效的StoreId
+     */
+    public function getActiveStoreId($query)
+    {
+        $offset = isset($query['offset']) ? $query['offset'] : 1;
+        $limit = isset($query['limit']) ? $query['limit'] : 10;
+        $start = ($offset - 1) *$limit;
+        $sDate = isset($query['start_date']) ? $query['start_date'] : '';
+        $eDate = isset($query['end_date']) ? $query['end_date'] : '';
+        $storeName = isset($query['store_name']) ? $query['store_name'] : '';
+        $network = isset($query['network']) ? $query['network'] : '';
+        $export = isset($query['export']) ? $query['export'] : 0;
+        $pulisher = isset($query['pulisher']) ? $query['pulisher'] : '';
+        $dateSql = '';
+        if (!empty($sDate)) {
+            $dateSql .= " AND S.createddate >= '$sDate' ";
+        }
+        if (!empty($eDate)) {
+            $dateSql .= " AND S.createddate < '$eDate' ";
+        }
+        if (!empty($pulisher)) {
+            $dateSql .= " AND S.site = '$pulisher' ";
+        }
+        $storeSql = $subSql = '';
+        if (!empty($storeName)) {
+            $subSql .= " AND `Name` = '$storeName' ";
+        }
+        if (!empty($network)) {
+            $subSql .= " AND FIND_IN_SET($network, `Affids`) ";
+        }
+        if (!empty($subSql)) {
+            $bSql = "SELECT ID FROM store WHERE 1 " . $subSql;
+            $data = $this->getRows($bSql);
+            if (empty($data)) {
+                $storeIds = array(0);
+            } else {
+                $storeIds = array();
+                foreach ($data as $key => $value) {
+                    $storeId = isset($value['ID']) ? $value['ID'] : 0;
+                    array_push($storeIds, $storeId);
+                }
+            }
+            $storeSql = " AND D.`StoreId` IN (".implode(',', $storeIds).")";
+        }
+        $sql = "
+          SELECT T.ID,SUM(S.clicks-S.clicks_robot) AS `ck`
+          FROM statis_program_br S 
+          RIGHT JOIN (
+          SELECT store.`ID`,store.`Name`,D.DomainId,P.PID FROM store
+          LEFT JOIN r_store_domain D ON store.ID = D.StoreId
+          LEFT JOIN r_domain_program P ON P.DID = D.DomainId WHERE P.PID IS NOT NULL $storeSql) AS T 
+          ON T.PID = S.programId WHERE S.programId IS NOT NULL $dateSql GROUP BY T.ID HAVING `ck` > 0 ORDER  BY T.`Name` ASC ";
+        if (empty($export)) {
+            $sql .= " LIMIT $start,$limit";
+        }
+        $data = $this->getRows($sql);
+        $storeIds = array();
+        foreach ($data as $value) {
+            isset($value['ID']) && array_push($storeIds, $value['ID']);
+        }
+        return $storeIds;
+    }
+
+
+    public function getActiveStoreIdCount($query)
+    {
+        $sDate = isset($query['start_date']) ? $query['start_date'] : '';
+        $eDate = isset($query['end_date']) ? $query['end_date'] : '';
+        $storeName = isset($query['store_name']) ? $query['store_name'] : '';
+        $network = isset($query['network']) ? $query['network'] : '';
+        $pulisher = isset($query['pulisher']) ? $query['pulisher'] : '';
+        $dateSql = '';
+        if (!empty($sDate)) {
+            $dateSql .= " AND S.createddate >= '$sDate' ";
+        }
+        if (!empty($eDate)) {
+            $dateSql .= " AND S.createddate < '$eDate' ";
+        }
+        if (!empty($pulisher)) {
+            $dateSql .= " AND S.site = '$pulisher' ";
+        }
+        $storeSql = $subSql = '';
+        if (!empty($storeName)) {
+            $subSql .= " AND `Name` = '$storeName' ";
+        }
+        if (!empty($network)) {
+            $subSql .= " AND FIND_IN_SET($network, `Affids`) ";
+        }
+        if (!empty($subSql)) {
+            $bSql = "SELECT ID FROM store WHERE 1 " . $subSql;
+            $data = $this->getRows($bSql);
+            if (empty($data)) {
+                $storeIds = array(0);
+            } else {
+                $storeIds = array();
+                foreach ($data as $key => $value) {
+                    $storeId = isset($value['ID']) ? $value['ID'] : 0;
+                    array_push($storeIds, $storeId);
+                }
+            }
+            $storeSql = " AND D.`StoreId` IN (".implode(',', $storeIds).")";
+        }
+        $sql = "
+          SELECT T.ID,SUM(S.clicks-S.clicks_robot) AS `ck`
+          FROM statis_program_br S 
+          RIGHT JOIN (
+          SELECT store.`ID`,store.`Name`,D.DomainId,P.PID FROM store
+          LEFT JOIN r_store_domain D ON store.ID = D.StoreId
+          LEFT JOIN r_domain_program P ON P.DID = D.DomainId WHERE P.PID IS NOT NULL $storeSql) AS T 
+          ON T.PID = S.programId WHERE S.programId IS NOT NULL $dateSql GROUP BY T.ID  HAVING `ck` > 0 ";
+        $data = $this->getRows($sql);
+        return count($data);
+    }
+
+
+    /**
+     * @param $data
+     * @description 格式化
+     * @return array
+     *
+     */
+    public function formatData($data)
+    {
+        $output = array();
+        foreach ($data as $key => $value) {
+            if (empty($value)) {
+                continue;
+            }
+            $id = isset($value['ID']) ? $value['ID'] : 0;
+            $key = isset($value['DKey']) ? $value['DKey'] : 0;
+            if (empty($id) || empty($key)) {
+                continue;
+            }
+            $output[$id."_".$key] = $value;
+        }
+
+        return $output;
+    }
+
+
+
+     /*
+     * 获取时间查询表头
+     */
+    public function getDateTitle($startDate,$endDate,$type = 1)
+    {
+        $sDateTime = date_create($startDate);
+        $eDateTime = date_create($endDate);
+        $diff = date_diff($sDateTime, $eDateTime);
+        $days = $diff->format("%R%a");
+        switch ($type) {
+            case 1 :
+                $ft = 'Y-m-d';
+                break;
+            case 2:
+                $ft = 'Y_W';
+                break;
+            case 3 :
+                $ft = 'Y-m';
+                break;
+        }
+        $dateTitles = array();
+        for ($i = 0; $i <= $days; $i++) {
+            $dateAddDate = date_create($startDate);
+            date_add($dateAddDate, date_interval_create_from_date_string($i . " days"));
+            array_push($dateTitles, date_format($dateAddDate, $ft));
+        }
+
+        $dateTitles = array_unique($dateTitles);
+        sort($dateTitles);
+        return $dateTitles;
+    }
+}

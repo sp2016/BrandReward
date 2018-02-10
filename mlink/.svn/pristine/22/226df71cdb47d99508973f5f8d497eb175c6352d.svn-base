@@ -1,0 +1,145 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<style>
+.select2{width:100% !important}
+
+</style>
+
+<div class="container" style="margin-top:30px;width:98%">
+    <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+    <div class="row" style="padding:20px 0;">
+
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Search</div>
+                <div class="panel-body" >
+                    <form id="form_search">
+                        <div class="col-lg-12 form-inline" >
+                            <div class="form-group" style="min-width: 800px;">
+                                Keyword:<input type="text" Name="Keyword" class="form-control" value="<{$search.Keyword}>" placeholder="Keyword">
+                			 
+                             
+                                Country: <!-- array('US','GB','DE','SG','FR','AU','CA') -->
+                                <select name="country" class="form-control" style="width:120px">
+                                    <option value="US"  <{if isset($search.country) and $search.country eq US}>selected="selected"<{/if}>>US</option>
+                                    <option value="GB"  <{if isset($search.country) and $search.country eq GB}>selected="selected"<{/if}>>GB</option>
+                                    <option value="DE"  <{if isset($search.country) and $search.country eq DE}>selected="selected"<{/if}>>DE</option>
+                                    <option value="SG"  <{if isset($search.country) and $search.country eq SG}>selected="selected"<{/if}>>SG</option>
+                                    <option value="FR"  <{if isset($search.country) and $search.country eq FR}>selected="selected"<{/if}>>FR</option>
+                                    <option value="AU"  <{if isset($search.country) and $search.country eq AU}>selected="selected"<{/if}>>AU</option>
+                                    <option value="CA"  <{if isset($search.country) and $search.country eq CA}>selected="selected"<{/if}>>CA</option> 
+                                </select>
+                             
+                                <button type="submit" class="btn  btn-primary " style="float:right">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <table id="example" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th width="2%">Publisher Name</th>
+                            <th width="2%">Domain</th>
+                            <th width="2%">Publisher Status</th>
+                            <th>Follow Info</th>
+                        </tr>
+                        </thead>
+                        <{foreach from=$list item=block}>
+                        <tr class="open-logs tr">
+                            <td width="2%"><{$block.name}></td>
+                            <td width="2%"><{$block.domain}></td>
+                            <td width="2%"><{$block.Status}></td>
+                            <td>
+                                <table id="example" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                     		<th>Keyword</th>
+                            				<th>Avg CPC</th>
+                            				<th>Search Volume</th>
+                            				<th>First Seen</th>
+                            				<th>Last Seen</th>
+                            				<th>Days Seen</th>
+                        				</tr>
+                        			</thead>
+                        			<{foreach from=$block.semKeywords.list.data item=sem}>
+                        				<tr class="open-logs tr">
+                            			    <td><{$sem.name}></td>
+                            			    <td><{$sem.avg_cpc}></td>
+                            			    <td><{$sem.monthly_search_volume}></td>
+                            			    <td><{$sem.first_seen|date_format:"%Y-%m-%d"}></td>
+                            			    <td><{$sem.last_seen|date_format:"%Y-%m-%d"}></td>
+                            			    <td><{$sem.days_seen}></td>
+                            			</tr>    
+                        			<{/foreach}>
+                                </table>
+                                <table id="example" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                     		<th>TextAd</th>
+                            				<th>Avg Position</th>
+                            				<th>First Seen</th>
+                            				<th>Last Seen</th>
+                            				<th>Days Seen</th>
+                            			</tr>
+                        			</thead>
+                        			<{foreach from=$block.semRTextAds.list.data item=textad}>
+                        				<tr class="open-logs tr">
+                            			    <td><{$textad.title}><br/><{$textad.body}></td>
+                            			    <td><{$textad.avg_position}></td>
+                            			    <td><{$textad.first_seen|date_format:"%Y-%m-%d"}></td>
+                            			    <td><{$textad.last_seen|date_format:"%Y-%m-%d"}></td>
+                            			    <td><{$textad.days_seen}></td>
+                            			</tr>
+                        			<{/foreach}>
+                                </table>
+                                <table id="example" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                     		<th>Registrar</th>
+                            				<th>Registrant Contact</th>
+                            				<th>Admin Contact</th>
+                            				<th>Technical Contact</th>
+                            				<th>Created</th>
+                            				<th>Updated</th>
+                            				<th>Expires</th>
+                            				<th>Name Servers</th>
+                            			</tr>
+                        			</thead>
+                        			<{foreach from=$block.whois.data item=whois}>
+                        			 
+                        				<tr class="open-logs tr">
+                            			    <td><{$whois.data.registrar}></td>
+                            			    <td><{$whois.data.registrant}></td>
+                            			    <td><{$whois.data.admin_contact}></td>
+                            			    <td><{$whois.data.tech_contact}></td>
+                            			    <td><{$whois.data.created}></td>
+                            			    <td><{$whois.data.updated}></td>
+                            			    <td><{$whois.data.expires}></td>
+                            			    <td><{'<br/>'|implode:$whois.data.nameservers}></td>
+                            			</tr>    
+									<{/foreach}>	                            			    
+                        			 
+                                </table>
+                            </td> 
+                        </tr>
+                        <{/foreach}>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+
+
+
+<{include file="b_block_footer.html"}>

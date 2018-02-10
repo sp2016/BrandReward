@@ -1,0 +1,124 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+  <div class="container-fluid" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1>Upload Tranasction File</h1></div>
+
+    <!-- account info -->
+    <div class="panel panel-default" id="panel_account">
+      <div class="panel-heading">Upload</div>
+      <div class="panel-body" >
+        <form method="post" action="b_publisher_crm_upload.php" enctype='multipart/form-data' id="form_upload">
+        
+        <div class="row form-inline">
+          <div class="form-group">
+            <input type="hidden" value="file_name" name="upload_transaction" />
+            <input type="file" name="upload_transaction" />
+          </div>
+          
+          <div class="form-group">
+            <button type="submit" class="btn  btn-primary ">Upload</button>
+            <input type="hidden" value="upfile" name="act" />
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+
+    <{if $upload_res}>
+    <!-- detail info -->
+    <div id="upload_details" class="panel panel-default">
+      <div class="panel-heading">Details</div>
+      <div class="panel-body" >
+        <{if $upload_res == 'true'}>
+        <div class="row">
+          <div class="col-lg-3" style="background-color:#EEE;padding:8px;text-align:right;border:1px solid #ddd;">file upload status:</div>
+          <div class="col-lg-9" style="padding:8px;border:1px solid #ddd;"><i style="color:green;">succeed</i></div>
+        </div>
+            
+        <div class="row">
+          <div class="col-lg-3" style="background-color:#EEE;padding:8px;text-align:right;border:1px solid #ddd;">file upload info:</div>
+          <div class="col-lg-9" style="padding:8px;border:1px solid #ddd;">
+            @<b>All data number</b> (<i style="color:green;"><{$upload_info.all_count}></i>) @<b>Unique data number</b> (<i style="color:green;"><{$upload_info.unq_count}></i>) 
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12" style="padding:8px;border:1px solid #ddd;">
+          <b>Unique data list</b>
+          <a class="btn btn-success" href="b_publisher_crm_upload.php?act=confirm" role="button">Confirm</a>
+          <a class="btn btn-danger" href="b_publisher_crm_upload.php?act=cancel" role="button">Cancel</a>
+          </div>
+        </div>
+        <div class="row">
+          <table class="table table-striped">
+              <thead>
+              <tr>
+                  <th>Country</th>
+                  <th>Category</th>
+                  <th>URL</th>
+                  <th>BlogName</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th style="width:20px">Comment</th>
+              </tr>
+              </thead>
+              <{foreach from=$upload_info.unq_data item=publisher}>
+              <tr>
+                  <td><{$publisher.country}></td>
+                  <td><{$publisher.category}></td>
+                  <td><{$publisher.url}></td>
+                  <td><{$publisher.blogname}></td>
+                  <td><{$publisher.name}></td>
+                  <td><{$publisher.email}></td>
+                  <td style="width:20px"><{$publisher.comment}></td>
+              </tr>
+              <{/foreach}>
+          </table>
+        </div>
+
+        <{elseif $upload_res =='false'}>
+        <div class="row">
+          <div class="col-lg-3" style="background-color:#EEE;padding:8px;text-align:right;border:1px solid #ddd;">file upload status:</div>
+          <div class="col-lg-9" style="padding:8px;border:1px solid #ddd;"><i style="color:red;">failed</i>
+          </div>
+        </div>
+        <{/if}>
+      </div>
+    </div>
+    <{/if}>
+
+    <!-- history info -->
+
+    <div class="panel panel-default" id="panel_account">
+      <div class="panel-heading">History</div>
+      <div class="panel-body" >
+        <table class="table table-striped">
+              <thead>
+              <tr>
+                  <th>Upload Time</th>
+                  <th>File tag</th>
+                  <th>Unique Nums</th>
+                  <th>Operate</th>
+              </tr>
+              </thead>
+              <{foreach from=$upload_history item=d}>
+              <tr>
+                  <td><{$d.createtime}></td>
+                  <td><{$d.datafile}></td>
+                  <td><{$d.c}></td>
+                  <td>
+                      <a class="btn btn-success" target="_blank" href="b_publisher_crm.php?act=search&datafile=<{$d.datafile}>" role="button">View</a>
+                      <a class="btn btn-primary" target="_blank" href="b_publisher_crm_upload.php?act=download&datafile=<{$d.datafile}>" role="button">Download</a>
+                      <a class="btn btn-info" target="_blank" href="b_publisher_crm_upload.php?act=download_coldcall&datafile=<{$d.datafile}>" role="button">Download & ColdCall 1</a>
+                      <a class="btn btn-danger" target="_blank" href="b_publisher_crm.php?action=delete&datafile=<{$d.datafile}>" role="button" onclick="return confirm('are you sure?')">Delete</a>
+                  </td>
+              </tr>
+              <{/foreach}>
+          </table>
+      </div>
+    </div>
+
+
+<{include file="b_block_footer.html"}>

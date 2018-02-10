@@ -1,0 +1,394 @@
+<{include file="block_header.html"}>
+<{include file="block_banner.html"}> 
+
+
+<div class="container-fluid">
+  <div class="col-sm-2 col-md-2" >
+    <form class="">
+
+      <div class="form-group">
+      <label for="sel_aff"><{$LANG.front.aff_daily.a22}></label><br>
+      <select  class="form-control" id="sel_aff" name="sel_aff" >
+        <{foreach from=$AffNameIdMap item=v key=k}>
+        <option val="<{$k}>" <{if $S_GET.sel_aff && $S_GET.sel_aff == $k}>selected<{/if}>><{$k}></option>
+        <{/foreach}>
+      </select>
+      </div>
+
+      <div class="form-group">
+      <label for="sel_site"><{$LANG.front.aff_daily.a23}></label><br>
+      <select multiple class="form-control" id="sel_site" name="sel_site[]" size="5">
+        <option val="">All</option>
+        <{foreach from=$site_tracking_code item=v key=k}>
+        <option val="<{$v}>" <{if $S_GET.sel_site && $v|in_array:$S_GET.sel_site}>selected<{/if}>><{$v}></option>
+        <{/foreach}>
+      </select>
+      </div>
+
+
+      <div class="form-group">
+        <label for="sel_createddate_start"><{$LANG.front.aff_daily.a0}></label>
+        <select id="select_createddate_quick">
+          <option value=""><{$LANG.front.aff_daily.a1}></option>
+          <option value="t"><{$LANG.front.aff_daily.a2}></option>
+          <option value="y"><{$LANG.front.aff_daily.a3}></option>
+          <option value="l7d"><{$LANG.front.aff_daily.a4}></option>
+          <option value="l14d"><{$LANG.front.aff_daily.a5}></option>
+          <option value="l30d"><{$LANG.front.aff_daily.a6}></option>
+          <option value="l60d"><{$LANG.front.aff_daily.a7}></option>
+          <option value="mtd"><{$LANG.front.aff_daily.a8}></option>
+          <option value="ytd"><{$LANG.front.aff_daily.a9}></option>
+        </select><br>
+        <input type="text" name="sel_createddate_start" class="form-control" id="sel_createddate_start" value="<{$S_GET.sel_createddate_start}>">
+
+      </div>
+
+      <div class="form-group">
+        <label for="sel_createddate_end"><{$LANG.front.aff_daily.a10}></label><br>
+        <input type="text" name="sel_createddate_end" class="form-control" id="sel_createddate_end" value="<{$S_GET.sel_createddate_end}>">
+      </div>
+      
+      <!-- <div class="form-group">
+        <label for="sel_updateddate_start">Updated From</label>
+        <select id="select_updateddate_quick">
+          <option value="">quick select</option>
+          <option value="t">Today</option>
+          <option value="y">Yesterday</option>
+          <option value="l7d">Last 7 days</option>
+          <option value="l14d">Last 14 days</option>
+          <option value="l30d">Last 30 days</option>
+          <option value="l60d">Last 60 days</option>
+          <option value="mtd">Month to date</option>
+          <option value="ytd">Year to date</option>
+        </select><br>
+        <input type="text" name="sel_updateddate_start" class="form-control" id="sel_updateddate_start" value="<{$S_GET.sel_updateddate_start}>">
+      </div>
+      
+      <div class="form-group">
+        <label for="sel_updateddate_end">Updated To</label><br>
+        <input type="text" name="sel_updateddate_end" class="form-control" id="sel_updateddate_end" value="<{$S_GET.sel_updateddate_end}>">
+      </div> -->
+
+
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-default"><{$LANG.front.aff_daily.a11}></button>
+      </div>
+
+    </form>
+  </div>
+  <div class="col-sm-10 col-md-10" >
+    <h2 style="border-bottom:1px solid #eee;padding-bottom: 10px;"><{$LANG.front.aff_daily.a12}></h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><{$LANG.front.aff_daily.a13}></th>
+          <th><{$LANG.front.aff_daily.a14}></th>
+          <th><{$LANG.front.aff_daily.a15}></th>
+          <th><{$LANG.front.aff_daily.a16}></th>
+          <th><{$LANG.front.aff_daily.a17}></th>
+          <th><{$LANG.front.aff_daily.a18}></th>
+          <th><{$LANG.front.aff_daily.a19}></th>
+          <th><{$LANG.front.aff_daily.a20}></th>
+        </tr>
+        <tr>
+          <th><{$LANG.front.aff_daily.a21}></th>
+          <th><{$total_data.total_ordernum|number_format:'0':'.':','}></th>
+          <th><{$total_data.total_sales|number_format:'2':'.':','}></th>
+          <th><{$total_data.total_commission|number_format:'2':'.':','}></th>
+          <th><{if $total_data.total_sales > 0 || $total_data.total_sales < 0}>
+              <{assign var='commrate' value=$total_data.total_commission/$total_data.total_sales*100|number_format:'2':'.':','}>
+              <{$commrate}>%
+              <{/if}>
+          </th>
+          <th><{if $total_data.total_ordernum > 0 || $total_data.total_ordernum < 0}>
+              <{assign var='avgsales' value=$total_data.total_sales/$total_data.total_ordernum|number_format:'2':'.':','}>
+              <{$avgsales}>
+              <{/if}>
+          </th>
+          <th><{if $total_data.total_ordernum > 0 || $total_data.total_ordernum < 0}>
+              <{assign var='avgcomm' value=$total_data.total_commission/$total_data.total_ordernum|number_format:'2':'.':','}>
+              <{$avgcomm}>
+              <{/if}>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <{foreach from=$tran_data item=d}>
+        <tr>
+          <td><{$d.Createddate}></td>
+          <td><{$d.c|number_format:'0':'.':','}></td>
+          <td><{$d.Sales|number_format:'2':'.':','}></td>
+          <td><{$d.Commission|number_format:'2':'.':','}></td>
+          <td><{if $d.Sales > 0 || $d.Sales < 0}>
+              <{assign var='commrate' value=$d.Commission/$d.Sales*100|number_format:'2':'.':','}>
+              <{$commrate}>%
+              <{/if}>
+          </td>
+          <td><{if $d.c > 0 || $d.c < 0}>
+              <{assign var='avgsales' value=$d.Sales/$d.c|number_format:'2':'.':','}>
+              <{$avgsales}>
+              <{/if}>
+          </td>
+          <td><{if $d.c > 0 || $d.c < 0}>
+              <{assign var='avgcomm' value=$d.Commission/$d.c|number_format:'2':'.':','}>
+              <{$avgcomm}>
+              <{/if}>
+          </td>
+          <td></td>
+        </tr>
+        <{/foreach}>
+      </tbody>
+    </table>
+
+    <{$page_html}>
+  </div>
+</div>
+
+
+
+<script>
+    $('#sel_createddate_end').datetimepicker({
+        format:'yyyy-mm-dd',
+        todayBtn: true,
+        autoclose: 1,
+        viewSelect: 2
+    });
+    $('#sel_createddate_start').datetimepicker({
+        format:'yyyy-mm-dd',
+        todayBtn: true,
+        autoclose: 1,
+        viewSelect: 2
+    });
+    $('#sel_updateddate_end').datetimepicker({
+        format:'yyyy-mm-dd',
+        todayBtn: true,
+        autoclose: 1,
+        viewSelect: 2
+    });
+    $('#sel_updateddate_start').datetimepicker({
+        format:'yyyy-mm-dd',
+        todayBtn: true,
+        autoclose: 1,
+        viewSelect: 2
+    });
+    $('#select_createddate_quick').change(function(){
+      var mydate = new Date();
+      var y = mydate.getFullYear();
+      var m = parseInt(mydate.getMonth()) + 1;
+      var d = mydate.getDate();
+      if(m < 10)
+        m = '0'+m;
+      if(d < 10)
+        d = '0'+d;
+
+      var today = y+'-'+m+'-'+d;
+      var tar = $(this).val();
+      switch(tar){
+        case '':
+          $('#sel_createddate_start').val('');
+          $('#sel_createddate_end').val('');
+        break;
+        case 't':
+          $('#sel_createddate_start').val(today);
+          $('#sel_createddate_end').val(today);
+        break;
+        case 'y':
+          var mydate = new Date();
+          mydate.setDate(mydate.getDate() - 1);
+          var y = mydate.getFullYear();
+          var m = parseInt(mydate.getMonth()) + 1;
+          var d = mydate.getDate();
+          if(m < 10)
+            m = '0'+m;
+          if(d < 10)
+            d = '0'+d;
+
+          var yesterday = y+'-'+m+'-'+d;
+          $('#sel_createddate_start').val(yesterday);
+          $('#sel_createddate_end').val(yesterday);
+        break;
+        case 'l7d':
+          var mydate = new Date();
+          mydate.setDate(mydate.getDate() - 7);
+          var y = mydate.getFullYear();
+          var m = parseInt(mydate.getMonth()) + 1;
+          var d = mydate.getDate();
+          if(m < 10)
+            m = '0'+m;
+          if(d < 10)
+            d = '0'+d;
+
+          var lastday = y+'-'+m+'-'+d;
+          $('#sel_createddate_start').val(lastday);
+          $('#sel_createddate_end').val(today);
+        break;
+        case 'l14d':
+          var mydate = new Date();
+          mydate.setDate(mydate.getDate() - 14);
+          var y = mydate.getFullYear();
+          var m = parseInt(mydate.getMonth()) + 1;
+          var d = mydate.getDate();
+          if(m < 10)
+            m = '0'+m;
+          if(d < 10)
+            d = '0'+d;
+
+          var lastday = y+'-'+m+'-'+d;
+          $('#sel_createddate_start').val(lastday);
+          $('#sel_createddate_end').val(today);
+        break;
+        case 'l30d':
+          var mydate = new Date();
+          mydate.setDate(mydate.getDate() - 30);
+          var y = mydate.getFullYear();
+          var m = parseInt(mydate.getMonth()) + 1;
+          var d = mydate.getDate();
+          if(m < 10)
+            m = '0'+m;
+          if(d < 10)
+            d = '0'+d;
+
+          var lastday = y+'-'+m+'-'+d;
+          $('#sel_createddate_start').val(lastday);
+          $('#sel_createddate_end').val(today);
+        break;
+        case 'l60d':
+          var mydate = new Date();
+          mydate.setDate(mydate.getDate() - 60);
+          var y = mydate.getFullYear();
+          var m = parseInt(mydate.getMonth()) + 1;
+          var d = mydate.getDate();
+          if(m < 10)
+            m = '0'+m;
+          if(d < 10)
+            d = '0'+d;
+
+          var lastday = y+'-'+m+'-'+d;
+          $('#sel_createddate_start').val(lastday);
+          $('#sel_createddate_end').val(today);
+        break;
+        case 'mtd':
+          var lastday = y+'-'+m+'-01';
+          $('#sel_createddate_start').val(lastday);
+          $('#sel_createddate_end').val(today);
+        break;
+        case 'ytd':
+          var lastday = y+'-01-01';
+          $('#sel_createddate_start').val(lastday);
+          $('#sel_createddate_end').val(today);
+        break;
+      }
+    });
+
+    // $('#select_updateddate_quick').change(function(){
+    //   var mydate = new Date();
+    //   var y = mydate.getFullYear();
+    //   var m = parseInt(mydate.getMonth()) + 1;
+    //   var d = mydate.getDate();
+    //   if(m < 10)
+    //     m = '0'+m;
+    //   if(d < 10)
+    //     d = '0'+d;
+
+    //   var today = y+'-'+m+'-'+d;
+    //   var tar = $(this).val();
+    //   switch(tar){
+    //     case '':
+    //       $('#sel_updateddate_start').val('');
+    //       $('#sel_updateddate_end').val('');
+    //     break;
+    //     case 't':
+    //       $('#sel_updateddate_start').val(today);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //     case 'y':
+    //       var mydate = new Date();
+    //       mydate.setDate(mydate.getDate() - 1);
+    //       var y = mydate.getFullYear();
+    //       var m = parseInt(mydate.getMonth()) + 1;
+    //       var d = mydate.getDate();
+    //       if(m < 10)
+    //         m = '0'+m;
+    //       if(d < 10)
+    //         d = '0'+d;
+
+    //       var yesterday = y+'-'+m+'-'+d;
+    //       $('#sel_updateddate_start').val(yesterday);
+    //       $('#sel_updateddate_end').val(yesterday);
+    //     break;
+    //     case 'l7d':
+    //       var mydate = new Date();
+    //       mydate.setDate(mydate.getDate() - 7);
+    //       var y = mydate.getFullYear();
+    //       var m = parseInt(mydate.getMonth()) + 1;
+    //       var d = mydate.getDate();
+    //       if(m < 10)
+    //         m = '0'+m;
+    //       if(d < 10)
+    //         d = '0'+d;
+
+    //       var lastday = y+'-'+m+'-'+d;
+    //       $('#sel_updateddate_start').val(lastday);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //     case 'l14d':
+    //       var mydate = new Date();
+    //       mydate.setDate(mydate.getDate() - 14);
+    //       var y = mydate.getFullYear();
+    //       var m = parseInt(mydate.getMonth()) + 1;
+    //       var d = mydate.getDate();
+    //       if(m < 10)
+    //         m = '0'+m;
+    //       if(d < 10)
+    //         d = '0'+d;
+
+    //       var lastday = y+'-'+m+'-'+d;
+    //       $('#sel_updateddate_start').val(lastday);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //     case 'l30d':
+    //       var mydate = new Date();
+    //       mydate.setDate(mydate.getDate() - 30);
+    //       var y = mydate.getFullYear();
+    //       var m = parseInt(mydate.getMonth()) + 1;
+    //       var d = mydate.getDate();
+    //       if(m < 10)
+    //         m = '0'+m;
+    //       if(d < 10)
+    //         d = '0'+d;
+
+    //       var lastday = y+'-'+m+'-'+d;
+    //       $('#sel_updateddate_start').val(lastday);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //     case 'l60d':
+    //       var mydate = new Date();
+    //       mydate.setDate(mydate.getDate() - 60);
+    //       var y = mydate.getFullYear();
+    //       var m = parseInt(mydate.getMonth()) + 1;
+    //       var d = mydate.getDate();
+    //       if(m < 10)
+    //         m = '0'+m;
+    //       if(d < 10)
+    //         d = '0'+d;
+
+    //       var lastday = y+'-'+m+'-'+d;
+    //       $('#sel_updateddate_start').val(lastday);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //     case 'mtd':
+    //       var lastday = y+'-'+m+'-01';
+    //       $('#sel_updateddate_start').val(lastday);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //     case 'ytd':
+    //       var lastday = y+'-01-01';
+    //       $('#sel_updateddate_start').val(lastday);
+    //       $('#sel_updateddate_end').val(today);
+    //     break;
+    //   }
+    // });
+</script>
+<{include file="block_footer.html"}>

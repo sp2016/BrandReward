@@ -1,0 +1,45 @@
+.has-error label{color: #9B410E}
+.remodal-wrapper{
+    position: fixed;
+    z-index: 10000;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: auto;
+    text-align: center;
+    padding: 10px 10px 0;
+}
+.remodal-overlay{
+    background: rgba(43, 46, 56, 0.9);
+    position: fixed;
+    z-index: 9999;
+    top: -5000px;
+    right: -5000px;
+    bottom: -5000px;
+    left: -5000px;
+}
+.tip{
+    width: 1140px;
+    margin: 0 auto;
+    padding: 50px 0;
+    color: #666666;
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+}
+.b-primary {
+    color: #fff;
+    background-color: #627491;
+    border-color: #b7b8cd;
+}
+.b-active a{
+    color: #fff;
+    background-color: #627491;
+}
+
+.navbar-nav>li:hover a{ background-color: #b7b8cd}
+.navbar-nav>li:hover .dropdown-menu>li>a{background-color: 	#FFF}
+.dropdown-menu>li>a,.dropdown-menu>li:hover a {background-color: 	#FFF}
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover{ background-color: #b7b8cd}
+.dropdown-menu>li:hover a{color: #b7b8cd}

@@ -1,0 +1,154 @@
+<div class="panel-group" id="accordion" xmlns="http://www.w3.org/1999/html">
+    <{foreach from=$list key=key item=block}>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion"
+                   href="#collapse<{$key}>">
+                    <span class="label label-success"><{$block.domainName}></span>
+                </a>
+            </h4>
+        </div>
+        <div id="collapse<{$key}>" class="panel-collapse collapse <{if $key < 1}>in<{/if}>">
+            <div class="panel-body">
+
+
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th colspan="1">Country Code</th>
+                        <th colspan="4">Keyword</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <{foreach from=$block.semKeywords key=countryCode item=sems}>
+                    <{foreach from=$sems.list.data item=sem}>
+                    <tr>
+                        <td colspan="1"><{$countryCode}></td>
+                        <td colspan="4"><{$sem.name|default:'<br/>'}></td>
+
+                    </tr>
+                    <{/foreach}>
+                    <{/foreach}>
+                    </tbody>
+
+                    <thead>
+                    <tr>
+                        <th>Avg CPC</th>
+                        <th>Search Volume</th>
+                        <th>First Seen</th>
+                        <th>Last Seen</th>
+                        <th>Days Seen</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <{foreach from=$block.semKeywords key=countryCode item=sems}>
+                    <{foreach from=$sems.list.data item=sem}>
+                    <tr>
+                        <td colspan="1"><{$sem.avg_cpc|default:'<br/>'}></td>
+                        <td><{$sem.monthly_search_volume|default:'<br/>'}></td>
+                        <td><{$sem.first_seen|date_format:"%Y-%m-%d"|default:'<br/>'}></td>
+                        <td><{$sem.last_seen|date_format:"%Y-%m-%d"|default:'<br/>'}></td>
+                        <td><{$sem.days_seen|default:'<br/>'}></td>
+                    </tr>
+                    <{/foreach}>
+                    <{/foreach}>
+                    </tbody>
+                </table>
+
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th colspan="1">Country Code</th>
+                        <th colspan="3">TextAd</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <{foreach from=$block.semRTextAds key=countryCode item=textads}>
+                    <{foreach from=$textads.list.data item=textad}>
+                    <tr>
+                        <td colspan="1"><{$countryCode}></td>
+                        <td colspan="3"><{$textad.title}><br/><{$textad.body}></td>
+
+                    </tr>
+                    <{/foreach}>
+                    <{/foreach}>
+                    </tbody>
+                    <thead>
+                    <tr>
+                        <th colspan="1">Avg Position</th>
+                        <th colspan="1">First Seen</th>
+                        <th colspan="1">Last Seen</th>
+                        <th colspan="1">Days Seen</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <{foreach from=$block.semRTextAds key=countryCode item=textads}>
+                    <{foreach from=$textads.list.data item=textad}>
+                    <tr>
+                        <td colspan="1"><{$textad.avg_position}></td>
+                        <td colspan="1"><{$textad.first_seen|date_format:"%Y-%m-%d"|default:'<br/>'}></td>
+                        <td colspan="1"><{$textad.last_seen|date_format:"%Y-%m-%d"|default:'<br/>'}></td>
+                        <td colspan="1"><{$textad.days_seen|default:'<br/>'}></td>
+                    </tr>
+                    <{/foreach}>
+                    <{/foreach}>
+                    </thead>
+                </table>
+
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Registrar</th>
+                        <th colspan="2">Registrant Contact</th>
+                        <th>Admin Contact</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <{foreach from=$block.whois.data item=whois}>
+                    <tr>
+                        <td ><{$whois.data.registrar|default:'<br/>'}></td>
+                        <td colspan="2"><{$whois.data.registrant|default:'<br/>'}></td>
+                        <td ><{$whois.data.admin_contact|default:'<br/>'}></td>
+                    </tr>
+                    <{/foreach}>
+                    </tbody>
+                    <thead>
+                    <tr>
+                        <th>Technical Contact</th>
+                        <th>Created</th>
+                        <th>Updated</th>
+                        <th>Expires</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <{foreach from=$block.whois.data item=whois}>
+                    <tr>
+                        <td><{$whois.data.tech_contact|default:'<br/>'}></td>
+                        <td><{$whois.data.created|default:'<br/>'}></td>
+                        <td><{$whois.data.updated|default:'<br/>'}></td>
+                        <td><{$whois.data.expires|default:'<br/>'}></td>
+                    </tr>
+                    <{/foreach}>
+                    </tbody>
+                    <thead>
+                    <tr>
+                        <th colspan="4">Name Servers</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <{foreach from=$block.whois.data item=whois}>
+                    <tr>
+                        <td colspan="4"><{'<br/>'|implode:$whois.data.nameservers|default:'<br/>'}></td>
+                    </tr>
+                    <{/foreach}>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <{/foreach}>
+</div>

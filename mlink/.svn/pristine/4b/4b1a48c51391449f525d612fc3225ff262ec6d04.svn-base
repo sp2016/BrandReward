@@ -1,0 +1,219 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style type="text/css"> 
+.table>tbody>tr>td,.table>tbody>tr>th,.table>tfoot>tr>td,.table>tfoot>tr>th,.table>thead>tr>td,.table>thead>tr>th
+{
+ vertical-align:middle;
+}
+th{
+  text-align: left;
+}
+hr
+{
+  position:absolute;
+  float:left;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  width:150px;
+  border:1px solid;
+}
+xmp
+{
+	  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+</style>
+<div>
+  <div style="margin-top:30px; width:100%">
+    <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+    <div class="row" style="padding:20px 0;">
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Search</div>
+          <div class="panel-body" >
+            <form >
+              <input type="hidden" name="p" value="1" />
+            <div class="col-lg-12 form-inline">
+              <div class="form-group ">
+                Name:<input type="text" name="name" class="form-control tip" id="name" value="<{$search.name}>" placeholder="name">
+                Domain:<input type="text" name="domain" class="form-control" id="domain" value="<{$search.domain}>" placeholder="domain">
+                Transaction Crawled:
+                <select name="statsReportCrawled" id="statsReportCrawled" class="form-control">
+                  <option value="">ALL</option>
+                  <option value="YES">YES</option>
+                  <option value="NO" <{if $search.statsReportCrawled eq "NO"}>selected<{/if}>>NO</option>
+                  <option value="Can Not Crawl" <{if $search.statsReportCrawled eq "Can Not Crawl"}>selected<{/if}>>Can Not Crawl</option>
+                  <option value="No Need to Crawl" <{if $search.statsReportCrawled eq "No Need to Crawl"}>selected<{/if}>>No Need to Crawl</option>
+                  <option value="Request to Crawl" <{if $search.statsReportCrawled eq "Request to Crawl"}>selected<{/if}>>Request to Crawl</option>
+                </select> 
+
+                ProgramCrawled:
+                <select name="programCrawled" id="programCrawled" class="form-control">
+                  <option value="">ALL</option>
+                  <option value="YES" <{if $search.programCrawled eq "YES"}>selected<{/if}>>YES</option>
+                  <option value="NO" <{if $search.programCrawled eq "NO"}>selected<{/if}>>NO</option>
+                  <option value="Can Not Crawl" <{if $search.programCrawled eq "Can Not Crawl"}>selected<{/if}>>Can Not Crawl</option>
+                  <option value="No Need to Crawl" <{if $search.programCrawled eq "No Need to Crawl"}>selected<{/if}>>No Need to Crawl</option>
+                  <option value="Request to Crawl" <{if $search.programCrawled eq "Request to Crawl"}>selected<{/if}>>Request to Crawl</option>
+                </select> 
+
+                IsActive:
+                <select name="isActive" id="isActive" class="form-control">
+                  <option value="">ALL</option>		
+                  <option value="YES" <{if $search.isActive eq "YES"}>selected<{/if}>>YES</option>
+                  <option value="NO" <{if $search.isActive eq "NO"}>selected<{/if}>>NO</option>
+                </select> 
+  			
+                Revenue Account:
+                <select name="revenueAccount" id="isActive" class="form-control">
+                <option value="">ALL</option>
+                <{html_options options=$fin_rev_acc_list selected=$search.revenueAccount}>       
+                </select>
+
+                Type:
+                <select name="isInHouse" id="isInHouse" class="form-control">
+                  <option value="">ALL</option>
+                  <option value="YES" <{if $search.isInHouse eq "YES"}>selected<{/if}>>InHouse</option>
+                  <option value="NO" <{if $search.isInHouse eq "NO"}>selected<{/if}>>NetWork</option>
+                </select> 
+
+                <button type="submit" class="btn  btn-primary">Search</button>
+              </div>
+            </div>
+            
+          </form>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Result</div>
+          <div class="panel-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Name(Short)</th>
+                  <th>Domain
+                  <hr/><br/>
+                  Account
+                  <hr/><br/>
+                  Password
+                  </th>
+                  <th>Type</th>
+                  <th>Revenue</br>Account</th>
+                  <th>Revenue</br>Received</th>
+                  <th>Stats</br>Report</br>Crawled</th>
+                  <th>Program</br>Crawled</th>
+                  <th>30 Days</br>Commission</th>
+                  <th>30~60 Days</br>Commission</th>
+                  <th>operation</th>
+                   </tr>
+              </thead>
+              <{foreach from=$AffList item=aff}>
+              <{assign var="affid" value=$aff.Id}>
+                <tr>
+                  <td><{$aff.Id}></td>
+                  <td><{$aff.Name}>  (<{$aff.ShortName}>)</td>
+                  <td style="word-break:break-all;">[D]<a href="<{$aff.Domain}>" target="domain"><{$aff.Domain}></a><br/>[A]<{$aff.Account}><br/>[P]<{$aff.Password}></td>
+                  <td><{if $aff.IsInHouse eq "YES"}><font color="orange">InHouse</font><{else}><font color="blue">NetWork</font><{/if}></td>
+                  <td><{$fin_rev_acc_list[$aff.RevenueAccount]}></td>
+                  <td><{if $aff.RevenueReceived}><b style="color:green;">YES</b><{else}><b style="color:red;">NO</b><{/if}></td>
+                  <td><{if $aff.StatsReportCrawled == 'YES'}><b style="color:green;">YES</b><{else}><b style="color:red;">NO</b><{/if}></td>
+                  <td><{if $aff.ProgramCrawled == 'YES'}><b style="color:green;">YES</b><{else}><b style="color:red;">NO</b><{/if}></td>
+                  <td><{if $affComm30.$affid}><b <{if !$affComm60.$affid || $affComm60.$affid < $affComm30.$affid}>style="color:green;"<{else}>style="color:red;"<{/if}>>$<{$affComm30.$affid|number_format:'2':'.':','}><{else}><b>$0<{/if}></b></td>
+                  <td><b>$<{if $affComm60.$affid}><{$affComm60.$affid|number_format:'2':'.':','}><{else}>0<{/if}></b></td>
+                  <td>
+                  [<a id="edit_<{$aff.Id}>" href="edit_affiliates.php?action=edit&id=<{$aff.Id}>" style="cursor: pointer"/>Edit</a>]<br/>
+                  [<a id="view_<{$aff.Id}>" href="edit_affiliates.php?action=view&id=<{$aff.Id}>"  style="cursor: pointer"/>View</a>]
+                  </td>
+                </tr>
+              <{/foreach}>
+            </table>
+       
+        </div>
+      </div>
+
+     <div style="width:100%;">
+           <div style="float:left"><{$pageHtml}></div>
+               <div  class="form-inline" style="padding: 20px;float:left;margin-left:5px;">
+         <input type="text" class="form-control" id="skip" value="">
+         <input type="button" class="form-control" id="submit_skip" value="跳转">
+      </div>
+            </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+$("#submit_skip").click(function(){
+	var skip=$('#skip').val();
+	window.location.href="b_aff_aff.php?&p="+skip;
+});
+
+$('#change_password').keyup(function(){                  //接触save_change按钮的禁用
+	var password = $('#change_password').val();
+	if(password.length>=8){
+		$("#save_change").removeAttr("disabled");
+	}
+	
+});
+
+//tip搜索菜单自动提示功能
+
+(function(){
+	  $('.tip').keyup(function(){//keyup是jquery函数，表示松开键盘
+	    var ipt = this;
+	    var keywords = $(this).val();
+	    var url = '<{$smarty.const.BASE_URL}>/process.php';
+	    var ajaxdata = 'act=tip_wf&keywords='+keywords;
+
+	    if(!keywords.match(/[^\s]{1,}/)){//排除空白符，即空白符不算字符
+	      return;
+	    }
+
+	    $.ajax({
+	      type:"post",
+	      url:"<{$smarty.const.BASE_URL}>/process.php",
+	      data:ajaxdata,
+	      success: function(req){
+	        var html_tip = '<ul class="dropdown-menu" >';
+	        var arr = req.split('|');
+	        for(var i in arr){
+	          html_tip = html_tip+'<li><a href="javascript:void(0);">'+arr[i]+'</a></li>';
+	        }
+	        var html_tip = html_tip+'</ul>';
+
+
+	        if($(ipt).parent().find('ul')){
+	          $(ipt).parent().find('ul').remove();
+	        }
+
+	        $(ipt).parent().append(html_tip);
+
+	        load_tip($(ipt).parent().find('ul'));
+	      }
+	    });
+	  });
+	})();
+
+	function load_tip(obj){
+	  $(obj).css('display','block');  //jquery的css()函数，相当于display:block
+	  $(obj).find('a').click(function(){
+		 //console.info($($(obj).parent().find("input")[0]));
+		 
+		 $($(obj).parent().find("input")[0]).val($(this).html());	    
+		  $(obj).remove();
+	  });
+	}
+
+	//点击add按钮，跳转到新页面
+	$("#add").click(function(){
+		window.open("add_affiliates.php");
+	});
+
+</script>
+
+<{include file="b_block_footer.html"}>

@@ -1,0 +1,193 @@
+<div class="container" style="margin-top:30px;width:98%">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Add Form
+                </h3>
+            </div>
+            <div class="panel-body">
+                <form id="mform" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="alias" class="col-sm-2 control-label">Merge To Store</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="alias" name="alias" placeholder="Store Name" value="<{$info.alias}>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="merged" class="col-sm-2 control-label">Merged Stores</label>
+                        <div class="col-sm-10">
+                            <input type="text" data-id='0' class="form-control" id="merged" name="merged" placeholder="Store Name" value="<{$info.Stores}>">
+                        </div>
+                    </div>
+                    <div class="form-group" id="ddiv" style="display: none">
+                        <label for="merged" class="col-sm-2 control-label ">Store Domains</label>
+                        <div class="col-sm-10 ddct">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-3">
+                            <button type="button" class="btn btn-default merge">Merge</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="application/javascript">
+    $('.merge').on('click', function () {
+        var data = new FormData($('#mform')[0]);
+        data.append('act','doAdd');
+        data.append('merged',$('#merged').data('id'));
+        $.ajax({
+            type: "post",
+            url: "b_store_merge.php",
+            data: data,
+            cache: false,
+            processData: false,
+            contentType: false,
+            async: false,
+            success: function (response) {
+                if (response != 0) {
+                    alert('Edit Success!')
+                    location = '/b_store_merge.php';
+                } else {
+                    alert('Edit Failed!')
+                }
+            }
+        });
+    });
+    $('#alias').keyup(function(){
+        var tbj = this;
+        var keywords = $(this).val();
+        var data = {
+            act : 'search',
+            keywords : keywords
+        }
+        if(!keywords.match(/[^\s]{3,}/)){
+            return;
+        }
+        $.ajax({
+            type:"post",
+            url:"<{$smarty.const.BASE_URL}>/b_store_merge.php",
+            data:data,
+            success: function(response){
+                var html = '<ul class="dropdown-menu" >';
+                var array = response.split('|');
+                for(var i in array){
+                    var store = array[i];
+                    var stores = store.split('.');
+                    html = html+'<li><a href="javascript:void(0);" data-id="' + stores[0] + '">'+stores[1]+'</a></li>';
+                }
+                var html = html+'</ul>';
+                if($(tbj).parent().find('ul')){
+                    $(tbj).parent().find('ul').remove();
+                }
+                $(tbj).parent().append(html);
+                loadTip2($(tbj).parent().find('ul'));
+            }
+        });
+    });
+    function loadTip2(obj){
+        $(obj).css('display','block');
+        $(obj).find('a').click(function(){
+            $(obj).prev().val($(this).text());
+            $(obj).remove();
+        });
+    }
+
+
+    $('#merged').keyup(function(){
+        $('div.ddct').empty();
+        $('div#ddiv').hide();
+        $('button.merge').attr("disabled", true);
+        var tbj = this;
+        var keywords = $(this).val();
+        var data = {
+            act : 'search',
+            keywords : keywords
+        }
+        if(!keywords.match(/[^\s]{3,}/)){
+            return;
+        }
+        $.ajax({
+            type:"post",
+            url:"<{$smarty.const.BASE_URL}>/b_store_merge.php",
+            data:data,
+            success: function(response){
+                var html = '<ul class="dropdown-menu" >';
+                var array = response.split('|');
+                for(var i in array){
+                    var store = array[i];
+                    var stores = store.split('.');
+                    html = html+'<li><a href="javascript:void(0);" data-id="' + stores[0] + '">'+stores[1]+'</a></li>';
+                }
+                var html = html+'</ul>';
+                if($(tbj).parent().find('ul')){
+                    $(tbj).parent().find('ul').remove();
+                }
+                $(tbj).parent().append(html);
+                loadTip($(tbj).parent().find('ul'));
+            }
+        });
+    });
+    function loadTip(obj){
+        $(obj).css('display','block');
+        $(obj).find('a').click(function(){
+            $(obj).prev().val($(this).text());
+            $(obj).prev().attr('data-id',$(this).data('id'));
+            $(obj).remove();
+
+            var ddata = {
+                act : 'searchDomain',
+                keywords : $(this).data('id')
+            };
+            $.ajax({
+                type:"post",
+                url:"<{$smarty.const.BASE_URL}>/b_store_merge.php",
+                data:ddata,
+                success: function(response)
+                {
+                    if (response != '') {
+                        var html = '<a href="javascript:void(0);" style="text-decoration:none;" onclick="select_opt(1)"><span class="label label-primary sall" >select all</span></a>';
+                        html = html + '&nbsp;<a href="javascript:void(0);" style="text-decoration:none;" onclick="select_opt(0)"><span class="label label-success call" ">reset</span></a>';
+                        var array = response.split('|');
+                        for(var i in array){
+                            if(i%3 === 0 ){
+                                html = html+'<div class="row">'
+                            }
+                            var domain =  array[i];
+                            var domains = domain.split('$');
+                            html = html+' <div class="col-sm-4"><div class="checkbox">';
+                            html = html+'<label><input name="domains[]" type="checkbox" value="'+domains[0]+'">'+domains[1]+'</label>';
+                            html = html+'</div></div>';
+                            if(i%3 === 2 ){
+                                html = html+' </div>'
+                            }
+                        }
+                        $('div.ddct').empty();
+                        $('div.ddct').append(html);
+                        $('div#ddiv').show();
+                        $('button.merge').attr("disabled", false);
+                    } else {
+                        alert('NO VALID DOMAINS!');
+                        $('button.merge').attr("disabled", true);
+                    }
+
+                }
+            })
+        });
+    }
+    function select_opt(val) {
+        switch (val) {
+            case 1:
+                $('.checkbox input').prop('checked',true);
+                break;
+            case 0:
+                $('.checkbox input').prop('checked',false);
+                break;
+        }
+    }
+</script>

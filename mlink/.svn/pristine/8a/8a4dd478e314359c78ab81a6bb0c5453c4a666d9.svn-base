@@ -1,0 +1,52 @@
+<?php
+include_once('conf_ini.php');
+include_once(INCLUDE_ROOT.'init.php');
+$objDomain = new Domain;
+if(isset($_POST['act']) && $_POST['act'] == 'save'){
+    $objMerchantExt = new MerchantExt();
+    $data = array();
+    $data['ID'] = $_POST['storeid'];
+    $data['CategoryId'] = $_POST['categoryid'];
+    $data['NameOptimized'] = $_POST['NameOptimized'];
+    $data['PPC'] = $_POST['ppc'];
+    $data['Description'] = $_POST['desc'];
+    $objMerchantExt->saveAdvertiser($data);
+    exit();
+}
+
+$affname = $objDomain->getstoreaff($_POST['id']);
+
+
+$DomainArr = $objDomain->showAdvertiserDomainList($_POST);
+$DomainList = $DomainArr['data'];
+$store_rows = $objDomain->getStoreListPage(array('storeid'=>array($_POST['id']),'datatype'=>1),0,1);
+$store = $store_rows['data'][0];
+$store['category_id_list'] = explode(',',$store['CategoryId']);
+if(isset($store['LogoName']) && !empty($store['LogoName']) && strstr($store['LogoName'],',')){
+    $store['LogoName'] = explode(',',$store['LogoName'])[0];
+}
+
+$ppc_option = array('0'=>'0--UNKNOWN',
+                    '1'=>'1--Google Restricted',
+                    '2'=>'2--Google + Bing Restricted',
+                    '3'=>'3--PPC Allowed',
+                    '4'=>'4--100% Restricted');
+
+$statis = new Statis();
+$category = $statis->getCategory();
+
+$objTpl->assign('category', $category);
+$objTpl->assign('affname', $affname);
+$objTpl->assign('ppc_option', $ppc_option);
+$objTpl->assign('store', $store);
+$objTpl->assign('sid', $_POST['id']);
+$objTpl->assign('search', $_POST);
+$objTpl->assign('domains', $DomainList);
+$objTpl->assign('sys_header', $sys_header);
+if($_POST['type'] == 2){
+    echo $objTpl->fetch('b_merchant_domains2.html');
+}else{
+    echo $objTpl->fetch('b_merchant_domains1.html');
+}
+
+?>

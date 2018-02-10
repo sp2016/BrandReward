@@ -1,0 +1,109 @@
+<{include file="front_block_header.html"}>
+<{include file="front_block_banner.html"}>
+<div class="banner help_banner">
+    <span></span>
+    <!-- <img src="img/help_pic.jpg" /> -->
+    <div class="banner_text">
+        <div class="main">
+            <h5>Frequently Asked Questions</h5>
+            <form name="search" method="get"  class="search_form search">
+                <input placeholder="search your questions" type="text" name="keyword" class="val">
+                <button type="button" class="search_button"></button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="top">
+<div class="faq">
+    <div class="main">
+        <h3>General FAQ</h3>
+        <ul>
+            <li>
+                <p class='q'>Q: What is Monetization ?</p>
+                <p class='a'>A: Monetization allows the owner of digital content, whether it's a social media influencer, website, blog, digital editorial, app, review site or platform, to have the ability to earn money.</p>
+            </li>
+            <li>
+                <p class='q'>Q: What is the difference between a Publisher and Advertiser?</p>
+                <p class='a'>A: <a href="<{$smarty.const.BASE_URL}>/publisher.php">Publishers</a> are digital content producers that create written, visual or audible content to an online audience while <a href="<{$smarty.const.BASE_URL}>/advertiser.php">Advertisers</a> provide goods or services to be bought online.
+                </p>
+            </li>
+            <li>
+                <p class='q'>Q: How does Brandreward work ?</p>
+                <p class='a'>A: Brandreward is a digital monetization solution that allows publishers to virtually connect and earn money from advertisers through content collaboration via Brandreward's system. </p>
+            </li>
+        </ul>
+        <a class="show_more" href="<{$smarty.const.BASE_URL}>/help.php?type=all">show more</a>
+    </div>
+</div>
+<div class="faq">
+    <div class="main">
+        <h3>Publisher FAQ</h3>
+        <ul>
+            <li>
+                <p class='q'>Q: What is an affiliate link? How do I make money ?</p>
+                <p class='a'>A: Affiliate marketing is the idea of tracking each successful advertiser sale (or action) that is made from a publisher's online audience and having the advertiser pay forward a commission to the publisher. The publisher earns money for referring across a successful sale or action to the advertiser.</p>
+            </li>
+            <li>
+                <p class='q'>Q: How does Brandreward differ from other monetization solutions ?</p>
+                <p class='a'>A: Brandreward's technology offers a variety of monetization solutions that a dedicated account manager customizes for effective results. There is a low threshold for payout, access to a huge range of over 35,000 global brands in over 25 different industry verticals and an ever increasing range of monetization tools to help create and improve your content.
+                </p>
+            </li>
+            <li>
+                <p class='q'>Q: How do I work with Brandreward ?</p>
+                <p class='a'>A: Register your free account <a href="<{$smarty.const.BASE_URL}>/signup.php?">here</a> and wait for a dedicated account manager to get in touch to activate and get your digital content connected to the Brandreward System.
+                </p>
+            </li>
+            <li>
+                <p class='q'>Q: How to activate my account ?</p>
+                <p class='a'>A: A dedicated account manager will be in touch and activate your account. You will need to connect your content site or individual links to Brandreward so we can track and follow-up that our partner advertisers pay you commission on all successful sales. We will recommend some brands to you, but you are also welcome to look through your Publisher Dashboard (P-Dash) at your advertiser list.</p>
+            </li>
+        </ul>
+        <a class="show_more" href="<{$smarty.const.BASE_URL}>/help.php?type=all">show more</a>
+    </div>
+</div>
+<div class="faq">
+    <div class="main">
+        <h3>Advertiser FAQ</h3>
+        <ul>
+            <li>
+                <p class='q'>Q: What type of brands do you accept ?</p>
+                <p class='a'>A: Brandreward seeks to offer both advertisers and publishers real value, so we accept most brand requests to join our system. We do not accept any brands that have sexually explicit, child endangering, violent, harassment-related, hate speech, gambling, drugs or any other illegal activity-related content or purpose.
+                </p>
+            </li>
+            <li>
+                <p class='q'>Q: Why should I work with Brandreward ?</p>
+                <p class='a'>A: Reach a new range of content providers and influencers from around the world to drive brand awareness, traffic and conversions. Our system is created to push relevant monetization options for publishers so advertisers receive valuable traffic.</p>
+            </li>
+            <li>
+                <p class='q'>Q: How do I start working with Brandreward ?</p>
+                <p class='a'>A: Contact our partnerships team through the form located <a href="<{$smarty.const.BASE_URL}>/contactUs.php">here</a> and one of our Partnerships Team will be in touch shortly to discuss next steps.</p>
+            </li>
+        </ul>
+        <a class="show_more" href="<{$smarty.const.BASE_URL}>/help.php?type=all">show more</a>
+    </div>
+</div>
+</div>
+<div class="faq_more">
+    <img src="img/pub_four_pic.png">
+    <div class="main">
+        <h4>Need more help ?</h4>
+        <a href="<{$smarty.const.BASE_URL}>/contactUs.php">Contact Us </a>
+    </div>
+</div>
+<script type="text/javascript" src="js/jquery.goup.min.js"></script>
+<script>
+
+            $('.search_button').on('click',function(){
+                var val = $('.val').val();
+                if(val == ''){
+                    alert('Please enter content');
+                    return false;
+                }
+                if(!val.match(/[a-zA-Z\d]/)){
+                    alert('Please enter content');
+                    return false;
+                }
+                window.location.href = "<{$smarty.const.BASE_URL}>/help.php?search="+val;
+            })
+</script>
+<{include file="front_block_footer.html"}>

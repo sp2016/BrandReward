@@ -1,0 +1,143 @@
+<{include file="front_block_header.html"}>
+<{include file="front_block_banner.html"}>
+<style>
+  body{
+    background-color: white;
+  }
+</style>
+<div class="banner index_banner">
+  <img src="img/index_banner.jpg">
+  <div class="banner_text">
+    <div class="main">
+      <h2>Votre solution complète de monétisation de contenu</h2>
+      <h5>Brandreward est une plate-forme de service complet pour les fournisseurs de contenu de haute qualité, connecter et intégrer instantanément les marques les plus célèbres</h5>
+      <div class="btn">
+        <a href="<{$smarty.const.BASE_URL}>/signup.php" class="s">Sign Up</a>
+        <a href="javascript: void(0);" class="l" onclick="remodal_login()">Login</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="publishers_one" style="padding-bottom:50px;padding-top:80px">
+  <div class="main">
+    <div class="pub_one_content">
+      <img src="img/pub_one_pic.jpg" />
+      <h4 style="font-size: 2.5em;">Qu’est ce qu’un éditeur?</h4>
+      <p>Chez Brandreward, nous définissons un éditeur comme influenceur digital ou un fournisseur de contenu digital ayant un but clair. Le terme «éditeur» couvre un large éventail de contenu comme blogs, sites web, forums, plates-formes, applications mobiles, applications Web, réseaux de contenu, sites de commerce électronique, sites Web multimédia, influenceur sur les réseaux sociaux et autres sites de contenus. Nous vous fournissons une solution personnalisée afin de vous faire gagner de l'argent à partir de votre contenu. Si vous ne savez pas comment vous définir, posez nous toutes vos questions à travers le formulaire de contact.</p>
+    </div>
+  </div>
+</div>
+<div class="advertiser_brand" style="background-color: white;padding-bottom: 0px;">
+  <div class="main">
+    <!-- <i></i> -->
+    <h3 style="text-align: center;font-size: 2em;">Pourquoi Brandreward ?</h3>
+    <div class="features_display" style="padding-top: 20px;padding-bottom: 0px;background-color:white;">
+      <div class="main">
+        <div>
+          <ul>
+            <li style="background: none">
+              <h4>Basée sur la performance</h4>
+              <p>Brandreward est un service gratuit ou nous nous engageons à vous accompagner et vous aider au mieux pour un maximum de retour sur investissement.</p>
+            </li>
+            <li style="background: none">
+              <h4>Offres et Deals Exclusifs</h4>
+              <p>Brandreward vous donne accès à des offres exclusives chez toutes vos marques. Retrouvez plus de 500 offres journalières.</p>
+            </li>
+          </ul>
+          <ul>
+            <li style="background: none">
+              <h4> 85% de commission</h4>
+              <p>Nous vous reversons 85% de commission</p>
+            </li>
+            <li style="background: none">
+              <h4>Rapport en temps réel</h4>
+              <p>Afin d’optimiser votre retour sur investissement nous croyons qu’un suivis de vos résultats et performance est imporant.</p>
+            </li>
+          </ul>
+          <ul style="margin-bottom: 0px;">
+            <li style="background: none">
+              <h4>Transparence</h4>
+              <p>Nous nous engageons à vous fournir un service transparent</p>
+            </li>
+            <li style="background: none;">
+              <h4>Un account manager dédié</h4>
+              <p>Nous vous accompagnons dans votre stratégie digitale et de contenue afin d’optimiser votre monétisation.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="background-color: white;" class="brand_logo">
+  <div class="m">
+    <ul class="bxslider">
+      <li><img src="img/adver_logo/logo01.png"/></li>
+      <li><img src="img/adver_logo/logo02.png"/></li>
+      <li><img src="img/adver_logo/logo03.png"/></li>
+      <li><img src="img/adver_logo/logo04.png"/></li>
+      <li><img src="img/adver_logo/logo05.png"></li>
+      <li><img src="img/adver_logo/logo06.png"/></li>
+      <li><img src="img/adver_logo/logo07.png"/></li>
+      <li><img src="img/adver_logo/logo08.png"/></li>
+      <li><img src="img/adver_logo/logo09.png"/></li>
+      <li><img src="img/adver_logo/logo10.png"/></li>
+      <li><img src="img/adver_logo/logo11.png"/></li>
+      <li><img src="img/adver_logo/logo12.png"/></li>
+      <li><img src="img/adver_logo/logo13.png"/></li>
+      <li><img src="img/adver_logo/logo14.png"/></li>
+      <li><img src="img/adver_logo/logo15.png"/></li>
+      <li><img src="img/adver_logo/logo16.png"/></li>
+      <li><img src="img/adver_logo/logo17.png"/></li>
+      <li><img src="img/adver_logo/logo18.png"/></li>
+      <li><img src="img/adver_logo/logo19.png"/></li>
+      <li><img src="img/adver_logo/logo20.png"/></li>
+    </ul>
+  </div>
+  <div class="btn" style="padding-bottom: 25px;">
+    <a href="<{$smarty.const.BASE_URL}>/signup.php" class="s">Sign Up</a>
+  </div>
+</div>
+<div class="publishers_one" style="padding-bottom:60px;padding-top:80px">
+  <div class="main">
+    <div class="pub_one_content">
+      <img src="img/pub_one_pic.jpg" />
+      <h4 style="font-size: 2.5em;">Qui est un annonceur ?</h4>
+      <p>
+        Les annonceurs sont des entreprises qui souhaitent accroître leurs résultats sur le net avec l'aide de sites Web de contenu. Avec Brandreward, vous avez l'opportunité d'y parvenir en travaillant avec différent types d’éditeurs de contenue que nous sélectionnons.
+      </p>
+    </div>
+  </div>
+</div>
+<div class="advertiser_method" style="background-color: white;">
+  <div class="main" style="padding-top: 40px;padding-bottom: 40px;">
+    <h3 style="text-align: center;font-size: 2.5em;">Un marketing digitale simplifié</h3>
+    <div class="adver_three_content" style="margin-top: 40px;">
+      <img src="img/adver_three_pic.jpg" style="height: 363px;"/>
+      <h3 style="text-align: right;">Présence en ligne</h3>
+      <p style="text-align: right;">Nous sommes en pleine ère digitale, nous vous permettons d’intégrer un large choix d’éditeurs dans plus de 18 pays en Europe, Amérique du Nord, Asie et Océanie</p>
+      <h3 style="text-align: right;">Best Match</h3>
+      <p style="text-align: right;">Notre technologie nous permet de vous connecter avec les meilleurs éditeurs de contenue en fonction de plus de 20 critères tel que régions, type d’éditeurs, politique de contenue</p>
+      <h3 style="text-align: right;">Innovation, Innovation, Innovation</h3>
+      <p style="text-align: right;margin-bottom: 0px;">Nous croyons à l'innovation! Notre système entier est basé sur des fonctionnalités innovantes. Nous intégrons continuellement les nouvelles technologies afin de fournir la meilleure solution possible pour nos marques et nos éditeurs</p>
+    </div>
+  </div>
+</div>
+<!-- 
+<div style="width: 1200px;margin:0 auto;text-align: center;margin-bottom: 50px;margin-top: 20px;">
+  <a href="mailto:nico@brandreward.com"><img src="img/nico.png"/></a><br/><br/>
+  <h3 style="line-height:1.5em;font-weight: 500;color: #627491;">Bonjour, je m’appelle Nico, n’hésitez pas à me poser toutes vos questions, je serais ravis de vous aider dans votre stratégie de monétisation</h3>
+</div> -->
+
+<script src="js/jquery.bxslider.min.js"></script>
+<link href="css/jquery.bxslider.css" rel="stylesheet" />
+<script>
+  $(document).ready(function(){
+    $('.bxslider').bxSlider({
+      minSlides: 3,
+      maxSlides: 5,
+      slideWidth: 170,
+    });
+  });
+</script>
+<{include file="front_block_footer.html"}>

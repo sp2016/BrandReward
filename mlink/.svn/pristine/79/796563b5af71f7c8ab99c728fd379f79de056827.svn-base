@@ -1,0 +1,605 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style type="text/css">
+.table>tbody>tr>td,.table>tbody>tr>th,.table>tfoot>tr>td,.table>tfoot>tr>th,.table>thead>tr>td,.table>thead>tr>th
+{
+ vertical-align:middle;
+}
+xmp
+{
+	  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+label
+{
+	font-weight:100;
+}
+</style>
+<{if $action eq edit}>
+<h1 style="text-align:center">Edit Affiliate</h1>
+<{else}>
+<h1 style="text-align:center">View Affiliate</h1>
+<{/if}>
+<div class="container" style="margin-top:30px;">
+<form action=""  method="post">
+<table class="table table-bordered">
+
+
+   <tbody>
+   <tr>
+         <td colspan="2" style="text-align:left;font-weight: bold;background-color:#1A3958"><font color="white">Basic</font></td>
+         
+         
+      </tr>
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE"><font color="red">*</font>Name</td>
+         <td><{if $action eq view}><{$arr.Name}><{else}>  <input  type="text" name="Name" id="Name" class="form-control" value="<{$arr.Name}>"> <{/if}> </td>
+         
+      </tr>
+      <tr>
+         <td style="text-align:right;background-color:#EEE">Short Name</td>
+         <td><{if $action eq view}><{$arr.ShortName}><{else}>  <input  type="text" name="ShortName" class="form-control" value="<{$arr.ShortName}>"> <{/if}></td>
+      
+      </tr>
+      <tr>
+         <td style="text-align:right;background-color:#EEE">Current Name</td>
+         <td><{if $action eq view}><{$arr.CurrentName}><{else}>  <input  type="text" name="CurrentName" class="form-control" value="<{$arr.CurrentName}>"> <{/if}></td>
+      
+      </tr>
+       <tr>
+           <td style="text-align:right;background-color:#EEE">Account</td>
+           <td><input type="text" id = "Account" style="width:500px" class="form-control" value="<{$arr.Account}>" readonly="readonly"></td>
+            <input type="hidden" id = "id" value="<{$id}>">
+       </tr>
+
+       <tr>
+           <td style="text-align:right;background-color:#EEE">Password</td>
+           <td><div class="form-inline">
+               <input type="text" id="Password" style="width:500px" class="form-control" value="<{$arr.Password}>" readonly="readonly">
+               <input id="change_password" style="margin-left:15px" type="button" value="修改" class="form-control btn-primary">
+           </div>
+           </td>
+       </tr>
+      <tr>
+         <td style="text-align:right;background-color:#EEE">Importance Rank</td>
+         <td><{if $action eq view}><{$arr.ImportanceRank}><{else}>  <input  type="text" name="ImportanceRank" class="form-control" value="<{$arr.ImportanceRank}>"> <{/if}></td>
+      
+      </tr>
+       <tr>
+         <td style="text-align:right;background-color:#EEE">Join Date</td>
+         <td><{if $action eq view}><{$arr.JoinDate}><{else}> <input  type="text" name="JoinDate" class="form-control" value="<{$arr.JoinDate}>" id="datetimepicker"> <{/if}></td>
+      </tr>
+      
+      
+      
+      
+      <tr>
+         <td colspan="2" style="text-align:left;font-weight: bold;background-color:#1A3958"><font color="white">Control</font></td>
+         
+         
+      </tr>
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE"><font color="red">*</font>IsActive</td>
+         <td><{if $action eq view}>
+         <{$arr.IsActive}>
+         <{else}>
+         <select name="IsActive" id="IsActive" class="form-control"  >
+                <option value="value" >To Choose</option>
+                
+              	<option value="YES" <{if $arr.IsActive eq YES}>selected<{/if}>>YES</option>
+              	
+                <option value="NO" <{if $arr.IsActive eq NO}>selected<{/if}>>NO</option>
+         </select>
+         <{/if}>
+         </td>
+         
+      </tr>
+      <tr>
+         <td style="text-align:right;background-color:#EEE"><font color="red">*</font>IsInHouse</td>
+         <td>   <{if $action eq view}> 
+      <{$arr.IsInHouse}>
+      <{else}>
+         <select name="IsInHouse" id="IsInHouse" class="form-control" >
+                <option value="value">To Choose</option>
+              	<option value="NO" <{if $arr.IsInHouse eq NO}>selected<{/if}>>NetWork</option>
+                <option value="YES" <{if $arr.IsInHouse eq YES}>selected<{/if}>>InHouse</option>
+         </select>
+         <{/if}>
+         </td>
+      
+      </tr>
+      <tr>
+         <td style="text-align:right;background-color:#EEE"><font color="red">*</font>Login Url</td>
+         <td> <{if $action eq view}><{$arr.LoginUrl}><{else}><input type="text" name="LoginUrl" id="LoginUrl" class="form-control" value="<{$arr.LoginUrl}>"><{/if}></td>
+      
+      </tr>
+       <tr>
+         <td style="text-align:right;background-color:#EEE">Program Url Template</td>
+         <td><{if $action eq view}><xmp><{$arr.ProgramUrlTemplate}></xmp><{else}><input type="text" name="ProgramUrlTemplate" class="form-control" value="<{$arr.ProgramUrlTemplate}>"><{/if}></td>
+      
+      </tr>
+      
+      
+      
+      
+      
+      
+      
+      
+            <tr>
+         <td colspan="2" style="text-align:left;font-weight: bold;background-color:#1A3958"><font color="white">Additional</font></td>
+         
+         
+      </tr>
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE"><font color="red">*</font>Domain</td>
+         <td>
+         <{if $action eq view}><div class="form-inline"><{$arr.Domain}><input id="domain" style="margin-right:15px ;float:right" type="button" value="GO" class="form-control btn-primary" /></div><{else}><div class="form-inline"><input type="text" name="Domain" id="Domain" style="width:500px" class="form-control" value="<{$arr.Domain}>" placeholder="Start with http:// OR https:// " ><input id="domain" style="margin-left:15px" type="button" value="GO" class="form-control btn-primary" /></div><{/if}>
+         </td>
+         
+      </tr>
+      <tr>
+         <td style="text-align:right;background-color:#EEE">Blog</td>
+         <td> <{if $action eq view}><div class="form-inline"><{$arr.BlogUrl}><input id="blog" style="margin-right:15px ;float:right" type="button" value="GO" class="form-control btn-primary" /></div><{else}><div class="form-inline"><input type="text" name="BlogUrl" style="width:500px" class="form-control" placeholder="Start with http://" value="<{$arr.BlogUrl}>"  ><input id="blog" style="margin-left:15px" type="button" value="GO" class="form-control btn-primary" /></div><{/if}>
+         </td>
+      
+      </tr>
+      <tr>
+         <td style="text-align:right;background-color:#EEE">Facebook</td>
+         <td><{if $action eq view}><div class="form-inline"><{$arr.FacebookUrl}><input id="facebook" style="margin-right:15px ;float:right" type="button" value="GO" class="form-control btn-primary" /></div><{else}><div class="form-inline"><input type="text" name="FacebookUrl" style="width:500px" class="form-control" placeholder="Start with http://" value="<{$arr.FacebookUrl}>" ><input id="facebook" style="margin-left:15px" type="button" value="GO" class="form-control btn-primary" /></div><{/if}></td>
+      
+      </tr>
+       <tr>
+         <td style="text-align:right;background-color:#EEE">Twitter</td>
+         <td><{if $action eq view}><div class="form-inline"><{$arr.TwitterUrl}><input id="twitter" style="margin-right:15px ;float:right" type="button" value="GO" class="form-control btn-primary" /></div><{else}><div class="form-inline"><input type="text" name="TwitterUrl" style="width:500px" class="form-control" placeholder="Start with http://" value="<{$arr.TwitterUrl}>" ><input id="twitter" style="margin-left:15px" type="button" value="GO" class="form-control btn-primary" /></div><{/if}></td>
+      
+      </tr>
+       <tr>
+         <td style="text-align:right;background-color:#EEE">Country</td>
+         <td><{if $action eq view}><{$arr.Country}><{else}>
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         <table border="0" style="width:100%;">
+			<tbody><tr>
+														</tr><tr>
+										
+														<td><input type="checkbox" name="Country[]" value="AR"  <{if "AR"|in_array:$countryArr}>checked<{/if}>   >&nbsp;<label>Argentina(AR)</label></td>
+														<td><input type="checkbox" name="Country[]" value="AU" <{if "AU"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Australia(AU)</label></td>
+														<td><input type="checkbox" name="Country[]" value="AT" <{if "AT"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Austria</label></td>
+														<td><input type="checkbox" name="Country[]" value="BE" <{if "BE"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Belgium(BE)</label></td>
+														
+														</tr><tr>
+										
+														<td><input type="checkbox" name="Country[]" value="CA" <{if "CA"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Canada(CA)</label></td>
+														<td><input type="checkbox" name="Country[]" value="CZ" <{if "CZ"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Czech Republic(CZ)</label></td>
+														<td><input type="checkbox" name="Country[]" value="CY" <{if "CY"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Cyprus(CY)</label></td>
+														
+														<td><input type="checkbox" name="Country[]" value="CN" <{if "CN"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>China(CN)</label></td>
+														</tr><tr>
+														
+														
+														<td><input type="checkbox" name="Country[]" value="CR" <{if "CR"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Costa Rica(CR)</label></td>
+														
+														<td><input type="checkbox" name="Country[]" value="DK" <{if "DK"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Denmark(DK)</label></td>
+														<td><input type="checkbox" name="Country[]" value="EU" <{if "EU"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>European Union(EU)</label></td>
+														<td><input type="checkbox" name="Country[]" value="SV" <{if "SV"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>El Salvador(SV)</label></td>
+														</tr><tr>
+														<td><input type="checkbox" name="Country[]" value="EE" <{if "EE"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Estonia(EE)</label></td>
+														
+														<td><input type="checkbox" name="Country[]" value="FR" <{if "FR"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>France(FR)</label></td>
+														<td><input type="checkbox" name="Country[]" value="FI" <{if "FI"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Finland(FI)</label></td>
+														
+														<td><input type="checkbox" name="Country[]" value="DE" <{if "DE"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>German(DE)</label></td>
+														
+							
+														</tr>
+														
+														<tr>
+														<td><input type="checkbox" name="Country[]" value="GI" <{if "GI"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Gibraltar(GI)</label></td>
+														<td><input type="checkbox" name="Country[]" value="GP" <{if "GP"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Guadeloupe(GP)</label></td>
+														
+														<td><input type="checkbox" name="Country[]" value="GLOBAL" <{if "GLOBAL"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>GLOBAL(GLOBAL)</label></td>
+														
+														<td><input type="checkbox" name="Country[]" value="GR" <{if "GR"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Greece(GR)</label></td>
+														</tr>
+														
+														
+														<tr>
+										
+														<td><input type="checkbox" name="Country[]" value="HK" <{if "HK"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Hong Kong(HK)</label></td>
+														<td><input type="checkbox" name="Country[]" value="IL" <{if "IL"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Israel(IL)</label></td>
+														<td><input type="checkbox" name="Country[]" value="IN" <{if "IN"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>India(IN)</label></td>
+														<td><input type="checkbox" name="Country[]" value="ID" <{if "ID"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Indonesia(ID)</label></td>
+														</tr><tr>
+														<td><input type="checkbox" name="Country[]" value="IE" <{if "IE"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Ireland(IE)</label></td>
+														
+														<td><input type="checkbox" name="Country[]" value="IT" <{if "IT"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Italy(IT)</label></td>
+														<td><input type="checkbox" name="Country[]" value="JP" <{if "JP"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Japan(JP)</label></td>
+														<td><input type="checkbox" name="Country[]" value="LV" <{if "LV"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Latvia(LV)</label></td>
+														</tr><tr>
+														<td><input type="checkbox" name="Country[]" value="LU" <{if "LU"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Luxembourg(LU)</label></td>
+										
+														<td><input type="checkbox" name="Country[]" value="MX" <{if "MX"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Mexico(MX)</label></td>
+														<td><input type="checkbox" name="Country[]" value="MY" <{if "MY"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Malaysia(MY)</label></td>
+														<td><input type="checkbox" name="Country[]" value="MA" <{if "MA"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Morocco(MA)</label></td>
+														
+														
+														</tr>
+														<tr>
+														<td><input type="checkbox" name="Country[]" value="NL" <{if "NL"|in_array:$countryArr}>checked<{/if}> >&nbsp;<label>Netherlands(NL)</label></td>
+														<td><input type="checkbox" name="Country[]" value="NO" <{if "NO"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>Norway(NO)</label></td>
+														<td><input type="checkbox" name="Country[]" value="NZ" <{if "NZ"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>New Zealand(NZ)</label></td>
+														<td><input type="checkbox" name="Country[]" value="PH" <{if "PH"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>Philippines(PH)</label></td>
+														
+														</tr>
+														<tr>
+										
+														<td><input type="checkbox" name="Country[]" value="PL" <{if "PL"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>Poland(PL)</label></td>
+														<td><input type="checkbox" name="Country[]" value="PT" <{if "PT"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>Portugal(PT)</label></td>
+														<td><input type="checkbox" name="Country[]" value="QA" <{if "QA"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>Qatar(QA)</label></td>
+														<td><input type="checkbox" name="Country[]" value="RO" <{if "RO"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>Romania(RO)</label></td>
+														
+														</tr><tr>
+										
+														<td><input type="checkbox" name="Country[]" value="ZA" <{if "ZA"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>South Africa(ZA)</label></td>
+														<td><input type="checkbox" name="Country[]" value="SE" <{if "SE"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>Sweden(SE)</label></td>
+														<td><input type="checkbox" name="Country[]" value="SG" <{if "SG"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>Singapore(SG)</label></td>
+														<td><input type="checkbox" name="Country[]" value="ES" <{if "ES"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>Spain(ES)</label></td>
+														</tr><tr>
+														<td><input type="checkbox" name="Country[]" value="CH" <{if "CH"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>Switzerland(CH)</label></td>
+														
+														<td><input type="checkbox" name="Country[]" value="TW" <{if "TW"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>Taiwan(TW)</label></td>
+										
+														<td><input type="checkbox" name="Country[]" value="TH" <{if "TH"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>Thailand(TH)</label></td>
+														<td><input type="checkbox" name="Country[]" value="AE" <{if "AE"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>United Arab Emirates(AE)</label></td>
+														
+														</tr>
+														
+							<tr>
+										<td><input type="checkbox" name="Country[]" value="UK" <{if "UK"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>United Kingdom(UK)</label></td>
+										<td><input type="checkbox" name="Country[]" value="US" <{if "US"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>United States(US)</label></td>
+										<td><input type="checkbox" name="Country[]" value="VG" <{if "VG"|in_array:$countryArr}>checked<{/if}>>&nbsp;<label>Virgin Island, British(VG)</label></td>
+										
+							</tr>
+							<tr>
+							
+							
+							</tr>
+							<tr>
+							
+							
+							</tr>
+			</tbody></table>
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         <{/if}></td>
+      
+      </tr>
+      
+      
+      
+      
+      
+      
+      
+      
+                  <tr>
+         <td colspan="2" style="text-align:left;font-weight: bold;background-color:#1A3958"><font color="white">Aff Url Control</font></td>
+         
+         
+      </tr>
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE"><font color="red">*</font>AffiliateUrl Keyword List 1</td>
+         <td>
+         <{if $action eq view}><xmp><{$arr.AffiliateUrlKeywords}></xmp><{else}><textarea class="form-control" name="AffiliateUrlKeywords" id="AffiliateUrlKeywords" rows="5"   ><{$arr.AffiliateUrlKeywords}></textarea><{/if}>
+         </td>
+         
+      </tr>
+        <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE"><font color="red">*</font>AffiliateUrl Keyword List 2</td>
+         <td>
+         <{if $action eq view}><xmp><{$arr.AffiliateUrlKeywords2}></xmp><{else}><textarea class="form-control" name="AffiliateUrlKeywords2" id="AffiliateUrlKeywords2" rows="5"  ><{$arr.AffiliateUrlKeywords2}></textarea><{/if}> 
+         </td>
+         
+      </tr>
+      <tr>
+         <td style="text-align:right;background-color:#EEE">Support Deep Url</td>
+         <td> <{if $action eq view}>
+         <{$arr.SupportDeepUrl}>
+         <{else}>
+          <select name="SupportDeepUrl" class="form-control" > 
+                <option value="value">To Choose</option>
+              	<option value="YES" <{if $arr.SupportDeepUrl eq YES}>selected<{/if}>>YES</option>
+                <option value="NO" <{if $arr.SupportDeepUrl eq NO}>selected<{/if}>>NO</option>
+         </select>
+         <{/if}>
+         </td>
+      
+      </tr>
+      <tr>
+         <td style="text-align:right;background-color:#EEE">Deep Url Paraname</td>
+         <td><{if $action eq view}><{$arr.DeepUrlParaName}><{else}><input type="text" name="DeepUrlParaName" class="form-control" value="<{$arr.DeepUrlParaName}>"/><{/if}></td>
+      
+      </tr>
+        <tr>
+         <td style="text-align:right;background-color:#EEE">Support Sub Tracking</td>
+         <td> 
+         <{if $action eq view}>
+         <{$arr.SupportSubTracking}>
+         <{else}>
+          <select name="SupportSubTracking"  class="form-control"  >
+                <option value="value">To Choose</option>
+              	<option value="YES" <{if $arr.SupportSubTracking eq YES}>selected<{/if}>>YES</option>
+                <option value="NO" <{if $arr.SupportSubTracking eq NO}>selected<{/if}>>NO</option>
+         </select>
+         <{/if}>
+         </td>
+      
+      </tr>
+       <tr>
+         <td style="text-align:right;background-color:#EEE">Sub Tracking Setting 1</td>
+         <td><{if $action eq view}><{$arr.SubTracking}><{else}><input type="text" name="SubTracking" class="form-control" value="<{$arr.SubTracking}>"><{/if}></td>
+      
+      </tr>
+      <tr>
+         <td style="text-align:right;background-color:#EEE">Sub Tracking Setting 2</td>
+         <td><{if $action eq view}><{$arr.SubTracking2}><{else}><input type="text" name="SubTracking2" class="form-control" value="<{$arr.SubTracking2}>" ><{/if}></td>
+      
+      </tr>
+      
+      
+      
+                  <tr>
+         <td colspan="2" style="text-align:left;font-weight: bold;background-color:#1A3958"><font color="white">Revenue Control</font></td>
+         
+         
+      </tr>
+            <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Revenue Account</td>
+         <td>
+      <{if $action eq view}><{$arr.RevenueAccount}><{else}>  
+<select name="RevenueAccount" class="form-control"  >
+<{html_options options=$fin_rev_acc_list selected=$arr.RevenueAccount}>
+    
+         </select>
+           <{/if}>     
+         </td>
+         </tr>
+         <tr>
+
+
+         </tr>
+            <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Revenue Received</td>
+         <td>
+            <select name="RevenueReceived"  class="form-control">
+                <option value="0">NO</option>
+                <option value="1" <{if $arr.RevenueReceived}>selected<{/if}>>YES</option>
+            </select>  
+         </td>
+         </tr>
+         <tr>
+
+
+                           <td width="20%" style="text-align:right;background-color:#EEE">Revenue Cycle</td>
+         
+                  <td> <{if $action eq view}><{$arr.RevenueCycle}><{else}><textarea name="RevenueCycle" class="form-control" rows="5" ><{$arr.RevenueCycle}></textarea>
+         <{/if}>
+         </td>
+      </tr>
+        <tr>
+                           <td width="20%" style="text-align:right;background-color:#EEE">Revenue Remark</td>
+         
+                  <td> <{if $action eq view}><{$arr.RevenueRemark}><{else}><textarea name="RevenueRemark" class="form-control" rows="5" ><{$arr.RevenueRemark}></textarea>
+         <{/if}>
+         </td>
+      </tr>
+      
+      
+      
+      
+      
+      
+                <tr>
+         <td colspan="2" style="text-align:left;font-weight: bold;background-color:#1A3958"><font color="white">Stats</font></td>
+         
+         
+      </tr>
+      <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Program Crawled</td>
+         <td>
+         <{if $action eq view}>
+          <{$arr.ProgramCrawled}>
+         <{else}>
+<select name="ProgramCrawled" class="form-control"  >
+                <option value="value">To Choose</option>
+              	<option value="YES" <{if $arr.ProgramCrawled eq YES}>selected<{/if}>>YES</option>
+                <option value="NO" <{if $arr.ProgramCrawled eq NO}>selected<{/if}>>NO</option>
+                <option value="No Need to Crawl" <{if $arr.ProgramCrawled eq "No Need to Crawl"}>selected<{/if}>>NO Need To Crawl</option>
+                <option value="Request to Crawl" <{if $arr.ProgramCrawled eq "Request to Crawl"}>selected<{/if}>>Request To Crawl</option>
+                <option value="Can Not Crawl" <{if $arr.ProgramCrawled eq "Can Not Crawl"}>selected<{/if}>>Can Not Crawl</option>
+         </select>
+         <{/if}>         
+         </td>
+         
+      </tr>
+      <tr>
+         <td style="text-align:right;background-color:#EEE">Program Crawl Remark</td>
+         <td>           
+         <{if $action eq view}><{$arr.ProgramCrawlRemark}><{else}><textarea class="form-control" name="ProgramCrawlRemark" rows="5"><{$arr.ProgramCrawlRemark}></textarea>
+		<{/if}> 
+         </td>
+      
+      </tr>
+            <tr>
+         <td width="20%" style="text-align:right;background-color:#EEE">Stats Report Crawled</td>
+         <td>
+         <{if $action eq view}>
+         <{$arr.StatsReportCrawled}>
+         <{else}>
+<select name="StatsReportCrawled" class="form-control" >
+                <option value="value">To Choose</option>
+              	<option value="YES" <{if $arr.StatsReportCrawled eq YES}>selected<{/if}>>YES</option>
+                <option value="NO" <{if $arr.StatsReportCrawled eq NO}>selected<{/if}>>NO</option>
+                <option value="No Need to Crawl" <{if $arr.StatsReportCrawled eq "No Need to Crawl"}>selected<{/if}>>NO Need To Crawl</option>
+                <option value="Request to Crawl" <{if $arr.StatsReportCrawled eq "Request to Crawl"}>selected<{/if}>>Request To Crawl</option>
+                <option value="Can Not Crawl"  <{if $arr.StatsReportCrawled eq "Can Not Crawl"}>selected<{/if}>>Can Not Crawl</option>
+         </select>  
+         <{/if}>       
+         </td>
+         
+      </tr>
+         <tr>
+         <td style="text-align:right;background-color:#EEE">Stats Report Crawl Remark</td>
+         <td>           
+          <{if $action eq view}><{$arr.StatsReportCrawlRemark}><{else}><textarea name="StatsReportCrawlRemark" class="form-control" rows="5" ><{$arr.StatsReportCrawlRemark}></textarea>
+<{/if}> 
+         </td>
+      
+      </tr>
+      <tr>
+         <td style="text-align:right;background-color:#EEE">Stats Affiliate Name</td>
+         <td><{if $action eq view}><{$arr.StatsAffiliateName}><{else}><input name="StatsAffiliateName" type="text" class="form-control" value="<{$arr.StatsAffiliateName}>"   ><{/if}></td>
+      
+      </tr>
+       <tr>
+         <td style="text-align:right;background-color:#EEE">Comment</td>
+         <td>
+         <{if $action eq view}><xmp><{$arr.Comment}></xmp><{else}><textarea name="Comment" class="form-control" rows="5"><{$arr.Comment}></textarea>
+ <{/if}>
+</td>
+      
+      </tr>
+   </tbody>
+</table>
+
+<div style="text-align:center;">
+<{if $action eq "edit"}>
+<input class="btn btn-primary"  id="sbt" type="button" value="提交修改"/>
+<{/if}>
+<input class="btn btn-primary"  type="button" id="return" value="返回列表"/>
+</div>
+
+</form>
+</div>
+
+<script type="text/javascript">
+
+    $('#change_password').click(function(){
+       if($(this).val() == "修改"){
+           $('#Account').removeAttr("readonly");
+           $('#Password').removeAttr("readonly");
+           $('#Account').focus();
+           $(this).val("确定");
+       } else {
+           var Account = $('#Account').val();
+           var Password = $('#Password').val();
+           var AffId = $('#id').val();
+           var yn = confirm("确定修改账号信息?\nAccount:"+Account+"\nPassword:"+Password);
+           if(yn){
+               $.ajax({
+                   type:"post",
+                   url:"<{$smarty.const.BASE_URL}>/edit_affiliates.php",
+                   data:{"Account":Account,"Password":Password,"AffId":AffId},
+                   dataType:"json",
+                   success: function(req){
+                       if(req.succ){
+                           $('#Account').attr("readonly","readonly");
+                           $('#Password').attr("readonly","readonly");
+                           alert("修改成功!");
+                           $('#Account').val(req.Account);
+                           $('#Password').val(req.Password);
+                           $('#change_password').val("修改");
+                       } else {
+                           alert(req.error);
+                           window.location.href=window.location.href;
+                       }
+                   }
+               });
+           } else{
+               window.location.href=window.location.href;
+           }
+        }
+    });
+
+
+$("#return").click(function(){
+	window.location.href="b_aff_aff.php";
+});
+
+//join date的时间插件
+
+$('#datetimepicker').datetimepicker({  
+  format: 'yyyy-mm-dd hh:ii:ss',  
+  language: 'en',  
+  pickDate: true,  
+  pickTime: true,  
+  hourStep: 1,  
+  minuteStep: 1,  
+  secondStep: 15,  
+  inputMask: true,  
+}); 
+
+
+
+
+//点击Go按钮，跳转到指定页面
+$("#domain").click(function(){
+	window.open("https://edm.megainformationtech.com/rd.php?url=" + encodeURIComponent("<{$arr.Domain}>")); 
+});
+$("#facebook").click(function(){
+	window.open("https://edm.megainformationtech.com/rd.php?url=" + encodeURIComponent("<{$arr.FacebookUrl}>")); 
+});
+$("#twitter").click(function(){
+	window.open("https://edm.megainformationtech.com/rd.php?url=" + encodeURIComponent("<{$arr.TwitterUrl}>")); 
+});
+$("#blog").click(function(){
+	window.open("https://edm.megainformationtech.com/rd.php?url=" + encodeURIComponent("<{$arr.BlogUrl}>")); 
+});
+
+$("#sbt").click(function(){
+    var YN = true;
+    if($("#IsActive").val() == 'YES'){
+        var notNull = ["Name","Domain","LoginUrl","AffiliateUrlKeywords","AffiliateUrlKeywords2"];
+    } else {
+        var notNull = ["Name","Domain"];
+    }
+    $.each(notNull,function(name,value){
+       if($('#'+value).val() == ''){
+           YN = false;
+           var alt = 'Missing ' + value +',Check Please!';
+           alert(alt);
+           $('#'+value).focus();
+           return false;
+       }
+    });
+    if(YN == true){
+        $("form:first").submit();
+    }
+});
+
+</script> 
+
+<{include file="b_block_footer.html"}>

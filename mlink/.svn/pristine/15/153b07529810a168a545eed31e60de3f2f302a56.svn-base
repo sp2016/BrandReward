@@ -1,0 +1,59 @@
+<{include file="front_block_header.html"}>
+<{include file="front_block_banner.html"}>
+<style>
+    body{background:#EEF8FF;}
+</style>
+<div class="banner contact_us_banner">
+    <span></span>
+    <!-- <img src="/img/contact_banner%20-%202.jpg"> -->
+</div>
+<!--banner end-->
+<!-- contact us start -->
+<div class="contact">
+    <div class="main">
+        <div class="form">
+            <h3>Contact Form</h3>
+            <form id="con_form">
+            <input type="hidden" name="act" value="send_contact_message">
+            <div class="form_list">
+                <label for="field_name">Your Name</label>
+                <input type="text" class="con_name nulls"  name="con_name">
+            </div>
+            <div class="form_list formemail">
+                <label for="field_name">Email  Address</label>
+                <input type="text" class="con_email nulls"  name="con_email">
+            </div>
+            <div class="form_list">
+                <label for="field_name">Please choose a request type below</label>
+                <select name="con_type"  class="con_type">
+                    <option data-url="#" value="">-</option>
+                    <option data-url="#" value="I'm a Publisher">I'm a Publisher</option>
+                    <option data-url="#" value="I'm a Merchant">I'm a Merchant</option>
+                    <option data-url="#" value="I'm an Affiliate Network/Agency representing a merchant">I'm an Affiliate Network/Agency representing a merchant</option>
+                    <option data-url="#" value="None of the above">None of the above</option></select>
+            </div>
+            <div class="form_list">
+                <label for="field_name">Your Message</label>
+                <textarea class="email con_message nulls"  name="con_message" rows="3"></textarea>
+            </div>
+            <div class="form_list">
+                <input type="button" class="btn-email"  onclick="send_contact_message()" value="Send Message" >
+            </div>
+        </form>
+        </div>
+        <div class="details">
+            <h3>Contact Details</h3>
+            <div>
+                <h4>Email</h4>
+                <p>support@brandreward.com</p>
+                <h4>Skype</h4>
+                <p>brandreward</p>
+                <h4>Headquarter</h4>
+                <div class="details_pic">
+                    <img src="img/contact_pic.png" alt="" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<{include file="front_block_footer.html"}>

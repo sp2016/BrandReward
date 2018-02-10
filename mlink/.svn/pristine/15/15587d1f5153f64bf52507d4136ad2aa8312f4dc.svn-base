@@ -1,0 +1,125 @@
+<?php
+namespace App\Http\Controllers;
+
+use App\Http\Entity\Statistics\StatisticsQueryEntity;
+use App\Http\Entity\Statistics\StoreStaticsQueryEntity;
+use App\Http\Entity\Store\StoreEntity;
+use App\Http\Logic\CalculationLogic\DateCalculationLogic;
+use App\Http\Logic\CalculationLogic\StoreCalculationLogic;
+use App\Http\Logic\StoreLogic;
+use App\Model\Publisher;
+use Illuminate\Http\Request;
+
+/**
+ * Class StoreController
+ * @package App\Http\Controllers
+ *          
+ */
+class StoreController extends Controller
+{
+    public function getStores(Request $request)
+    {
+        $entity = new  StoreEntity($request->all());
+        $storeLogic = new StoreLogic();
+        //商家数据(单页数据:主体数据一)
+        $stores = $storeLogic->getStores($entity);
+        //总商家数据
+        $total = $storeLogic->countStores($entity);
+        //统计数据：获取商家domain列表
+        $domains = array();
+        foreach ($stores as $store) {
+            $domain = $store->domains()->lists('ID');
+            !empty($domain) && $domains = array_merge($domains,$domain);
+        }
+        //统计数据(单页数据:主体数据二)
+        $staticsEntity = new StatisticsQueryEntity();
+        !$entity->isEmpty('dateType') && $staticsEntity->set('dateType', $entity->dateType);
+        !$entity->isEmpty('startDate') && $staticsEntity->set('startDate', $entity->startDate);
+        !$entity->isEmpty('endDate') && $staticsEntity->set('endDate', $entity->endDate);
+        !empty($domains) ? $staticsEntity->set('domainIds',$domains) : $staticsEntity->set('domainIds',array(-1));
+        $staticsEntity->set('countries',$entity->shippingCountry);
+        $staticsEntity->set('affiliateIds',$entity->network);
+        if(!$entity->isEmpty('dataType')) {
+            $dataType = $entity->dataType;
+            if ($dataType == 1) {
+                $pModel = new Publisher();
+                $exceptSites = $pModel::query()
+                    ->leftJoin('publisher_account','publisher_account.PublisherId','=', 'publisher.ID')
+                    ->where('publisher.Tax','=',0)
+                    ->whereNotNull('publisher_account.ApiKey')
+                    ->lists('publisher_account.ApiKey');
+                $staticsEntity->set('exceptSite', $exceptSites);
+            }
+        }
+        //获取匹配统计逻辑
+        $storeCalLogic = new StoreCalculationLogic($staticsEntity);
+        $calLogic = $storeCalLogic->getInstance($staticsEntity);
+        //执行查询操作
+        $data = $calLogic->getCalculationData('STORE');
+        $sData = array();
+        foreach ($stores as $store) {
+            $item = $data->where('StoreId', $store->ID)->pop();
+            array_set(
+                $sData,
+                $store->ID,
+                array_merge(
+                    $store->toArray(),
+                    array(
+                        'StoreId' => $store->ID,
+                        'RCLS'    => !empty($item) ? number_format($item->CLS - $item->ROB) : 0,
+                        'CLS'     => !empty($item) ? number_format($item->CLS) : 0,
+                        'ROB'     => !empty($item) ? number_format($item->ROB) : 0,
+                        'ROP'     => !empty($item) ? number_format($item->ROP) : 0,
+                        'ORD'     => !empty($item) ? number_format($item->ORD) : 0,
+                        'SAL'     => !empty($item) ? number_format($item->SAL, 2) : 0,
+                        'CMS'     => !empty($item) ? number_format($item->CMS, 2) : 0,
+                        'SRV'     => !empty($item) ? number_format($item->SRV, 2) : 0,
+                        'EPC'     => !empty($item) ? "$" . ($item->CLS > $item->ROB ? number_format($item->CMS / ($item->CLS - $item->ROB), 2, '.', ',') : 0.00) : '$0.00',
+                        'CPC'     => $store->coupons()->where('status', 'active')->count() //商家促销的数量
+                    )
+                )
+            );
+        }
+        
+        //汇总数据(从日期数据中获取:主体数据三)
+        //注意点:若有查询特定商家，不能清空domainIds
+        if ($entity->isEmpty('name')) {
+            $staticsEntity->offsetUnset('domainIds');
+        } else {
+            //全部商家数据(不分页)
+            $pEntity = $entity;
+            $pEntity->merge(['paginate',false]);
+            $pStores = $storeLogic->getStores($pEntity);
+            $pDomains = array();
+            foreach ($pStores as $pStore) {
+                $domain = $pStore->domains()->lists('ID');
+                !empty($domain) && $pDomains = array_merge($pDomains,$domain);
+            }
+            !empty($pDomains) ? $staticsEntity->set('domainIds',$pDomains) : $staticsEntity->set('domainIds',array(-1));
+        }
+        $dateCalLogic = new DateCalculationLogic($staticsEntity);
+        $dateCalLogic = $dateCalLogic->getInstance($staticsEntity);
+        //执行查询操作
+        $dateData = $dateCalLogic->getCalculationData('DATE');
+        $rdata = [
+            'total'     => $total,
+            'totalPage' => ceil($total / $entity->limit),
+            'page'      => $entity->offset,
+            'pageSize'  => $entity->limit,
+            'data'      => array_values($sData),
+            'totalData' => [
+                'RCLS'    => number_format($dateData->sum('CLS') - $dateData->sum('ROB')),
+                'CLS'     => number_format($dateData->sum('CLS')),
+                'ROB'     => number_format($dateData->sum('ROB')),
+                'ROP'     => number_format($dateData->sum('ROP')),
+                'ORD'     => number_format($dateData->sum('ORD')),
+                'SAL'     => "$".number_format($dateData->sum('SAL'),2),
+                'CMS'     => "$".number_format($dateData->sum('CMS'),2),
+                'SRV'     => "$".number_format($dateData->sum('SRV'),2),
+            ]
+        ];
+        
+        return response()->json($rdata);
+
+    }
+}

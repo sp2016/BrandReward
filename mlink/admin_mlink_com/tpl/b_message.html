@@ -1,0 +1,191 @@
+
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<div>
+    <div class="container" style="margin-top:30px;width:80%">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    <div class="panel-body" >
+                        <form>
+                            <!--<input type="hidden" name="p" value="1" />-->
+                            <div class="col-lg-12 form-inline">
+                                        Status:&nbsp; <select class="form-control" name="status" >
+                                        <option value="all" Name="status" <{if $status eq 'ALL'}>selected="selected"<{/if}>>All</option>
+                                        <option value="pending" Name="status" <{if $status eq 'pending'}>selected="selected"<{/if}>>pending</option>
+                                        <option value="ignored" Name="status" <{if $status eq 'ignored'}>selected="selected"<{/if}>>ignored</option>
+                                        <option value="answered" Name="status" <{if $status eq 'answered'}>selected="selected"<{/if}>>answered</option>
+                                        <option value="resolved" Name="status" <{if $status eq 'resolved'}>selected="selected"<{/if}>>resolved</option>
+                                    </select>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <button type="submit" class="btn  btn-primary ">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Result</div>
+                    <div class="panel-body">
+
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center">Name</th>
+                                <th style="text-align: center">Email</th>
+                                <th style="text-align: center">Mobile Nomber</th>
+                                <th style="text-align: center">Apply Time</th>
+                                <th style="text-align: center">Message</th>
+                                <th style="text-align: center">Status</th>
+                                <th style="text-align: center">operation</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=publisher}>
+                            <tr id ='<{$publisher.ID}>' class="open-logs">
+                                <td style="text-align: center"><{$publisher.Name}></td>
+                                <td style="text-align: center"><{$publisher.Email}></td>
+                                <td style="text-align: center"><{$publisher.PhoneNumber}></td>
+                                <td style="text-align: center"><{$publisher.Time}></td>
+                                <td style="text-align: center"><a href="javascript:void(0);" class="showmessage">Message</a>
+                                    <textarea style="display:none"><{$publisher.Message}></textarea>
+                                </td>
+                                <td style="text-align: center"><{$publisher.Status}></td>
+                                <{if $publisher.Status eq 'pending'}>
+                                <td style="text-align: center">
+                                    <a href="javascript:void(0);" class="update">Update</a>
+                                    <input type="hidden" value="<{$publisher.user}>">
+                                    <input type="hidden" value="<{$publisher.Status}>">
+                                    <input type="hidden" value="<{$publisher.ID}>">
+
+                                </td>
+                                <{else}>
+                                <td style="text-align: center">
+                                    <a href="javascript:void(0);" class="remark">Remark</a>
+                                    <input type="hidden" value="<{$publisher.user}>">
+                                    <input type="hidden" value="<{$publisher.updatetime}>">
+                                    <input type="hidden" value="<{$publisher.remark}>">
+                                </td>
+                                <{/if}>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                        <{$pageHtml}>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="urldiv" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog" style="width: 900px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title title" id="exampleModalLabel"></h2>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-8 col-md-offset-2 mestext" style="text-align:center;">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="upstatus" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title" id="exampleModalLabel">Update</h2>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <select class="form-control staop" >
+                            <option value="pending" Name="status">pending</option>
+                            <option value="ignored" Name="status">ignored</option>
+                            <option value="answered" Name="status">answered</option>
+                            <option value="resolved" Name="status">resolved</option>
+                        </select>
+                        <textarea style="margin-top: 20px; " class="form-control remarkval" placeholder="Remark"></textarea>
+                        <button style="margin-top: 20px; " type="button"  data-id="" data-val="" class="save  btn-primary btn-lg btn-block">Save</button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('.showmessage').bind('click',function(){
+            $('.title').html('Message');
+            $('.mestext').html('');
+            var text = $(this).next().val();
+            $('.mestext').html(text);
+            $('#urldiv').modal();
+        })
+        $('.update').bind('click',function(){
+            var id = $(this).next().next().next().val();
+            var val = $(this).next().next().val();
+                var coption = $(".staop option");
+                if($(this).next().val() != ''){
+                    for (var i = 0; i <coption.length; i++) {
+                        if (coption[i].value == val) {
+                            coption[i].selected=true;
+                        }
+                    }
+                }else{
+                    coption[0].selected=true;
+                }
+            $('.save').attr('data-id',id);
+            $('.save').attr('data-val',val);
+            $('#upstatus').modal();
+        })
+        $('.save').bind('click',function(){
+            var checkval = $('.save').data('val');
+            var val = $('.staop').val();
+            var remark = $('.remarkval').val();
+            if(val == checkval){
+                alert('Please select');
+                return false;
+            }
+            if(remark == ''){
+                alert('Something seems to be missing, please review your information.');
+                return false;
+            }
+            var id = $('.save').data('id');
+            var data = {'id':id,'val':val,'remark':remark};
+            $.ajax({
+                type:"post",
+                url:CON_BASE_URL+"/b_message.php",
+                data:data,
+                async:false,
+                success: function(res){
+                    if(res == 1){
+                        alert('success');
+                        location.href=CON_BASE_URL+'/b_message.php';
+                    }else{
+                        alert('Error');
+                    }
+                }
+            });
+        })
+        $('.remark').bind('click',function(){
+            $('.title').html('Remark');
+            $('.mestext').html('');
+            var name = $(this).next().val();
+            var time = $(this).next().next().val();
+            var remark = $(this).next().next().next().val();
+            var text = 'Operator: '+name+'</br>'+'UpdateTime: '+time+'<h2 style="border-bottom: 1px dashed  #60738D;margin-top: 10px;"/>'+remark;
+            $('.mestext').html(text);
+            $('#urldiv').modal();
+        })
+    </script>
+    <{include file="b_block_footer.html"}>

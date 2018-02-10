@@ -1,0 +1,323 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<{include file="b_generate_link_modal.html"}>
+<style type="text/css">
+    .multiselect {
+        text-align: left;
+    }
+    .multiselect b.caret {
+        position: absolute;
+        top: 14px;
+        right: 8px;
+    }
+    .drop{
+        padding: 3px 20px;
+        clear: both;
+        font-weight: normal;
+        line-height: 1.42857143;
+        color: #333;
+        white-space: nowrap;
+    }
+    .multiselect-group {
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    .form-inline .form-group{
+		margin-bottom: 15px;
+    }
+	.dropdown-menu > li label.checkbox{
+	    display: block;
+	    padding: 3px 20px;
+	    clear: both;
+	    line-height: 1.42857143;
+	    color: #333;
+	    white-space: nowrap;
+	    cursor: pointer;
+    }
+	.dropdown-menu > li label.checkbox:hover{
+	    color: rgb(183,184,205);
+    }
+    .slideshow a.copyurl{width:80px;height:34px;display:inline-block;float: right;margin-right: 30px;color: #333;border-radius: 4px;vertical-align: middle;text-align: center;line-height: 34px;font-size: 14px;border: 1px solid;}
+    .slideshow a.openurl:hover,.slideshow a.openurl:focus{
+		text-decoration:none
+    }
+    .slideshow a.openurl{width:70px;height:34px;display:inline-block;float: right;margin-right: 10px;border-radius: 4px;vertical-align: middle;text-align: center;line-height: 34px;font-size: 14px;border: 1px solid;background-color: #337ab7;color: #fff;border-color: #2e6da4;}
+    .slideshow a.copyimageurl{background-color: #ffffff;border: 1px solid;color: #333;float:right;margin-right: 5px;}
+    
+    a:hover,a:link {
+		text-decoration:none
+    }
+    
+</style>
+    <div class="container-fluid" style="margin-top:30px;font-family: Microsoft YaHei;">
+        <div style="text-align:center;margin-bottom:30px;"><h1>Product Feed</h1></div>
+
+
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    <div class="panel-body">
+                        <form id="form_content_search">
+                            <!--<input type="hidden" name="p" value="1" />-->
+                            <div class="row">
+                                <div class="form-inline">
+                                    <div class="col-lg-12 ">
+                                        <div class="form-group">
+                                            &nbsp;Keyword Search:
+                                            <input type="text" style="width: 200px;" name="keyword" class="form-control" value="<{$search.keyword}>" placeholder="Search...">
+                                        </div>
+                                        <div class="form-group">
+	                                        &nbsp;Choose Country:
+	                                        <select name="country" class="form-control" style="width:120px">
+	                                            <option value="">All</option>
+	                                            <{foreach from=$countryArr key=k item=c}>
+	                                            <option value="<{$c}>" <{if isset($search.country) and $search.country eq $c}>selected="selected"<{/if}>><{$k}></option>
+	                                            <{/foreach}>
+	                                        </select>
+	                                    </div>
+	                                    <div class="form-group">
+                                            &nbsp;Language:
+                                            <select name="language" class="form-control" style="width:120px">
+                                                <option value="">All</option>
+                                                <option value="en"  <{if isset($search.language) and $search.language eq 'en'}>selected="selected"<{/if}>>English</option>
+                                                <option value="fr" <{if isset($search.language) and $search.language eq 'fr'}>selected="selected"<{/if}>>French</option>
+                                                <option value="de" <{if isset($search.language) and $search.language eq 'de'}>selected="selected"<{/if}>>German</option>
+                                                <option value="it" <{if isset($search.language) and $search.language eq 'it'}>selected="selected"<{/if}>>Italian</option>
+                                                <option value="nl" <{if isset($search.language) and $search.language eq 'nl'}>selected="selected"<{/if}>>Dutch</option>
+                                                <option value="es" <{if isset($search.language) and $search.language eq 'es'}>selected="selected"<{/if}>>Spanish</option>
+                                                <option value="pt" <{if isset($search.language) and $search.language eq 'pt'}>selected="selected"<{/if}>>Portuguese</option>
+                                                <option value="se" <{if isset($search.language) and $search.language eq 'se'}>selected="selected"<{/if}>>Swedish</option>
+                                                <option value="no" <{if isset($search.language) and $search.language eq 'no'}>selected="selected"<{/if}>>Norwegian</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+	                                        &nbsp;
+	                                        <input type="hidden" value="<{$search.categories}>" name="categories" class="categories">
+	                                        <div class="btn-group">
+	                                            <button type="button"  class="multiselect dropdown-toggle btn btn-default" data-toggle="dropdown" title="Category" >Category&nbsp;<b class="caret"></b></button>
+	                                            <ul class="multiselect-container dropdown-menu" onclick="event.stopPropagation();" style="overflow:scroll;min-height:150px;min-width: 260px;">
+	                                                <li style="margin-bottom: 5px;margin-top: 1px;padding:0 20px;">
+	                                                    <!-- <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-info" onclick="select_opt('all')">Select All</span></a>
+	                                                    <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-warning" onclick="select_opt('none')">Deselect All</span></a> -->
+	                                                    <a href="javascript:void(0);" style="display: inline;margin:0 auto; padding:0;"><span class="label label-info" onclick="select_opt('close')">Close</span></a>
+	                                                </li>
+	                                                <{foreach item=cate key=id from=$category}>
+	                                                <li><label class="checkbox"><input type="checkbox"
+	                                                    <{if $sel_cate }>
+	                                                    <{foreach from=$sel_cate item=sc}>
+	                                                    <{if $sc == $id}> checked <{/if}>
+	                                                    <{/foreach}>
+	                                                    <{/if}>
+	                                                    class="category" id="<{$id}>" value="<{$id}>"> <{$cate}></label></li>
+	                                                <{/foreach}>
+	                                            </ul>
+	                                        </div>
+	                                    </div>
+	                                    <div class="form-group" style="margin-left: 10px;">
+                                        	<div class="checkbox">
+                                        		<label style="color: rgb(247,150,70);font-style:oblique">
+		                                            <input style="margin-top: 2px;" type="checkbox" name="chk" value="1" <{if isset($search.chk) and $search.chk eq 1}>checked="checked"<{/if}>>
+		                                        	Favorite Advertisers
+                                        		</label>
+                                        	</div>
+                                        </div>
+	                                    <div class="form-group" style="float:right">
+                                            <input type="submit" class="btn b-primary" value="Search">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="height: 55px;line-height: 34px;">Products<input type="button" style="float:right" class="btn b-primary" id="generatelink" value="Product Feed API"></div>
+                    <div class="panel-body" style="background-color: #f5f5f5;">
+						<div id="grid-gallery" class="grid-gallery">
+							<section class="grid-wrap">
+								<ul class="grid">
+									<li class="grid-sizer"></li><!-- for Masonry column width -->
+									<{foreach item=feed from=$content}>
+										<li>
+											<figure>
+												<div style="text-align: center;background-color: white;"><img style="display: inline-block;width: 100%;" src="<{$feed.ProductImage}>" alt="<{$feed.ProductName}>"/></div>
+												<!-- <img src="<{$feed.ProductImage}>" alt="<{$feed.ProductName}>"/> -->
+												<figcaption>
+													<span><{$feed.ProductName}></span>
+													<span><{$feed.storeName}></span>
+													<span style="color:#4d4d4f;font-weight: bold;"><{$feed.ProductPrice}></span>
+												</figcaption>
+											</figure>
+										</li>
+									<{/foreach}>
+								</ul>
+							</section><!-- // grid-wrap -->
+							<section class="slideshow">
+								<ul style="z-index:-100">
+									<{foreach item=feed from=$content}>
+										<li>
+											<div style="background: #fff;padding: 20px 0 10px 30px;color: #4d4d4f;font-size: 22px;display: inline-block;width: 100%;"><{$feed.storeName}>
+												<a href="javaScript:void(0)" data-clipboard-text='<{$feed.LinkUrl}>' class="copydata copyurl">Copy Url</a>
+												<a title="open url" target="_blank" href="<{$feed.LinkUrl}>" class="openurl">Buy Now</a>
+											</div>
+											<figure>
+												<figcaption>
+													<h3><{$feed.ProductName}></h3>
+													<p><{$feed.ProductDesc}></p>
+													<span style="color: #4d4d4f;font-weight: bold;margin-top:5px;display: inline-block;"><{$feed.ProductPrice}></span>
+													<a href="javaScript:void(0)" data-val='<{$feed.ProductImage}>' class="btn b-primary copydata copyimageurl">Copy Image Url</a>
+												</figcaption>
+												<img src="<{$feed.ProductImage}>" alt="<{$feed.ProductName}>"/>
+											</figure>
+										</li>
+									<{/foreach}>
+								</ul>
+								<nav>
+									<span class="icon nav-prev"></span>
+									<span class="icon nav-next"></span>
+									<span class="icon nav-close"></span>
+								</nav>
+							</section><!-- // slideshow -->
+						</div><!-- // grid-gallery -->
+                    </div>
+                    <div style="padding: 0 0 15px 15px;"><{$pageHtml}></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+		new CBPGridGallery( document.getElementById( 'grid-gallery' ) );
+	</script>
+   <script type="text/javascript">
+    
+	   //复制到剪切板
+	   /* $('.copydata').zclip({
+	       path: "js/ZeroClipboard.swf",
+	       copy:function(){
+	           return $(this).data('val');
+	       }
+	   });   */
+	   $(function(){
+		   var clipboard = new Clipboard('.copydata');
+		    clipboard.on('success', function(e) {
+		      alert("Copied text to clipboard:\r\n"+e.text);
+		      e.clearSelection();
+		    });
+		    clipboard.on('error', function(e) {
+		      alert('Error');
+		 	});
+	   })
+	   
+	   $(document).delegate(".slideshow li","click",function(e){
+		   e.stopPropagation();
+	   });
+	   
+	   $(document).delegate(".slideshow ul","click",function(){
+		   $(".nav-close").trigger('click');
+	   });
+	   
+	   function get_category(){
+	       var cate='';
+	       var cc =$("input[class='category']:checked");
+	       for(var i=0;i<cc.length;i++){
+	           if(cc[i].checked){
+	               cate += cc[i].value+',';
+	           }
+	       }
+	       cate=cate.substring(0,cate.length-1);
+	       $('.categories').val(cate);
+	   }
+	
+	   var category = $(".categories").val().split(',');
+	   for(var i=0;i<category.length;i++){
+	       $('.category_'+category[i]).attr('checked','checked');
+	   }
+	
+	   $(".category").change(function () {
+	       get_category();
+	   });
+	   
+	   $('.multiselect-group').click(function(){
+	       var pid = $(this).attr('id');
+	       if($(this).attr('status')=='no'){
+	           $('.category_'+pid).prop('checked','true');
+	           $(this).attr('status','yes');
+	       }else{
+	           $('.category_'+pid).removeAttr('checked');
+	           $(this).attr('status','no');
+	       }
+	       get_category();
+	   });
+	   
+	   function select_opt(val)
+	   {
+	       switch (val)
+	       {
+	           case 'all':
+	               $('.category').prop('checked',true);
+	               break;
+	           case 'none':
+	               $('.category').prop('checked',false);
+	               break;
+	           case 'close':
+	               $('.btn-group').removeClass('open');
+	               break;
+	           default:
+	               break;
+	       }
+	       get_category();
+	   }
+	   
+	   $("#generatelink").click(function(){
+       	generate_link();
+       	$("#generateLink").modal();
+       });
+       
+       /* $('#generateLink').on('shown.bs.modal', function () {
+       	if($("#copyApiUrl").siblings('div').length==0){
+       		$('#copyApiUrl').zclip({
+                   path: "js/ZeroClipboard.swf",
+                   copy:function(){
+                       return $("#apiurl").text();
+                   }
+               });
+       	}
+    	}) */
+       
+       $(document).delegate("input:radio[name='outformat']","change",function(){
+       	generate_link();
+       })
+       
+       $(document).delegate("#fsite","change",function(){
+	    	generate_link();
+	    })
+       
+       function generate_link(){
+       	$("#generousLinkLabel").html($("#generatelink").val());
+       	var fsite = $("#fsite").val();
+       	var apiurl = "<{$smarty.const.API_URL}>?act=links.product_feed&key="+fsite+"&user=<{$username}>";
+       	if($("input[name='chk']").is(':checked')){
+       		apiurl+="&favor=1";
+       	}else{
+       		apiurl+="&favor=0";
+       	}
+       	apiurl+="&country="+$("select[name='country']").val()+"&category=";
+       	$('input[class="category"]:checked').each(function(i){
+       		if(i>0){
+       			apiurl += ",";
+       		}
+       		apiurl += $(this).val();
+          	}); 
+       	apiurl+="&language="+$("select[name='language']").val();
+       	apiurl+="&outformat="+$("input:radio[name='outformat']:checked").val();
+       	$("#apiurl").html(apiurl);
+       }
+   
+   </script>
+   <{include file="b_block_footer.html"}>

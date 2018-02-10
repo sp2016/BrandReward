@@ -1,0 +1,297 @@
+<?php
+include_once('conf_ini.php');
+include_once(INCLUDE_ROOT.'init2.php');
+$merchant = new MerchantExt();
+$objOutlog = new Outlog;
+    if(isset($_POST['query']) && !empty($_POST['query'])){
+        $val = addslashes(trim($_POST['query']));
+        $sql = "select id,IF(NameOptimized='' OR NameOptimized IS NULL,`Name`,NameOptimized) AS name from store where StoreAffSupport = 'YES' AND (`Name` like '%$val%' OR NameOptimized like '%$val%') ORDER BY NameOptimized,`Name`";
+        $res = $merchant->objMysql->getRows($sql,'id');
+        if(!empty($res)){
+            $id = '(';
+            foreach($res as $k){
+                $id.='"'.$k['id'].'",';
+            }
+            $id = rtrim($id,',').')';
+            $sql = "select a.StoreId,a.ProgramId,b.Name as pname,c.Name as aname from r_store_program a INNER JOIN program b on a.ProgramId = b.ID INNER JOIN wf_aff c ON b.AffId = c.ID where a.StoreId IN $id";
+            $res2 = $db->getRows($sql);
+            $dataarr = array();
+            foreach($res2 as $k=>$v){
+                $dataarr[$k]['name'] = $res[$v['StoreId']]['name'].' |---| '.$v['pname'].' |---| '.$v['aname'];
+                $dataarr[$k]['id'] = $v['StoreId'].','.$v['ProgramId'];
+            }
+            echo json_encode($dataarr);
+        }else{
+            echo json_encode(array());
+        }
+        die;
+    }
+    if(isset($_POST['subtype'])){
+        $sql_names_set = 'SET NAMES latin1';
+        $db->query($sql_names_set);
+        $Tools = new Tools();
+            $idarr = explode(',',$_POST['spid']);
+            $StoreId = $idarr[0];
+            $programid = $idarr[1];
+            $user = 1;
+            $couponCode = addslashes($_POST['couponCode']);
+            $startDate = $_POST['startDate'];
+            $endDate = $_POST['endDate'];
+            $countryarr = $_POST['country'];
+            $title = addslashes($_POST['title']);
+            $desc = addslashes($_POST['desc']);
+            $url = addslashes($_POST['url']);
+            $OriginalUrl = addslashes($_POST['original_url']);
+            $type = $_POST['ptype'];
+            $currentTime = date("Y-m-d H:i:s");
+            $language  = $_POST['language'];
+            $simpleId = $Tools->random(8);
+            $EncodeId = $Tools->getEncodeId();
+            if(empty($countryarr)){
+                $sql = "select ShippingCountry from program_intell where ProgramId=$programid";
+                $countryres = $merchant->getRow($sql);
+                if(!empty($countryres)){
+                    $country = $countryres['ShippingCountry'];
+                }else{
+                    $country = '';
+                }
+            }else{
+                $country = '';
+                foreach($countryarr as $k){
+                    $country.=strtolower($k).',';
+                }
+                $country = rtrim($country,',');
+            }
+            if($_POST['subtype'] == 1){
+                $id = $_POST['id'];
+                $sql = "Update content_feed_new set `StoreId`=$StoreId,`country`='$country',`CouponCode`='$couponCode',`Title`='$title',`Desc`='$desc',`AffUrl`='$url',`OriginalUrl`='$OriginalUrl',`StartDate`='$startDate',`EndDate`='$endDate',`Type`='$type',`language`='$language' WHERE `ID`=$id";
+                if($db->query($sql)){
+                    $data = array(
+                        'flag' => 1,
+                        'msg' => 'Success'
+                    );
+                    echo json_encode($data);
+                } else {
+                    $data = array(
+                        'flag' => 2,
+                        'msg' => 'Insert Error!'
+                    );
+                    echo json_encode($data);
+                }
+            }else{
+                if($couponCode){
+                    $sql = "select id from content_feed_new where CouponCode = '".$couponCode."' and  StoreId = $programid and `language` = '".$language."' and Status = 'Active' and EndDate >='{$startDate}'";
+                    $arr = $merchant->getRow($sql);
+                    if(!empty($arr['id'])){
+                        $data = array(
+                            'flag' => 2,
+                            'msg' => 'have the same couponCode In the same advertiser!',
+                        );
+                        echo json_encode($data);
+                        die;
+                    }
+                }
+                $sql = "insert into content_feed_new (`SimpleId`,`country`,`source`,`StoreId`,`ProgramId`,`CouponCode`,`Title`,`Desc`,`AffUrl`,`OriginalUrl`,`StartDate`,`EndDate`,`AddTime`,`Status`,`Type`,`EncodeId`,`language`,`AddUser`)
+                VALUES ('$simpleId','$country','manual','$StoreId','$programid','$couponCode','$title','$desc','$url','$OriginalUrl','$startDate','$endDate','$currentTime','Active','$type','$EncodeId','$language','$user')";
+                if($db->query($sql)){
+                    $objRedis = new Redis();
+                    $objRedis->pconnect(REDIS_HOST, REDIS_PORT);
+                    $redisArr = array(
+                        'programid'=>'',
+                        'storeid'=>$StoreId,
+                        'affurl'=> $url ? $url : $OriginalUrl,
+                        'affid'=>'',
+                        'domain'=>'',
+                        'status'=>'active',
+                        'time'=>date('Y-m-d H:i:s')
+                    );
+                    $redisValue = json_encode($redisArr);
+                    $objRedis->set(":CF:".$EncodeId, $redisValue);
+                    $data = array(
+                        'flag' => 1,
+                        'msg' => 'Success'
+                    );
+                    echo json_encode($data);
+                } else {
+                    $data = array(
+                        'flag' => 2,
+                        'msg' => 'Insert Error!'
+                    );
+                    echo json_encode($data);
+                }
+            }
+        die;
+    }
+    if(isset($_POST['updatep']) && !empty($_POST['updatep']))
+    {
+        $search['pid'] = $_POST['pid'];
+        $search['download'] = 1;
+        $DomainTotal = $merchant->GetContentNew($search,0,20);
+        $sql = "select `Name`,`ID` as pid from program where ID =".$DomainTotal['data'][0]['ProgramId'];
+        $pname = $merchant->getRow($sql);
+        $DomainTotal['data'][0]['Advertiser_Name'] = $DomainTotal['data'][0]['Advertiser_Name'].' |---| '.$pname['Name'].' |---| '.$DomainTotal['data'][0]['aname'];
+        $DomainTotal['data'][0]['spid'] = $DomainTotal['data'][0]['StoreId'].','.$pname['pid'];
+        echo json_encode($DomainTotal['data'][0]);
+        die;
+    }
+    if(isset($_POST['delete_content']))
+	{
+		$currentTime = date("Y-m-d H:i:s");
+		//$sql = "INSERT INTO content_feed_new_delete_report (content_feed_id,delete_time,delete_user) VALUES ('{$_POST['id']}','$currentTime','{$_SERVER['PHP_AUTH_USER']}')";
+		//$db->query($sql);
+		$sql = "Update content_feed_new Set `Status`= 'InActive' WHERE ID = '{$_POST['id']}'";
+		if($db->query($sql)){
+			echo 1;
+		} else {
+			echo 0;
+		}
+		die;
+	}
+	elseif(isset($_POST['act']) && $_POST['act']== 'tip_program_aff'){
+	    if (isset($_POST['keywords'])) {
+	        
+	        $re_arr = array(
+	            'flag'=>0,
+	            'data'=>array(),
+	            'msg'=>'',
+	        );
+	        $_POST['keywords'] = trim($_POST['keywords']);
+	        if (!empty($_POST['keywords']) && strlen($_POST['keywords']) >= 3) {
+	    
+	            $where_str = '( a.Name LIKE "%' . addslashes($_POST['keywords']) . '%" OR a.IdInAff LIKE "' . addslashes($_POST['keywords']) . '%")';//and优先级强于or，所有前面的or要加括号
+	            $sql = "select a.id,a.name,b.name as aff from program a left join wf_aff b on a.affid = b.id where $where_str";
+	            $rows = $db->getRows($sql);
+	            if ($rows) {
+	                $tmp = array();
+	    
+	                foreach ($rows as $v) {
+	                    $tmp['name'] = $v['name'].'('.$v['aff'].')';
+	                    $tmp['id'] = $v['id'];
+	                    $re_arr['data'][] = $tmp;
+	                }
+	                $re_arr['flag'] = 1;
+	                
+	            } else {
+	                $re_arr['msg']="there is no such Program in table 'program'";
+	                //$str = "there is no such Program in table 'program'";
+	            }
+	    
+	        }
+	    }
+	    
+	    echo json_encode($re_arr);
+	    exit();
+	    
+	    
+	}
+	
+    if(isset($_POST['utype']) && !empty($_POST['utype'])){
+        $uid =  $_POST['uid'];
+        $sql = "select ApiKey,Domain,Name from publisher_account where publisherid=".$uid;
+        $res = $db->getRows($sql);
+        if(!empty($res)){
+            $val = array();
+            $val['data'] = $res;
+            echo json_encode($val);
+        }else{
+            return 0;
+        }
+        die;
+    }
+//category
+	$statis = new Statis();
+	$category = $statis->getCategory();
+
+//country
+$sql = 'SELECT CountryName,CountryCode FROM country_codes';
+$arr = $db->getRows($sql);
+foreach($arr as $v){
+    $countryArr[$v['CountryName']] = $v['CountryCode'];
+}
+$countryArr['global'] = 'Global';
+$countryArr['United Kingdom'] = 'UK';
+$affname = $objOutlog->get_affname();
+$affname[] = array('ID'=>-1,'Name'=>'Other');
+$objTpl->assign('affname', $affname);
+if(isset($_POST['table']) && !empty($_POST['table'])) {
+    $number = $_POST['order'][0]['column'];
+    $page = $_POST['start'];
+    $pagesize = $_POST['length'];
+    $aff = '';
+    $search['order'] = $_POST['order'][0]['dir'];
+    $search['oname'] = $_POST['columns'][$number]['data'];
+    $search['id'] = $_POST['id'];
+    $data = json_decode($_POST['data'],true);
+    for($i = 0;$i<count($data);$i++){
+        $search[$data[$i]['name']] = $data[$i]['value'];
+        if($data[$i]['name'] == 'affiliate'){
+            $aff.= $data[$i]['value'].',';
+        }
+
+    }
+    $search['download'] = 0;
+    $search['aff'] = rtrim($aff,',');
+    $DomainTotal = $merchant->GetContentNew($search,$page,$pagesize);
+    $DomainList = $DomainTotal['data'];
+    if(!empty($DomainList)){
+        foreach ($DomainList as &$v){
+            if($v['StartDate'] == '0000-00-00 00:00:00'){
+                $v['StartDate'] = 'N/A';
+            }
+            else {
+                $v['StartDate'] = date('Y-m-d',strtotime($v['StartDate']));
+            }
+
+            if($v['EndDate'] == '0000-00-00 00:00:00'){
+                $v['EndDate'] = 'N/A';
+            }else{
+                $v['EndDate'] = date('Y-m-d',strtotime($v['EndDate']));
+            }
+            $v['AddTime'] = date('Y-m-d',strtotime($v['AddTime']));
+            if($v['Type'] == 'Promotion'){
+                //No Code Needed
+                $v['CouponCode'] = '';
+            }
+            if(!empty($v['AffUrl'])){
+                $v['LinkUrl'] = $v['AffUrl'];
+            }else{
+                $v['LinkUrl'] = $v['OriginalUrl'];
+            }
+        }
+
+    }
+    $res['clicks'] = isset($DomainTotal['clicks']) ? $DomainTotal['clicks'] : 0;
+    $res['rclicks'] = isset($DomainTotal['rclicks']) ? $DomainTotal['rclicks'] : 0;
+    $res['rob'] = isset($DomainTotal['rob']) ? $DomainTotal['rob'] : 0;
+    $res['robp'] = isset($DomainTotal['robp']) ? $DomainTotal['robp'] : 0;
+    $res['orders'] =  isset($DomainTotal['orders']) ? $DomainTotal['orders'] : 0;
+    $res['sales'] =  isset($DomainTotal['sales']) ? $DomainTotal['sales'] : 0;
+    $res['commission'] =  isset($DomainTotal['commission']) ? $DomainTotal['commission'] : 0;
+    $res['data'] = $DomainList;
+    $res['start'] = $page/$pagesize+1;
+    $res['recordsFiltered'] = $DomainTotal['count'];
+    echo json_encode($res);
+    die;
+}
+
+$sql = "select IF(`Name` = '' OR `Name` IS NULL, Email, `Name`) AS `Name`,`ID` from publisher WHERE Status='Active' order by `Name` ASC ";
+$pubres = $db->getRows($sql);
+$sel_cate = array();
+if(isset($_GET['categories'])){
+    $sel_cate = explode(',',$_GET['categories']);
+}
+$objTpl->assign('pubres', $pubres);
+$objTpl->assign('sel_cate', $sel_cate);
+$objTpl->assign("title","Promotions");
+$objTpl->assign('search', $_GET);
+$objTpl->assign('category', $category);
+$objTpl->assign('countryArr', $countryArr);
+$sys_header['js'][] = BASE_URL.'/js/dataTables.min.js';
+$sys_header['js'][] = BASE_URL.'/js/dataTables.semanticui.min.js';
+$sys_header['js'][] = BASE_URL.'/js/jquery.filer.min.js';
+$sys_header['js'][] = BASE_URL.'/js/bootstrap-typeahead.js';
+$sys_header['css'][] = BASE_URL.'/css/front.css';
+$sys_header['css'][] = BASE_URL.'/css/jquery.filer.css';
+$sys_header['css'][] = BASE_URL.'/css/jquery.filer-dragdropbox-theme.css';
+$objTpl->assign('sys_header', $sys_header);
+$objTpl->display('b_content_new.html');

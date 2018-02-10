@@ -1,0 +1,45 @@
+<?php
+include_once("comm.php");
+include_once("func.php");
+global $_db;
+$_db = new Mysql();
+
+//获取affid
+$affid = isset($argv[1]) ? $argv[1] : 0;
+define('AFFID',$affid);
+$start_time = isset($argv[2]) ? preg_match('/^[\d]{4}-[\d]{2}-[\d]{2}$/', $argv[2],$start_time) : null;
+if(isset($argv[2]) && isset($argv[3])){
+    preg_match('/^[\d]{4}-[\d]{2}-[\d]{2}$/', $argv[2],$start_time);
+    preg_match('/^[\d]{4}-[\d]{2}-[\d]{2}$/', $argv[3],$end_time);
+}
+
+//获取联盟id alias A P
+$sql = 'SELECT * FROM wf_aff WHERE ID = '.intval($affid);
+$Affiliate = $_db->getRows($sql);
+if(empty($Affiliate)){
+    mydie("affiliate {$affid} not exist!"."\n\r");
+}
+
+if(is_array($Affiliate)){
+    define('AFFILIATE_NAME',$Affiliate[0]['Name']);
+    define('AFFILIATE_ALIAS',$Affiliate[0]['Alias']);
+    define('AFFILIATE_USER',$Affiliate[0]['Account']);
+    define('AFFILIATE_PASS',$Affiliate[0]['Password']);
+    if(!file_exists(PATH_DATA."/".AFFILIATE_ALIAS.'_'.AFFID)){
+        mkdir(PATH_DATA."/".AFFILIATE_ALIAS.'_'.AFFID);
+    }
+    if(!is_null($start_time) && !is_null($end_time)){
+        define("START_TIME",$start_time[0]);
+        define("END_TIME",$end_time[0]);
+    }
+
+    $file_name = PATH_CODE."/crawl.".AFFID.".".AFFILIATE_ALIAS.".php";
+    if(file_exists($file_name))
+        require($file_name);
+    else
+        mydie("affiliate {$Affiliate[0]['ID']} not exist!"."\n\r");
+}else{
+    //无参数
+    mydie("php murphy.php [affid] [start_time] [end_time]"."\n\r"."example:php murphy.php 1 2016-01-10 2016-02-02"."\n\r");
+}
+?>

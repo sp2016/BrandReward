@@ -1,0 +1,145 @@
+<{include file="front_block_header.html"}>
+<{include file="front_block_banner.html"}>
+<style>
+    body{
+      background-color: white;
+    }
+</style>
+<div class="banner index_banner">
+  <img src="img/index_banner.jpg">
+  <div class="banner_text">
+    <div class="main">
+      <h2>Brandreward ist deine Spitzenlösung für eine lückenlose und unkomplizierte Monetisierung deines Websiteinhalts</h2>
+      <h5>Unsere Plattform vernetzt ausgesuchte Top-Publisher mit erstklassigen Marken</h5>
+      <div class="btn">
+        <a href="<{$smarty.const.BASE_URL}>/signup.php" class="s">Sign Up</a>
+        <a href="javascript: void(0);" class="l" onclick="remodal_login()">Login</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="publishers_one" style="padding-bottom:50px;padding-top:80px">
+  <div class="main">
+    <div class="pub_one_content">
+      <img src="img/pub_one_pic.jpg" />
+      <h4 style="font-size: 2.5em;">Wer ist ein Publisher?</h4>
+      <p>Bei Brandreward definieren wir Publisher als digitale Influencer. Publisher können als Blogs, Foren, Content-Netzwerke, mobilen oder Web-Apps, Webgames und E-Commerce-Webseiten auftreten<br/>
+        Gehörst du dazu und suchst noch nach einem simplen und effizienten Weg deinen Inhalt zu Geld zu machen? Dann bist du hier genau richtig! Als Brandreward Mitglied kannst du Partnerschaften mit Onlineshops (Advertisern) eingehen und deren Inhalte auf verschiedene Art und Weise in deine Webseite einbinden</p>
+    </div>
+  </div>
+</div>
+<div class="advertiser_brand" style="background-color: white;padding-bottom: 0px;">
+  <div class="main">
+    <!-- <i></i> -->
+    <h3 style="text-align: center;font-size: 2.5em;">Warum Brandreward?</h3>
+    <div class="features_display" style="padding-top: 20px;padding-bottom: 0px;background-color:white;">
+      <div class="main">
+        <div>
+          <ul>
+            <li style="background: none">
+              <h4>Leistungsprinzip</h4>
+              <p>Da unsere Dienstleistung Performance basiert ist entstehen keinerlei Kosten, nie! Wir verdienen nur dann wenn ihr es tut</p>
+            </li>
+            <li style="background: none">
+              <h4>Exklusive Aktionen und Rabatte</h4>
+              <p>Teile die aktuellsten Angebote unserer Advertiser mit deinen Lesern</p>
+            </li>
+          </ul>
+          <ul>
+            <li style="background: none">
+              <h4>85% der Kommissionen für dich</h4>
+              <p>Im Gegensatz zu den branchenüblichen 75% erhalten unsere Mitglieder 10% mehr Kommission</p>
+            </li>
+            <li style="background: none">
+              <h4>Echtzeit Berichterstattung</h4>
+              <p>Dank innovativer Technologie gewährleisten wir euch stets aktuelle Links und Material zum monetisieren</p>
+            </li>
+          </ul>
+          <ul style="margin-bottom: 0px;">
+            <li style="background: none">
+              <h4>Transparenz</h4>
+              <p>… ist uns ein grosses Anliegen und daher stets</p>
+            </li>
+            <li style="background: none;">
+              <h4>Wir helfen dir zu wachsen!</h4>
+              <p>Unser aufrichtiges, passioniertes Team steht dir jederzeit für fachkundige und strategische Beratung zur Verfügung</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="background-color: white;" class="brand_logo">
+  <div class="m">
+    <ul class="bxslider">
+      <li><img src="img/adver_logo/logo01.png"/></li>
+      <li><img src="img/adver_logo/logo02.png"/></li>
+      <li><img src="img/adver_logo/logo03.png"/></li>
+      <li><img src="img/adver_logo/logo04.png"/></li>
+      <li><img src="img/adver_logo/logo05.png"></li>
+      <li><img src="img/adver_logo/logo06.png"/></li>
+      <li><img src="img/adver_logo/logo07.png"/></li>
+      <li><img src="img/adver_logo/logo08.png"/></li>
+      <li><img src="img/adver_logo/logo09.png"/></li>
+      <li><img src="img/adver_logo/logo10.png"/></li>
+      <li><img src="img/adver_logo/logo11.png"/></li>
+      <li><img src="img/adver_logo/logo12.png"/></li>
+      <li><img src="img/adver_logo/logo13.png"/></li>
+      <li><img src="img/adver_logo/logo14.png"/></li>
+      <li><img src="img/adver_logo/logo15.png"/></li>
+      <li><img src="img/adver_logo/logo16.png"/></li>
+      <li><img src="img/adver_logo/logo17.png"/></li>
+      <li><img src="img/adver_logo/logo18.png"/></li>
+      <li><img src="img/adver_logo/logo19.png"/></li>
+      <li><img src="img/adver_logo/logo20.png"/></li>
+    </ul>
+  </div>
+  <div class="btn" style="padding-bottom: 25px;">
+    <a href="<{$smarty.const.BASE_URL}>/signup.php" class="s">Sign Up</a>
+  </div>
+</div>
+<div class="publishers_one" style="padding-bottom:80px;padding-top:80px">
+  <div class="main">
+    <div class="pub_one_content">
+      <img src="img/pub_one_pic.jpg" />
+      <h4 style="font-size: 2.5em;">Wer ist ein Advertiser?</h4>
+      <p>
+        Advertiser sind Unternehmen, welche mit Hilfe von Content Websiten ihre (inter-)nationale Reichweite erhöhen wollen.<br/>
+        Bei Brandreward haben Sie die Möglichkeit dies durch die Zusammenarbeit mit globalen Influencern zu erreichen. Wir garantieren Ihnen einen Influencerpool mit rein qualitativ hochstehenden Publishern, welche allesamt vor Freigabe von unseren Account Managern einzeln geprüft wurden
+      </p>
+    </div>
+  </div>
+</div>
+<div class="advertiser_method" style="background-color: white;">
+  <div class="main" style="padding-top: 40px;padding-bottom: 40px;">
+    <h3 style="text-align: center;font-size: 2.5em;">Digitales Marketing Dank Brandreward leicht gemacht !</h3>
+    <div class="adver_three_content" style="margin-top: 40px;">
+      <img src="img/adver_three_pic.jpg" style="height: 363px;"/>
+      <h3 style="text-align: right;">Online Präsenz</h3>
+      <p style="text-align: right;">Das Internet ist heutzutage omnipräsent! Wir helfen Ihnen dieses extrem vielseitige Medium auf eine äusserst effiziente Art und Weise zu nutzen. Wir stärken die Online Präsenz ihrer Marke und nehmen Ihnen dabei alle Arbeit ab</p>
+      <h3 style="text-align: right;">Best Match</h3>
+      <p style="text-align: right;">Wir gleichen die Publisher mit Ihren Wunschkriterien ab und finden die besten Partner für Sie</p>
+      <h3 style="text-align: right;">Innovation, Innovation, Innovation</h3>
+      <p style="text-align: right;margin-bottom: 0px;">Wir glauben an Innovation! Unser gesamtes System basiert auf innovativen Features. Wir integrieren kontinuierlich neue Technologien, um die bestmögliche Lösung für unsere Marken und Content-Kunden zu bieten</p>
+    </div>
+  </div>
+</div>
+<!-- 
+<div style="width: 1300px;margin:0 auto;text-align: center;margin-bottom: 50px;margin-top: 20px;">
+  <a href="mailto:vivienne@brandreward.com"><img src="img/jojo.png"/></a><br/><br/>
+  <h3 style="line-height:1.8em;font-weight: 500;color: #627491;">Hi ich bin Vivienne und für Brandreward DACH zuständig. Bei Interessse an einer Zusammenarbeit als Publisher oder Advertiser, oder bei gener</h3>
+</div> -->
+
+<script src="js/jquery.bxslider.min.js"></script>
+<link href="css/jquery.bxslider.css" rel="stylesheet" />
+<script>
+  $(document).ready(function(){
+    $('.bxslider').bxSlider({
+      minSlides: 3,
+      maxSlides: 5,
+      slideWidth: 170,
+    });
+  });
+</script>
+<{include file="front_block_footer.html"}>

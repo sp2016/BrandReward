@@ -1,0 +1,392 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div class="ch-container" style="margin-top: 20px;">
+  <div class="row">
+    <div class="col-sm-2 col-lg-2">
+      <div class="sidebar-nav" style="background-color:#f6f6f6;">
+        <a href="javascript:void(0)" class="sh"><i style="margin-top: 10px;color:#627491;margin-left: 10px;font-size: 18px;" class="glyphicon glyphicon-search"></i></a>
+        <input id="stime" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control dtpicker" placeholder="From" value="<{$stime}>">
+        <input id="etime" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control dtpicker  " placeholder="To" value="<{$etime}>">
+        <input  type="button" class="btn d1" style="width: 95%;margin-left: 2.5%;margin-top:10px;color:#627491;" value="Last 7 Day">
+        <input  type="button" class="btn d2" style="width: 95%;margin-left:2.5%;margin-top:10px;color:#627491;" value="Last 30 Day">
+        <input id="advertiser" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control" placeholder="advertiser">
+        <input id="manager" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control" placeholder="manager">
+        <input id="site" style="width: 95%;margin-left: 2.5%;margin-top: 10px;" type="text" class="form-control" placeholder="site">
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Choose a Country</label>
+          <select id="country" class="chosen chosen-select"  multiple="multiple"  data-rel="chosen" style="width: 96%;">
+            <option value="">All</option>
+            <{foreach from=$countryArr key=k item=c}>
+            <option value="<{$c}>"><{$k}></option>
+            <{/foreach}>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Affiliate Name</label>
+          <select id="affiliate" class="chosen chosen-select"  multiple="multiple"  data-rel="chosen" style="width: 96%;">
+            <option value="">ALL</option>
+            <{foreach from=$affname item=aff}>
+            <option value="<{$aff.ID}>" class="aff"><{$aff.Name}></option>
+            <{/foreach}>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Data Type</label>
+          <select id="datatype" data-rel="chosen" class="chosen" style="width: 96%;">
+            <option value="1">Publisher</option>
+            <option value="2">All</option>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Time Type</label>
+          <select id="timetype" data-rel="chosen" class="chosen" style="width: 96%;">
+            <option value="2">ClickTime</option>
+            <option value="1">CreateTime</option>
+          </select>
+        </div>
+        <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+          <label class="control-label" style="margin-left: 3px;" for="selectError">Site Type</label>
+          <select id="sitetype" data-rel="chosen" class="chosen" style="width: 96%;">
+            <option value="">All</option>
+            <option value="Content">Content</option>
+            <option value="Promotion">Promotion</option>
+            <option value="Mixed">Mixed</option>
+          </select>
+        </div>
+        <input  type="button" class="btn search" style="width: 95%;margin-left:2.5%;margin-top:10px;margin-bottom:10px;background-color: #627491;color:white;" value="Search">
+        <input  type="button" class="btn csv" style="width: 95%;margin-left:2.5%;margin-bottom:10px;background-color: #286090;color:white;" value="Download Csv">
+      </div>
+    </div>
+
+
+    <div id="content" class="col-lg-10 col-sm-10">
+      <!-- content starts -->
+      <div>
+        <ul class="breadcrumb">
+          <li>
+            <a href="<{$smarty.const.BASE_URL}>/b_home.php">Home</a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" style="text-decoration:none;">performance</a>
+          </li>
+        </ul>
+      </div>
+      <div id="append">
+
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Total Publisher</div>
+          <div id="publisher"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Total Sales</div>
+          <div id="sales"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Total Commission</div>
+          <div id="commission"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Order Num</div>
+          <div id="num"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Total Clicks</div>
+          <div id="totals"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Real Clicks<span style="margin-left:3px;" class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Total Clicks - Robot"></span></div>
+          <div id="clicks"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>Robot</div>
+          <div id="rob"></div>
+        </a>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-6" style="padding-left: 0px;">
+        <a data-toggle="tooltip" title="" class="well top-block" href="#" data-original-title="6 new members.">
+          <div>May be Robot</div>
+          <div id="robp"></div>
+        </a>
+      </div>
+      <div class="box col-md-12" style="padding-left:0px;padding-right:0px;">
+        <div class="box-inner">
+          <div class="box-header well" data-original-title="">
+          </div>
+          <div id="tbzone">
+            <table id="example" class="ui celled table" cellspacing="0" width="100%">
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+
+<div class="ui fullscreen modal">
+  <i class="close icon"></i>
+  <div class="header label"></div>
+  <div class="content modelval" style="overflow:auto;height:100%;">
+  </div>
+</div>
+
+<script src="js/dataTables.min.js"></script>
+<script src="js/dataTables.semanticui.min.js"></script>
+<script>
+  $(".chosen").chosen();
+  $('.d1').on('click',function(){
+    var mydate = new Date();
+    var y = mydate.getFullYear();
+    var m = parseInt(mydate.getMonth()) + 1;
+    var d = mydate.getDate();
+    if (m < 10)
+      m = '0' + m;
+    if (d < 10)
+      d = '0' + d;
+
+    var today = y + '-' + m + '-' + d;
+
+    var mydate = new Date();
+    mydate.setDate(mydate.getDate() - 7);
+    var y = mydate.getFullYear();
+    var m = parseInt(mydate.getMonth()) + 1;
+    var d = mydate.getDate();
+    if (m < 10)
+      m = '0' + m;
+    if (d < 10)
+      d = '0' + d;
+
+    var lastday = y + '-' + m + '-' + d;
+
+    $('#stime').val(lastday);
+    $('#etime').val(today);
+  })
+  $('.d2').on('click',function(){
+    var mydate = new Date();
+    var y = mydate.getFullYear();
+    var m = parseInt(mydate.getMonth()) + 1;
+    var d = mydate.getDate();
+    if (m < 10)
+      m = '0' + m;
+    if (d < 10)
+      d = '0' + d;
+
+    var today = y + '-' + m + '-' + d;
+
+    var mydate = new Date();
+    mydate.setDate(mydate.getDate() - 30);
+    var y = mydate.getFullYear();
+    var m = parseInt(mydate.getMonth()) + 1;
+    var d = mydate.getDate();
+    if (m < 10)
+      m = '0' + m;
+    if (d < 10)
+      d = '0' + d;
+
+    var lastday = y + '-' + m + '-' + d;
+
+    $('#stime').val(lastday);
+    $('#etime').val(today);
+  })
+  $(".dtpicker").datetimepicker({
+    minView: "month",//设置只显示到月份
+    format : "yyyy-mm-dd",//日期格式
+    autoclose:true,//选中关闭
+    todayBtn: true//今日按钮
+  });
+  $('.csv').bind("click",function(){
+    var stime = $('#stime').val();
+    var etime = $('#etime').val();
+    var sitetype = $('#sitetype').val();
+    var advertiser = $('#advertiser').val();
+    var manager = $('#manager').val();
+    var datatype = $('#datatype').val();
+    var timetype = $('#timetype').val();
+    var site = $('#site').val();
+    var affiliate = $('#affiliate').val();
+    var country = $('#country').val();
+    if(stime == '' || etime == ''){
+      alert('Time not null');
+      return false;
+    }
+    window.location.href = 'process.php?act=PerformanceCsv&sitetype='+sitetype+'&country='+country+'&affiliate='+affiliate+'&site='+site+'&timetype='+timetype+'&type=site&datatype='+datatype+'&from='+stime+'&to='+etime+'&advertiser='+advertiser+'&manager='+manager;
+  })
+  function tab(){
+    var stime = $('#stime').val();
+    var etime = $('#etime').val();
+    var advertiser = $('#advertiser').val();
+    var manager = $('#manager').val();
+    var datatype = $('#datatype').val();
+    var timetype = $('#timetype').val();
+    var affiliate = $('#affiliate').val();
+    var site = $('#site').val();
+    var sitetype = $('#sitetype').val();
+    var country = $('#country').val();
+    $('#example').dataTable({
+      "fnDrawCallback":function(data){
+              var clicks = data.json.clicks;
+              var sales = data.json.sales;
+              var com = data.json.com;
+              var order = data.json.order;
+              var rob = data.json.rob;
+              var robp = data.json.robp;
+              var total = data.json.total;
+              var pub = data.json.recordsFiltered;
+              $('#publisher').html(pub);
+              $('#commission').html(com);
+              $('#clicks').html(clicks);
+              $('#sales').html(sales);
+              $('#num').html(order);
+              $('#rob').html(rob);
+              $('#robp').html(robp);
+              $('#totals').html(total);
+            },
+      "bServerSide": true,
+      "bProcessing": true,
+      "iDisplayLength": 20,
+      "bPaginage":true,
+      "aLengthMenu": [10, 20, 50, 100],
+      'bFilter': false,
+      'pagingType':'full_numbers',
+      "ajax": {
+        "url": "b_performance_site.php",
+        "type":'POST',
+        "data": {
+          "table":1,
+          "type":'site',
+          'advertiser':advertiser,
+          'manager':manager,
+          "stime":stime,
+          "etime":etime,
+          "datatype":datatype,
+          "timetype":timetype,
+          "affiliate":affiliate,
+          "site":site,
+          "sitetype":sitetype,
+          "country":country
+        }
+      },
+      "aaSorting": [
+        [5, "desc"],
+      ],
+      columns: [
+        { "data": "alias","title":'<{if $smarty.get.type=="sites"}>Publisher<{elseif $smarty.get.type=="merchants"}>Advertiser<{else}>Publisher<{/if}>',"bSortable": false,"render":function(data, type, full, meta){
+          if(full.alias != '' && full.alias != null)
+          {
+            return  full.alias;
+          } else {
+            return '<font color="red">Unknown</font>';
+          }
+        }},
+        { "data": "domain","title":'Domain',"bSortable": false,"render":function(data, type, full, meta){
+          if(full.domain != '' && full.domain != null)
+          {
+            return  full.domain;
+          } else {
+            return '<font color="red">Unknown</font>';
+          }
+        }},
+        { "data": "Manager","title":'Manager',"bSortable": false,"render":function(data, type, full, meta){
+          if(full.Manager != '' && full.Manager != null)
+          {
+            return  full.Manager;
+          } else {
+            return '<font color="red">Unknown</font>';
+          }
+        }},
+        { "data": "Status","title":'Status',"bSortable": false,"render":function(data, type, full, meta){
+          if(full.Status != '' && full.Status != null)
+          {
+            return  full.Status;
+          } else {
+            return '<font color="red">Unknown</font>';
+          }
+        }},
+        { "data": "SiteOption","title":'Site Type',"bSortable": false,"render":function(data, type, full, meta){
+          if(full.SiteOption != '' && full.SiteOption != null)
+          {
+            return  full.SiteOption;
+          } else {
+            return '<font color="red">Unknown</font>';
+          }
+        }},
+        { "data": "Sales","title":'Order Sales', "asSorting": [ "desc", "asc", "desc" ]},
+        { "data": "Commission","title":'Commission',"asSorting": [ "desc", "asc", "desc" ]},
+        { "data": "orders","title":'Order Num', "asSorting": [ "desc", "asc", "desc" ]},
+        { "data": "clicks","title":'Total Clicks', "asSorting": [ "desc", "asc", "desc" ]},
+        { "data": "realclicks","title":'<a href="javascript:void(0)" title="(Total Clicks - Robot)">Real Clicks</a>',"bSortable": false},
+        { "data": "rob","title":'Robot'},
+        { "data": "robp","title":'May Be Robot'},
+        { "data": "epc","title":'<a href="javascript:void(0)" title="(commission/clicks)">EPC</a>',"bSortable": false },
+        { "data": "commrate","title":'<a href="javascript:void(0)" title="(commission/sales*100)">Commission.Rate</a>',"bSortable": false },
+      ],
+    })}
+  tab();
+  function changes(t){
+    if(confirm("DO you really want to change support type?"))
+    {
+      var storeId = $(t).attr('val');
+      var supportType = t.value;
+      var data = {UpdateSupport:1,storeId:storeId,supportType:supportType};
+      $.ajax({
+        type: "post",
+        url: "b_store.php",
+        data:data,
+        async: false,
+        success: function (res) {
+          if(res == 1){
+            alert('Success!');
+          }else {
+            alert('Failed!');
+          }
+        },
+        error:function(){
+          alert('Failed!');
+        }
+      });
+    }
+    // console.log();
+  }
+  $('.search').bind("click",function(){
+    $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+    tab();
+  })
+  $('.sh').bind("click",function(){
+    $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+    tab();
+  })
+  $('#t1').bind("click",function(){
+    $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+    tab();
+  })
+  $('#t2').bind("click",function(){
+    $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+    tab();
+  })
+  function toThousands(num) {
+    var num = (num || 0).toString(), result = '';
+    while (num.length > 3) {
+      result = ',' + num.slice(-3) + result;
+      num = num.slice(0, num.length - 3);
+    }
+    if (num) { result = num + result; }
+    return result;
+  }
+
+</script>
+<{include file="b_block_footer.html"}>

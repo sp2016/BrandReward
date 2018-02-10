@@ -1,0 +1,407 @@
+<{include file="b_block_header.html"}>
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container"> 
+    <div class="navbar-header">
+        <a class="navbar-brand hidden-sm" href="<{$smarty.const.BASE_URL}>/b_white_listing.php"><{$smarty.const.Brand}></a>
+    </div>
+    <!-- <ul class="navbar-form navbar-left">
+	    <div class="form-group">
+	    	<select id="changeStore" class="form-control">
+	    		<option></option>
+	    	</select>
+	    </div>
+    </ul> -->
+    <ul class="nav navbar-nav navbar-right"> 
+        <li><a href="javascript:void(0)" id="head-top-logout"><{$LANG.backend.public.logout}></a></li> 
+    </ul> 
+    </div>
+</nav>
+<style>
+    .td{
+        text-align: center;
+        vertical-align: middle;
+    }
+</style>
+
+<div class="container" style="width:90%;margin-top:30px;">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 style="text-align:center">Your Advertiser Profile</h1>
+            <table class="table table-bordered">
+                <tbody>
+                <tr>
+                    <input type="hidden" id="ID" value="<{$id}>">
+                    <td class='td k' width="20%" data-id="Name">Name</td>
+                    <td class='td v'><input type="text" id="Name" class="form-control Name" placeholder="Please add the official advertiser name" value="<{$info.0.Name}>" class="form-control"/></td>
+                </tr>
+                <tr>
+                    <td class='td k' data-id="Desc">Description</td>
+                <td class='td v'><input type="text" id="Desc" class="form-control Domain" placeholder="Please add a short description of what you sell" value="<{$info.0.Desc}>" class="form-control"/></td>
+                </tr>
+                <tr>
+                <td class='td k' data-id="LogoAdr">Advertiser Logo</td>
+                <td class='td v' style='text-align:left'>
+                	<{if $info.0.LogoAdr}><img width="220px" border=0 src="img/adv_logo/<{$info.0.LogoAdr}>" /><{/if}>
+                    <form action="upload.php" method="post" enctype="multipart/form-data">
+                        <input type="file" name="files[]" id="filer_input" multiple="multiple">
+                    </form>
+                    <input type="hidden" id="LogoAdr">
+                </td>
+                </tr>                
+               <{* <tr>
+                    <td class='td k' data-id="CommissionValue">Commission</td>
+                    <td class='td v'>                        
+                        <textarea style="width: 90%" name="pub_country" id="CommissionValue" class="form-control pub_traffic0 GeoBreakdown0"><{$info.0.CommissionValue}></textarea>
+                    </td>
+                </tr>    *}>           
+                <tr>
+                    <td class='td k' data-id="AdvertiserEmail">Advertiser Email</td>
+                    <td class='td v'>
+                        <input style="width: 30%" type="text" id="AdvertiserEmail" class="form-control Domain"  placeholder="advertiser@brandreward.com" value="<{$info.0.AdvertiserEmail}>" class="form-control"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='td k' data-id="AdvertiserEmailType">Affiliate Manager Type</td>
+                    <td class='td v'>
+                        <select style="width: 30%" name="pub_country" id="AdvertiserEmailType" class="form-control pub_traffic0 GeoBreakdown0">
+                        	<option value="Unknown"></option>
+                            <option value="In-house" <{if $info.0.AdvertiserEmailType == 'In-house'}>selected<{/if}>>In-house affiliate manager</option>
+                            <option value="Network" <{if $info.0.AdvertiserEmailType == 'Agency'}>selected<{/if}>>Network affiliate manager</option>
+                            <option value="Agency" <{if $info.0.AdvertiserEmailType == 'Agency'}>selected<{/if}>>Agency affiliate manager</option>   
+                            <option value="Other" <{if $info.0.AdvertiserEmailType == 'Other'}>selected<{/if}>>Other</option>                              
+                        </select>
+                    </td>
+                </tr>
+                 <{*<tr>
+                    <td class='td k' data-id="CommissionType">Commission Type</td>
+                    <td class='td v'>
+                        <select style="width: 30%" name="pub_country" id="CommissionType" class="form-control pub_traffic0 GeoBreakdown0">
+                            <option value="Percent">Percent</option>
+                            <option value="Value">Value</option>
+                            <option value="Unknown">Unknown</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='td k' data-id="CommissionUsed">Commission Used</td>
+                    <td class='td v'>
+                        <input type="text" id="CommissionUsed" class="form-control Domain" value="<{$info.0.Domain}>" class="form-control"/>
+                    </td>
+                </tr>*}>
+                <{*<tr>
+                    <td class='td k' data-id="CoopType">Coop Type</td>
+                    <td class='td v'>
+                        <select style="width: 30%" name="pub_country" id="CoopType" class="form-control pub_traffic0 GeoBreakdown0">
+                            <option value="Whitelist">Whitelist</option>
+                            <option value="Blacklist">Blacklist</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='td k' data-id="SupportType">Publisher Preference</td>
+                    <td class='td v'>
+                        
+                     	<div id="Preference" style="overflow:auto;">
+	                       <{foreach item=cate key=k from=$Preference}>
+	                            <div class="col-xs-6"  style="width:25%;margin-top:10px;height: 30px;padding-left:5px;padding-right:0px;float: left;text-align: left;">
+	                                <input id="fate_<{$cate}>" data-id="<{$cate}>" type="checkbox" <{if isset($SupportType[$cate])}>checked<{/if}>>&nbsp;<{$cate}>
+	                            </div>
+	                       <{/foreach}>
+                      </div>
+                        
+                    </td>
+                </tr>                
+				<tr>
+                    <td class='td k' data-id="SupportWay">Advertiser Partnership Options <br /><div style="text-align:left;witdh=100%;padding-left:60px;font-size:6px"> * check all that apply</div></td>
+                    <td class='td v' style='text-align:left'> 
+                     <div id="dtBox"></div>
+                            <{foreach item=cate key=k from=$provide_arr}>
+                           <div style="width:50%;margin-top:10px;padding-left:5px;padding-right:0px;text-align: left;float:left">
+                       		 <input id="fate_<{$cate}>" data-id="<{$cate}>" type="checkbox" <{if isset($provide_id.$cate)}>checked<{/if}>>&nbsp;<{$cate}>
+                       		 <input type="text" id="add-content-startDate" class="form-control" placeholder="Start Date" style="width: 50%;display:inherit" readonly="readonly" data-field="datetime">
+                             <input type="text" id="add-content-endDate" class="form-control" placeholder="End Date" style="width: 50%;display:inherit" readonly="readonly" data-field="datetime">
+                             <textarea placeholder="Comments" style="width: 90%;display:inherit" class="form-control pub_traffic0 GeoBreakdown0"></textarea>
+                           		
+                            
+                            <br />
+                            </div>
+                            <{/foreach}>
+                        
+                    </td>
+                </tr>  
+                *}>              
+                <tr>
+                    <td class='td k' data-id="PPCPolicy">Publisher Restrictions <br /><div style="text-align:left;witdh=100%;padding-left:60px;font-size:6px">*PPC Policies<br /> *Content Policies<br /> *Promotion Policies<br /> *Country Restrictions</div></td>
+                    <td class='td v'>
+                        <textarea style="width: 90%" name="pub_country" id="PPCPolicy" class="form-control pub_traffic0 GeoBreakdown0"><{$info.0.PPCPolicy}></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='td k' data-id="SupportType">Publisher Preference</td>
+                    <td class='td v'>
+                        
+                     	<div id="Preference" style="overflow:auto;">
+	                       <{foreach item=cate key=k from=$Preference}>
+	                            <div class="col-xs-6"  style="width:25%;margin-top:10px;height: 30px;padding-left:5px;padding-right:0px;float: left;text-align: left;">
+	                                <input id="fate_<{$cate}>" data-id="<{$cate}>" type="checkbox" <{if isset($SupportType[$cate])}>checked<{/if}>>&nbsp;<{$cate}>
+	                            </div>
+	                       <{/foreach}>
+                      </div>
+                        
+                    </td>
+                </tr> 
+                <tr>
+                    <td class='td k' data-id="CategoryId">Your Categories</td>
+                    <td class='td v'>
+                        <div id="mod" style="overflow:auto;">
+                            <{foreach item=cate key=k from=$category}>
+                            <div class="col-xs-6"  style="width:29%;margin-top:10px;height: 30px;padding-left:5px;padding-right:0px;float: left;text-align: left;">
+                       		 <input id="fate_<{$k}>" data-id="<{$k}>" type="checkbox" <{if isset($category_id.$k)}>checked<{/if}>>&nbsp;<{$cate}>
+                            </div>
+                            <{/foreach}>
+                        </div>
+                        <div style="float: left;width: 100%;text-align: center;">
+                            <input  type="button" class="btn all" val="0" style="width: 100px;background-color: #5bbfde;color:white;" value="Select All">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class='td k' data-id="SupportCountry">Support Countries</td>
+                    <td class='td v'>
+                        <div  id="country" style="overflow:auto;">
+                            <{foreach item=cate key=k from=$countryArr}>
+                            <div class="col-xs-6"  style="width:25%;margin-top:10px;height: 30px;padding-left:5px;padding-right:0px;float: left;text-align: left;">
+                                <input id="fate_<{$cate}>" data-id="<{$cate}>" type="checkbox" <{if isset($country_arr[$cate])}>checked<{/if}>>&nbsp;<{$k}>
+                            </div>
+                            <{/foreach}>
+                        </div>
+                        <div style="float: left;width: 100%;text-align: center;">
+                            <input  type="button" class="btn all1" val="0" style="width: 100px;background-color: #5bbfde;color:white;" value="Select All">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                <tr>
+                    <td class='td' colspan="2">
+                        <input class="btn btn-primary"  id="submit" type="button" value="submit"/>
+                    </td>
+                </tr>
+                <tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        filer_default_opts = {
+            changeInput2: '<div class="jFiler-input-dragDrop"><div class="jFiler-input-inner"><div class="jFiler-input-icon"><i class="icon-jfi-cloud-up-o"></i></div><div class="jFiler-input-text"><h3>Drag&Drop files here</h3> <span style="display:inline-block; margin: 15px 0">or</span></div><a class="jFiler-input-choose-btn blue-light">Browse Files</a></div></div>',
+            limit: null,
+            templates: {
+                box: '<ul class="jFiler-items-list jFiler-items-grid"></ul>',
+                item: '<li class="jFiler-item" style="width: 49%">\
+                            <div class="jFiler-item-container">\
+                                <div class="jFiler-item-inner">\
+                                    <div class="jFiler-item-thumb">\
+                                        <div class="jFiler-item-status"></div>\
+                                        <div class="jFiler-item-info">\
+                                            <span class="jFiler-item-title"><b title="{{fi-name}}">{{fi-name | limitTo: 25}}</b></span>\
+                                            <span class="jFiler-item-others">{{fi-size2}}</span>\
+                                        </div>\
+                                        {{fi-image}}\
+                                    </div>\
+                                    <div class="jFiler-item-assets jFiler-row">\
+                                        <ul class="list-inline pull-left">\
+                                            <li>{{fi-progressBar}}</li>\
+                                        </ul>\
+                                        <ul class="list-inline pull-right">\
+                                            <li><a class="icon-jfi-trash jFiler-item-trash-action"></a></li>\
+                                        </ul>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                        </li>',
+                itemAppend: '<li class="jFiler-item" style="width: 49%">\
+                                <div class="jFiler-item-container">\
+                                    <div class="jFiler-item-inner">\
+                                        <div class="jFiler-item-thumb">\
+                                            <div class="jFiler-item-status"></div>\
+                                            <div class="jFiler-item-info">\
+                                                <span class="jFiler-item-title"><b title="{{fi-name}}">{{fi-name | limitTo: 25}}</b></span>\
+                                                <span class="jFiler-item-others">{{fi-size2}}</span>\
+                                            </div>\
+                                            {{fi-image}}\
+                                        </div>\
+                                        <div class="jFiler-item-assets jFiler-row">\
+                                            <ul class="list-inline pull-left">\
+                                                <li><span class="jFiler-item-others">{{fi-icon}}</span></li>\
+                                            </ul>\
+                                            <ul class="list-inline pull-right">\
+                                                <li><a class="icon-jfi-trash jFiler-item-trash-action"></a></li>\
+                                            </ul>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                            </li>',
+                progressBar: '<div class="bar"></div>',
+                itemAppendToEnd: false,
+                removeConfirmation: true,
+                _selectors: {
+                    list: '.jFiler-items-list',
+                    item: '.jFiler-item',
+                    progressBar: '.bar',
+                    remove: '.jFiler-item-trash-action'
+                }
+            },
+            dragDrop: {},
+            uploadFile: {
+                url: "upload.php",
+                data: {},
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                beforeSend: function(){},
+                success: function(data, el){
+                    console.log(data);
+                    $('#LogoAdr').val(data);
+                    var parent = el.find(".jFiler-jProgressBar").parent();
+                    el.find(".jFiler-jProgressBar").fadeOut("slow", function(){
+                        $("<div class=\"jFiler-item-others text-success\"><i class=\"icon-jfi-check-circle\"></i> Success</div>").hide().appendTo(parent).fadeIn("slow");
+                    });
+
+
+                },
+                error: function(el){
+                    var parent = el.find(".jFiler-jProgressBar").parent();
+                    el.find(".jFiler-jProgressBar").fadeOut("slow", function(){
+                        $("<div class=\"jFiler-item-others text-error\"><i class=\"icon-jfi-minus-circle\"></i> Error</div>").hide().appendTo(parent).fadeIn("slow");
+                    });
+                },
+                statusCode: null,
+                onProgress: null,
+                onComplete: null
+            },
+            onRemove: function(itemEl, file, id, listEl, boxEl, newInputEl, inputEl){
+                var file = file.name;
+                $.post('./php/remove_file.php', {file: file});
+            },
+        };
+        $('#filer_input').filer({
+            showThumbs: true,
+            templates: filer_default_opts.templates,
+            uploadFile: filer_default_opts.uploadFile
+        });
+    });
+    $('.all').on('click',function(){
+        if($(this).attr('val') == 0){
+            $('#mod :checkbox').prop("checked",true);
+            $(this).attr('val',1);
+            // alert($(this).attr('val'));
+        }else{
+            $('#mod :checkbox').prop("checked",false);
+            $(this).attr('val',0);
+        }
+    })
+    $('.all1').on('click',function(){
+        if($(this).attr('val') == 0){
+            $('#country :checkbox').prop("checked",true);
+            $(this).attr('val',1);
+            // alert($(this).attr('val'));
+        }else{
+            $('#country :checkbox').prop("checked",false);
+            $(this).attr('val',0);
+        }
+    })
+    $('#submit').on('click',function(){
+//        alert($('.k').eq(7).data('id'));
+//        return false;
+        var val = '';
+        $('.k').each(function(i){
+            var id = $('.k').eq(i).attr('data-id');
+            var name = '#'+id;
+            if(id == 'CategoryId'){
+                var cate = '';
+                $('#mod :checkbox').each(function(i){
+                    if($('#mod :checkbox').eq(i).is(':checked')){
+                        cate+=$('#mod :checkbox').eq(i).attr('data-id')+',';
+                    }
+                })
+                if(cate == ''){
+                    return true;
+                }
+                var v = cate.substring(0,cate.length-1);
+                val+='"'+id+'":'+'"'+v+'",';
+                return true;
+            }
+            if(id == 'SupportCountry'){
+                var con = '';
+                $('#country :checkbox').each(function(i){
+                    if($('#country :checkbox').eq(i).is(':checked')){
+                        con+=$('#country :checkbox').eq(i).attr('data-id')+',';
+                    }
+                })
+                if(con == ''){
+                    return true;
+                }
+                var s = con.substring(0,con.length-1);
+                val+='"'+id+'":'+'"'+s+'",';
+                return true;
+            }
+            if(id == 'SupportWay'){
+                var con = '';
+                $('#pro :checkbox').each(function(i){
+                    if($('#pro :checkbox').eq(i).is(':checked')){
+                        con+=$('#pro :checkbox').eq(i).attr('data-id')+',';
+                    }
+                })
+                if(con == ''){
+                    return true;
+                }
+                var s = con.substring(0,con.length-1);
+                val+='"'+id+'":'+'"'+s+'",';
+                return true;
+            }
+            if(id == 'SupportType'){
+	           	 var con = '';
+	             $('#Preference :checkbox').each(function(i){
+	                 if($('#Preference :checkbox').eq(i).is(':checked')){
+	                     con+=$('#Preference :checkbox').eq(i).attr('data-id')+',';
+	                 }
+	             })
+	             if(con == ''){
+	                 return true;
+	             }
+	             var s = con.substring(0,con.length-1);
+	             val+='"'+id+'":'+'"'+s+'",';
+	             return true;
+            }
+            /*if($(name).val() == ''){
+                return true;
+            }else {*/
+                val+='"'+id+'":'+'"'+$(name).val()+'",';
+            //}
+
+        })
+        val = val.substring(0,val.length-1);
+        var id = $('#ID').val();
+        var data = {'val':'{'+val+'}','post':1,'id':id};
+        $.ajax({
+            type:"post",
+            url:"b_updat.php",
+            data:data,
+            async:false,
+            success: function(res){
+                //alert(res);
+                if(res == 1){
+                    alert('success');
+                    window.location.href='b_white_listing.php';
+                }else{
+                	window.location.href='b_white_listing.php';
+                }
+            }
+        });
+    })
+
+
+</script>
+
+<{include file="b_block_footer.html"}>

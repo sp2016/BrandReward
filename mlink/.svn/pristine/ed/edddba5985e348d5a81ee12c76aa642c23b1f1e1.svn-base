@@ -1,0 +1,24 @@
+<?php
+/**
+ * 1.set app <=> level to make sure what is the security level<sl>
+ * low: only need key
+ * high: need key<site id> & user<account>
+ * system: need system code <mlink_root_sudo>
+ *
+ * 2.can define some guide in it 
+ */
+
+$_install = array(
+    'publisher.track_js'=>array('sl'=>'low'),
+    'links.get_data'=>array('sl'=>'low'),
+    'links.get_data_xo'=>array('sl'=>'low'),
+    'links.update_data'=>array('sl'=>'system'),
+    'links.check_img'=>array('sl'=>'system'),
+    'report.transaction_data'=>array('sl'=>'high'),
+    'statis.update_clicks'=>array('sl'=>'system'),
+    'statis.update_finance'=>array('sl'=>'system'),
+    'statis.update_tracking_min'=>array('sl'=>'system'),
+    'statis.clean_data'=>array('sl'=>'system'),
+    'sync.mega_clicks_info'=>array('sl'=>'system'),
+);
+?>

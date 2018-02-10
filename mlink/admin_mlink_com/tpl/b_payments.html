@@ -1,0 +1,114 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    
+                    <div class="panel-body" >
+                        <form id="form_search">
+                            <div class="col-lg-12 form-inline">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                    Publisher:<input type="text" Name="publisher" class="form-control" value="<{$search.publisher}>" placeholder="Name/Alias/Domain/ApiKey">
+                                    </div>
+                                    <div class="form-group">
+                                    TransactionID:<input type="text" Name="transactionid" class="form-control" value="<{$search.transactionid}>" placeholder="TransactionID">
+                                    </div>
+                                    PaidTime:<select class="form-control" name="paidmonth">
+                                    <option value="">All</option>
+                                    <{foreach from=$paidMonth_list item=m}>
+                                        <option value="<{$m}>" <{if $m==$search.paidmonth}>selected<{/if}>><{$m}></option>
+                                    <{/foreach}>
+                                </select>
+                                   
+
+                                    <div class="form-group" style="margin-left:20px">
+                                        <a href="javascript:void(0);" onclick="submit_form()" class="btn btn-primary" role="button">Search</a>
+                                    </div>
+                                    <a href="b_payments_preview.php?type=group" class="btn btn-primary" role="button">Preview</a>
+                                </div>
+                            </div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-12" style="text-align: center;display: none;" id="checkboxall_process"><a href="javascript:void(0);" onclick="choose_all(this)"><span class="label label-primary">Page</span> click here to choose all recode</a></div>
+
+            <div class="col-lg-12">
+                <table class="table table-hover" id="tbl_pp">
+                            <thead>
+                            <tr>
+                                <th class="col-lg-1">ID</th>
+                                <th class="col-lg-1">Amount</th>
+                                <th class="col-lg-1">Pay month</th>
+                                <th class="col-lg-1">Publisher Account<br>Name (ID)</th>
+                                <th class="col-lg-2">Publisher Site</th>
+                                <th class="col-lg-3">Payment Info</th>
+                                <th class="col-lg-1">Transaction ID<br><i>PaidTime</i></th>
+                                <th class="col-lg-2">Operation</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=payment}>
+                            <tr data-id="<{$payment.ID}>">
+                                <td><{$payment.ID}> </td>
+                                <td><b><{$payment.Currency}> <{$payment.Amount|number_format:2:'.':','}></b></td>
+                                <td><{$payment.PaidDate|substr:0:7}></td>
+                                <td><{$payment.publisher.UserName}><br><{$payment.publisher.Name}> (<b><{$payment.publisher.ID}></b>)</td>
+                                <td><{$payment.account.Domain}></td>
+                                <td><{if $payment.PaymentType == 'paypal'}><b>Paypal</b>: <{$payment.PaymentDetail}><{else}><b>Bank</b>: <a href="javascript:void(0);" onclick="triggerDetail(this)">Detail</a><{/if}><div style="display:none;"><{$payment.PaymentDetail}></div></td>
+                                <td><{$payment.TransactionId}><br><i><{$payment.PaidTime}></i></td>
+                                <td>
+                                    [ <a href="javascript:void(0);" onclick="showmodal(this,'invoice')">EDIT</a> ]<br>
+                                    [ <a href="javascript:void(0);" onclick="showmodal(this,'invoice')">DOWNLOAD INVOICE</a> ]
+                                </td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                        <{$pageHtml}>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width: 70%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="clearAjaxHtml()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Publisher Potential</h4>
+            </div>
+            <div class="modal-body" id="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clearAjaxHtml()">close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function triggerDetail(obj){
+    if($(obj).next().css('display') == 'none'){
+        $(obj).html('Close');
+        $(obj).next().css('display','');
+    }else{
+        $(obj).html('Detail');
+        $(obj).next().css('display','none');
+    }
+}
+function submit_form(){
+    $('#form_search input[name=action]').val('search');
+    $('#form_search').submit();
+}
+</script>
+
+    <{include file="b_block_footer.html"}>

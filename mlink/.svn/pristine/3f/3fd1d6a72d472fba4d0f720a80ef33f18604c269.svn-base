@@ -1,0 +1,310 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<style>
+td{word-break: break-all; word-wrap:break-word;}
+
+hr
+{
+  position:absolute;
+  float:left;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  width:100px;
+  border:1px solid;
+}
+
+.form-group{margin-top:15px;}
+</style>
+<div>
+  <div class="" style="margin-top:30px;">
+    <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+    <div class="row" style="padding:20px 0;">
+
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Search</div>
+          <div class="panel-body" >
+            <form id="form_tran_search">
+              <input type="hidden" name="p" value="1" />
+            <div class="col-lg-11 form-inline">
+              <div class="form-group">
+                OrginalURL res is 200:
+                <select class="form-control" name="is200">
+                  <option value="3">ALL</option>
+                  <option value="1" <{if $search.is200=="1"}>selected<{/if}>>YES</option>
+                  <option value="0" <{if $search.is200=="0"}>selected<{/if}>>NO</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                FinalURL res is bad:
+                <select class="form-control" name="isbad">
+                  <option value="3">ALL</option>
+                  <option value="1" <{if $search.isbad=="1"}>selected<{/if}>>YES</option>
+                  <option value="0" <{if $search.isbad=="0"}>selected<{/if}>>NO</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                Check result:
+                <select class="form-control" name="checkres">
+                  <option value="">ALL</option>
+                  <option value="unknown" <{if $search.checkres=='unknown'}>selected<{/if}>>UNKNOWN</option>
+                  <option value="yes" <{if $search.checkres=='yes'}>selected<{/if}>>YES</option>
+                  <option value="no" <{if $search.checkres=='no'}>selected<{/if}>>NO</option>
+                  <option value="oe" <{if $search.checkres=='oe'}>selected<{/if}>>OE</option>
+                  <option value="re" <{if $search.checkres=='re'}>selected<{/if}>>RE</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                URL is same:
+                <select class="form-control" name="issame">
+                  <option value="3">ALL</option>
+                  <option value="1" <{if $search.issame=="1"}>selected<{/if}>>YES</option>
+                  <option value="0" <{if $search.issame=="0"}>selected<{/if}>>NO</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                URL is contain:
+                <select class="form-control" name="issimilar">
+                  <option value="3">ALL</option>
+                  <option value="1" <{if $search.issimilar=="1"}>selected<{/if}>>YES</option>
+                  <option value="0" <{if $search.issimilar=="0"}>selected<{/if}>>NO</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                URL is same host name:
+                <select class="form-control" name="ishostname">
+                  <option value="3">ALL</option>
+                  <option value="1" <{if $search.ishostname=="1"}>selected<{/if}>>YES</option>
+                  <option value="0" <{if $search.ishostname=="0"}>selected<{/if}>>NO</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                Original Url:
+                <input type="text" name="pageUrl" class="form-control" value="<{$search.pageUrl}>" placeholder="Original Url">
+              </div>
+
+              <div class="form-group">
+                ID:
+                <input type="text" name="id" class="form-control" value="<{$search.id}>" placeholder="ID">
+              </div>
+
+              <div class="form-group">
+                operator:
+                <select class="form-control" name="op_name">
+                  <option value="">ALL</option>
+                  <option value="miahuang" <{if $search.op_name=="miahuang"}>selected<{/if}>>miahuang</option>
+                  <option value="tinading" <{if $search.op_name=="tinading"}>selected<{/if}>>tinading</option>
+                  <option value="kaylayan" <{if $search.op_name=="kaylayan"}>selected<{/if}>>kaylayan</option>
+                  <option value="harineyou" <{if $search.op_name=="harineyou"}>selected<{/if}>>harineyou</option>
+                </select>
+              </div>
+
+            </div>
+
+            <div class="col-lg-1">
+              <div class="form-group">
+                <input type="submit" class="btn  btn-primary " value="Search">
+              </div>
+            </div>
+
+          </form>
+          </div>
+        </div>
+      </div>
+      <!-- background-color: #f9f9f9; -->
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">List</div>
+          <div class="panel-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:5%;">ID</th>
+                  <th style="width:30%;">Original Url<hr><br>Final Url</th>
+                  <th style="width:5%;">CheckDate</th>
+                  <th style="width:10%;">AffId<hr><br>Program Id</th>
+                  <th style="width:9%;">Original Res<hr><br>Final Res</th>
+                  <th style="width:10%;">CheckRes<hr><br>[docheck]</th>
+                  <th style="width:15%;">Operator [Time]<hr><br>Remark</th>
+                  <th style="width:8%;">Option</th>
+                </tr>
+              </thead>
+              <{foreach from=$outLogList item=outLog}>
+                <tr data-id="<{$outLog.id}>">
+                  <td><{$outLog.id}></td>
+                  <td>[O] <a href="<{$outLog.pageUrl}>" target="_blank"><{$outLog.pageUrl}></a><hr><br>[F] <a href="<{$outLog.finalUrl}>" target="_blank"><{$outLog.finalUrl}></a></td>
+                  <td><{$outLog.createddate}></td>
+                  <td>[A] [<{$outLog.affId}>] <{$outLog.aff_name}><hr><br>[P] <a href="<{$smarty.const.BASE_URL}>/b_program_edit.php?id=<{$outLog.programId}>" target="_blank">[<{$outLog.programId}>] <{$outLog.program_name}></a></td>
+                  <td><{$outLog.pagehttpcode}><hr><br><{$outLog.httpcode}></td>
+                  <td><f><{$outLog.checkres}></f><hr><br>
+                      <{if $outLog.checkres != 'yes' && $outLog.checkres != 're'}>
+                      <a href="javascript:void(0);" data-click="check_yes">[YES]</a>
+                      <a href="javascript:void(0);" data-click="check_no">[NO]</a>
+                      <a href="javascript:void(0);" data-click="check_oe">[OE]</a>
+                      <a href="javascript:void(0);" data-click="check_re">[RE]</a>
+                      <{/if}>
+                  </td>
+
+                  <td><{if $outLog.op_name}><{$outLog.op_name}> [<{$outLog.op_time}>]<{/if}><hr><br><{$outLog.remark}></td>
+                  <td>
+                      <a href="javascript:void(0)" data-act="remark" data-id="<{$outLog.id}>" data-remark="<{$outLog.remark}>" onclick="showRemark(<{$outLog.id}>)">REMARK</a>
+                    </td>
+                </tr>
+                <tr>
+                  <th>Out Url</th>
+                  <td colspan="8"><a href="<{$outLog.outUrl}>" target="_blank"><{$outLog.outUrl}></a></td>
+                </tr>
+              <{/foreach}>
+            </table>
+            <{$pageHtml}>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="dialog-remark" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" id="exampleModalLabel">CHECK REMARK</h2>
+      </div>
+      <div class="modal-body">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2" style="text-align:center;">
+              <form method="post" action="<{$smarty.const.BASE_URL}>/process.php">
+                <input type="hidden" value="remark_jump_mer" name="act" />
+                <input type="hidden" name="id" value="" />
+                <input type="hidden" name="check_res" value="" />
+                <textarea class="form-control" rows="3" name="remark"></textarea>
+                <button type="button" class="btn  btn-primary btn-lg btn-block" style="margin-top:15px;">submit</button>
+              </form>
+          </div>
+        </div>
+    </div>        
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+$('table tr').each(function(i,e){
+  if(i > 2 && (i%4 ==0 || (i+1)%4 == 0) ){
+    $(e).css('background-color','#ffffcc');
+  }
+});
+
+
+$('table a[data-click="check_yes"]').click(function(){
+  var id = $(this).parent().parent().find('td:first').html();
+  var f = $(this).prev().prev().prev();
+  var url = '<{$smarty.const.BASE_URL}>/process.php';
+  var ajaxdata = 'act=check_jump_mer&id='+id+'&res=yes';
+  $.ajax({
+    type:"post",
+    url:"<{$smarty.const.BASE_URL}>/process.php",
+    data:ajaxdata,
+    success: function(req){
+      f.html('yes');
+    }
+  });
+});
+
+$('table a[data-click="check_no"]').click(function(){
+  var id = $(this).parent().parent().attr('data-id');
+  showRemark(id,'no');
+  // var id = $(this).parent().parent().find('td:first').html();
+  // var f = $(this).prev().prev().prev().prev();
+  // var url = '<{$smarty.const.BASE_URL}>/process.php';
+  // var ajaxdata = 'act=check_jump_mer&id='+id+'&res=no';
+  // $.ajax({
+  //   type:"post",
+  //   url:"<{$smarty.const.BASE_URL}>/process.php",
+  //   data:ajaxdata,
+  //   success: function(req){
+  //     f.html('no');
+  //   }
+  // });
+});
+
+$('table a[data-click="check_oe"]').click(function(){
+  var id = $(this).parent().parent().find('td:first').html();
+  var f = $(this).prev().prev().prev().prev().prev();
+  var url = '<{$smarty.const.BASE_URL}>/process.php';
+  var ajaxdata = 'act=check_jump_mer&id='+id+'&res=oe';
+  $.ajax({
+    type:"post",
+    url:"<{$smarty.const.BASE_URL}>/process.php",
+    data:ajaxdata,
+    success: function(req){
+      f.html('oe');
+    }
+  });
+});
+
+$('table a[data-click="check_re"]').click(function(){
+  var id = $(this).parent().parent().find('td:first').html();
+  var f = $(this).prev().prev().prev().prev().prev().prev();
+  var url = '<{$smarty.const.BASE_URL}>/process.php';
+  var ajaxdata = 'act=check_jump_mer&id='+id+'&res=re';
+  $.ajax({
+    type:"post",
+    url:"<{$smarty.const.BASE_URL}>/process.php",
+    data:ajaxdata,
+    success: function(req){
+      f.html('re');
+    }
+  });
+});
+
+
+function showRemark(id,checkres){
+  var obj = $('table tr[data-id="'+id+'"]').find('a[data-act="remark"]');
+  var remark = $(obj).attr('data-remark');
+  var id = $(obj).attr('data-id');
+  $('#dialog-remark form textarea').val(remark);
+  $('#dialog-remark form input[name="id"]').val(id);
+  if(checkres){
+    $('#dialog-remark form input[name="check_res"]').val(checkres);
+  }else{
+    $('#dialog-remark form input[name="check_res"]').val('');
+  }
+  $('#dialog-remark').modal();
+}
+
+$('#dialog-remark form button').click(function(){
+  var reg = /.+/;
+  var remark_txt = $('#dialog-remark form textarea').val();
+  if(!reg.exec(remark_txt)){
+    alert('remark is empty!');
+    return false;
+  }
+
+
+  var url = '<{$smarty.const.BASE_URL}>/process.php';
+  var remark = $(this).prev().val();
+  var ajaxdata = $('#dialog-remark form').serialize();
+  $.ajax({
+    type:"post",
+    url:"<{$smarty.const.BASE_URL}>/process.php",
+    data:ajaxdata,
+    success: function(req){
+      window.location.reload();
+    }
+  });
+});
+</script>
+
+<{include file="b_block_footer.html"}>

@@ -1,0 +1,113 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;">
+            <h1>Manager - Crawl</h1>
+        </select>
+        </div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">在线运行数：<{$scriptSum}>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped" id="table_aff">
+                            <thead>
+                            <tr>
+                                <th>AffName</th>
+                                <th>ProgramCrawlStatus<br/>状态<br/>当前脚本状态</th>
+                                <th>LinkCrawlStatus<br/>状态<br/>当前脚本状态</th>
+                                <th>FeedCrawlStatus<br/>状态<br/>当前脚本状态</th>
+                                <th style="float: right">Operation</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=data key=key}>
+                            <tr>
+                                <td><{$data.Name}></td>
+                                <td>
+                                    <{if $data.ProgramCrawlStatus == 'Yes'}>
+                                                                            开启<br/>
+                                      <{if $data.scriptGetprogram > 0}>【<span style="color:red">脚本运行中...</span>】<{else}>【脚本已结束】<{/if}>
+                                    <{else}>
+                                      <span style="color:#FF6347">未开启</span>
+                                    <{/if}>
+                                </td>
+                                <td>
+                                    <{if $data.LinkCrawlStatus == 'Yes'}>
+                                                                            开启<br/>
+                                      <{if $data.scriptGetlinks > 0}>【<span style="color:red">脚本运行中...</span>>】<{else}>【脚本已结束】<{/if}>                                       
+                                    <{else}>
+                                        <span style="color:#FF6347">未开启</span>                                      
+                                    <{/if}>
+                                </td>
+                                <td>
+                                    <{if $data.FeedCrawlStatus == 'Yes'}>
+                                                                            开启<br/>
+                                      <{if $data.scriptGetfeed > 0}>【<span style="color:red">脚本运行中...</span>】<{else}>【脚本已结束】<{/if}>
+                                    <{else}>
+                                        <span style="color:#FF6347">未开启</span>
+                                    <{/if}>
+                                </td>
+                                <td>
+                                    <!--<{if $data.ProgramCrawlStatus == 'Yes'}>
+                                        <{if $data.scriptGetprogram > 0}>
+                                            <span style="float:right" class="null_style_by_js" data-type="2" data-crawl="getprogram" data-affid="<{$key}>"><a href="javascript:void(0);" target="_blank">EndProgramScript</a></span><br/>                                        
+                                        <{else}>
+                                            <span style="float:right" class="null_style_by_js" data-type="1" data-crawl="getprogram" data-affid="<{$key}>"><a href="javascript:void(0);" target="_blank">StartProgramScript</a></span><br/>                                         
+                                        <{/if}>
+                                    <{/if}>
+                                    <{if $data.LinkCrawlStatus == 'Yes'}>
+                                        <{if $data.scriptGetlinks > 0}>
+                                            <span style="float:right" class="null_style_by_js" data-type="2" data-crawl="getallpagelinks" data-affid="<{$key}>"><a href="javascript:void(0);" target="_blank">EndLinksScript</a></span><br/>                                      
+                                        <{else}>
+                                            <span style="float:right" class="null_style_by_js" data-type="1" data-crawl="getallpagelinks" data-affid="<{$key}>"><a href="javascript:void(0);" target="_blank">StartLinksScript</a></span><br/>                                        
+                                        <{/if}>
+                                    <{/if}>
+                                    <{if $data.FeedCrawlStatus == 'Yes'}>
+                                        <{if $data.scriptGetfeed > 0}>
+                                            <span style="float:right" class="null_style_by_js" data-type="2" data-crawl="getallfeeds" data-affid="<{$key}>"><a href="javascript:void(0);" target="_blank">EndFeedsScript</a></span><br/>                                     
+                                        <{else}>
+                                            <span style="float:right" class="null_style_by_js" data-type="1" data-crawl="getallfeeds" data-affid="<{$key}>"><a href="javascript:void(0);" target="_blank">StartFeedsScript</a></span><br/>                                          
+                                        <{/if}>
+                                    <{/if}>-->
+                                </td>
+                            </tr>
+                            <{/foreach}>
+
+
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript">    
+
+$(".null_style_by_js").click(function(){
+	
+	var type  = $(this).data('type');
+	var crawl = $(this).data('crawl');
+	var affid = $(this).data('affid');
+	console.log(type+'=='+crawl+'=='+affid);
+	
+    $.ajax({
+	         type:"post",
+	         dataType:"json",
+	         url:"<{$smarty.const.BASE_URL}>/b_tools_manage_crawl.php",
+	         data:'affid='+affid+'&crawl='+crawl+'&type='+type,
+	         success: function(req){
+	           
+	        	  console.log(req);
+	        	 
+	         }
+	      });
+})    
+</script>	      
+ 
+<{include file="b_block_footer.html"}>

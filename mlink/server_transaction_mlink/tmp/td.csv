@@ -1,0 +1,52 @@
+<html>
+<HEAD>
+    <TITLE>TradeDoubler</TITLE>
+    <META HTTP-EQUIV=Refresh CONTENT="40; URL=/pan/index.jsp">
+    <SCRIPT language=JavaScript src="utils/js/css_detect.js"></SCRIPT>
+    <SCRIPT language=JavaScript src="/pan/website/js/global.js"></SCRIPT>
+</HEAD>
+<BODY bgColor="#ffffff">
+
+<form action="https://publisher.tradedoubler.com/pan/login" id="login" method="post" target="_top" name="login">
+<input type="hidden" name="spaceportLogin" value="true">
+
+<TABLE border=0 cellpadding=0 cellspacing=0 width=760>
+    <tr>
+        <td width="250" valign="top"><img src="/pan/img/inv.gif" width=250 height=2 border=0></td>
+        <td width=25><img src="/pan/img/inv.gif" width=25 height=2 border=0></td>
+        <td width=595 valign="top" colspan=3>
+            <B id="rubrik">Session timed out</b><p/><table width="500" cellpadding="2" cellspacing="0">
+                <tr>
+                    <td width="24"><img src="/pan/images/warning.gif"></td>
+                    <td>
+                        You have been inactive too long. Please log in again.<BR><BR><font color=#585858>If you believe this message to be in error, please do the following:<UL><LI>If you are running <B>Norton</B> software (anti-virus, cookie-blocking or ad-blocking software) add 'https://publisher.tradedoubler.com</B>' to the allowed domains list for cookies.  Please consult your manual for further information.  This will resolve the problem in most cases.<LI>Always use the URL https://publisher.tradedoubler.com and avoid using direct links in your shortcut bar.</td>
+                </tr>
+
+                <tr>
+                    <td>Username:</td>
+                    <td><input name="tradedoublerUserName" class="input" style="width:200" value=""></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td><input name="tradedoublerPassword" class="input" style="width:200" type="password" autocomplete="off">&nbsp;<input type="submit" value="Login" class="button"></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><a href="javascript:CustomWindow('/pan/displayPageHelp.action?textKey=HELP_TEXT_FORGOT_PASSWORD&textKeyTitle= COMMON_TEXT_HELP', 500, 250)"></a><br></td>
+                </tr>
+
+            </table>
+            </td>
+    </tr>
+</TABLE>
+</form>
+
+<script type="text/javascript">
+    if (top.location.href != location.href) {
+        top.location.href = location.href;
+    }
+</script>
+
+</BODY>
+</HTML>
+
+

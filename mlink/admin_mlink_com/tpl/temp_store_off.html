@@ -1,0 +1,117 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;">
+            <h1>Advertiser partnership - Off</h1>
+        </select>
+        </div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                
+                <div class="panel panel-default">
+                    <div class="panel-heading"><a href="b_tools_manage_crawl.php" target="_blank">Search</a></div>
+                    <div class="panel-body">
+                        <form id="form_content_search">
+                            <div class="row">
+                                <div class=" form-inline">
+                                    <div class="col-lg-12 ">
+                                        <div class="form-group dpm" style="position:relative;">
+                                           <input type="text" name="date" class="form-control datepicker" placeholder="Run Time" value="<{$search.date}>"> 
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            &nbsp;Network:
+                                            <select name="affid" class="form-control" style="width:120px">
+                                                <option value="">All</option>
+                                                <{foreach from=$aff  item=af}>
+                                                <option value="<{$af.ID}>" <{if isset($search.affid) and $search.affid eq $af.ID}>selected="selected"<{/if}>><{$af.Name}></option>
+                                                <{/foreach}>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            &nbsp;StatusInAff:
+                                            <select name="StatusInAff" class="form-control" style="width:120px">
+                                                <option value="">All</option>
+                                                <option value="Active" <{if isset($search.StatusInAff) and $search.StatusInAff eq Active}>selected="selected"<{/if}>>Active</option>
+                                                <option value="TempOffline" <{if isset($search.StatusInAff) and $search.StatusInAff eq TempOffline}>selected="selected"<{/if}>>TempOffline</option>
+                                                <option value="Offline" <{if isset($search.StatusInAff) and $search.StatusInAff eq Offline}>selected="selected"<{/if}>>Offline</option>
+                                                
+                                            </select>
+                                        </div>
+                                        
+                                        
+                                        <div class="form-group">
+                                            &nbsp;Partnership:
+                                            <select name="Partnership" class="form-control" style="width:120px">
+                                                <option value="">All</option>
+                                                <option value="NoPartnership" <{if isset($search.Partnership) and $search.Partnership eq NoPartnership}>selected="selected"<{/if}>>NoPartnership</option>
+                                                <option value="Active" <{if isset($search.Partnership) and $search.Partnership eq Active}>selected="selected"<{/if}>>Active</option>
+                                                <option value="Pending" <{if isset($search.Partnership) and $search.Partnership eq Pending}>selected="selected"<{/if}>>Pending</option>
+                                                <option value="Declined" <{if isset($search.Partnership) and $search.Partnership eq Declined}>selected="selected"<{/if}>>Declined</option>
+                                                <option value="Expired" <{if isset($search.Partnership) and $search.Partnership eq Expired}>selected="selected"<{/if}>>Expired</option>
+                                                <option value="Removed" <{if isset($search.Partnership) and $search.Partnership eq Removed}>selected="selected"<{/if}>>Removed</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="form-group dpm" style="position:relative;">Advertiser:
+                                           <input type="text" style="width: 240px;" name="store" class="form-control advertiser" placeholder="e.g Ebay, Amazon, etc." value="<{$search.store}>"> 
+                                        </div>
+                                        
+                                        <div class="form-group" style="margin-left: 10px;">
+                                            <input type="submit" class="btn b-primary" value="Search">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <table class="table table-striped" id="table_aff">
+                            <thead>
+                            <tr>
+                                <th>Advertiser</th>
+                                <th>Network</th>
+                                <th>Program</th>
+                                <th>StatusInAff</th>
+                                <th>Partnership</th>
+                                <th>Homepage</th>
+                                <th>Clicks</th>
+                                <th>Commission</th>
+                                <th>OffTime</th>
+                                <th>Manager</th>
+                                <th>Contacts</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=value}>
+                            <tr>
+                                <td><{$value.storename}></td>
+                                <td><{$value.affname}></td>
+                                <td width="250px"><{$value.ProgramName}></td>
+                                <td><{$value.StatusInAff}></td>
+                                <td><{$value.Partnership}></td>
+                                <td width="500px"><span style="width:200px;word-wrap:break-word;word-break:break-all;"><{$value.Homepage}></span></td>
+                                <td><{$value.Clicks}></td>
+                                <td><{$value.Commission}></td>
+                                <td><{$value.OffTime}></td>
+                                <td><{$value.MailTo}></td>
+                                <td><{$value.Contacts}></td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+                        <{$pageHtml}>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+ 
+<{include file="b_block_footer.html"}>

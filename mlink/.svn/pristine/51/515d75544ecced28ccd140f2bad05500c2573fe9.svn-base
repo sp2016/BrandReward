@@ -1,0 +1,90 @@
+<div class="container" style="margin-top:30px;width:98%">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Add Form
+                </h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="alias" class="col-sm-3 control-label">Merge To Store</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="alias" name="alias" placeholder="Store Name" value="<{$info.alias}>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="merged" class="col-sm-3 control-label">Merged Stores</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="merged" name="merged" placeholder="Store Name" value="<{$info.Stores}>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-3">
+                            <button type="button" class="btn btn-default merge">Merge</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="application/javascript">
+    $('.merge').on('click', function () {
+        var alias = $('#alias').val();
+        var merged = $('#merged').val();
+        var data = {act: 'doAdd', alias: alias, merged: merged}
+        $.ajax({
+            type: "post",
+            url: "b_store_merge.php",
+            data: data,
+            async: false,
+            success: function (response) {
+                if (response != 0) {
+                    alert('Edit Success!')
+                    location = '/b_store_merge.php';
+                } else {
+                    alert('Edit Failed!')
+                }
+            }
+        });
+    });
+    $('#alias,#merged').keyup(function(){
+        var tbj = this;
+        var keywords = $(this).val();
+        var data = {
+            act : 'search',
+            keywords : keywords
+        }
+        if(!keywords.match(/[^\s]{3,}/)){
+            return;
+        }
+        $.ajax({
+            type:"post",
+            url:"<{$smarty.const.BASE_URL}>/b_store_merge.php",
+            data:data,
+            success: function(response){
+                var html = '<ul class="dropdown-menu" >';
+                var array = response.split('|');
+                for(var i in array){
+                    html = html+'<li><a href="javascript:void(0);">'+array[i]+'</a></li>';
+                }
+                var html = html+'</ul>';
+                if($(tbj).parent().find('ul')){
+                    $(tbj).parent().find('ul').remove();
+                }
+                $(tbj).parent().append(html);
+                loadTip($(tbj).parent().find('ul'));
+            }
+        });
+    });
+    function loadTip(obj){
+        $(obj).css('display','block');
+        $(obj).find('a').click(function(){
+            $(obj).prev().val($(this).text());
+            $(obj).remove();
+        });
+    }
+
+</script>

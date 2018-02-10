@@ -1,0 +1,185 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+<div class="ch-container" style="margin-top: 20px;">
+    <div class="row">
+        <div class="col-sm-2 col-lg-2">
+            <div class="sidebar-nav" style="background-color:#f6f6f6;">
+                <a href="javascript:void(0)" class="sh"><i style="margin-top: 10px;color:#627491;margin-left: 10px;font-size: 18px;" class="glyphicon glyphicon-search"></i></a>
+                <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+                    <label class="control-label" style="margin-left: 3px;" for="selectError">Status</label>
+                    <select id="status" class="chosen2"  data-rel="chosen" style="width: 96%;">
+                        <option value="notRelated">NotRelated</option>
+                        <option value="All">All</option>
+                        <option value="related">Related</option>
+                    </select>
+                </div>
+                <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+                    <label class="control-label" style="margin-left: 3px;" for="selectError">Salesman</label>
+                    <select id="salesman" class="chosen2"  data-rel="chosen" style="width: 96%;">
+                        <option value="All">All</option>
+                        <option value="alain">Alain</option>
+                        <option value="giulia">Giulia</option>
+	                    <option value="lillian">Lillian</option>
+	                    <option value="monica">Monica</option>
+						<option value="nicolas">Nicolas</option>
+                        <option value="sarah">Sarah</option>
+                        <option value="senait">Senait</option>
+                        <option value="vivienne">Vivienne</option>
+                    </select>
+                </div>
+	            <div style="margin-top: 10px;margin-left: 2.5%;" class="controls">
+                    <label class="control-label" style="margin-left: 3px;" for="selectError">Network</label>
+                    <select id="network"  data-rel="chosen" style="width: 96%;">
+                        <option value="All">ALL</option>
+                        <{foreach from=$networks item=network}>
+                        <option value="<{$network.ID}>" class="networks"><{$network.Name}></option>
+                        <{/foreach}>
+                    </select>
+                </div>
+                <input type="button" class="btn search" style="width: 95%;margin-left:2.5%;margin-top:10px;margin-bottom:10px;background-color: #627491;color:white;" value="Search">
+            </div>
+        </div>
+        <div id="content" class="col-lg-10 col-sm-10">
+            <!-- content starts -->
+            <div>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="<{$smarty.const.BASE_URL}>/b_home.php">Home</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" style="text-decoration:none;">Category</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="box col-md-12" style="padding-left:0;padding-right:0;">
+                <div class="box-inner">
+                    <div class="box-header well" data-original-title="">
+                    </div>
+                    <div id="tbzone">
+                        <table id="example" class="ui celled table" cellspacing="0" width="100%">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="ui  modal catemodel" style="min-height: 500px;min-width: 1000px;">
+    <div class="header label">Category of <font id="catename"></font></div>
+
+    <div class="content modelval" id="mod" style="overflow:auto;height:100%;padding-top:5px;">
+        <{foreach item=cate key=k from=$category}>
+        <div class="col-xs-6 col-md-3" style="margin-top:10px;height: 30px;padding-left:0px;padding-right:0px;">
+            <input class="ck" id="fate_<{$k}>" data-id="<{$k}>" type="checkbox">&nbsp;<{$cate}>
+        </div>
+        <{/foreach}>
+        <div style="float: left;width: 100%;margin-top: 10px;text-align: center;">
+
+            <input  type="button" class="btn all" val="0" style="width: 100px;background-color: #5bbfde;color:white;" value="Select All">
+            &nbsp;
+            <input  type="button" class="btn upcate" val="0" style="width: 100px;background-color: #627491;color:white;" value="Confirm">
+        </div>
+    </div>
+</div>
+<script src="js/dataTables.min.js"></script>
+<script src="js/dataTables.semanticui.min.js"></script>
+<script type="text/javascript">
+    $('#status').chosen();
+    $('#salesman').chosen();
+    $('#network').chosen();
+    $('.all').on('click',function(){
+        if($(this).attr('val') == 0){
+            $('#mod :checkbox').prop("checked",true);
+            $(this).attr('val',1);
+            // alert($(this).attr('val'));
+        }else{
+            $('#mod :checkbox').prop("checked",false);
+            $(this).attr('val',0);
+        }
+    })
+    function tab(){
+        var cate = $('#status').val();
+        var salesman = $('#salesman').val();
+        var network = $('#network').val();
+
+        $('#example').dataTable({
+            "bServerSide": true,
+            "bProcessing": true,
+            "iDisplayLength": 20,
+            "bPaginage":true,
+            "aLengthMenu": [10, 20, 50, 100],
+            'bFilter': false,
+            'pagingType':'full_numbers',
+            "ajax": {
+                "url": "b_category.php",
+                "type":'POST',
+                "data": {
+                    "table":1,
+                    "cateType":cate,
+	                'salesman':salesman,
+	                'network':network
+                }
+            },
+            "aaSorting": [
+                [0, "asc"],
+            ],
+            columns: [
+                { "data": null,"title":'Network',"render":function(data, type, full, meta){
+                    return full.AffName;
+                },"asSorting": [ "desc", "asc", "asc" ] },
+                { "data": null,"title":'Category',"render":function(data, type, full, meta){
+                    return full.Name;
+                },"asSorting": [ "desc", "asc", "asc" ] },
+                { "data": null,"bSortable": false,"title":'Update',"render":function(data,type,full,meta){
+                    var val = '<button class="btn btn-info" id="' + full.ID +'" onclick="cate_operate(' + full.ID + ',\'' + full.IdRelated + '\')">Category</button>';
+                    return val;
+                }}
+            ],
+        })}
+    tab();
+    function cate_operate(id,cateid,name){
+        $('#catename').html(name);
+        $('#mod :checkbox').prop("checked",false);
+        var arr = cateid.split(',');
+        for(var i=0;i<arr.length;i++){
+            $('#fate_'+arr[i]).prop('checked',true);
+        }
+        $('.upcate').attr('val',id);
+        $('.catemodel').modal('show');
+    }
+    $('.upcate').on('click',function(){
+        var id = $(this).attr('val');
+        var cate = '';
+        $('#mod :checkbox').each(function(i){
+            if($('#mod :checkbox').eq(i).is(':checked')){
+                cate+=$('#mod :checkbox').eq(i).attr('data-id')+',';
+            }
+        })
+        if(cate == ''){
+            alert('Please select');
+            return false;
+        }else{
+            $.ajax({
+                type:"post",
+                url:"process.php",
+                data:'act=update_category&id='+id+'&cate='+cate,
+                success: function(res){
+                    if(res == 1){
+                        alert('Success');
+                        $('.catemodel').modal('hide');
+                    }
+                    else{
+                        alert('Error');
+                    }
+                }
+            });
+        }
+    })
+    $('.search').bind("click",function(){
+        $('#tbzone').html('<table id="example" class="ui celled table" cellspacing="0" width="100%"></table>');
+        tab();
+    })
+</script>
+<{include file="b_block_footer.html"}>

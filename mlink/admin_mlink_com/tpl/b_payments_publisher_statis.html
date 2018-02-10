@@ -1,0 +1,98 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div>
+    <div class="container-fluid" style="margin-top:30px;">
+        <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+        <div class="row" style="padding:20px 0;">
+
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Search</div>
+                    
+                    <div class="panel-body" >
+                        <form id="form_search">
+                            <div class="row">
+                                    <div class="form-group col-lg-3">
+                                    <b>PaidMonth</b><select class="form-control" name="paidmonth">
+                                    <option value="">All</option>
+                                    <{foreach from=$paidMonth_list item=m}>
+                                        <option value="<{$m}>" <{if $m==$search.paidmonth}>selected<{/if}>><{$m}></option>
+                                    <{/foreach}>
+                                    </select>
+                                    </div>
+
+                                    <div class="form-group col-lg-3">
+                                    <b>OrderBy</b><select class="form-control" name="orderby">
+                                    <option value="">Default - PublisherId ↑</option>
+                                        <option value="Amount-DESC" <{if $search.orderby=='Amount-DESC'}>selected<{/if}>>Amount ↓</option>
+                                        <option value="Amount-ASC" <{if $search.orderby=='Amount-ASC'}>selected<{/if}>>Amount ↑</option>
+                                    </select>
+                                    </div>
+
+                                    <div class="form-group col-lg-3">
+                                        <br>
+                                        <a href="javascript:void(0);" onclick="submit_form()" class="btn btn-primary" role="button">Search</a>
+                                        <a href="b_payments_publisher.php?paidmonth=<{$search.paidmonth}>" class="btn btn-primary" role="button">List</a>
+                                    </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-12" style="text-align: center;display: none;" id="checkboxall_process"><a href="javascript:void(0);" onclick="choose_all(this)"><span class="label label-primary">Page</span> click here to choose all recode</a></div>
+
+            <div class="col-lg-12">
+                <table class="table table-hover" id="tbl_pp">
+                            <thead>
+                            <tr>
+                                <th class="col-lg-1">Publisher ID</th>
+                                <th class="col-lg-2">Publisher Account</th>
+                                <th class="col-lg-2">Publisher Email</th>
+                                <th class="col-lg-1">Manger</th>
+                                <th class="col-lg-1">Amount</th>
+                                <th class="col-lg-5">History</th>
+                            </tr>
+                            </thead>
+                            <{foreach from=$list item=payment}>
+                            <{assign var="pid" value=$payment.PublisherId}>
+                            <tr>
+                                <td><{$payment.PublisherId}> </td>
+                                <td><{$payment.publisher.UserName}> </td>
+                                <td><{$payment.publisher.Email}> </td>
+                                <td><{$payment.publisher.Manager}> </td>
+                                <td><b>USD <{$payment.Amount|number_format:2:'.':','}></b></td>
+                                <td><a href="javascript:void(0);" onclick="triggerAfter(this)">Detail</a>
+                                    <div style="display:none;">
+                                        <table class="table table-bordered">
+                                            <{foreach from=$map_history.$pid item=h }>
+                                            <tr><td><{$h.PaidTime|substr:0:10}></td><td><{$h.account.Domain}></td><td>USD <{$h.Amount|number_format:2:'.':','}></td></tr>
+                                            <{/foreach}>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <{/foreach}>
+                        </table>
+            </div>
+        </div>
+    </div>
+
+<script>
+function triggerAfter(obj){
+    if($(obj).next().css('display') == 'none'){
+        $(obj).html('Close');
+        $(obj).next().css('display','');
+    }else{
+        $(obj).html('Detail');
+        $(obj).next().css('display','none');
+    }
+}
+function submit_form(){
+    $('#form_search input[name=action]').val('search');
+    $('#form_search').submit();
+}
+</script>
+
+    <{include file="b_block_footer.html"}>

@@ -1,0 +1,548 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<style>
+.select2{width:100% !important}
+
+</style>
+
+<div class="container" style="margin-top:30px;width:98%">
+    <div style="text-align:center;margin-bottom:30px;"><h1><{$title}></h1></div>
+    <div class="row" style="padding:20px 0;">
+
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Search</div>
+                <div class="panel-body" >
+                    <form id="form_search">
+                        <div class="col-lg-12 form-inline" >
+                            <div class="form-group" style="min-width: 800px;">
+                                Publisher:<input type="text" Name="Publisher" class="form-control" value="<{$search.Publisher}>" placeholder="Publisher">
+                				Network:<input type="text" name="Network" class="form-control" value="<{$search.Network}>" placeholder="Network">
+                                Store:<input type="text" Name="Store" class="form-control" value="<{$search.Store}>" placeholder="Store">
+                                Manager:<select class="form-control" name="Manager">
+			                                <option value="" >All</option>
+			                                <{foreach from=$managers item=manager}>
+			                                <option value="<{$manager}>" <{if $search.Manager eq $manager}>selected="selected"<{/if}> > <{$manager}></option>
+			                                <{/foreach}>
+			                            </select>
+                                &nbsp;&nbsp;
+                                <button type="submit" class="btn  btn-primary " style="float:right">Search</button>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Result<a href="javascript:void(0);" id="addBlock" style="float: right;">Add</a></div>
+                <div class="panel-body">
+                    <table id="example" class="table table-striped">
+                        <!-- <thead>
+                        <tr>
+                            <th>Publisher</th>
+                            <th>Domain</th>
+                            <th>Publisher Account</th>
+                            <th>Network</th>
+                            <th>Program</th>
+                            <th>Store</th>
+                            <th>Manager</th>
+                            <th>Remark</th>
+                            <th>Violation Warning</th>
+                            <th style="width:10%">Add Time</th>
+                            <th>Operate</th>
+                        </tr>
+                        </thead>
+                        <{foreach from=$blockList item=block}>
+                        <tr data-id='<{$block.ID}>' class="open-logs tr">
+                            <td><{$block.PubText}></td>
+                            <td><{$block.Domain}></td>
+                            <td><{$block.PubAccText}></td>
+                            <td><{$block.affText}></td>
+                            <td><{$block.programText}></td>
+                            <td><{$block.storeText}></td>
+                            <td><{$block.Manager}></td>
+                            <td><{$block.Remark}></td>
+                            <td><{$block.Add_Violation_Warning}></td>
+                            <td><{$block.AddTime}></td>
+                            <td>
+	                            <{if $block.CanDelete eq '1'}><a class="deleteBlock" href="javascript:void(0)" style="cursor: pointer"/>Delete</a><{/if}>
+                            </td>
+                        </tr>
+                        <{/foreach}> -->
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="modal fade" id="storeDetailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Log Info</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table  table-bordered" id="logbody">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addBlockModal" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title">Add Publisher Block Data</h2>
+            </div>
+            <div class="modal-body">
+	            <div class="container-fluid">
+	                <div class="row">
+		                <div class="col-md-8 col-md-offset-2">
+							<form class="form-horizontal" id="addform" action="t_affiliate_block.php">
+							  <input name="action" type="hidden" value="submit">
+							  <input id="id" name="id" type="hidden" value="">
+							  <div class="form-group">
+							  	  <label for="BlockType" class="col-sm-3 control-label">Blocked Type</label>
+							      <div class="col-sm-8">
+								      <select id="BlockType" name="BlockType" class="form-control">
+								      		<option value="PublisherId">Publisher</option>
+								      		<option value="AccountId">Publisher Account</option>
+								      </select>
+							      </div>
+							  </div>
+							  <div class="form-group">
+							  	  <label for="Publisher" class="col-sm-3 control-label">Publisher</label>
+							      <div class="col-sm-8">
+								      <select id="Publisher" name="Publisher" class="form-control">
+								      </select>
+							      </div>
+							  </div>
+							  <div class="form-group" id="PublisherAccountDiv" style="display:none">
+							  	  <label for="PublisherAccount" class="col-sm-3 control-label">Publisher Account</label>
+							      <div class="col-sm-8">
+								      <select id="PublisherAccount" name="PublisherAccount" class="form-control">
+								      </select>
+							      </div>
+							  </div>
+							  <div class="form-group">
+							  	  <label for="BlockType" class="col-sm-3 control-label">Block By</label>
+							      <div class="col-sm-8">
+								      <select id="BlockBy" name="BlockBy" class="form-control">
+								      		<option value="Affiliate">Network</option>
+								      		<option value="Program">Program</option>
+								      		<option value="Store">Store</option>
+								      </select>
+							      </div>
+							  </div>
+							  <div class="form-group" id="AffDiv">
+							  	  <label for="Affiliate" class="col-sm-3 control-label">Network</label>
+							      <div class="col-sm-8">
+								      <select id="Affiliate" name="Affiliate" class="form-control">
+									      <{foreach from=$affList key=k item=aff}>
+									      	<option value="<{$k}>"><{$aff}></option>
+				                        <{/foreach}>
+								      </select>
+							      </div>
+							  </div>
+							  <div class="form-group" id="ProgramDiv" style="display:none">
+							  	  <label for="Program" class="col-sm-3 control-label">Program</label>
+							      <div class="col-sm-8">
+								      <select id="Program" name="Program" class="form-control">
+								      </select>
+							      </div>
+							  </div>
+							  <div class="form-group" id="StoreDiv" style="display:none">
+							  	  <label for="Store" class="col-sm-3 control-label">Store</label>
+							      <div class="col-sm-8">
+								      <select id="Store" name="Store" class="form-control">
+								      </select>
+							      </div>
+							  </div>
+							  <div class="form-group">
+								  <label for="Remark" class="col-sm-3 control-label">Remark</label>
+								  <div class="col-sm-8">
+									  <select class="form-control" id="Remark" name="Remark">
+										  <option value=""></option>
+										  <option value="Network Restricted">Network Restricted</option>
+										  <option value="Advertiser Restricted">Advertiser Restricted</option>
+										  <option value="PPC Violation">PPC Violation</option>
+										  <option value="Content Violation">Content Violation</option>
+										  <option value="Other Violation">Other Violation</option>
+										  <option value="Prevention">Prevention</option>
+									  </select>
+								  </div>
+								  <!-- <div class="col-sm-8">
+								     <input type="text" class="form-control" id="Remark" name="Remark" placeholder="Remark">
+								  </div> -->
+							  </div>
+							  <div class="form-group">
+							  	  <label for="ViolationWarning" class="col-sm-3 control-label">Add Violation Warning</label>
+							      <div class="col-sm-8">
+								      <select id="ViolationWarning" name="ViolationWarning" class="form-control">
+								      		<option value="0">NO</option>
+								      		<option value="1">YES</option>
+								      </select>
+							      </div>
+							  </div>
+							  <div class="form-group" style="text-align:center">
+							  	   <span id="loading-span" style="visibility:hidden">Loading&nbsp;&nbsp;<img src="<{$smarty.const.BASE_URL}>/img/loading-2.gif"></span>
+			                       <input type="hidden" id="submitType">
+				                   <button class="btn btn-primary" style="margin-right: 10px;" id="addBlockConfirm">confirm</button>
+								   <button class="btn btn-default" style="margin-left: 10px;" data-dismiss="modal">cancel</button>
+							  </div>
+							</form>
+	                	</div>
+	            	</div>
+	            </div>
+	        </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	$(function(){
+		var data = $('#form_search').serializeArray();
+		$('#example').DataTable({
+            "bServerSide": true,
+            "bProcessing": true,
+            "iDisplayLength": 10,
+            "bPaginage":true,
+            "aLengthMenu": [10, 20, 50, 100],
+            'bFilter': false,
+            "bSort": false,
+            'pagingType':'full_numbers',
+            "ajax": {
+                "url": "t_affiliate_block.php",
+                "type":'POST',
+                "data": {
+                    "act":"violation",
+                    "data":JSON.stringify(data)
+                }
+            },
+            columns:[
+                { "data": "PubText","sClass":"t1","title":'Publisher'},
+                { "data": "Domain","title":"Domain"},
+                { "data": "PubAccText","title":"Publisher Account"},
+                { "data": "affText","title":"Network"},
+                { "data": "programText","title":"Program"},
+                { "data": "storeText","title":"Store"},
+                { "data": "Manager","title":"Manager"},
+                { "data": "Remark","title":"Remark"},
+                { "data": "Add_Violation_Warning","title":'Violation Warning'},
+                { "data": "AddTime","title":'Add Time'},
+                { "data": "CanDelete","title":"Operate","render":function(data, type, full, meta){
+                    if(full.CanDelete == '1'){
+                    	return '<a class="deleteBlock" href="javascript:void(0)" style="cursor: pointer"/>Delete</a>';
+                    }else{
+                    	return ''
+                    }
+                }},
+            ],
+            "fnCreatedRow": function( nRow, aData, iDataIndex ){
+            	$(nRow).attr("data-id",aData['ID']);
+            }
+        })
+
+//		$('#example').DataTable({"bSort": false});
+		
+		//select2在modal中生效
+		$.fn.modal.Constructor.prototype.enforceFocus =function(){};
+		
+		$("#Affiliate").select2({
+			theme: "bootstrap",
+			allowClear: true,
+			placeholder: "Select a Network",
+		});
+		
+		$("#Remark").select2({
+			theme: "bootstrap",
+			allowClear: true,
+			placeholder: "Input a Remark",
+			tags: true,
+		});
+		
+		$("#Publisher").select2({
+			theme: "bootstrap",
+			allowClear: true,
+			placeholder: "Select a Publisher",
+			minimumInputLength: 1,
+			ajax:{
+	            url:"t_affiliate_block.php",
+	            dataType:"json",
+	            delay:500,
+	            data:function(params){
+	                return {
+	                	type: "publisher",
+	                    name: params.term,
+	                    page: params.page || 1
+	                };
+	            },
+	            processResults: function (res, params) {
+	            	params.page = params.page || 1;
+	                var rs = res["data"];
+	                var options = [];
+	                for(var i= 0, len=rs.length;i<len;i++){
+	                    var option = {"id":rs[i]["publisherId"], "text":rs[i]["publisherName"]+"("+rs[i]["Email"]+")"};
+	                    options.push(option);
+	                }
+	                return {
+	                    results: options,
+	                    pagination: {
+	                        more:((params.page) * 20) < res["more"]
+	                    }
+	                };
+	            },
+	            cache:true,
+	            escapeMarkup: function (markup) { return markup; },
+	        }
+		});
+		
+		$("#Store").select2({
+			theme: "bootstrap",
+			allowClear: true,
+			placeholder: "Select a Store",
+			minimumInputLength: 1,
+			ajax:{
+	            url:"t_affiliate_block.php",
+	            dataType:"json",
+	            delay:500,
+	            data:function(params){
+	                return {
+	                	type: "store",
+	                    name: params.term,
+	                    page: params.page || 1
+	                };
+	            },
+	            processResults: function (res, params) {
+	            	params.page = params.page || 1;
+	                var rs = res["data"];
+	                var options = [];
+	                for(var i= 0, len=rs.length;i<len;i++){
+	                    var option = {"id":rs[i]["storeId"], "text":rs[i]["storeName"]+rs[i]["StoreAffSupport"]};
+	                    options.push(option);
+	                }
+	                return {
+	                    results: options,
+	                    pagination: {
+	                        more:((params.page) * 20) < res["more"]
+	                    }
+	                };
+	            },
+	            cache:true,
+	            escapeMarkup: function (markup) { return markup; },
+	        }
+		});
+		
+		$("#PublisherAccount").select2({
+			theme: "bootstrap",
+			allowClear: true,
+			placeholder: "Select Publisher Account",
+		});
+		
+		$("#Program").select2({
+			theme: "bootstrap",
+			allowClear: true,
+			placeholder: "Select a Program",
+		});
+		
+		//添加
+		$(document).delegate('#addBlock','click',function(){
+			$("#addBlockModal").modal('show');
+		})
+		
+		//删除
+		$(document).delegate(".deleteBlock","click",function(){
+			var r = confirm("Are you sure to delete this ?");
+			if(r){
+				var _tr = $(this).closest('tr');
+				var id = _tr.data('id');
+				$.ajax({
+		             type: "POST",
+		             url: $("#addform").attr("action"),
+		             data: {"action":"delete","id":id},
+		             dataType: "json",
+		             success: function(data){
+		            	 if(data.code==1){
+		            		 window.location.reload();
+		            		 return false; 
+		            	 }else{
+		            		 alert(data.msg);
+		                     return false; 
+		            	 }
+	                }
+		         });
+			}
+			return false;
+		})
+
+		//提交
+		$(document).delegate('#addBlockConfirm','click',function(){
+			$("#addBlockConfirm").attr("disabled",true);
+			$("#loading-span").css('visibility',"visible");
+			
+			if($("#Publisher").val() == '' || $("#Publisher").val() == null){
+				alert("Publisher is required");
+				return false;
+			}
+			if($("#BlockType").val() == 'AccountId'){
+				if($("#PublisherAccount").val() == '' || $("#PublisherAccount").val() == null){
+					alert("Publisher Account is required");
+					return false;
+				}
+			}
+			if($("#BlockBy").val() == 'Affiliate'){
+				if($("#Affiliate").val() == '' || $("#Affiliate").val() == null){
+					alert("Network is required");
+					return false;
+				}
+			}else if($("#BlockBy").val() == 'Program'){
+				if($("#Affiliate").val() == '' || $("#Affiliate").val() == null){
+					alert("Network is required");
+					return false;
+				}
+				if($("#Program").val() == '' || $("#Program").val() == null){
+					alert("Program is required");
+					return false;
+				}
+			}else if($("#BlockBy").val() == 'Store'){
+				if($("#Store").val() == '' || $("#Store").val() == null){
+					alert("Store is required");
+					return false;
+				}
+			}
+			$.ajax({
+	             type: "POST",
+	             url: $("#addform").attr("action"),
+	             data: $("#addform").serialize(),
+	             dataType: "json",
+	             success: function(data){
+	            	 $("#addBlockConfirm").removeAttr("disabled");
+	         		 $("#loading-span").css('visibility',"hidden");
+	            	 if(data.code==1){
+	            		 window.location.reload();
+	            		 return false; 
+	            	 }else{
+	            		 alert(data.msg);
+	                     return false; 
+	            	 }
+                 }
+	        });
+			return false;
+		})
+		
+		//禁用publisher还是publisher account
+		$(document).delegate('#BlockType','change',function(){
+			if($(this).val() == 'AccountId'){
+				$("#PublisherAccountDiv").css("display","block");
+			}else {
+				$("#PublisherAccountDiv").css("display","none");
+			}
+			$("#Publisher").trigger('change');
+		})
+		
+		//修改publisher联动查询account
+		$(document).delegate('#Publisher','change',function(){
+			if($("#BlockType").val() == 'AccountId'){
+				if($("#Publisher").val() != null && $("#Publisher").val() != ''){
+					$.ajax({
+			             type: "POST",
+			             url: $("#addform").attr("action"),
+			             data: {"action":"searchPublisherAccount","publisherId":$("#Publisher").val()},
+			             dataType: "json",
+			             success: function(data){
+			            	 if(data.code==1){
+			            		 var domainArr = data.data;
+			            		 var str = '';
+			            		 //var domainIds = new Array();
+			            		 for (var i = 0; i < domainArr.length; i++) {
+			            			str += '<option value="'+domainArr[i].ID+'">'+domainArr[i].Domain+'</option>';
+			            			//domainIds.push(domainArr[i].ID);
+		                    	 }
+		            			$("#PublisherAccount").html(str);
+		            			 //$("#PublisherAccount").val(domainIds);
+			            		 return false; 
+			            	 }else{
+			            		 alert(data.msg);
+			                     return false; 
+			            	 }
+		                 }
+			         });
+				}else{
+					$("#PublisherAccount").html('');
+				}
+			}else{
+				$("#PublisherAccount").html('');
+			}
+			return false;
+		})
+		
+		//联盟联动查询program
+		$(document).delegate('#Affiliate','change',function(){
+			if($("#BlockBy").val() == 'Program'){
+				if($("#Affiliate").val() != null && $("#Affiliate").val() != ''){
+					$.ajax({
+			             type: "POST",
+			             url: $("#addform").attr("action"),
+			             data: {"action":"searchProgram","affId":$("#Affiliate").val()},
+			             dataType: "json",
+			             success: function(data){
+			            	 if(data.code==1){
+			            		 var domainArr = data.data;
+			            		 var str = '';
+			            		 for (var i = 0; i < domainArr.length; i++) {
+			            			str += '<option value="'+domainArr[i].ID+'">'+domainArr[i].Homepage+'</option>';
+		                    	 }
+		            			 $("#Program").html(str);
+			            		 return false; 
+			            	 }else{
+			            		 alert(data.msg);
+			                     return false; 
+			            	 }
+		                 }
+			         });
+				}else{
+					$("#Program").html('');
+				}
+			}else{
+				$("#Program").html('');
+			}
+			return false;
+		})
+		
+		//禁用是联盟还是program还是store发起的
+		$(document).delegate('#BlockBy','change',function(){
+			if($(this).val() == 'Program'){
+				$("#StoreDiv").css("display","none");
+				$("#AffDiv").css("display","block");
+				$("#ProgramDiv").css("display","block");
+				$("#Affiliate").trigger('change');
+			}else if($(this).val() == 'Store'){
+				$("#AffDiv").css("display","none");
+				$("#ProgramDiv").css("display","none");
+				$("#StoreDiv").css("display","block");
+				$("#Affiliate").val('');
+				$("#Affiliate").trigger('change');
+			}else if($(this).val() == 'Affiliate'){
+				$("#ProgramDiv").css("display","none");
+				$("#StoreDiv").css("display","none");
+				$("#AffDiv").css("display","block");
+			}
+		})
+		
+		
+		
+	})
+	
+</script>
+
+<{include file="b_block_footer.html"}>

@@ -1,0 +1,124 @@
+<?php
+include_once('conf_ini.php');
+include_once(INCLUDE_ROOT.'init3.php');
+$objTools = new Tools;
+
+global $db,$objTpl,$sys_footer;
+
+$affiList = $objTools->getClawerAff();
+$fieldsList = array('Homepage','CategoryExt','StatusInAff','Partnership','CommissionExt','TargetCountryExt','StatusInAffRemark');
+
+if($_POST){
+    $html = '<div class="panel panel-default">
+                    <div class="panel-body">
+                        <table class="table table-striped" id="table_aff">
+                            <thead>
+                                <tr>
+                                    <th>Affid</th>
+                                    <th>AffName</th>
+                                    <th>Field</th>
+                                    <th>Count</th>
+                                    <th>ProgramIdDetail</th>
+                                </tr>
+                            </thead>
+                            <tbody style="text-align: center">';
+    $data = getKeyMsgLoseLog($_POST,array_keys($affiList),$db);
+    $objTpl->assign('data', $data);
+    if(!empty($data)){
+        foreach ($data as $v){
+            $html .= '
+            <tr>
+                <td>' . $v['affid'] . '</td>
+                <td>' . $affiList[$v['affid']]['Name'] . '</td>
+                <td>' . $v['field'] . '</td>
+                <td>' . $v['count'] . '</td>
+                <td>' . $v['pidDetail'] . '</td>
+            <tr>';
+        }
+    }
+    $html .= '       </tbody>
+                </table>
+            </div>
+        </div>';
+
+    echo $html;exit;
+}else {
+    $data = getKeyMsgLoseLog(array(),array_keys($affiList),$db);
+    $objTpl->assign('data', $data);
+}
+
+
+$objTpl->assign('affiList', $affiList);
+$objTpl->assign('fieldsList', $fieldsList);
+
+$sys_header['js'][] = BASE_URL.'/js/dataTables.min.js';
+$sys_header['js'][] = BASE_URL.'/js/dataTables.semanticui.min.js';
+$sys_header['css'][] = BASE_URL.'/css/DateTimePicker.css';
+$sys_footer['js'][] = BASE_URL.'/js/DateTimePicker.js';
+
+$objTpl->assign('search', $_GET);
+$objTpl->assign('sys_header', $sys_header);
+$objTpl->assign('sys_footer', $sys_footer);
+$objTpl->assign("title","Key Msg Lose Alert");
+$objTpl->display('b_tools_key_msg_lose_alert.html');
+
+function getKeyMsgLoseLog($params,$affIdList,$db)
+{
+    $fieldsList = array('Homepage','CategoryExt','StatusInAff','Partnership','CommissionExt','TargetCountryExt','StatusInAffRemark');
+
+    $sql = "SELECT AffId,ProgramId,FieldName FROM program_change_log WHERE  (FieldValueOld <> '' or FieldValueOld is NOT NULL) AND (FieldValueNew='' or FieldValueNew is NULL ) AND";
+
+    if (!isset($params['date']) || !$params['date']) {
+        $checktime = date("Y-m-d", strtotime("-2 day"));
+    }else {
+        $checktime = $params['date'];
+    }
+    $sql .= " (AddTime > '$checktime') AND";
+
+    if (!isset($params['affid']) || !$params['affid']){
+        $sql .= " affId in ('" . join("','", $affIdList) . "') AND";
+    }else {
+        $sql .= " affId={$params['affid']} AND";
+    }
+
+    if (!isset($params['field']) || !$params['field']){
+        $sql .= " FieldName in ('" . join("','", $fieldsList) . "') AND";
+    }else{
+        $sql .= " FieldName='{$params['affid']}' AND";
+    }
+
+    if (isset($params['pid'])) {
+        if (stripos($params['pid'], ',') !== false) {
+            $pid_arr = explode(',', $params['pid']);
+            $pid_arr = array_map(function ($person) {
+                return trim($person);
+            }, $pid_arr);
+            $sql .= " ProgramId in ('" . join("','", $pid_arr) . "')";
+        } elseif ($params['pid']) {
+            $sql .= "ProgramId='{$params['pid']}'";
+        }
+    }
+
+    $sql = rtrim($sql, 'AND');
+    $change_log_arr = $db->getRows($sql);
+
+    $show_arr = array();
+    foreach ($change_log_arr as $cVal) {
+        $show_arr[$cVal['AffId']][$cVal['FieldName']][] = $cVal['ProgramId'];
+    }
+    unset($change_log_arr);
+    $arr_return = array();
+    foreach ($show_arr as $sK => &$sV){
+        foreach ($sV as $fk => $fv) {
+            $arr_return[] = array(
+                'affid' => $sK,
+                'field' => $fk,
+                'count' => count($fv),
+                'pidDetail' => join(',', $fv)
+            );
+        }
+    }
+    unset($show_arr);
+
+    return $arr_return;
+}

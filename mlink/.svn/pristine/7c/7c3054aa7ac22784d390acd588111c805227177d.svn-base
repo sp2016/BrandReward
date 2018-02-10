@@ -1,0 +1,19 @@
+<{include file="front_block_header.html"}>
+<{include file="front_block_banner.html"}>
+
+<div class="big-chest" style="background: url('<{$smarty.const.BASE_URL}>/img/why.jpg');opacity:0.8;filter:alpha(opacity=80);">
+  <div class="container">
+    <h1 ><{$LANG.front.introduction.a1}></h1>
+    <h2 ><{$LANG.front.introduction.a2}></h2>
+    <h3 ><{$LANG.front.introduction.a3}></h3>
+     <p >
+      <a class="btn btn-lg btn-primary btn-shadow" href="<{$smarty.const.BASE_URL}>/signup.php" role="button"><{$LANG.front.introduction.a4}></a>
+      <a class="btn btn-lg btn-primary btn-shadow" href="javascript:void(0)" id="homepage-login" role="button"><{$LANG.front.introduction.a5}></a>
+    </p>
+  </div>
+</div>
+
+
+
+
+<{include file="front_block_footer.html"}>

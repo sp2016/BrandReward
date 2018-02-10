@@ -1,0 +1,194 @@
+<?php
+#TradeId
+ini_set("auto_detect_line_endings", true);
+$file_cook = PATH_COOKIE.'/'.AFFILIATE_ALIAS.'.cookie';
+$file_temp = PATH_TMP.'/'.AFFILIATE_ALIAS.'.tmp';
+
+define('AFF_ID', '252822');
+define('AFF_API_TOKEN', 'tVfx3axFRbASsHZG');//1&h2SRW7qwUya
+define('AFF_API_SECRET_KEY', 'DHz6wv4t6BWxyu2nOJh4sy6z9EIvcc7r');
+define('AFF_API_VERSION', '2.1');
+define('AFF_API_ACTION', 'activity');
+define('AFF_API_URI', 'https://shareasale.com/x.cfm?action={ACTION}&affiliateId={AFFID}&token={TOKEN}&dateStart={FD}&dateEnd={TD}&version={VERSION}&paidDate={PD}');
+
+if (defined('START_TIME') && defined('END_TIME')) {
+    $end_dt = date('Y-m-d', strtotime(END_TIME));
+    $begin_dt = date('Y-m-d', strtotime(START_TIME));
+} else {
+    $end_dt = date('Y-m-d');
+    $begin_dt = date('Y-m-d', strtotime('-90 days', strtotime($end_dt)));
+}
+
+$paiddateArr = array();
+$d = new DateTime( $begin_dt );
+while(1){
+    $paiddateArr[] = $d->format('Y-m').'-20';
+
+    $d->modify('+1 month');
+
+    if($d->format('Y-m') == date('Y-m',strtotime($end_dt))){
+        break;
+    }
+}
+
+foreach($paiddateArr as $paiddate){
+    download_invoice($paiddate);
+}
+
+function download_invoice($paiddate){
+    global $file_temp,$file_cook,$_db;
+    if(file_exists($file_temp))
+        unlink($file_temp);
+
+    $dateList = get_date_range_arr(date('Y-m-d',strtotime('-6 month',strtotime($paiddate))),$paiddate,'30 day');
+    
+    foreach($dateList as $k=>$v){
+        $begin_dt = $v['start_dt'];
+        $end_dt = $v['end_dt'];
+
+        $timestamp = gmdate(DATE_RFC1123);
+        $sig = AFF_API_TOKEN . ':' . $timestamp . ':' . AFF_API_ACTION . ':' . AFF_API_SECRET_KEY;
+        $sig = hash("sha256", $sig);
+        $headers = array("x-ShareASale-Date: {$timestamp}", "x-ShareASale-Authentication: {$sig}");
+        $url = str_replace(array('{FD}', '{TD}', '{ACTION}', '{TOKEN}', '{VERSION}', '{AFFID}','{PD}'), array(date('m/d/Y', strtotime($begin_dt)), date('m/d/Y', strtotime($end_dt)), AFF_API_ACTION, AFF_API_TOKEN, AFF_API_VERSION, AFF_ID, date('m/d/Y', strtotime($paiddate))), AFF_API_URI);
+
+        echo "req => {$url} \n";
+        $ch = curl_init($url);
+
+        $fw = fopen($file_temp, 'a+');
+        if (!$fw)
+            throw new Exception("File open failed {$file_temp}");
+
+        $curl_opts = array(CURLOPT_NOBODY => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_COOKIEJAR => $file_cook,
+            CURLOPT_COOKIEFILE => $file_cook,
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
+            CURLOPT_FILE => $fw,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_SSL_VERIFYPEER => false,
+
+        );
+        curl_setopt_array($ch, $curl_opts);
+        curl_exec($ch);
+        curl_error($ch);
+        curl_close($ch);
+        fclose($fw);
+    }
+
+    $data_file = PATH_DATA.'/'.AFFILIATE_ALIAS.'_'.AFFID.'/invoice_'.str_replace('-', '', $paiddate).'.upd';
+    $fdw = fopen($data_file, 'w+');
+    
+    $line = 0;
+    $count = 0;
+    $sum = 0;
+    $fp = fopen($file_temp, 'r');
+    while (!feof($fp)) {
+        $lr = fgetcsv($fp, 0, '|', '"');
+        $line++;
+        if($line == 1){
+            if(strstr($lr[0], 'Trans ID') 
+                && strstr($lr[1], 'User ID')
+                && strstr($lr[2], 'Merchant ID')
+                && strstr($lr[3], 'Trans Date')
+                && strstr($lr[4], 'Trans Amount')
+                && strstr($lr[5], 'Commission')
+                && strstr($lr[6], 'Comment')
+                && strstr($lr[7], 'Voided')
+                && strstr($lr[8], 'Pending Date')
+                && strstr($lr[9], 'Locked')
+                && strstr($lr[10], 'Aff Comment')
+                && strstr($lr[11], 'Banner Page')
+                && strstr($lr[12], 'Reversal Date')
+                && strstr($lr[13], 'Click Date')
+                && strstr($lr[14], 'Click Time')
+                && strstr($lr[15], 'Banner Id')
+                && strstr($lr[16], 'SKU List')
+                && strstr($lr[17], 'Quantity List')
+                && strstr($lr[18], 'Lock Date')
+                && strstr($lr[19], 'Paid Date')
+                && strstr($lr[20], 'Merchant Organization')
+                && strstr($lr[21], 'Merchant Website')
+                && strstr($lr[22], 'Trans Type')
+            ){
+                continue;
+            }else{
+                print_r('error:title format wrong 1');
+                fclose($fp);
+                exit();
+            }
+        }
+
+        if(strstr($lr[0], 'Trans ID') 
+            && strstr($lr[1], 'User ID')
+            && strstr($lr[2], 'Merchant ID')
+            && strstr($lr[3], 'Trans Date')
+            && strstr($lr[4], 'Trans Amount')
+            && strstr($lr[5], 'Commission')
+            && strstr($lr[6], 'Comment')
+            && strstr($lr[7], 'Voided')
+            && strstr($lr[8], 'Pending Date')
+            && strstr($lr[9], 'Locked')
+            && strstr($lr[10], 'Aff Comment')
+            && strstr($lr[11], 'Banner Page')
+            && strstr($lr[12], 'Reversal Date')
+            && strstr($lr[13], 'Click Date')
+            && strstr($lr[14], 'Click Time')
+            && strstr($lr[15], 'Banner Id')
+            && strstr($lr[16], 'SKU List')
+            && strstr($lr[17], 'Quantity List')
+            && strstr($lr[18], 'Lock Date')
+            && strstr($lr[19], 'Paid Date')
+            && strstr($lr[20], 'Merchant Organization')
+            && strstr($lr[21], 'Merchant Website')
+            && strstr($lr[22], 'Trans Type')
+        ){
+            continue;
+        }
+
+        $tmp = array(
+            'date'=>$lr[19],
+            'commission'=>$lr[5],
+            'transaction_id'=>$lr[0],
+            'program_name'=>$lr[20],
+            'program_id'=>$lr[2],
+            );
+
+        $count++;
+        $sum = bcadd($sum,$lr[5],2);
+        
+        fwrite($fdw , join("\t",$tmp)."\n");
+        
+    }
+    fclose($fdw);
+    print_r("doing , paiddate= ".$paiddate.", count= ".$count." ,sum = ".$sum." \n");
+
+    $sql = "INSERT INTO payments (Network,NetworkID,CreatedDate,PaymentKey,Currency,Amount,`Status`,SourceType) VALUE ('ShareASale',7,'".$paiddate."','".str_replace('-','',$paiddate)."','USD',5000,'PENDING','API') ON DUPLICATE KEY UPDATE Amount=VALUES(Amount);";
+    $_db->query($sql);
+}
+
+
+function get_date_range_arr($startDate,$endDate,$range,$format='Y-m-d'){
+    $startDate = date('Y-m-d',strtotime($startDate));
+    $endDate = date('Y-m-d',strtotime($endDate));
+    $d = new DateTime($startDate);
+
+    $return_d = array();
+
+    while($d->format('Y-m-d') <= $endDate){
+
+        $start_dt = $d->format($format);
+        $d->modify('+'.$range);
+        if($d->format('Y-m-d') > $endDate){
+            $end_dt = date($format,strtotime($endDate));
+        }else{
+            $end_dt = $d->format($format);
+        }
+        $d->modify('+1 day');
+
+        $return_d[] = array('start_dt'=>$start_dt,'end_dt'=>$end_dt);
+    }
+
+    return $return_d;
+}
+?>

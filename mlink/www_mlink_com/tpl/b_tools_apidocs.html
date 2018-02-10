@@ -1,0 +1,64 @@
+<{include file="b_block_header.html"}>
+<{include file="b_block_banner.html"}>
+
+<div class="container-fluid">
+    <div style="margin-bottom:30px;"><h1><{$LANG.backend.b_tools_apidocs.a1}></h1></div>
+
+    <div class="row">
+      <div class="col-sm-3 sidebar">
+        <ul class="nav">
+          <li>
+            <a style="font-size: 17px;color: #0f0f0f"><{$LANG.backend.b_tools_apidocs.a2}></a>
+            <ul class="nav child">
+              <li <{if $smarty.get.func == 'redirect' || !$smarty.get.func}>class="b-active"<{/if}>>
+                <a href="<{$smarty.const.BASE_URL}>/b_tools_apidocs.php?func=redirect"><{$LANG.backend.b_tools_apidocs.a3}></a>
+              </li>
+              <li <{if $smarty.get.func == 'jscode'}>class="b-active"<{/if}>>
+                <a href="<{$smarty.const.BASE_URL}>/b_tools_apidocs.php?func=jscode"><{$LANG.backend.b_tools_apidocs.a4}></a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a style="font-size: 17px;color: #0f0f0f"><{$LANG.backend.b_tools_apidocs.a6}></a>
+            <ul class="nav child">
+              <li <{if $smarty.get.func == 'transaction'}>class="b-active"<{/if}>><a href="<{$smarty.const.BASE_URL}>/b_tools_apidocs.php?func=transaction"><{$LANG.backend.b_tools_apidocs.a6}></a></li>
+              <!-- <li><a href="javascript:void(0);">Analytics Data</a></li> -->
+            </ul>
+          </li>
+          <li>
+            <a style="font-size: 17px;color: #0f0f0f">Advertiser</a>
+            <ul class="nav child">
+              <li <{if $smarty.get.func == 'category'}>class="b-active"<{/if}>>
+                <a href="<{$smarty.const.BASE_URL}>/b_tools_apidocs.php?func=category">Category</a>
+              </li>
+              <li <{if $smarty.get.func == 'advertiser'}>class="b-active"<{/if}>>
+                <a href="<{$smarty.const.BASE_URL}>/b_tools_apidocs.php?func=advertiser">Advertiser</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a style="font-size: 17px;color: #0f0f0f">Links</a>
+            <ul class="nav child">
+              <li <{if $smarty.get.func == 'contentfeed'}>class="b-active"<{/if}>><a href="<{$smarty.const.BASE_URL}>/b_tools_apidocs.php?func=contentfeed">Promotions</a></li>
+              <{if $userId lt 10 or $userId eq 90706 or $userId eq 90741 }><li <{if $smarty.get.func == 'productfeed'}>class="b-active"<{/if}>><a href="<{$smarty.const.BASE_URL}>/b_tools_apidocs.php?func=productfeed">Product Feed</a></li><{/if}>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="col-sm-9 docs">
+        <{if $smarty.get.func == 'redirect' || !$smarty.get.func}>
+          <{include file="doc_redirect.html"}>
+        <{else}>
+          <{assign var="docfile" value="doc_"|cat:$smarty.get.func|cat:".html"}>
+          <{include file=$docfile}>
+        <{/if}>
+      </div>
+    </div>
+</div>
+
+<script>
+var min_h = $('div.page').height();
+$('div.sidebar').css('min-height',min_h);
+</script>
+
+<{include file="b_block_footer.html"}>

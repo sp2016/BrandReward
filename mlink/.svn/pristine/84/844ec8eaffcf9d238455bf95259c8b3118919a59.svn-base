@@ -1,0 +1,107 @@
+<input type="hidden" name="act" value='edit_publisher_site'/>
+<input type="hidden" name="ID" value='<{$site_id}>'/>
+<input type="hidden" name="PublisherId" value='<{$publisher_id}>'/>
+<div class="form-group check">
+    <label>Site Url</label>
+    <input type="text" class="form-control" value="<{$site_info.Domain}>" id="site-domain" name="site_domain"
+           placeholder="http://">
+    <span id="domainHasError" class="siteErrorMsg" style="color:red"></span>
+</div>
+<div class="form-group">
+    <label>Site Alias</label>
+    <input type="text" class="form-control" value="<{$site_info.Alias}>" id="site-alias" name="site_alias"
+           placeholder="Site Alias">
+</div>
+<div class="form-group" id="pub_contentDiv">
+    <input type="hidden" id="pub_contentCategoryid" class="SiteType" value="<{$site_info.SiteTypeNew}>">
+    <label>Core business(Multi-choice)</label>
+    <select name="pub_contentCategory[]" class="form-control pub_contentCategory0">
+        <option value="">--Select--</option>
+        <{foreach from=$sitetypeOption key=k item=c}>
+        <{assign var='num' value=$k|substr:0:1}>
+        <optgroup label="<{$k}>">
+            <{foreach from=$c key=subk item=subc}>
+            <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+            <{/foreach}>
+            <{/foreach}>
+    </select>
+    <select name="pub_contentCategory[]" class="form-control pub_contentCategory1" style="margin-top:10px;">
+        <option value="">--Select--</option>
+        <{foreach from=$sitetypeOption key=k item=c}>
+        <{assign var='num' value=$k|substr:0:1}>
+        <optgroup label="<{$k}>">
+            <{foreach from=$c key=subk item=subc}>
+            <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+            <{/foreach}>
+            <{/foreach}>
+    </select>
+    <select name="pub_contentCategory[]" class="form-control pub_contentCategory2" style="margin-top:10px;">
+        <option value="">--Select--</option>
+        <{foreach from=$sitetypeOption key=k item=c}>
+        <{assign var='num' value=$k|substr:0:1}>
+        <optgroup label="<{$k}>">
+            <{foreach from=$c key=subk item=subc}>
+            <option value="<{$num}>_<{$subk}>"><{$subc}></option>
+            <{/foreach}>
+            <{/foreach}>
+    </select>
+    <input style="width: 350px;margin-top: 10px;" type="text" class="form-control" name="pub_otherTypeOfContent"
+           id="pub_contentCategory4" placeholder="">
+    <span id="pub_contentHasError" class="siteErrorMsg" style="color:red"></span>
+</div>
+<div class="form-group" id="pub_trafficDiv">
+    <input type="hidden" id="countryOption" class="GeoBreakdown" value="<{$site_info.GeoBreakdown}>">
+    <label>Traffic Demographics(Multi-choice)</label>
+    <select name="pub_traffic[]" id="pub_traffic1" class="form-control pub_traffic0">
+        <option value="">--Select--</option>
+        <{foreach from=$countryOption item=c key=k}>
+        <option value="<{$k}>"><{$c}></option>
+        <{/foreach}>
+    </select>
+    <select name="pub_traffic[]" class="form-control pub_traffic1" style="margin-top: 10px;">
+        <option value="">--Select--</option>
+        <{foreach from=$countryOption item=c key=k}>
+        <option value="<{$k}>"><{$c}></option>
+        <{/foreach}>
+    </select>
+    <select name="pub_traffic[]" class="form-control pub_traffic2" style="margin-top: 10px;">
+        <option value="">--Select--</option>
+        <{foreach from=$countryOption item=c key=k}>
+        <option value="<{$k}>"><{$c}></option>
+        <{/foreach}>
+    </select>
+    <span id="pub_trafficHasError" class="siteErrorMsg" style="color:red"></span>
+</div>
+<div class="form-group">
+    <label>Description</label>
+    <textarea id="site-desc" name="site_desc" class="form-control" rows="3" placeholder="Tell us about your site~"><{$site_info.Description}></textarea>
+</div>
+
+<script type="application/javascript">
+    var id = $("#countryOption").val();
+    var fval = id.split('+');
+    for(var i = 0;i<fval.length;i++){
+        var newclass = '.pub_traffic'+i+' option';
+        var nval = fval[i];
+        $(newclass).each(function(){
+            if($(this).val() == nval){
+                $(this).attr("selected",true);
+            }
+        });
+    }
+    var pid = $("#pub_contentCategoryid").val();
+    var pval = pid.split('+');
+    for(var i = 0;i<pval.length;i++){
+        var newclass = '.pub_contentCategory'+i+' option';
+        var npval = pval[i];
+        $(newclass).each(function(){
+            if($(this).val() == npval){
+                $(this).attr("selected",true);
+            }
+        });
+    }
+    var type = pval.pop();
+    if($('#pub_contentDiv select').eq(0).val() != type && $('#pub_contentDiv select').eq(1).val() != type && $('#pub_contentDiv select').eq(2).val() != type) {
+        $('#pub_contentCategory4').val(type);
+    }
+</script>

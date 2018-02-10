@@ -1,0 +1,43 @@
+<div class="row" >
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><{$type}></div>
+            <div class="panel-body">
+                <{if $type == 'Short Url'}>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Add Time</th>
+                        <th>Creat Url</th>
+                        <th>Type</th>
+                    </tr>
+                    </thead>
+                    <{foreach from=$res item=domain}>
+                    <tr class="store">
+                        <td><{$domain.addtime}></td>
+                        <td><{$domain.url}></td>
+                        <td><{$domain.type}></td>
+                    </tr>
+                    <{/foreach}>
+                </table>
+                <{else}>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Select Time</th>
+                        <th>Type</th>
+                    </tr>
+                    </thead>
+                    <{foreach from=$res item=domain}>
+                    <tr class="store">
+                        <td><{$domain.addtime}></td>
+                        <td><{$domain.type}></td>
+                    </tr>
+                    <{/foreach}>
+                </table>
+                <{/if}>
+            </div>
+        </div>
+
+    </div>
+</div>
